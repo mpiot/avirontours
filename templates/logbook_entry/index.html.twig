@@ -1,0 +1,68 @@
+{% extends 'logbook/base.html.twig' %}
+
+{% block title %}Gestion des sorties{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des sorties</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion des sorties</h1>
+
+        <a href="{{ path('logbook_entry_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter une sortie
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Bâteau</th>
+                <th>Equipage</th>
+                <th>Date</th>
+                <th>Heure de départ</th>
+                <th>Heure de retour</th>
+                <th>Distance</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for logbook_entry in logbook_entries %}
+                <tr>
+                    <td>{{ logbook_entry.shell.fullName }}</td>
+                    <td>{{ logbook_entry.crewMembers|join(', ', ' et ') }}</td>
+                    <td>{{ logbook_entry.date|date('d/m/Y') }}</td>
+                    <td>{{ logbook_entry.startAt|date('H:i') }}</td>
+                    <td>{{ logbook_entry.endAt ? logbook_entry.endAt|date('H:i') }}</td>
+                    <td>
+                        {% if logbook_entry.coveredDistance %}
+                            {{ logbook_entry.coveredDistance }} km
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if logbook_entry.endAt is null %}
+                            <a class="btn btn-success btn-sm rounded-pill"
+                               href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
+                                <span class="fas fa-flag-checkered"></span> Finir la sortie
+                            </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn btn-outline-warning btn-sm rounded-pill"
+                               href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
+                                <span class="fas fa-pencil-alt"></span> Modifier
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Pas de sortie</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

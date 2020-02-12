@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            background-color: #333;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            background-image:url({{ asset('build/images/cover.jpg') }});
+            background-position: 50% 50%;
+        }
+
+        main {
+            text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+        }
+    </style>
+{% endblock %}
+
+{% block main_body %}
+{% endblock %}

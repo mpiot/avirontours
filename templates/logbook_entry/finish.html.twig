@@ -1,0 +1,21 @@
+{% extends 'logbook/base.html.twig' %}
+
+{% block title %}Finir une sortie{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Gestion des sorties</a></li>
+    <li class="breadcrumb-item text-muted">{{ logbook_entry.date|date('d/m/Y')}} - {{ logbook_entry.startAt|date('H:m')}} - {{ logbook_entry.shell.fullName }}</li>
+    <li class="breadcrumb-item active">Finir une sortie</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Finir une sortie</h1>
+
+    {{ include('logbook_entry/_form.html.twig', {'button_label': 'Terminer la sortie'}) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('logbook_entry_form') }}
+{% endblock %}

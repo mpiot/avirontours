@@ -1,0 +1,35 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Gestion des invitations{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des invitations</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Gestion des invitations</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Membre</th>
+                <th>Code invitation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for invitation in invitations %}
+                <tr>
+                    <td>{{ invitation.member.fullName }}</td>
+                    <td>{{ invitation.code }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Pas d'invitation</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block nav %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active"><a href="{{ path('logbook_homepage') }}">Cahier de sorties</a></li>
+{% endblock %}

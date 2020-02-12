@@ -1,0 +1,54 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Gestion des catégories  d'avarie{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des catégories  d'avarie</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion des catégories  d'avarie</h1>
+
+        <a href="{{ path('shell_damage_category_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter une catégorie d'avarie
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Priorité</th>
+                <th>Nom</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for shell_damage_category in shell_damage_category_categories %}
+                <tr>
+                    <td>
+                        {% if constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage_category.priority  %}
+                            <span class="badge badge-danger">Importante</span>
+                        {% else %}
+                            <span class="badge badge-warning">Intermédiaire</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ shell_damage_category.name }}</td>
+                    <td class="text-right">
+                        <a class="btn btn-outline-warning btn-sm rounded-pill"
+                           href="{{ path('shell_damage_category_edit', {'id': shell_damage_category.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">Pas  de catégorie</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

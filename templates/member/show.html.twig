@@ -1,0 +1,58 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}{{ member.fullName }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('member_index') }}">Gestion des membres</a></li>
+    <li class="breadcrumb-item active">{{ member.fullName }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>{{ member.fullName }}</h1>
+
+        <div class="ml-auto align-self-center ">
+            {% embed 'member/_delete_form.html.twig' %}
+                {% block buttons %}
+                    <div class="btn-group-sm">
+                        <a class="btn btn-outline-warning" href="{{ path('member_edit', {'id': member.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+
+                        {{ parent() }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ member.id }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ member.firstName }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ member.lastName }}</td>
+            </tr>
+            <tr>
+                <th>LicenseNumber</th>
+                <td>{{ member.licenseNumber }}</td>
+            </tr>
+            <tr>
+                <th>LicensedToRow</th>
+                <td>{{ member.licensedToRow ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>LicenseEndAt</th>
+                <td>{{ member.licenseEndAt|date('d/m/Y') }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Gestion des membres{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des membres</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion des membres</h1>
+
+        <a href="{{ path('member_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter un membre
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Numéro de license</th>
+                <th>Date de fin de validité</th>
+                <th>License pour ramer</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for member in members %}
+                <tr>
+                    <td>
+                        <a href="{{ path('member_show', {'id': member.id}) }}">{{ member.fullName }}</a>
+                    </td>
+                    <td>{{ member.licenseNumber }}</td>
+                    <td class="{{ member.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ member.licenseEndAt|date('d/m/Y') }}</td>
+                    <td>
+                        {% if member.licensedToRow %}
+                            <span class="fas fa-check-circle text-success" title="Oui"></span>
+                        {% else %}
+                            <span class="fas fa-times-circle text-danger" title="Non"></span>
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        <a class="btn btn-outline-warning btn-sm rounded-pill"
+                           href="{{ path('member_edit', {'id': member.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Pas de membre</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

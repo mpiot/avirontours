@@ -1,0 +1,64 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+    <li class="breadcrumb-item active">Gestion du club</li>
+{% endblock %}
+
+{% block body %}
+    <div class="app-list d-flex justify-content-around flex-wrap">
+        <a href="{{ path('shell_damage_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Avaries</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('shell_damage_category_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Catégories d'avaries</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('invitation_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-envelope-open-text fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Invitations</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('member_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Membres</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('shell_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Parc</h4>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ path('user_index') }}">
+            <div class="card h-75 m-3" style="width: 15rem;">
+                <div class="card-body text-center">
+                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                    <h4 class="card-title">Utilisateurs</h4>
+                </div>
+            </div>
+        </a>
+    </div>
+{% endblock %}

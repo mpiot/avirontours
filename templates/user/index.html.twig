@@ -1,0 +1,48 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des utilisateurs</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion des utilisateurs</h1>
+
+        <a href="{{ path('user_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter un utilisateur
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Email</th>
+                <th>Membre</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.member ? user.member.fullName : '-' }}</td>
+                    <td class="text-right">
+                        <a class="btn btn-outline-warning btn-sm rounded-pill"
+                           href="{{ path('user_edit', {'id': user.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2" class="text-center">Pas d'utilisateur</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

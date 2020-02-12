@@ -1,0 +1,15 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Ajouter un utilisateur{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
+    <li class="breadcrumb-item active">Ajouter un utilisateur</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un utilisateur</h1>
+
+    {{ include('user/_form.html.twig') }}
+{% endblock %}

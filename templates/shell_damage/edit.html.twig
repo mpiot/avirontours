@@ -1,0 +1,21 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Modifier un bâteau{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('shell_damage_index') }}">Gestion des avaries</a></li>
+    <li class="breadcrumb-item active">Modifier une avarie</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier une avarie</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('shell_damage/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('shell_damage/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}

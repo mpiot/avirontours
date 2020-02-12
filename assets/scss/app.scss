@@ -1,0 +1,80 @@
+@import "custom";
+@import "~bootstrap/scss/bootstrap";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/brands";
+
+div#body {
+  &.container,
+  &.container-fluid {
+    padding-top: 78px;
+  }
+}
+
+div,
+fieldset {
+  .form-group {
+    >label,
+    >legend {
+      &.required {
+        &:after {
+          content: " *";
+          color: red;
+        }
+      }
+    }
+  }
+}
+
+li {
+  &.list-group-item {
+    &:hover {
+      background-color: $light;
+    }
+  }
+}
+
+.app-list {
+  a {
+    text-decoration: none;
+    color: $dark;
+
+    .card {
+      &:hover {
+        border-color: $primary;
+      }
+    }
+  }
+}
+
+.accordion .card-header {
+  &:after {
+    @extend %fa-icon;
+    @extend .fas;
+
+    content: fa-content($fa-var-chevron-down);
+    float: right;
+    transition: all 0.5s;
+  }
+
+  &.collapsed {
+    &:after {
+      -webkit-transform: rotate(180deg);
+      -moz-transform: rotate(180deg);
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.user-profile-picture {
+  background-color: $blue;
+  color: $white;
+  font-weight: bold;
+  font-size: 4em;
+  line-height: 2em;
+  height: 2em;
+  width: 2em;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+}

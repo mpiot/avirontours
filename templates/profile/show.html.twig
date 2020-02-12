@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Mon profil</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <div>
+            {% if app.user.member %}
+                <span class="user-profile-picture">{{ app.user.member.firstName|slice(0, 2)|upper }}</span>
+            {% else %}
+                <span class="user-profile-picture">{{ app.user.email|slice(0, 2)|upper }}</span>
+            {% endif %}
+        </div>
+        <div class="ml-5">
+            <h3>{{ app.user.email }}</h3>
+
+            <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-secondary" href="{{ path('profile_edit_password') }}">
+                    <span class="fas fa-key" aria-hidden="true"></span> Change password
+                </a>
+
+                <a class="btn btn-warning" href="{{ path('profile_edit') }}">
+                    <span class="fas fa-pencil-alt" aria-hidden="true"></span> Edit
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

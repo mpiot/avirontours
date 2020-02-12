@@ -1,0 +1,95 @@
+{% extends 'logbook/base.html.twig' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+    <li class="breadcrumb-item active">Cahier de sorties</li>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header">
+                    Top distances
+                </h5>
+                <ul class="list-group list-group-flush">
+                    {% for top in topDistances %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>
+                                {% if 1 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
+                                {% elseif 2 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
+                                {% elseif 3 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
+                                {% endif %}
+
+                                {{ top.0.fullName }}
+                            </span>
+
+                            <span>{{ top.totalDistance }} km</span>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">Pas d'entrée</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header">
+                    Top sorties
+                </h5>
+                <ul class="list-group list-group-flush">
+                    {% for top in topSessions %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>
+                                {% if 1 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
+                                {% elseif 2 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
+                                {% elseif 3 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
+                                {% endif %}
+
+                                {{ top.0.fullName }}
+                            </span>
+                            <span>{{ top.totalSessions }}</span>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">Pas d'entrée</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <h5 class="card-header">
+                    Top bâteaux
+                </h5>
+                <ul class="list-group list-group-flush">
+                    {% for top in topShells %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>
+                                {% if 1 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
+                                {% elseif 2 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
+                                {% elseif 3 == loop.index %}
+                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
+                                {% endif %}
+
+                                {{ top.0.name }}
+                            </span>
+                            <span>{{ top.totalSessions }}</span>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">Pas d'entrée</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

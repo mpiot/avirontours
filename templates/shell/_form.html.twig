@@ -1,0 +1,49 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-md">
+            {{ form_row(form.name) }}
+            {{ form_row(form.rowerCategory) }}
+            {{ form_row(form.personalBoat) }}
+            {{ form_row(form.enabled) }}
+        </div>
+
+        <div class="col-md">
+            {{ form_row(form.numberRowers) }}
+            {{ form_row(form.rowingType) }}
+            {{ form_row(form.coxed) }}
+            {{ form_row(form.yolette) }}
+        </div>
+    </div>
+
+    <div class="accordion mb-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
+                <span class="h5">Informations cotation</span>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            {{ form_row(form.productionYear) }}
+                            {{ form_row(form.weightCategory) }}
+                            {{ form_row(form.newPrice) }}
+                            {{ form_row(form.mileage) }}
+
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_row(form.riggerMaterial) }}
+                                </div>
+                                <div class="col">
+                                    {{ form_row(form.riggerPosition) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
+{{ form_end(form) }}

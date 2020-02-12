@@ -1,0 +1,22 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Modifier un utilisateur{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('shell_index') }}">Gestion du parc</a></li>
+    <li class="breadcrumb-item text-muted">{{ user.email }}</li>
+    <li class="breadcrumb-item active">Modifier un utilisateur</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier un utilisateur</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('user/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('user/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}
