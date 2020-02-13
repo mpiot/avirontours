@@ -4,13 +4,6 @@
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/brands";
 
-div#body {
-  &.container,
-  &.container-fluid {
-    padding-top: 78px;
-  }
-}
-
 div,
 fieldset {
   .form-group {
@@ -77,4 +70,24 @@ li {
   display: inline-block;
   text-align: center;
   border-radius: 50%;
+}
+
+@media (min-width:768px) {
+  @supports ((position: -webkit-sticky) or (position: sticky)) {
+    .top-navbar {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+  }
+}
+
+.left-nav-links {
+  @media (min-width:768px) {
+    display: block!important;
+    position: sticky;
+    top: 75px;
+    height: calc(100vh - 140px); /* 80px (navbar) + 70px (footer)*/
+  }
 }
