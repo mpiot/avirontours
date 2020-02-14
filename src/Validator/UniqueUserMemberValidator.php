@@ -18,10 +18,7 @@
 
 namespace App\Validator;
 
-use App\Entity\LogbookEntry;
-use App\Entity\Member;
 use App\Entity\User;
-use App\Repository\MemberRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
