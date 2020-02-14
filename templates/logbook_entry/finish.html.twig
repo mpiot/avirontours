@@ -1,10 +1,9 @@
-{% extends 'logbook/base.html.twig' %}
+{% extends 'logbook_entry/base.html.twig' %}
 
 {% block title %}Finir une sortie{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Gestion des sorties</a></li>
     <li class="breadcrumb-item text-muted">{{ logbook_entry.date|date('d/m/Y')}} - {{ logbook_entry.startAt|date('H:m')}} - {{ logbook_entry.shell.fullName }}</li>
     <li class="breadcrumb-item active">Finir une sortie</li>
 {% endblock %}

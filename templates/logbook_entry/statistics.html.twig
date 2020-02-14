@@ -1,8 +1,8 @@
-{% extends 'logbook/base.html.twig' %}
+{% extends 'logbook_entry/base.html.twig' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-    <li class="breadcrumb-item active">Cahier de sorties</li>
+    {{ parent() }}
+    <li class="breadcrumb-item active">Statistiques</li>
 {% endblock %}
 
 {% block body %}

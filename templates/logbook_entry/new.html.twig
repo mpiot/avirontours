@@ -1,4 +1,4 @@
-{% extends 'logbook/base.html.twig' %}
+{% extends 'logbook_entry/base.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -9,7 +9,6 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Gestion des sorties</a></li>
     <li class="breadcrumb-item active">Ajouter une sortie</li>
 {% endblock %}
 
