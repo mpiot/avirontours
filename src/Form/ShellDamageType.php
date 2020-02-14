@@ -66,7 +66,7 @@ class ShellDamageType extends AbstractType
                 'label' => 'Description',
                 'required' => false,
             ])
-            ->add('doneAt', DateType::class, [
+            ->add('repairAt', DateType::class, [
                 'label' => 'Fait le',
                 'widget' => 'single_text',
                 'required' => false,

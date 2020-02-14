@@ -36,9 +36,9 @@ class ShellDamageListener
 
     public function preUpdate(ShellDamage $shellDamage, PreUpdateEventArgs $args)
     {
-        if ($args->hasChangedField('doneAt') &&
-            null === $args->getOldValue('doneAt') &&
-            $args->getNewValue('doneAt') instanceof \DateTime
+        if ($args->hasChangedField('repairAt') &&
+            null === $args->getOldValue('repairAt') &&
+            $args->getNewValue('repairAt') instanceof \DateTime
         ) {
             $this->enableShell = true;
         }

@@ -25,7 +25,7 @@
                 <th>Catégorie</th>
                 <th>Description</th>
                 <th>Crée le</th>
-                <th>Fait le</th>
+                <th>Réparé le</th>
                 {% if is_granted('ROLE_ADMIN') %}
                     <th></th>
                 {% endif %}
@@ -35,7 +35,7 @@
             {% for shell_damage in shell_damages %}
                 <tr>
                     <td>
-                        {% if shell_damage.doneAt %}
+                        {% if shell_damage.repairAt %}
                             <span class="badge badge-success">Terminé</span>
                         {% elseif constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage.category.priority  %}
                             <span class="badge badge-danger">Importante</span>
@@ -47,7 +47,7 @@
                     <td>{{ shell_damage.category.name }}</td>
                     <td>{{ shell_damage.description|nl2br }}</td>
                     <td>{{ shell_damage.createdAt|date('d/m/Y') }}</td>
-                    <td>{{ shell_damage.doneAt ? shell_damage.doneAt|date('d/m/Y') }}</td>
+                    <td>{{ shell_damage.repairAt ? shell_damage.repairAt|date('d/m/Y') }}</td>
                     {% if is_granted('ROLE_ADMIN') %}
                         <td class="text-right">
                             <a class="btn btn-outline-warning btn-sm rounded-pill"
