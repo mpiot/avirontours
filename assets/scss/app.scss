@@ -72,9 +72,9 @@ li {
   border-radius: 50%;
 }
 
-@media (min-width:768px) {
-  @supports ((position: -webkit-sticky) or (position: sticky)) {
-    .top-navbar {
+.top-navbar {
+  @media (min-width:768px) {
+    @supports ((position: -webkit-sticky) or (position: sticky)) {
       position: -webkit-sticky;
       position: sticky;
       top: 0;
@@ -87,7 +87,7 @@ li {
   @media (min-width:768px) {
     display: block!important;
     position: sticky;
-    top: 75px;
-    height: calc(100vh - 140px); /* 80px (navbar) + 70px (footer)*/
+    top: 5rem;
+    height: calc(100vh - 5rem);
   }
 }
