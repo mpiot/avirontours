@@ -53,7 +53,6 @@ class LogbookEntryNewType extends AbstractType
                         ->andWhere('shell.available = true')
                         ->orderBy('shell.name', 'ASC');
                 },
-                'placeholder' => '--- Sélectionner un bâteau ---',
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
