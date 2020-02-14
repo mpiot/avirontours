@@ -129,6 +129,7 @@ class LogbookEntryController extends AbstractController
 
         return $this->redirectToRoute('logbook_entry_index');
     }
+
     /**
      * @Route("/statistics", name="logbook_entry_statistics")
      * @Security("is_granted('ROLE_USER')")
@@ -141,5 +142,4 @@ class LogbookEntryController extends AbstractController
             'topShells' => $shellRepository->findTop10Sessions(),
         ]);
     }
-
 }

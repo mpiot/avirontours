@@ -62,7 +62,7 @@ class AppLoginAuthenticator extends AbstractFormLoginAuthenticator implements Pa
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'email' => strtolower($request->request->get('email')),
+            'email' => mb_strtolower($request->request->get('email')),
             'password' => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];

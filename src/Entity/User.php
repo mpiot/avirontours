@@ -71,7 +71,7 @@ class User implements UserInterface
 
     public function setEmail(string $email): self
     {
-        $this->email = strtolower($email);
+        $this->email = mb_strtolower($email);
 
         return $this;
     }
