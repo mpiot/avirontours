@@ -18,15 +18,14 @@
 
 namespace App\Entity;
 
-use App\Validator\IsCrewCategoryValid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LogbookEntryRepository")
- * @IsCrewCategoryValid()
  */
 class LogbookEntry
 {
@@ -212,5 +211,25 @@ class LogbookEntry
         }
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback()
+     */
+    public function validateCrew(ExecutionContextInterface $context, $payload)
+    {
+        $invalidMembers = [];
+        foreach ($this->getCrewMembers() as $crewMember) {
+            if ($crewMember->getRowerCategory() > $this->getShell()->getRowerCategory()) {
+                $invalidMembers[] = $crewMember->getFullName();
+            }
+        }
+
+        if (!empty($invalidMembers)) {
+            $context->buildViolation('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau: {{ invalidMembers }}.')
+                ->setParameter('{{ invalidMembers }}', implode(', ', $invalidMembers))
+                ->atPath('crewMembers')
+                ->addViolation();
+        }
     }
 }
