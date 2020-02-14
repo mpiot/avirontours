@@ -18,6 +18,7 @@
 
 namespace App\Entity;
 
+use App\Validator\UniqueUserMember;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"email"}, message="Un compte existe déjà avec cet email.")
+ * @UniqueUserMember()
  */
 class User implements UserInterface
 {

@@ -18,6 +18,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Member;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -62,5 +63,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery();
 
         return $query->getResult();
+    }
+
+    public function findUserWithMember(Member $member)
+    {
+        $query = $this->createQueryBuilder('app_user')
+            ->leftJoin('app_user.member', 'app_member')
+            ->where('app_member = :member')
+            ->setParameter('member', $member)
+            ->getQuery();
+
+        return $query->getOneOrNullResult();
     }
 }
