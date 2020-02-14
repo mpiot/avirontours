@@ -84,10 +84,24 @@ li {
 }
 
 .left-nav-links {
+  padding-top: 1rem;
+
+  a {
+    color: $dark;
+
+    &:hover {
+      color: $black;
+    }
+  }
+
   @media (min-width:768px) {
     display: block!important;
     position: sticky;
     top: 5rem;
     height: calc(100vh - 5rem);
+  }
+
+  @media (max-width:769px) {
+    padding: 1rem;
   }
 }
