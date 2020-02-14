@@ -50,7 +50,7 @@ class LogbookEntryNewType extends AbstractType
                     return $er->createQueryBuilder('shell')
                         ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->where('logbook_entries is NULL')
-                        ->andWhere('shell.enabled = true')
+                        ->andWhere('shell.available = true')
                         ->orderBy('shell.name', 'ASC');
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',

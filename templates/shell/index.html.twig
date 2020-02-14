@@ -26,7 +26,7 @@
                 <th>Type</th>
                 <th>Barré</th>
                 <th>Yolette</th>
-                <th>Activé</th>
+                <th>Disponible</th>
                 <th></th>
             </tr>
             </thead>
@@ -54,7 +54,7 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if shell.enabled %}
+                        {% if shell.available %}
                             <span class="fas fa-check-circle text-success" title="Oui"></span>
                         {% else %}
                             <span class="fas fa-times-circle text-danger" title="Non"></span>

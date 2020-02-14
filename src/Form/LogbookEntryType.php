@@ -53,7 +53,7 @@ class LogbookEntryType extends AbstractType
                 },
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('shell')
-                        ->where('shell.enabled = true')
+                        ->where('shell.available = true')
                         ->orderBy('shell.name', 'ASC');
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',

@@ -73,7 +73,7 @@ class Shell
      * @ORM\Column(type="boolean")
      * @Assert\NotNull()
      */
-    private $enabled;
+    private $available;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -141,7 +141,7 @@ class Shell
     {
         $this->coxed = false;
         $this->yolette = false;
-        $this->enabled = true;
+        $this->available = true;
         $this->logbookEntries = new ArrayCollection();
         $this->personalBoat = false;
         $this->shellDamages = new ArrayCollection();
@@ -234,14 +234,14 @@ class Shell
         return $this;
     }
 
-    public function getEnabled(): ?bool
+    public function getAvailable(): ?bool
     {
-        return $this->enabled;
+        return $this->available;
     }
 
-    public function setEnabled(bool $enabled): self
+    public function setAvailable(bool $available): self
     {
-        $this->enabled = $enabled;
+        $this->available = $available;
 
         return $this;
     }

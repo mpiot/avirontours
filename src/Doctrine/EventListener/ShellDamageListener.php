@@ -30,7 +30,7 @@ class ShellDamageListener
     public function prePersist(ShellDamage $shellDamage, LifecycleEventArgs $args)
     {
         if (ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority()) {
-            $shellDamage->getShell()->setEnabled(false);
+            $shellDamage->getShell()->setAvailable(false);
         }
     }
 
@@ -47,7 +47,7 @@ class ShellDamageListener
     public function postUpdate(ShellDamage $shellDamage, LifecycleEventArgs $args)
     {
         if (true === $this->enableShell) {
-            $shellDamage->getShell()->setEnabled(true);
+            $shellDamage->getShell()->setAvailable(true);
             $args->getObjectManager()->flush();
         }
     }

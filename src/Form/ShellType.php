@@ -133,8 +133,8 @@ class ShellType extends AbstractType
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
             ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => 'Activé',
+            ->add('available', CheckboxType::class, [
+                'label' => 'Disponible',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false,
             ])
