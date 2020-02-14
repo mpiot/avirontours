@@ -66,3 +66,11 @@ services:
                 event: 'postUpdate'
                 entity: 'App\Entity\ShellDamage'
                 lazy: true
+
+    App\Doctrine\EventListener\ShellDamageNotificationListener:
+        tags:
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\ShellDamage'
+                lazy: true
