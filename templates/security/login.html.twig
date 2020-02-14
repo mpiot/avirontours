@@ -1,172 +1,45 @@
-<!doctype html>
-<html lang="fr">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'security/_base.html.twig' %}
 
-        <link rel="icon" type="image/png" href="{{ asset('build/images/favicon.png')}}">
+{% block title %}Se connecter{% endblock %}
 
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-
-            <style>
-                html,
-                body {
-                    height: 100%;
-                }
-
-                body {
-                    display: -ms-flexbox;
-                    display: flex;
-                    -ms-flex-align: center;
-                    align-items: center;
-                    padding-top: 40px;
-                    padding-bottom: 40px;
-                    background-color: #f5f5f5;
-                    background-image:url({{ asset('build/images/cover.jpg') }});
-                    background-position: 50% 50%;
-                }
-
-                .form-signin {
-                    width: 100%;
-                    max-width: 420px;
-                    padding: 15px;
-                    margin: auto;
-                }
-
-                .form-label-group {
-                    position: relative;
-                    margin-bottom: 1rem;
-                }
-
-                .form-label-group > input,
-                .form-label-group > label {
-                    height: 3.125rem;
-                    padding: .75rem;
-                }
-
-                .form-label-group > label {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    display: block;
-                    width: 100%;
-                    margin-bottom: 0; /* Override default `<label>` margin */
-                    line-height: 1.5;
-                    color: #495057;
-                    pointer-events: none;
-                    cursor: text; /* Match the input under the label */
-                    border: 1px solid transparent;
-                    border-radius: .25rem;
-                    transition: all .1s ease-in-out;
-                }
-
-                .form-label-group input::-webkit-input-placeholder {
-                    color: transparent;
-                }
-
-                .form-label-group input:-ms-input-placeholder {
-                    color: transparent;
-                }
-
-                .form-label-group input::-ms-input-placeholder {
-                    color: transparent;
-                }
-
-                .form-label-group input::-moz-placeholder {
-                    color: transparent;
-                }
-
-                .form-label-group input::placeholder {
-                    color: transparent;
-                }
-
-                .form-label-group input:not(:placeholder-shown) {
-                    padding-top: 1.25rem;
-                    padding-bottom: .25rem;
-                }
-
-                .form-label-group input:not(:placeholder-shown) ~ label {
-                    padding-top: .25rem;
-                    padding-bottom: .25rem;
-                    font-size: 12px;
-                    color: #777;
-                }
-
-                /* Fallback for Edge
-                -------------------------------------------------- */
-                @supports (-ms-ime-align: auto) {
-                    .form-label-group > label {
-                        display: none;
-                    }
-                    .form-label-group input::-ms-input-placeholder {
-                        color: #777;
-                    }
-                }
-
-                /* Fallback for IE
-                -------------------------------------------------- */
-                @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-                    .form-label-group > label {
-                        display: none;
-                    }
-                    .form-label-group input:-ms-input-placeholder {
-                        color: #777;
-                    }
-                }
-            </style>
-        {% endblock %}
-
-        <title>Se connecter</title>
-    </head>
-
-    <body>
-        <form class="form-signin bg-white p-5 rounded" method="post">
-            <div class="text-center mb-5">
-                <img src="{{ asset('build/images/logo.png') }}"/>
-            </div>
-
-            {% if error %}
-                <div class="alert alert-danger d-flex">
-                    <div class="align-self-center">
-                        <span class="fas fa-2x fa-exclamation-circle"></span>
-                    </div>
-                    <div class="align-self-center ml-3">
-                        {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
+{% block body_content %}
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger d-flex">
+                <div class="align-self-center">
+                    <span class="fas fa-2x fa-exclamation-circle"></span>
                 </div>
-            {% endif %}
-
-            {% if app.user %}
-                <div class="mb-3">
-                    Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                <div class="align-self-center ml-3">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
                 </div>
-            {% endif %}
-
-            <div class="form-label-group">
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
-                <label for="inputUsername">Email</label>
             </div>
+        {% endif %}
 
-            <div class="form-label-group">
-                <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
-                <label for="inputPassword">Mot de passe</label>
+        {% if app.user %}
+            <div class="mb-3">
+                Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
             </div>
+        {% endif %}
 
-            <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input" id="inputRememberMe" name="_remember_me">
-                <label class="custom-control-label" for="inputRememberMe">Se souvenir de moi</label>
-            </div>
+        <div class="form-label-group">
+            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" placeholder="Email" required autofocus>
+            <label for="inputUsername">Email</label>
+        </div>
 
-            <input type="hidden" name="_csrf_token"
-                   value="{{ csrf_token('authenticate') }}"
-            >
+        <div class="form-label-group">
+            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Mot de passe" required>
+            <label for="inputPassword">Mot de passe</label>
+        </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Se connecter</button>
-        </form>
+        <div class="custom-control custom-switch mb-3">
+            <input type="checkbox" class="custom-control-input" id="inputRememberMe" name="_remember_me">
+            <label class="custom-control-label" for="inputRememberMe">Se souvenir de moi</label>
+        </div>
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </body>
-</html>
+        <input type="hidden" name="_csrf_token"
+               value="{{ csrf_token('authenticate') }}"
+        >
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Se connecter</button>
+    </form>
+{% endblock %}
