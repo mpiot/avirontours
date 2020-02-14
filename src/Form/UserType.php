@@ -56,7 +56,6 @@ class UserType extends AbstractType
                     return $er->createQueryBuilder('app_member')
                         ->leftJoin('app_member.user', 'app_user')
                         ->addSelect('app_user')
-                        ->where('app_user is NULL')
                         ->orderBy('app_member.firstName')
                         ->addOrderBy('app_member.lastName');
                 },

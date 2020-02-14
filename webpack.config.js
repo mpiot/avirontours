@@ -38,6 +38,7 @@ Encore
      */
     .addEntry('app', './assets/js/app.js')
     .addEntry('logbook_entry_form', './assets/js/logbook_entry_form.js')
+    .addEntry('user_form', './assets/js/user_form.js')
     //.addEntry('page2', './assets/js/page2.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
