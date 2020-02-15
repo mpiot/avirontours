@@ -28,6 +28,7 @@ RUN export PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"; \
             supervisor \
             libzip-dev \
             libpq-dev \
+            libxslt-dev \
     ; \
     # Compile ICU (required by intl php extension)
     curl -L -o /tmp/icu.tgz https://github.com/unicode-org/icu/releases/download/release-$(echo ${ICU_VERSION} | sed s/\\./\-/g)/icu4c-$(echo ${ICU_VERSION} | sed s/\\./_/g)-src.tgz; \
@@ -45,6 +46,7 @@ RUN export PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"; \
             pdo_pgsql \
             zip \
             bcmath \
+            xsl \
     ; \
     pecl install \
             apcu-${APCU_VERSION} \
@@ -167,6 +169,13 @@ RUN yarn install && yarn build && rm -R node_modules
 FROM composer:${COMPOSER_VERSION} as vendor-builder
 
 ARG SYMFONY_DECRYPTION_SECRET
+
+# Install paquet requirements
+RUN export PHP_CPPFLAGS="${PHP_CPPFLAGS} -std=c++11"; \
+    set -ex; \
+    # Install required system packages
+    apk add libxslt-dev; \
+    docker-php-ext-install xsl;
 
 COPY --from=assets-builder /app /app
 WORKDIR /app
