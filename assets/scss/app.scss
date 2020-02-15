@@ -97,8 +97,8 @@ li {
   @media (min-width:768px) {
     display: block!important;
     position: sticky;
-    top: 5rem;
-    height: calc(100vh - 5rem);
+    top: 80px;
+    height: calc(100vh - 80px);
   }
 
   @media (max-width:769px) {
