@@ -51,14 +51,6 @@ class AddressType extends AbstractType
             ->add('phoneNumber', TelType::class, [
                 'label' => 'Numéro de téléphone',
             ])
-            ->add('usable', ChoiceType::class, [
-                'label' => 'Utilisable',
-                'choices' => [
-                    'Oui' => Address::USABLE_YES,
-                    'Interne' => Address::USABLE_INTERNAL,
-                    'Non' => Address::USABLE_NO,
-                ],
-            ])
         ;
     }
 

@@ -26,10 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Address
 {
-    const USABLE_NO = 0;
-    const USABLE_INTERNAL = 1;
-    const USABLE_YES = 2;
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -72,12 +68,6 @@ class Address
      * @Assert\NotBlank()
      */
     private $phoneNumber;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
-    private $usable;
 
     public function getId(): ?int
     {
@@ -154,33 +144,6 @@ class Address
         $this->phoneNumber = $phoneNumber;
 
         return $this;
-    }
-
-    public function getUsable(): ?string
-    {
-        return $this->usable;
-    }
-
-    public function setUsable(string $usable): self
-    {
-        $this->usable = $usable;
-
-        return $this;
-    }
-
-    public function getTextUsable(): string
-    {
-        switch ($this->getUsable()) {
-            case self::USABLE_INTERNAL:
-                return 'Interne';
-                break;
-
-            case self::USABLE_YES:
-                return 'Oui';
-                break;
-        }
-
-        return 'Non';
     }
 
     public function getFormattedAddress(): string
