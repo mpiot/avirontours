@@ -125,6 +125,13 @@ class Member
      */
     private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\MedicalCertificate", mappedBy="member", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"date": "desc"})
+     * @Assert\Valid()
+     */
+    private $medicalCertificates;
+
     public function __construct()
     {
         $this->licenseEndAt = new \DateTime('last day of october next year');
@@ -132,6 +139,7 @@ class Member
         $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
+        $this->medicalCertificates = new ArrayCollection();
     }
 
     public function __toString()
@@ -391,5 +399,36 @@ class Member
                 ->atPath('legalRepresentative')
                 ->addViolation();
         }
+    }
+
+    /**
+     * @return Collection|MedicalCertificate[]
+     */
+    public function getMedicalCertificates(): Collection
+    {
+        return $this->medicalCertificates;
+    }
+
+    public function addMedicalCertificate(MedicalCertificate $medicalCertificate): self
+    {
+        if (!$this->medicalCertificates->contains($medicalCertificate)) {
+            $this->medicalCertificates[] = $medicalCertificate;
+            $medicalCertificate->setMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicalCertificate(MedicalCertificate $medicalCertificate): self
+    {
+        if ($this->medicalCertificates->contains($medicalCertificate)) {
+            $this->medicalCertificates->removeElement($medicalCertificate);
+            // set the owning side to null (unless already changed)
+            if ($medicalCertificate->getMember() === $this) {
+                $medicalCertificate->setMember(null);
+            }
+        }
+
+        return $this;
     }
 }

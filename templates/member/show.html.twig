@@ -80,28 +80,60 @@
             </div>
         </div>
 
-        <div class="card mt-3">
-            <div class="card-header">
-                Licence
+        <div class="row mt-3">
+            <div class="col-xl">
+                <div class="card">
+                    <div class="card-header">
+                        Licence
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Type de licence
+                            <span>{{ member.textLicenseType }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Date de fin de validité
+                            <span>{{ member.licenseEndAt ? member.licenseEndAt|date('d/m/Y') : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Numéro de licence
+                            <span>{{ member.licenseNumber ? member.licenseNumber : '-' }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Catégorie rameur
+                            <span>{{ member.textRowerCategory }}</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between">
-                    Type de licence
-                    <span>{{ member.textLicenseType }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    Date de fin de validité
-                    <span>{{ member.licenseEndAt ? member.licenseEndAt|date('d/m/Y') : '-' }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    Numéro de licence
-                    <span>{{ member.licenseNumber ? member.licenseNumber : '-' }}</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    Catégorie rameur
-                    <span>{{ member.textRowerCategory }}</span>
-                </li>
-            </ul>
+
+            <div class="col-xl mt-3 mt-xl-0">
+                <div class="card">
+                    <div class="card-header">
+                        Certificats médicaux
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Niveau</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for medicalCertificate in member.medicalCertificates %}
+                                <tr>
+                                    <td>{{ medicalCertificate.date|date('d/m/Y') }}</td>
+                                    <td>{{ medicalCertificate.textType }}</td>
+                                    <td>{{ medicalCertificate.textLevel }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

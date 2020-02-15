@@ -22,6 +22,7 @@ use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -89,6 +90,13 @@ class MemberType extends AbstractType
             ->add('subscriptionDate', DateType::class, [
                 'label' => 'Date d\'inscription',
                 'widget' => 'single_text',
+            ])
+            ->add('medicalCertificates', CollectionType::class, [
+                'label' => 'Certificats médicaux',
+                'entry_type' => MedicalCertificateType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
             ])
         ;
     }
