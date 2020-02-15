@@ -67,10 +67,11 @@ class LogbookEntryNewType extends AbstractType
                     $queryBuilder = $er->createQueryBuilder('app_member');
                     $queryBuilder
                         ->select(['app_member'])
-                        ->andWhere('app_member.licensedToRow = true')
+                        ->andWhere('app_member.licenseType = :licenseType')
                         ->andWhere('app_member.licenseEndAt >= CURRENT_DATE()')
                         ->orderBy('app_member.firstName', 'ASC')
-                        ->addOrderBy('app_member.lastName', 'ASC');
+                        ->addOrderBy('app_member.lastName', 'ASC')
+                        ->setParameter('licenseType', Member::LICENSE_TYPE_ANNUAL);
 
                     if (!empty($subQuery)) {
                         $queryBuilder

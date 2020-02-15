@@ -21,6 +21,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
@@ -31,6 +33,9 @@ class Member
     const ROWER_CATEGORY_B = 2;
     const ROWER_CATEGORY_C = 3;
 
+    const LICENSE_TYPE_ANNUAL = 'A';
+    const LICENSE_TYPE_INDOOR = 'I';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -40,11 +45,19 @@ class Member
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $civility;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $lastName;
 
@@ -54,24 +67,58 @@ class Member
     private $licenseNumber;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="date", nullable=true)
      */
-    private $licensedToRow;
+    private $licenseEndAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     */
+    private $licenseType;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     */
+    private $rowerCategory;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    private $email;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank()
      */
-    private $licenseEndAt;
+    private $birthday;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $legalRepresentative;
+
+    /**
+     * @ORM\Column(type="date")
+     * @Assert\NotBlank()
+     */
+    private $subscriptionDate;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     */
+    private $address;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="crewMembers")
      */
     private $logbookEntries;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $rowerCategory;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="member")
@@ -80,10 +127,11 @@ class Member
 
     public function __construct()
     {
-        $this->licensedToRow = true;
         $this->licenseEndAt = new \DateTime('last day of october next year');
-        $this->logbookEntries = new ArrayCollection();
+        $this->licenseType = self::LICENSE_TYPE_ANNUAL;
         $this->rowerCategory = self::ROWER_CATEGORY_C;
+        $this->logbookEntries = new ArrayCollection();
+        $this->subscriptionDate = new \DateTimeImmutable();
     }
 
     public function __toString()
@@ -94,6 +142,18 @@ class Member
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getCivility(): ?string
+    {
+        return $this->civility;
+    }
+
+    public function setCivility(string $civility): self
+    {
+        $this->civility = $civility;
+
+        return $this;
     }
 
     public function getFirstName(): ?string
@@ -137,24 +197,12 @@ class Member
         return $this;
     }
 
-    public function getLicensedToRow(): ?bool
-    {
-        return $this->licensedToRow;
-    }
-
-    public function setLicensedToRow(bool $licensedToRow): self
-    {
-        $this->licensedToRow = $licensedToRow;
-
-        return $this;
-    }
-
     public function getLicenseEndAt(): ?\DateTimeInterface
     {
         return $this->licenseEndAt;
     }
 
-    public function setLicenseEndAt(\DateTimeInterface $licenseEndAt): self
+    public function setLicenseEndAt(?\DateTimeInterface $licenseEndAt): self
     {
         $this->licenseEndAt = $licenseEndAt;
 
@@ -170,6 +218,127 @@ class Member
         }
 
         return false;
+    }
+
+    public function getLicenseType(): ?string
+    {
+        return $this->licenseType;
+    }
+
+    public function setLicenseType(?string $licenseType): self
+    {
+        $this->licenseType = $licenseType;
+
+        return $this;
+    }
+
+    public function getTextLicenseType(): ?string
+    {
+        if (self::LICENSE_TYPE_INDOOR === $this->licenseType) {
+            return 'Indoor';
+        }
+
+        return 'Annuelle';
+    }
+
+    public function getRowerCategory(): ?int
+    {
+        return $this->rowerCategory;
+    }
+
+    public function setRowerCategory(int $rowerCategory): self
+    {
+        $this->rowerCategory = $rowerCategory;
+
+        return $this;
+    }
+
+    public function getTextRowerCategory(): string
+    {
+        switch ($this->getRowerCategory()) {
+            case self::ROWER_CATEGORY_A:
+                return 'A';
+                break;
+
+            case self::ROWER_CATEGORY_B:
+                return 'B';
+                break;
+        }
+
+        return 'C';
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getBirthday(): ?\DateTimeInterface
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday(?\DateTimeInterface $birthday): self
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    public function getAge(): int
+    {
+        $birthday = $this->birthday;
+
+        if (null === $birthday) {
+            return 0;
+        }
+
+        $interval = $birthday->diff(new \DateTime());
+
+        return $interval->y;
+    }
+
+    public function getLegalRepresentative(): ?string
+    {
+        return $this->legalRepresentative;
+    }
+
+    public function setLegalRepresentative(?string $legalRepresentative): self
+    {
+        $this->legalRepresentative = $legalRepresentative;
+
+        return $this;
+    }
+
+    public function getSubscriptionDate(): ?\DateTimeInterface
+    {
+        return $this->subscriptionDate;
+    }
+
+    public function setSubscriptionDate(?\DateTimeInterface $subscriptionDate): self
+    {
+        $this->subscriptionDate = $subscriptionDate;
+
+        return $this;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): self
+    {
+        $this->address = $address;
+
+        return $this;
     }
 
     /**
@@ -200,18 +369,6 @@ class Member
         return $this;
     }
 
-    public function getRowerCategory(): ?int
-    {
-        return $this->rowerCategory;
-    }
-
-    public function setRowerCategory(int $rowerCategory): self
-    {
-        $this->rowerCategory = $rowerCategory;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -222,5 +379,17 @@ class Member
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback()
+     */
+    public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
+    {
+        if ($this->getAge() < 18) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
+                ->atPath('legalRepresentative')
+                ->addViolation();
+        }
     }
 }

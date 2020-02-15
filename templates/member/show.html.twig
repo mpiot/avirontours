@@ -27,32 +27,81 @@
         </div>
     </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ member.id }}</td>
-            </tr>
-            <tr>
-                <th>FirstName</th>
-                <td>{{ member.firstName }}</td>
-            </tr>
-            <tr>
-                <th>LastName</th>
-                <td>{{ member.lastName }}</td>
-            </tr>
-            <tr>
-                <th>LicenseNumber</th>
-                <td>{{ member.licenseNumber }}</td>
-            </tr>
-            <tr>
-                <th>LicensedToRow</th>
-                <td>{{ member.licensedToRow ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>LicenseEndAt</th>
-                <td>{{ member.licenseEndAt|date('d/m/Y') }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div>
+        <div class="mb-3">Date d'inscription: {{ member.subscriptionDate|date('d/m/Y') }}</div>
+
+        <div class="row">
+            <div class="col-xl">
+                <div class="card">
+                    <div class="card-header">
+                        Membre
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Nom
+                            <span>{{ member.civility|capitalize }} {{ member.fullName }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Email
+                            <span>{{ member.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Date de naissance
+                            <span>{{ member.birthday|date('d/m/Y') }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Représentant légal
+                            <span>{{ member.legalRepresentative ? member.legalRepresentative : '-' }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-xl mt-3 mt-xl-0">
+                <div class="card">
+                    <div class="card-header">
+                        Adresse
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Adresse
+                            <span>{{ member.address.formattedAddress|nl2br }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Numéro de téléphone
+                            <span>{{ member.address.phoneNumber }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Utilisable
+                            <span>{{ member.address.textUsable }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Licence
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                    Type de licence
+                    <span>{{ member.textLicenseType }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    Date de fin de validité
+                    <span>{{ member.licenseEndAt ? member.licenseEndAt|date('d/m/Y') : '-' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    Numéro de licence
+                    <span>{{ member.licenseNumber ? member.licenseNumber : '-' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                    Catégorie rameur
+                    <span>{{ member.textRowerCategory }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
 {% endblock %}

@@ -20,9 +20,10 @@ namespace App\Form;
 
 use App\Entity\Member;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,21 +33,20 @@ class MemberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('civility', ChoiceType::class, [
+                'label' => 'Civilité',
+                'choices' => [
+                    'Madame' => 'madame',
+                    'Monsieur' => 'monsieur',
+                ],
+                'expanded' => true,
+                'label_attr' => ['class' => 'radio-custom radio-inline'],
+            ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
-            ])
-            ->add('rowerCategory', ChoiceType::class, [
-                'label' => 'Catégorie rameur',
-                'choices' => [
-                    'A' => Member::ROWER_CATEGORY_A,
-                    'B' => Member::ROWER_CATEGORY_B,
-                    'C' => Member::ROWER_CATEGORY_C,
-                ],
-                'expanded' => true,
-                'label_attr' => ['class' => 'radio-custom'],
             ])
             ->add('licenseNumber', TextType::class, [
                 'label' => 'Numéro de license',
@@ -55,11 +55,40 @@ class MemberType extends AbstractType
             ->add('licenseEndAt', DateType::class, [
                 'label' => 'Date de fin de validité',
                 'widget' => 'single_text',
-            ])
-            ->add('licensedToRow', CheckboxType::class, [
-                'label' => 'Licence pour ramer',
-                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false,
+            ])
+            ->add('licenseType', ChoiceType::class, [
+                'label' => 'Type de license',
+                'choices' => [
+                    'Annuelle' => Member::LICENSE_TYPE_ANNUAL,
+                    'Indoor' => Member::LICENSE_TYPE_INDOOR,
+                ],
+            ])
+            ->add('rowerCategory', ChoiceType::class, [
+                'label' => 'Catégorie rameur',
+                'choices' => [
+                    'A' => Member::ROWER_CATEGORY_A,
+                    'B' => Member::ROWER_CATEGORY_B,
+                    'C' => Member::ROWER_CATEGORY_C,
+                ],
+            ])
+            ->add('address', AddressType::class, [
+                'label' => 'Adresse',
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Email',
+            ])
+            ->add('birthday', BirthdayType::class, [
+                'label' => 'Date de naissance',
+                'widget' => 'single_text',
+            ])
+            ->add('legalRepresentative', TextType::class, [
+                'label' => 'Représentant légal',
+                'required' => false,
+            ])
+            ->add('subscriptionDate', DateType::class, [
+                'label' => 'Date d\'inscription',
+                'widget' => 'single_text',
             ])
         ;
     }

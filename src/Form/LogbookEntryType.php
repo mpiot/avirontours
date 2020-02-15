@@ -62,8 +62,6 @@ class LogbookEntryType extends AbstractType
                 'class' => Member::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('app_member')
-                        ->where('app_member.licensedToRow = true')
-                        ->andWhere('app_member.licenseEndAt >= CURRENT_DATE()')
                         ->orderBy('app_member.firstName', 'ASC')
                         ->addOrderBy('app_member.lastName', 'ASC');
                 },
