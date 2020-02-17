@@ -4,19 +4,18 @@
 @import "~@fortawesome/fontawesome-free/scss/solid";
 @import "~@fortawesome/fontawesome-free/scss/brands";
 
-div,
-fieldset {
-  .form-group {
-    >label,
-    >legend {
-      &.required {
-        &:after {
-          content: " *";
-          color: red;
+label,
+legend {
+    &.required {
+        span {
+            &.label {
+                &:after {
+                    content: " *";
+                    color: red;
+                }
+            }
         }
-      }
     }
-  }
 }
 
 li {

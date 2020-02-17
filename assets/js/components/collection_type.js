@@ -19,12 +19,11 @@ export function collectionType(container, buttonText, buttonId, fieldStart, func
     }
 
     // Delete the first label (the number of the field), and the required class
-    container.children('fieldset').find('legend:first').text('');
-    container.children('fieldset').find('legend:first').removeClass('required');
-    container.children('fieldset').find('legend:first').removeClass('required');
+    container.children('fieldset').find('legend:first').remove();
 
     // Create and add a button to add new field
     let $addButton = $('<a href="#" class="btn btn-outline-secondary btn-sm"><span class="fas fa-plus"></span> '+buttonText+'</a>');
+
     if (buttonId) {
         $addButton.attr('id', buttonId);
     }
@@ -62,6 +61,7 @@ export function collectionType(container, buttonText, buttonId, fieldStart, func
         // - "__name__" by the name of the field, here the index number
         let $prototype = $(container.attr('data-prototype')
             .replace(/class="col-sm-2 control-label required"/, 'class="col-sm-2 control-label"')
+            .replace(/<legend class="col-form-label required">/, '')
             .replace(/__name__label__/g, '')
             .replace(/__name__/g, index));
 
@@ -81,11 +81,12 @@ export function collectionType(container, buttonText, buttonId, fieldStart, func
     // A function called to add deleteButton
     function addDeleteButton(prototype) {
         // First, create the button
-        let $deleteButton = $('<div class="col-sm-1"><a href="#" class="btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span></a></div>');
+        let $deleteButton = $('<div class="align-self-end ml-3 mb-3"><a href="#" class="btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span></a></div>');
+        prototype.wrapInner( '<div class="flex-fill"></div>');
 
         // Add the button on the field
-        $('.col-sm-10', prototype).removeClass('col-sm-10').addClass('col-sm-9');
         prototype.append($deleteButton);
+        prototype.wrapInner( '<div class="d-flex"></div>');
 
         // Create a listener on the click event
         $deleteButton.click(function(e) {
