@@ -44,6 +44,10 @@ class UniqueUserMemberValidator extends ConstraintValidator
             throw new \Exception('@UserMemberUnique must be put on User::class.');
         }
 
+        if (null === $value->getMember()) {
+            return;
+        }
+
         $user = $this->userRepository->findUserWithMember($value->getMember());
 
         if (null === $user) {

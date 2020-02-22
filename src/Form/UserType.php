@@ -28,22 +28,22 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 class UserType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'Email',
-            ])
-            ->add('roles', ChoiceType::class, [
-                'label' => 'Rôles',
-                'choices' => [
-                    'Utilisateur' => 'ROLE_USER',
-                    'Administrateur' => 'ROLE_ADMIN',
-                ],
-                'multiple' => true,
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
@@ -63,6 +63,18 @@ class UserType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            $builder->add('roles', ChoiceType::class, [
+                'label' => 'Rôles',
+                'choices' => [
+                    'Super administrateur' => 'ROLE_SUPER_ADMIN',
+                    'Administrateur' => 'ROLE_ADMIN',
+                    'Utilisateur' => 'ROLE_USER',
+                ],
+                'multiple' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
