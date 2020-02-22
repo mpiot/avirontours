@@ -35,6 +35,15 @@ class ShellRepository extends ServiceEntityRepository
         parent::__construct($registry, Shell::class);
     }
 
+    public function findAllNameOrdered()
+    {
+        $query = $this->createQueryBuilder('shell')
+            ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
     public function findTop10Sessions()
     {
         $today = new \DateTime();

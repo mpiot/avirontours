@@ -54,8 +54,9 @@ class LogbookEntryType extends AbstractType
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('shell')
                         ->where('shell.available = true')
-                        ->orderBy('shell.name', 'ASC');
+                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
                 },
+                'placeholder' => '--- Sélectionner un bâteau ---',
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',

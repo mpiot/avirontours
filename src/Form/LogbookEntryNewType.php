@@ -51,8 +51,9 @@ class LogbookEntryNewType extends AbstractType
                         ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->where('logbook_entries is NULL')
                         ->andWhere('shell.available = true')
-                        ->orderBy('shell.name', 'ASC');
+                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
                 },
+                'placeholder' => '--- Sélectionner un bâteau ---',
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',

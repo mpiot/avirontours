@@ -40,7 +40,7 @@ class ShellController extends AbstractController
     public function index(ShellRepository $shellRepository): Response
     {
         return $this->render('shell/index.html.twig', [
-            'shells' => $shellRepository->findBy([], ['name' => 'asc']),
+            'shells' => $shellRepository->findAllNameOrdered(),
         ]);
     }
 
