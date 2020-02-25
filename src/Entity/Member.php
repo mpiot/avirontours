@@ -84,7 +84,7 @@ class Member
     private $rowerCategory;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotBlank()
      * @Assert\Email()
      */
@@ -109,7 +109,6 @@ class Member
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
      * @Assert\Valid()
      */
