@@ -19,7 +19,6 @@
 namespace App\Repository;
 
 use App\Entity\LogbookEntry;
-use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;

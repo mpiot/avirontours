@@ -54,7 +54,7 @@ class MemberRepository extends ServiceEntityRepository
                 ->orWhere('LOWER(app_member.lastName) LIKE :query')
                 ->orWhere('LOWER(app_member.email) LIKE :query')
                 ->orWhere('app_member.licenseNumber LIKE :query')
-                ->setParameter('query', '%' . u($query)->lower()->toString() . '%')
+                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
             ;
         }
 

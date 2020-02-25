@@ -19,7 +19,6 @@
 namespace App\Controller;
 
 use App\Entity\LogbookEntry;
-use App\Entity\ShellDamageCategory;
 use App\Form\LogbookEntryFinishType;
 use App\Form\LogbookEntryNewType;
 use App\Form\LogbookEntryType;
@@ -31,9 +30,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
