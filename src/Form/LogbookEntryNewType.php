@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\Member;
 use App\Entity\Shell;
+use App\Entity\ShellDamageCategory;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -47,11 +48,28 @@ class LogbookEntryNewType extends AbstractType
                     return [];
                 },
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('shell')
+                    $unavailableShells = $er->createQueryBuilder('s')
+                        ->select(['s.id'])
+                        ->innerJoin('s.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')
+                        ->innerJoin('shell_damages.category', 'category', 'WITH', 'category.priority = :priority_high')
+                        ->setParameter('priority_high', ShellDamageCategory::PRIORITY_HIGH)
+                        ->getQuery()
+                        ->getArrayResult();
+
+                    $queryBuilder = $er->createQueryBuilder('shell');
+                    $queryBuilder
+                        ->select('shell')
                         ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->where('logbook_entries is NULL')
-                        ->andWhere('shell.available = true')
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
+
+                    if (!empty($unavailableShells)) {
+                        $queryBuilder
+                            ->andWhere($queryBuilder->expr()->notIn('shell.id', ':unavailableShells'))
+                            ->setParameter('unavailableShells', $unavailableShells);
+                    }
+
+                    return $queryBuilder;
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
@@ -59,7 +77,7 @@ class LogbookEntryNewType extends AbstractType
                 'label' => 'Membres d\'équipage',
                 'class' => Member::class,
                 'query_builder' => function (EntityRepository $er) {
-                    $subQuery = $er->createQueryBuilder('m')
+                    $unavailableMembers = $er->createQueryBuilder('m')
                         ->select(['m.id'])
                         ->innerJoin('m.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->getQuery()
@@ -67,17 +85,17 @@ class LogbookEntryNewType extends AbstractType
 
                     $queryBuilder = $er->createQueryBuilder('app_member');
                     $queryBuilder
-                        ->select(['app_member'])
+                        ->select('app_member')
                         ->andWhere('app_member.licenseType = :licenseType')
                         ->andWhere('app_member.licenseEndAt >= CURRENT_DATE()')
                         ->orderBy('app_member.firstName', 'ASC')
                         ->addOrderBy('app_member.lastName', 'ASC')
                         ->setParameter('licenseType', Member::LICENSE_TYPE_ANNUAL);
 
-                    if (!empty($subQuery)) {
+                    if (!empty($unavailableMembers)) {
                         $queryBuilder
-                            ->andWhere($queryBuilder->expr()->notIn('app_member.id', ':subQuery'))
-                            ->setParameter('subQuery', $subQuery);
+                            ->andWhere($queryBuilder->expr()->notIn('app_member.id', ':unavailableMembers'))
+                            ->setParameter('unavailableMembers', $unavailableMembers);
                     }
 
                     return $queryBuilder;

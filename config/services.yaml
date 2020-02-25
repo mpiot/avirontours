@@ -49,24 +49,6 @@ services:
         tags:
             - { name: 'doctrine.event_subscriber' }
 
-    App\Doctrine\EventListener\ShellDamageListener:
-        tags:
-            -
-                name: 'doctrine.orm.entity_listener'
-                event: 'prePersist'
-                entity: 'App\Entity\ShellDamage'
-                lazy: true
-            -
-                name: 'doctrine.orm.entity_listener'
-                event: 'preUpdate'
-                entity: 'App\Entity\ShellDamage'
-                lazy: true
-            -
-                name: 'doctrine.orm.entity_listener'
-                event: 'postUpdate'
-                entity: 'App\Entity\ShellDamage'
-                lazy: true
-
     App\Doctrine\EventListener\ShellDamageNotificationListener:
         tags:
             -
