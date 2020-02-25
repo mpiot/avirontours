@@ -83,6 +83,8 @@ class LogbookEntryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // update the shell mileage
+            $logbookEntry->getShell()->addToMileage($logbookEntry->getCoveredDistance());
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('logbook_entry_index');
@@ -100,10 +102,14 @@ class LogbookEntryController extends AbstractController
      */
     public function edit(Request $request, LogbookEntry $logbookEntry): Response
     {
+        $coveredDistance = $logbookEntry->getCoveredDistance();
         $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // update the shell mileage
+            $logbookEntry->getShell()->removeToMileage($coveredDistance);
+            $logbookEntry->getShell()->addToMileage($logbookEntry->getCoveredDistance());
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('logbook_entry_index');
@@ -123,6 +129,10 @@ class LogbookEntryController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
+
+            // update the shell mileage
+            $logbookEntry->getShell()->removeToMileage($logbookEntry->getCoveredDistance());
+
             $entityManager->remove($logbookEntry);
             $entityManager->flush();
         }

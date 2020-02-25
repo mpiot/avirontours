@@ -20,7 +20,7 @@ namespace App\Utils;
 
 class CodeGenerator
 {
-    public function generateCode()
+    static function generateCode()
     {
         return mb_strtoupper(implode('-', \array_slice(str_split(sha1(random_bytes(10)), 5), 0, 4)));
     }

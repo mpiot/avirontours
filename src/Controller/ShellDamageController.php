@@ -19,12 +19,16 @@
 namespace App\Controller;
 
 use App\Entity\ShellDamage;
+use App\Entity\ShellDamageCategory;
 use App\Form\ShellDamageType;
 use App\Repository\ShellDamageRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -46,7 +50,7 @@ class ShellDamageController extends AbstractController
     /**
      * @Route("/new", name="shell_damage_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, NotifierInterface $notifier): Response
     {
         $shellDamage = new ShellDamage();
         $form = $this->createForm(ShellDamageType::class, $shellDamage);
@@ -56,6 +60,14 @@ class ShellDamageController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($shellDamage);
             $entityManager->flush();
+
+            // send an email to admins
+            $importance = ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM;
+            $notification = (new Notification('Nouvelle avarie'))
+                ->content(sprintf('Nouvelle avarie sur le bateau: %s.', $shellDamage->getShell()->getName()))
+                ->importance($importance);
+
+            $notifier->send($notification, new Recipient('notifications@avirontours.fr'));
 
             return $this->redirectToRoute('shell_damage_index');
         }

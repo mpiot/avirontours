@@ -18,6 +18,7 @@
 
 namespace App\Entity;
 
+use App\Utils\CodeGenerator;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,6 +44,12 @@ class Invitation
      */
     private $code;
 
+    public function __construct(Member $member)
+    {
+        $this->member = $member;
+        $this->code = CodeGenerator::generateCode();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,22 +60,8 @@ class Invitation
         return $this->member;
     }
 
-    public function setMember(?Member $member): self
-    {
-        $this->member = $member;
-
-        return $this;
-    }
-
     public function getCode(): ?string
     {
         return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
     }
 }

@@ -18,6 +18,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Invitation;
 use App\Entity\Member;
 use App\Form\MemberType;
 use App\Repository\MemberRepository;
@@ -55,6 +56,11 @@ class MemberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($member);
+
+            // create an invitation
+            $invitation = new Invitation($member);
+            $entityManager->persist($invitation);
+
             $entityManager->flush();
 
             return $this->redirectToRoute('member_index');
