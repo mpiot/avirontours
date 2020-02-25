@@ -40,7 +40,10 @@ class MemberController extends AbstractController
     public function index(Request $request, MemberRepository $memberRepository): Response
     {
         return $this->render('member/index.html.twig', [
-            'members' => $memberRepository->findAllPaginated($request->query->getInt('page', 1)),
+            'members' => $memberRepository->findPaginated(
+                $request->query->getAlnum('q'),
+                $request->query->getInt('page', 1)
+            ),
         ]);
     }
 

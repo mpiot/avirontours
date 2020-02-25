@@ -16,6 +16,19 @@
         </a>
     </div>
 
+    <form method="get">
+        <div class="form-row align-items-center">
+            <div class="col-md-auto col-sm-12 ml-auto">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><span class="fa fa-search"></span></div>
+                    </div>
+                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>

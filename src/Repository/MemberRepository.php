@@ -23,6 +23,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @method Member|null find($id, $lockMode = null, $lockVersion = null)
@@ -40,16 +41,25 @@ class MemberRepository extends ServiceEntityRepository
         $this->paginator = $paginator;
     }
 
-    public function findAllPaginated($page = 1): PaginationInterface
+    public function findPaginated($query = null, $page = 1): PaginationInterface
     {
-        $query = $this->createQueryBuilder('app_member')
+        $qb = $this->createQueryBuilder('app_member')
             ->orderBy('app_member.firstName', 'ASC')
             ->addOrderBy('app_member.lastName', 'ASC')
-            ->getQuery()
         ;
 
+        if ($query) {
+            $qb
+                ->orWhere('LOWER(app_member.firstName) LIKE :query')
+                ->orWhere('LOWER(app_member.lastName) LIKE :query')
+                ->orWhere('LOWER(app_member.email) LIKE :query')
+                ->orWhere('app_member.licenseNumber LIKE :query')
+                ->setParameter('query', '%' . u($query)->lower()->toString() . '%')
+            ;
+        }
+
         return $this->paginator->paginate(
-            $query,
+            $qb->getQuery(),
             $page,
             Member::NUM_ITEMS
         );
