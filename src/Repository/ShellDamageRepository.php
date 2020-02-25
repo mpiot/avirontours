@@ -21,6 +21,8 @@ namespace App\Repository;
 use App\Entity\ShellDamage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method ShellDamage|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,37 +32,28 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ShellDamageRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var PaginatorInterface
+     */
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, ShellDamage::class);
+        $this->paginator = $paginator;
     }
 
-    // /**
-    //  * @return ShellDamage[] Returns an array of ShellDamage objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllPaginated($page = 1): PaginationInterface
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        $query = $this->createQueryBuilder('shell_damage')
+            ->orderBy('shell_damage.createdAt', 'DESC')
             ->getQuery()
-            ->getResult()
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?ShellDamage
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->paginator->paginate(
+            $query,
+            $page,
+            ShellDamage::NUM_ITEMS
+        );
     }
-    */
 }

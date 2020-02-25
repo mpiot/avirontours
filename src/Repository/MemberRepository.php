@@ -21,6 +21,8 @@ namespace App\Repository;
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method Member|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,9 +32,27 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class MemberRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Member::class);
+        $this->paginator = $paginator;
+    }
+
+    public function findAllPaginated($page = 1): PaginationInterface
+    {
+        $query = $this->createQueryBuilder('app_member')
+            ->orderBy('app_member.firstName', 'ASC')
+            ->addOrderBy('app_member.lastName', 'ASC')
+            ->getQuery()
+        ;
+
+        return $this->paginator->paginate(
+            $query,
+            $page,
+            Member::NUM_ITEMS
+        );
     }
 
     public function findTop10Distances()

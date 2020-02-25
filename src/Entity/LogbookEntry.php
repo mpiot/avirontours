@@ -29,6 +29,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class LogbookEntry
 {
+    const NUM_ITEMS = 20;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

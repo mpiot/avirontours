@@ -29,6 +29,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Member
 {
+    const NUM_ITEMS = 20;
+
     const ROWER_CATEGORY_A = 1;
     const ROWER_CATEGORY_B = 2;
     const ROWER_CATEGORY_C = 3;

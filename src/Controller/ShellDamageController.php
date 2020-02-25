@@ -40,10 +40,10 @@ class ShellDamageController extends AbstractController
     /**
      * @Route("/", name="shell_damage_index", methods={"GET"})
      */
-    public function index(ShellDamageRepository $shellDamageRepository): Response
+    public function index(Request $request, ShellDamageRepository $shellDamageRepository): Response
     {
         return $this->render('shell_damage/index.html.twig', [
-            'shell_damages' => $shellDamageRepository->findBy([], ['createdAt' => 'desc']),
+            'shell_damages' => $shellDamageRepository->findAllPaginated($request->query->getInt('page', 1)),
         ]);
     }
 

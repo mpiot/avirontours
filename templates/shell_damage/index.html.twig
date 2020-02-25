@@ -64,5 +64,9 @@
             {% endfor %}
             </tbody>
         </table>
+
+        {% if shell_damages|length < shell_damages.totalItemCount %}
+            {{ knp_pagination_render(shell_damages) }}
+        {% endif %}
     </div>
 {% endblock %}

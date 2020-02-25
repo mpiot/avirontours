@@ -26,6 +26,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ShellDamage
 {
+    const NUM_ITEMS = 20;
+
     use TimestampableEntity;
 
     /**

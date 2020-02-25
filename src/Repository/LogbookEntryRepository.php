@@ -19,8 +19,11 @@
 namespace App\Repository;
 
 use App\Entity\LogbookEntry;
+use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @method LogbookEntry|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,37 +33,26 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class LogbookEntryRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, LogbookEntry::class);
+        $this->paginator = $paginator;
     }
 
-    // /**
-    //  * @return LogbookEntry[] Returns an array of LogbookEntry objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAllPaginated($page = 1): PaginationInterface
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
+        $query = $this->createQueryBuilder('logbook_entry')
+            ->orderBy('logbook_entry.date', 'DESC')
+            ->addOrderBy('logbook_entry.startAt', 'DESC')
             ->getQuery()
-            ->getResult()
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?LogbookEntry
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->paginator->paginate(
+            $query,
+            $page,
+            LogbookEntry::NUM_ITEMS
+        );
     }
-    */
 }

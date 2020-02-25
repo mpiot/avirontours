@@ -37,10 +37,10 @@ class MemberController extends AbstractController
     /**
      * @Route("/", name="member_index", methods={"GET"})
      */
-    public function index(MemberRepository $memberRepository): Response
+    public function index(Request $request, MemberRepository $memberRepository): Response
     {
         return $this->render('member/index.html.twig', [
-            'members' => $memberRepository->findBy([], ['firstName' => 'asc', 'lastName' => 'asc']),
+            'members' => $memberRepository->findAllPaginated($request->query->getInt('page', 1)),
         ]);
     }
 

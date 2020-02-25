@@ -64,5 +64,9 @@
             {% endfor %}
             </tbody>
         </table>
+
+        {% if logbook_entries|length < logbook_entries.totalItemCount %}
+            {{ knp_pagination_render(logbook_entries) }}
+        {% endif %}
     </div>
 {% endblock %}

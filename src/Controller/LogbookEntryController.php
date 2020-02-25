@@ -45,10 +45,10 @@ class LogbookEntryController extends AbstractController
     /**
      * @Route("/", name="logbook_entry_index", methods={"GET"})
      */
-    public function index(LogbookEntryRepository $logbookEntryRepository): Response
+    public function index(Request $request, LogbookEntryRepository $logbookEntryRepository): Response
     {
         return $this->render('logbook_entry/index.html.twig', [
-            'logbook_entries' => $logbookEntryRepository->findBy([], ['date' => 'desc', 'startAt' => 'desc']),
+            'logbook_entries' => $logbookEntryRepository->findAllPaginated($request->query->getInt('page', 1)),
         ]);
     }
 
