@@ -6,16 +6,28 @@
 
 label,
 legend {
-    &.required {
-        span {
-            &.label {
-                &:after {
-                    content: " *";
-                    color: red;
-                }
-            }
+  &.required {
+    span {
+      &.label {
+        &:after {
+          content: " *";
+          color: red;
         }
+      }
     }
+  }
+}
+
+.form-group {
+  >label,
+  >legend {
+    &.required {
+      &:after {
+        content: " *";
+        color: red;
+      }
+    }
+  }
 }
 
 li {
