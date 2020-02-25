@@ -38,8 +38,12 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between">
+                            Genre
+                            <span>{{ member.textGender }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
                             Nom
-                            <span>{{ member.civility|capitalize }} {{ member.fullName }}</span>
+                            <span>{{ member.fullName }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             Email

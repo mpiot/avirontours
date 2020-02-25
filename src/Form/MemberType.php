@@ -34,11 +34,11 @@ class MemberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('civility', ChoiceType::class, [
-                'label' => 'Civilité',
+            ->add('gender', ChoiceType::class, [
+                'label' => 'Genre',
                 'choices' => [
-                    'Madame' => 'madame',
-                    'Monsieur' => 'monsieur',
+                    'Homme' => 'm',
+                    'Femme' => 'f',
                 ],
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],

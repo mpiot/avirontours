@@ -49,7 +49,7 @@ class Member
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $civility;
+    private $gender;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -153,14 +153,23 @@ class Member
         return $this->id;
     }
 
-    public function getCivility(): ?string
+    public function getGender(): ?string
     {
-        return $this->civility;
+        return $this->gender;
     }
 
-    public function setCivility(string $civility): self
+    public function getTextGender(): ?string
     {
-        $this->civility = $civility;
+        if ('f' === $this->gender) {
+            return 'Femme';
+        }
+
+        return 'Homme';
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }
