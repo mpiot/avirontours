@@ -40,7 +40,7 @@ class ShellDamageType extends AbstractType
                 'choice_label' => 'fullName',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('shell')
-                        ->orderBy('shell.name', 'ASC');
+                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
