@@ -50,7 +50,7 @@ class ShellDamageController extends AbstractController
     /**
      * @Route("/new", name="shell_damage_new", methods={"GET","POST"})
      */
-    public function new(Request $request, NotifierInterface $notifier): Response
+    public function new(Request $request): Response
     {
         $shellDamage = new ShellDamage();
         $form = $this->createForm(ShellDamageType::class, $shellDamage);
@@ -60,14 +60,6 @@ class ShellDamageController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($shellDamage);
             $entityManager->flush();
-
-            // send an email to admins
-            $importance = ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM;
-            $notification = (new Notification('Nouvelle avarie'))
-                ->content(sprintf('Nouvelle avarie sur le bateau: %s.', $shellDamage->getShell()->getName()))
-                ->importance($importance);
-
-            $notifier->send($notification, new Recipient('notifications@avirontours.fr'));
 
             return $this->redirectToRoute('shell_damage_index');
         }

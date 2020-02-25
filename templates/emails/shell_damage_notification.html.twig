@@ -1,0 +1,12 @@
+{%  extends '@email/default/notification/body.html.twig' %}
+
+{% block content %}
+    <p>
+        Bâteau: {{ shellDamage.shell.name }}<br>
+        Catégorie d'avarie: {{ shellDamage.category.name }}
+    </p>
+
+    {% if shellDamage.description %}
+        <p>{{ shellDamage.description|nl2br }}</p>
+    {% endif %}
+{% endblock %}

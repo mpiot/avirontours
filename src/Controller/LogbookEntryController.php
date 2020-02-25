@@ -19,9 +19,11 @@
 namespace App\Controller;
 
 use App\Entity\LogbookEntry;
+use App\Entity\ShellDamageCategory;
 use App\Form\LogbookEntryFinishType;
 use App\Form\LogbookEntryNewType;
 use App\Form\LogbookEntryType;
+use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\MemberRepository;
 use App\Repository\ShellRepository;
@@ -29,6 +31,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\NotifierInterface;
+use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -73,7 +78,7 @@ class LogbookEntryController extends AbstractController
     /**
      * @Route("/{id}/finish", name="logbook_entry_finish", methods={"GET","POST"})
      */
-    public function finish(Request $request, LogbookEntry $logbookEntry): Response
+    public function finish(Request $request, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
     {
         if (null !== $logbookEntry->getEndAt()) {
             throw $this->createNotFoundException();
@@ -86,6 +91,11 @@ class LogbookEntryController extends AbstractController
             // update the shell mileage
             $logbookEntry->getShell()->addToMileage($logbookEntry->getCoveredDistance());
             $this->getDoctrine()->getManager()->flush();
+
+            // send an email to admins if there is damage
+            foreach ($logbookEntry->getShellDamages() as $shellDamage) {
+                $notifier->send(new ShellDamageNotification($shellDamage), ...$notifier->getAdminRecipients());
+            }
 
             return $this->redirectToRoute('logbook_entry_index');
         }
