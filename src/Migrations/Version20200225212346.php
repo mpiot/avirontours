@@ -23,8 +23,8 @@ final class Version20200225212346 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE member RENAME COLUMN civility TO gender');
-        $this->addSql('UPDATE member SET gender = "m" WHERE gender = "homme"');
-        $this->addSql('UPDATE member SET gender = "f" WHERE gender = "femme"');
+        $this->addSql('UPDATE member SET gender = \'m\' WHERE gender = \'homme\'');
+        $this->addSql('UPDATE member SET gender = \'f\' WHERE gender = \'femme\'');
     }
 
     public function down(Schema $schema) : void
@@ -33,7 +33,7 @@ final class Version20200225212346 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('ALTER TABLE member RENAME COLUMN gender TO civility');
-        $this->addSql('UPDATE member SET civility = "homme" WHERE civility = "m"');
-        $this->addSql('UPDATE member SET civility = "femme" WHERE civility = "f"');
+        $this->addSql('UPDATE member SET civility = \'homme\' WHERE civility = \'m\'');
+        $this->addSql('UPDATE member SET civility = \'femme\' WHERE civility = \'f\'');
     }
 }
