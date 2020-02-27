@@ -49,19 +49,6 @@ class UserType extends AbstractType
                 'label' => 'Mot de passe',
                 'mapped' => false,
             ])
-            ->add('member', EntityType::class, [
-                'label' => 'Membre',
-                'class' => Member::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('app_member')
-                        ->leftJoin('app_member.user', 'app_user')
-                        ->addSelect('app_user')
-                        ->orderBy('app_member.firstName')
-                        ->addOrderBy('app_member.lastName');
-                },
-                'placeholder' => '--- Choisir un utilisateur ---',
-                'required' => false,
-            ])
         ;
 
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
