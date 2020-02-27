@@ -3,7 +3,9 @@
     {% if form.plainPassword is defined%}
         {{ form_row(form.plainPassword) }}
     {% endif %}
-    {{ form_row(form.roles) }}
+    {% if form.roles is defined%}
+        {{ form_row(form.roles) }}
+    {% endif %}
     {{ form_row(form.member) }}
 
     <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>

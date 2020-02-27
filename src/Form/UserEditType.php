@@ -20,12 +20,25 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Security\Core\Security;
 
 class UserEditType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->remove('plainPassword');
+        if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
+            $builder->get('plainPassword')->setRequired(false);
+        } else {
+            $builder->remove('plainPassword');
+        }
+
     }
 
     public function getParent()
