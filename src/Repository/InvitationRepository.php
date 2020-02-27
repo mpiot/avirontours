@@ -33,16 +33,4 @@ class InvitationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Invitation::class);
     }
-
-    public function findAll()
-    {
-        $query = $this->createQueryBuilder('invitation')
-            ->leftJoin('invitation.member', 'app_member')
-            ->addSelect('app_member')
-            ->orderBy('app_member.firstName', 'ASC')
-            ->addOrderBy('app_member.lastName', 'ASC')
-            ->getQuery();
-
-        return $query->getResult();
-    }
 }

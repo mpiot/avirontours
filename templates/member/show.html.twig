@@ -28,6 +28,15 @@
     </div>
 
     <div>
+        {% if invitation is not null %}
+            <div>Invitation: {{ invitation.code }}</div>
+        {% elseif member.user is not null %}
+            <div>Utilisateur: {{ member.user.email }}</div>
+        {% else %}
+            <a class="btn btn-sm btn-outline-primary" href="{{ path('invitation_new', { 'id': member.id }) }}">
+                <span class="fa fa-paper-plane"></span> Envoyer une invitation
+            </a>
+        {% endif %}
         <div class="mb-3">Date d'inscription: {{ member.subscriptionDate|date('d/m/Y') }}</div>
 
         <div class="row">

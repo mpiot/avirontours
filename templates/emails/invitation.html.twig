@@ -1,0 +1,40 @@
+{% apply inky_to_html|inline_css %}
+    <style type="text/css">
+        body,
+        html{
+            background: #f3f3f3 !important;
+        }
+
+        .body-border {
+            background: #FFFFFF;
+            border-top: 8px solid #663399;
+        }
+    </style>
+
+    <spacer size="16"></spacer>
+
+    <container class="body-border">
+        <row>
+            <columns>
+
+                <spacer size="32"></spacer>
+
+                <center>
+                    <img src="{{ email.image('@images/logo.png') }}" alt="Logo">
+                </center>
+
+                <spacer size="16"></spacer>
+
+                <container class="text-left">
+                    Bonjour {{ member.fullName }},<br>
+                    Voici votre invitation pour vous enregistrer sur l'<a href="{{ url('app_register') }}">application web</a> du club d'aviron de Tours.
+                </container>
+
+                <center><h3>{{ invitation.code }}</h3></center>
+
+            </columns>
+        </row>
+
+        <spacer size="16"></spacer>
+    </container>
+{% endapply %}

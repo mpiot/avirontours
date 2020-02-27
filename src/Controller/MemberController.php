@@ -18,9 +18,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Invitation;
 use App\Entity\Member;
 use App\Form\MemberType;
+use App\Repository\InvitationRepository;
 use App\Repository\MemberRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,11 +59,6 @@ class MemberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($member);
-
-            // create an invitation
-            $invitation = new Invitation($member);
-            $entityManager->persist($invitation);
-
             $entityManager->flush();
 
             return $this->redirectToRoute('member_index');
@@ -78,10 +73,11 @@ class MemberController extends AbstractController
     /**
      * @Route("/{id}", name="member_show", methods={"GET"})
      */
-    public function show(Member $member): Response
+    public function show(Member $member, InvitationRepository $invitationRepository): Response
     {
         return $this->render('member/show.html.twig', [
             'member' => $member,
+            'invitation' => $invitationRepository->findOneBy(['member' => $member]),
         ]);
     }
 

@@ -18,10 +18,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Invitation;
+use App\Entity\Member;
 use App\Repository\InvitationRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -31,12 +35,50 @@ use Symfony\Component\Routing\Annotation\Route;
 class InvitationController extends AbstractController
 {
     /**
-     * @Route("/", name="invitation_index", methods={"GET"})
+     * @Route("/new/{id}", name="invitation_new", methods={"GET"})
      */
-    public function index(InvitationRepository $invitationRepository): Response
+    public function new(Member $member, MailerInterface $mailer, InvitationRepository $invitationRepository, string $senderEmail): Response
     {
-        return $this->render('invitation/index.html.twig', [
-            'invitations' => $invitationRepository->findAll(),
+        if (null !== $invitationRepository->findOneBy(['member' => $member])) {
+            $this->addFlash('danger', 'Une invitation existe dejà pour cet utilisateur.');
+
+            return $this->redirectToRoute('member_show', [
+                'id' => $member->getId(),
+            ]);
+        }
+
+        if (null !== $member->getUser()) {
+            $this->addFlash('danger', 'Ce membre est déjà lié à un utilisateur.');
+
+            return $this->redirectToRoute('member_show', [
+                'id' => $member->getId(),
+            ]);
+        }
+
+        $invitation = new Invitation($member);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($invitation);
+        $entityManager->flush();
+
+        if (null !== $member->getEmail()) {
+            $email = (new TemplatedEmail())
+                ->from($senderEmail)
+                ->to($member->getEmail())
+                ->subject('Invitation')
+                ->htmlTemplate('emails/invitation.html.twig')
+                ->textTemplate('emails/invitation.txt.twig')
+                ->context([
+                    'member' => $member,
+                    'invitation' => $invitation,
+                ])
+            ;
+
+            $mailer->send($email);
+        }
+
+        return $this->redirectToRoute('member_show', [
+            'id' => $member->getId(),
         ]);
     }
 }
