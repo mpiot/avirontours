@@ -138,7 +138,9 @@ class LogbookEntryController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             // update the shell mileage
-            $logbookEntry->getShell()->removeToMileage($logbookEntry->getCoveredDistance());
+            if (null !== $distance = $logbookEntry->getCoveredDistance()) {
+                $logbookEntry->getShell()->removeToMileage($distance);
+            }
 
             $entityManager->remove($logbookEntry);
             $entityManager->flush();
