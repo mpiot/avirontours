@@ -78,6 +78,9 @@
     "doctrine/reflection": {
         "version": "v1.1.0"
     },
+    "easycorp/easy-deploy-bundle": {
+        "version": "v1.0.6"
+    },
     "easycorp/easy-log-handler": {
         "version": "1.0",
         "recipe": {
