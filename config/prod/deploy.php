@@ -7,8 +7,8 @@ return new class extends DefaultDeployer
     public function configure()
     {
         return $this->getConfigBuilder()
-            ->server('app.avirontours.fr:2222')
-            ->deployDir('/var/www/app')
+            ->server('my.avirontours.fr:2222')
+            ->deployDir('/var/www/atm-management')
             ->repositoryUrl('git@github.com:mpiot/atm-management.git')
             ->repositoryBranch('develop')
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
