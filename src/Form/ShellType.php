@@ -133,11 +133,6 @@ class ShellType extends AbstractType
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
             ])
-            ->add('available', CheckboxType::class, [
-                'label' => 'Disponible',
-                'label_attr' => ['class' => 'switch-custom'],
-                'required' => false,
-            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {

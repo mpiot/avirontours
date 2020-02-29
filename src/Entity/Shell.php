@@ -70,12 +70,6 @@ class Shell
     private $yolette;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Assert\NotNull()
-     */
-    private $available;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $abbreviation;
@@ -141,7 +135,6 @@ class Shell
     {
         $this->coxed = false;
         $this->yolette = false;
-        $this->available = true;
         $this->logbookEntries = new ArrayCollection();
         $this->personalBoat = false;
         $this->shellDamages = new ArrayCollection();
@@ -230,18 +223,6 @@ class Shell
     public function setYolette(bool $yolette): self
     {
         $this->yolette = $yolette;
-
-        return $this;
-    }
-
-    public function getAvailable(): ?bool
-    {
-        return $this->available;
-    }
-
-    public function setAvailable(bool $available): self
-    {
-        $this->available = $available;
 
         return $this;
     }

@@ -21,6 +21,7 @@ namespace App\Form;
 use App\Entity\LogbookEntry;
 use App\Entity\Member;
 use App\Entity\Shell;
+use App\Entity\ShellDamageCategory;
 use App\Form\Type\ShellDamageType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -52,9 +53,27 @@ class LogbookEntryType extends AbstractType
                     return [];
                 },
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('shell')
-                        ->where('shell.available = true')
+                    $unavailableShells = $er->createQueryBuilder('s')
+                        ->select(['s.id'])
+                        ->innerJoin('s.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')
+                        ->innerJoin('shell_damages.category', 'category', 'WITH', 'category.priority = :priority_high')
+                        ->setParameter('priority_high', ShellDamageCategory::PRIORITY_HIGH)
+                        ->getQuery()
+                        ->getArrayResult();
+
+                    $queryBuilder = $er->createQueryBuilder('shell');
+                    $queryBuilder
+                        ->select('shell')
+                        ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
+
+                    if (!empty($unavailableShells)) {
+                        $queryBuilder
+                            ->andWhere($queryBuilder->expr()->notIn('shell.id', ':unavailableShells'))
+                            ->setParameter('unavailableShells', $unavailableShells);
+                    }
+
+                    return $queryBuilder;
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
