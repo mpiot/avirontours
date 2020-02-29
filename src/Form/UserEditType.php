@@ -38,7 +38,6 @@ class UserEditType extends AbstractType
         } else {
             $builder->remove('plainPassword');
         }
-
     }
 
     public function getParent()

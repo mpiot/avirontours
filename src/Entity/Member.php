@@ -428,20 +428,20 @@ class Member
         return $this;
     }
 
-    static function getAvailableLicenseTypes(): array
+    public static function getAvailableLicenseTypes(): array
     {
         return [
-            'Licence Annuelle' => Member::LICENSE_TYPE_ANNUAL,
-            'Licence Indoor' => Member::LICENSE_TYPE_INDOOR,
+            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
+            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
         ];
     }
 
-    static function getAvailableRowerCategories(): array
+    public static function getAvailableRowerCategories(): array
     {
         return [
-            'A' => Member::ROWER_CATEGORY_A,
-            'B' => Member::ROWER_CATEGORY_B,
-            'C' => Member::ROWER_CATEGORY_C,
+            'A' => self::ROWER_CATEGORY_A,
+            'B' => self::ROWER_CATEGORY_B,
+            'C' => self::ROWER_CATEGORY_C,
         ];
     }
 }
