@@ -60,18 +60,11 @@ class MemberType extends AbstractType
             ])
             ->add('licenseType', ChoiceType::class, [
                 'label' => 'Type de license',
-                'choices' => [
-                    'Annuelle' => Member::LICENSE_TYPE_ANNUAL,
-                    'Indoor' => Member::LICENSE_TYPE_INDOOR,
-                ],
+                'choices' => Member::getAvailableLicenseTypes(),
             ])
             ->add('rowerCategory', ChoiceType::class, [
                 'label' => 'Catégorie rameur',
-                'choices' => [
-                    'A' => Member::ROWER_CATEGORY_A,
-                    'B' => Member::ROWER_CATEGORY_B,
-                    'C' => Member::ROWER_CATEGORY_C,
-                ],
+                'choices' => Member::getAvailableRowerCategories(),
             ])
             ->add('address', AddressType::class, [
                 'label' => 'Adresse',

@@ -34,9 +34,10 @@
             <thead>
             <tr>
                 <th>Nom</th>
+                <th>Email</th>
                 <th>Numéro de license</th>
+                <th>Licence</th>
                 <th>Date de fin de validité</th>
-                <th>Peut ramer</th>
                 <th></th>
             </tr>
             </thead>
@@ -46,15 +47,16 @@
                     <td>
                         <a href="{{ path('member_show', {'id': member.id}) }}">{{ member.fullName }}</a>
                     </td>
-                    <td>{{ member.licenseNumber }}</td>
-                    <td class="{{ member.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ member.licenseEndAt ? member.licenseEndAt|date('d/m/Y') : '-' }}</td>
                     <td>
-                        {% if constant('App\\Entity\\Member::LICENSE_TYPE_ANNUAL') == member.licenseType %}
-                            <span class="fas fa-check-circle text-success" title="Oui"></span>
+                        {% if member.email is not null %}
+                            <a href="mailto:{{ member.email }}">{{ member.email }}</a>
                         {% else %}
-                            <span class="fas fa-times-circle text-danger" title="Non"></span>
+                            -
                         {% endif %}
                     </td>
+                    <td>{{ member.licenseNumber }}</td>
+                    <td>{{ member.textLicenseType }}</td>
+                    <td class="{{ member.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ member.licenseEndAt ? member.licenseEndAt|date('d/m/Y') : '-' }}</td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('member_edit', {'id': member.id}) }}">

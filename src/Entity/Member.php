@@ -252,11 +252,7 @@ class Member
 
     public function getTextLicenseType(): ?string
     {
-        if (self::LICENSE_TYPE_INDOOR === $this->licenseType) {
-            return 'Indoor';
-        }
-
-        return 'Annuelle';
+        return array_flip(self::getAvailableLicenseTypes())[$this->licenseType];
     }
 
     public function getRowerCategory(): ?int
@@ -273,17 +269,7 @@ class Member
 
     public function getTextRowerCategory(): string
     {
-        switch ($this->getRowerCategory()) {
-            case self::ROWER_CATEGORY_A:
-                return 'A';
-                break;
-
-            case self::ROWER_CATEGORY_B:
-                return 'B';
-                break;
-        }
-
-        return 'C';
+        return array_flip(self::getAvailableRowerCategories())[$this->rowerCategory];
     }
 
     public function getEmail(): ?string
@@ -440,5 +426,22 @@ class Member
         }
 
         return $this;
+    }
+
+    static function getAvailableLicenseTypes(): array
+    {
+        return [
+            'Licence Annuelle' => Member::LICENSE_TYPE_ANNUAL,
+            'Licence Indoor' => Member::LICENSE_TYPE_INDOOR,
+        ];
+    }
+
+    static function getAvailableRowerCategories(): array
+    {
+        return [
+            'A' => Member::ROWER_CATEGORY_A,
+            'B' => Member::ROWER_CATEGORY_B,
+            'C' => Member::ROWER_CATEGORY_C,
+        ];
     }
 }
