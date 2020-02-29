@@ -25,10 +25,20 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 class LogbookEntryNewType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -107,6 +117,17 @@ class LogbookEntryNewType extends AbstractType
             ->remove('coveredDistance')
             ->remove('shellDamages')
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $member = $this->security->getUser()->getMember();
+
+            if (null !== $member) {
+                $data = $event->getData();
+                $data->addCrewMember($member);
+
+                $event->setData($data);
+            }
+        });
     }
 
     public function getParent()
