@@ -21,12 +21,8 @@
             <thead>
             <tr>
                 <th>Nom</th>
-                <th>Abréviation</th>
-                <th>Nombre de rameurs</th>
                 <th>Type</th>
-                <th>Barré</th>
-                <th>Yolette</th>
-                <th>Disponible</th>
+                <th>Kilométrage</th>
                 <th></th>
             </tr>
             </thead>
@@ -37,29 +33,7 @@
                         <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
                     </td>
                     <td>{{ shell.abbreviation }}</td>
-                    <td>{{ shell.numberRowers }}</td>
-                    <td>{{ shell.stringRowingType }}</td>
-                    <td>
-                        {% if shell.coxed %}
-                            <span class="fas fa-check-circle text-success" title="Oui"></span>
-                        {% else %}
-                            <span class="fas fa-times-circle text-danger" title="Non"></span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if shell.yolette %}
-                            <span class="fas fa-check-circle text-success" title="Oui"></span>
-                        {% else %}
-                            <span class="fas fa-times-circle text-danger" title="Non"></span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if shell.available %}
-                            <span class="fas fa-check-circle text-success" title="Oui"></span>
-                        {% else %}
-                            <span class="fas fa-times-circle text-danger" title="Non"></span>
-                        {% endif %}
-                    </td>
+                    <td>{{ shell.mileage }} km</td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('shell_edit', {'id': shell.id}) }}">
