@@ -99,6 +99,10 @@ class LogbookEntryType extends AbstractType
             ->add('coveredDistance', NumberType::class, [
                 'label' => 'Distance parcourue',
                 'html5' => true,
+                'scale' => 1,
+                'attr' => [
+                    'step' => 0.1,
+                ],
             ])
             ->add('shellDamages', CollectionType::class, [
                 'label' => 'Avaries',
