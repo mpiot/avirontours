@@ -119,9 +119,9 @@ class LogbookEntryNewType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $member = $this->security->getUser()->getMember();
+            $user = $this->security->getUser();
 
-            if (null !== $member) {
+            if (null !== $user && null !== $member = $user->getMember()) {
                 $data = $event->getData();
                 $data->addCrewMember($member);
 
