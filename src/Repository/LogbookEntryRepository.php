@@ -43,7 +43,11 @@ class LogbookEntryRepository extends ServiceEntityRepository
     public function findAllPaginated($page = 1): PaginationInterface
     {
         $query = $this->createQueryBuilder('logbook_entry')
-            ->orderBy('logbook_entry.date', 'DESC')
+            ->addSelect('CASE WHEN logbook_entry.endAt IS NULL THEN 1 ELSE 0 END as HIDDEN end_is_null')
+            ->leftJoin('logbook_entry.shell', 'shell')->addSelect('shell')
+            ->leftJoin('logbook_entry.crewMembers', 'crew_members')->addSelect('crew_members')
+            ->orderBy('end_is_null', 'DESC')
+            ->addOrderBy('logbook_entry.date', 'DESC')
             ->addOrderBy('logbook_entry.startAt', 'DESC')
             ->getQuery()
         ;
