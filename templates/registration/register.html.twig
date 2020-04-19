@@ -1,15 +1,103 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription à Aviron Tours{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Inscription à Aviron Tours</li>
+{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <h1>Inscription à Aviron Tours</h1>
 
     {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        <div class="row">
+            <div class="col-xl">
+                <div class="card">
+                    <div class="card-header">
+                        Membre
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(registrationForm.gender) }}
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(registrationForm.firstName) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(registrationForm.lastName) }}
+                            </div>
+                        </div>
+                        {{ form_row(registrationForm.email) }}
+                        {% if registrationForm.plainPassword is defined%}
+                            {{ form_row(registrationForm.plainPassword) }}
+                        {% endif %}
+                        {% if registrationForm.roles is defined%}
+                            {{ form_row(registrationForm.roles) }}
+                        {% endif %}
+                        {{ form_row(registrationForm.birthday) }}
+                        {{ form_row(registrationForm.legalRepresentative) }}
+                    </div>
+                </div>
+            </div>
 
-        <button class="btn">Register</button>
+            <div class="col-xl mt-3 mt-xl-0">
+                <div class="card">
+                    <div class="card-header">
+                        Adresse
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(registrationForm.address.laneNumber) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(registrationForm.address.laneType) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(registrationForm.address.laneName) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(registrationForm.address.postalCode) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(registrationForm.address.city) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(registrationForm.address.phoneNumber) }}
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Licence
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(registrationForm.licenseType) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                Certificat
+            </div>
+            <div class="card-body">
+                {{ form_row(registrationForm.medicalCertificates.0, {'label': false}) }}
+            </div>
+        </div>
+
+        <div class="mt-3">
+            {{ form_row(registrationForm.agreeTerms) }}
+        </div>
+
+        <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
     {{ form_end(registrationForm) }}
 {% endblock %}

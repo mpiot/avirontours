@@ -183,7 +183,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->licenseEndAt = new \DateTime('last day of october next year');
+        $this->subscriptionDate = new \DateTime();
         $this->licenseType = self::LICENSE_TYPE_ANNUAL;
         $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();

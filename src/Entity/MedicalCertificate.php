@@ -64,6 +64,12 @@ class MedicalCertificate
      */
     private $user;
 
+    public function __construct()
+    {
+        $this->type = self::TYPE_CERTIFICATE;
+        $this->level = self::LEVEL_COMPETITION;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
