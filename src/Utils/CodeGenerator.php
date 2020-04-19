@@ -22,6 +22,6 @@ class CodeGenerator
 {
     public static function generateCode()
     {
-        return mb_strtoupper(implode('-', \array_slice(str_split(sha1(random_bytes(10)), 5), 0, 4)));
+        return mb_strtoupper(implode('-', \array_slice(mb_str_split(sha1(random_bytes(10)), 5), 0, 4)));
     }
 }

@@ -39,12 +39,8 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            return;
-        }
-
         if (false === $user->isLicenseValid()) {
-            throw new CustomUserMessageAuthenticationException('Votre licence n\'est plus valide.');
+            throw new CustomUserMessageAuthenticationException('Votre licence n\'est pas valide.');
         }
     }
 
