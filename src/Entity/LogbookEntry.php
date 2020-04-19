@@ -46,7 +46,7 @@ class LogbookEntry
     private $shell;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Member", inversedBy="logbookEntries")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
      * @Assert\NotNull()
      * @Assert\Expression("value.count() == this.getShell().getCrewSize()", message="Le nombre de membre d'équipage ne correspond pas au nombre de place.")
      */
@@ -110,14 +110,14 @@ class LogbookEntry
     }
 
     /**
-     * @return Collection|Member[]
+     * @return Collection|User[]
      */
     public function getCrewMembers(): Collection
     {
         return $this->crewMembers;
     }
 
-    public function addCrewMember($crewMember): self
+    public function addCrewMember(User $crewMember): self
     {
         if (!$this->crewMembers->contains($crewMember)) {
             $this->crewMembers[] = $crewMember;
@@ -126,7 +126,7 @@ class LogbookEntry
         return $this;
     }
 
-    public function removeCrewMember(Member $crewMember): self
+    public function removeCrewMember(User $crewMember): self
     {
         if ($this->crewMembers->contains($crewMember)) {
             $this->crewMembers->removeElement($crewMember);
@@ -220,16 +220,16 @@ class LogbookEntry
      */
     public function validateCrew(ExecutionContextInterface $context, $payload)
     {
-        $invalidMembers = [];
+        $invalidCrewMembers = [];
         foreach ($this->getCrewMembers() as $crewMember) {
             if ($crewMember->getRowerCategory() > $this->getShell()->getRowerCategory()) {
-                $invalidMembers[] = $crewMember->getFullName();
+                $invalidCrewMembers[] = $crewMember->getFullName();
             }
         }
 
-        if (!empty($invalidMembers)) {
+        if (!empty($invalidCrewMembers)) {
             $context->buildViolation('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau: {{ invalidMembers }}.')
-                ->setParameter('{{ invalidMembers }}', implode(', ', $invalidMembers))
+                ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
                 ->atPath('crewMembers')
                 ->addViolation();
         }

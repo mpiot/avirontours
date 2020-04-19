@@ -18,9 +18,9 @@
 
 namespace App\Form;
 
-use App\Entity\Member;
 use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -85,27 +85,27 @@ class LogbookEntryNewType extends AbstractType
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
-                'class' => Member::class,
+                'class' => User::class,
                 'query_builder' => function (EntityRepository $er) {
-                    $unavailableMembers = $er->createQueryBuilder('m')
-                        ->select(['m.id'])
-                        ->innerJoin('m.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
+                    $unavailableUsers = $er->createQueryBuilder('u')
+                        ->select(['u.id'])
+                        ->innerJoin('u.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
                         ->getQuery()
                         ->getArrayResult();
 
-                    $queryBuilder = $er->createQueryBuilder('app_member');
+                    $queryBuilder = $er->createQueryBuilder('app_user');
                     $queryBuilder
-                        ->select('app_member')
-                        ->andWhere('app_member.licenseType = :licenseType')
-                        ->andWhere('app_member.licenseEndAt >= CURRENT_DATE()')
-                        ->orderBy('app_member.firstName', 'ASC')
-                        ->addOrderBy('app_member.lastName', 'ASC')
-                        ->setParameter('licenseType', Member::LICENSE_TYPE_ANNUAL);
+                        ->select('app_user')
+                        ->andWhere('app_user.licenseType = :licenseType')
+                        ->andWhere('app_user.licenseEndAt >= CURRENT_DATE()')
+                        ->orderBy('app_user.firstName', 'ASC')
+                        ->addOrderBy('app_user.lastName', 'ASC')
+                        ->setParameter('licenseType', User::LICENSE_TYPE_ANNUAL);
 
-                    if (!empty($unavailableMembers)) {
+                    if (!empty($unavailableUsers)) {
                         $queryBuilder
-                            ->andWhere($queryBuilder->expr()->notIn('app_member.id', ':unavailableMembers'))
-                            ->setParameter('unavailableMembers', $unavailableMembers);
+                            ->andWhere($queryBuilder->expr()->notIn('app_user.id', ':unavailableUsers'))
+                            ->setParameter('unavailableUsers', $unavailableUsers);
                     }
 
                     return $queryBuilder;
@@ -121,12 +121,9 @@ class LogbookEntryNewType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $user = $this->security->getUser();
 
-            if (null !== $user && null !== $member = $user->getMember()) {
-                $data = $event->getData();
-                $data->addCrewMember($member);
-
-                $event->setData($data);
-            }
+            $data = $event->getData();
+            $data->addCrewMember($user);
+            $event->setData($data);
         });
     }
 

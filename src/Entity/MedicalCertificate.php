@@ -59,10 +59,10 @@ class MedicalCertificate
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Member", inversedBy="medicalCertificates")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="medicalCertificates")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $member;
+    private $user;
 
     public function getId(): ?int
     {
@@ -127,14 +127,14 @@ class MedicalCertificate
         return $this;
     }
 
-    public function getMember(): ?Member
+    public function getUser(): ?User
     {
-        return $this->member;
+        return $this->user;
     }
 
-    public function setMember(?Member $member): self
+    public function setUser(?User $user): self
     {
-        $this->member = $member;
+        $this->user = $user;
 
         return $this;
     }

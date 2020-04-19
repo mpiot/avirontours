@@ -79,11 +79,11 @@ class LogbookEntryType extends AbstractType
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
-                'class' => Member::class,
+                'class' => User::class,
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('app_member')
-                        ->orderBy('app_member.firstName', 'ASC')
-                        ->addOrderBy('app_member.lastName', 'ASC');
+                    return $er->createQueryBuilder('app_user')
+                        ->orderBy('app_user.firstName', 'ASC')
+                        ->addOrderBy('app_user.lastName', 'ASC');
                 },
                 'choice_label' => 'fullName',
                 'multiple' => true,

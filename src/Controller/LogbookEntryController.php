@@ -26,6 +26,7 @@ use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\MemberRepository;
 use App\Repository\ShellRepository;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -153,11 +154,11 @@ class LogbookEntryController extends AbstractController
      * @Route("/statistics", name="logbook_entry_statistics")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function statistics(ShellRepository $shellRepository, MemberRepository $memberRepository)
+    public function statistics(ShellRepository $shellRepository, UserRepository $userRepository)
     {
         return $this->render('logbook_entry/statistics.html.twig', [
-            'topDistances' => $memberRepository->findTop10Distances(),
-            'topSessions' => $memberRepository->findTop10Sessions(),
+            'topDistances' => $userRepository->findTop10Distances(),
+            'topSessions' => $userRepository->findTop10Sessions(),
             'topShells' => $shellRepository->findTop10Sessions(),
         ]);
     }

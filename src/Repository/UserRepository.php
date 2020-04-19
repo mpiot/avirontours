@@ -18,13 +18,15 @@
 
 namespace App\Repository;
 
-use App\Entity\Member;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -33,9 +35,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, User::class);
+        $this->paginator = $paginator;
     }
 
     /**
@@ -52,27 +57,67 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    public function findAll()
+    public function findPaginated($query = null, $page = 1): PaginationInterface
     {
+        $qb = $this->createQueryBuilder('app_user')
+            ->orderBy('app_user.firstName', 'ASC')
+            ->addOrderBy('app_user.lastName', 'ASC')
+        ;
+
+        if ($query) {
+            $qb
+                ->orWhere('LOWER(app_user.firstName) LIKE :query')
+                ->orWhere('LOWER(app_user.lastName) LIKE :query')
+                ->orWhere('LOWER(app_user.email) LIKE :query')
+                ->orWhere('app_user.licenseNumber LIKE :query')
+                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+            ;
+        }
+
+        return $this->paginator->paginate(
+            $qb->getQuery(),
+            $page,
+            User::NUM_ITEMS
+        );
+    }
+
+    public function findTop10Distances()
+    {
+        $today = new \DateTime();
+
         $query = $this->createQueryBuilder('app_user')
-            ->leftJoin('app_user.member', 'app_member')
-            ->addSelect('app_member')
-            ->orderBy('app_user.email', 'ASC')
-            ->addOrderBy('app_member.firstName', 'ASC')
-            ->addOrderBy('app_member.lastName', 'ASC')
-            ->getQuery();
+            ->addSelect('SUM(logbook_entries.coveredDistance) as totalDistance')
+            ->leftJoin('app_user.logbookEntries', 'logbook_entries')
+            ->where('logbook_entries.date BETWEEN :p30days AND :today')
+            ->orderBy('totalDistance', 'DESC')
+            ->groupBy('app_user.id')
+            ->setParameters([
+                'today' => $today->format('Y-m-d'),
+                'p30days' => $today->modify('-30 days')->format('Y-m-d'),
+            ])
+            ->getQuery()
+            ->setMaxResults(10);
 
         return $query->getResult();
     }
 
-    public function findUserWithMember(Member $member)
+    public function findTop10Sessions()
     {
-        $query = $this->createQueryBuilder('app_user')
-            ->leftJoin('app_user.member', 'app_member')
-            ->where('app_member = :member')
-            ->setParameter('member', $member)
-            ->getQuery();
+        $today = new \DateTime();
 
-        return $query->getOneOrNullResult();
+        $query = $this->createQueryBuilder('app_user')
+            ->addSelect('COUNT(logbook_entries) as totalSessions')
+            ->leftJoin('app_user.logbookEntries', 'logbook_entries')
+            ->where('logbook_entries.date BETWEEN :p30days AND :today')
+            ->orderBy('totalSessions', 'DESC')
+            ->groupBy('app_user.id')
+            ->setParameters([
+                'today' => $today->format('Y-m-d'),
+                'p30days' => $today->modify('-30 days')->format('Y-m-d'),
+            ])
+            ->getQuery()
+            ->setMaxResults(10);
+
+        return $query->getResult();
     }
 }

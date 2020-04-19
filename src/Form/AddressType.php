@@ -18,7 +18,6 @@
 
 namespace App\Form;
 
-use App\Entity\Address;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -32,7 +31,7 @@ class AddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('number', NumberType::class, [
+            ->add('laneNumber', NumberType::class, [
                 'label' => 'Numéro',
             ])
             ->add('laneType', ChoiceType::class, [
@@ -57,7 +56,7 @@ class AddressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Address::class,
+            'inherit_data' => true,
         ]);
     }
 
