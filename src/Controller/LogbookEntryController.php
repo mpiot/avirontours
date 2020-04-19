@@ -24,7 +24,6 @@ use App\Form\LogbookEntryNewType;
 use App\Form\LogbookEntryType;
 use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
-use App\Repository\MemberRepository;
 use App\Repository\ShellRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

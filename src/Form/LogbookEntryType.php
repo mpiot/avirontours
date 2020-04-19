@@ -19,7 +19,6 @@
 namespace App\Form;
 
 use App\Entity\LogbookEntry;
-use App\Entity\Member;
 use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
 use App\Form\Type\ShellDamageType;
