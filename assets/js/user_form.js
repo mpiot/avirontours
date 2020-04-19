@@ -1,7 +1,8 @@
+import {collectionType} from "./components/collection_type";
+
 const $ = require('jquery');
 require('./components/select2');
 
 $(function() {
-    console.log('tst');
-    $('#user_roles, #user_edit_roles').select2();
+    collectionType($('div#user_medicalCertificates, div#user_edit_medicalCertificates'), 'Ajouter une attestation médicale');
 });

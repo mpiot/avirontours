@@ -16,20 +16,41 @@
         </a>
     </div>
 
+    <form method="get">
+        <div class="form-row align-items-center">
+            <div class="col-md-auto col-sm-12 ml-auto">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><span class="fa fa-search"></span></div>
+                    </div>
+                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
             <tr>
+                <th>Nom</th>
                 <th>Email</th>
-                <th>Membre</th>
+                <th>Numéro de license</th>
+                <th>Licence</th>
+                <th>Date de fin de validité</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             {% for user in users %}
                 <tr>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.member ? user.member.fullName : '-' }}</td>
+                    <td>
+                        <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
+                    </td>
+                    <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                    <td>{{ user.licenseNumber }}</td>
+                    <td>{{ user.textLicenseType }}</td>
+                    <td class="{{ user.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ user.licenseEndAt ? user.licenseEndAt|date('d/m/Y') : '-' }}</td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('user_edit', {'id': user.id}) }}">
@@ -39,10 +60,14 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="2" class="text-center">Pas d'utilisateur</td>
+                    <td colspan="7" class="text-center">Pas d'utilisateur</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+
+        {% if users|length < users.totalItemCount %}
+            {{ knp_pagination_render(users) }}
+        {% endif %}
     </div>
 {% endblock %}

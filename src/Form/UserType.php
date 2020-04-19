@@ -20,9 +20,13 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
@@ -39,12 +43,66 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('gender', ChoiceType::class, [
+                'label' => 'Genre',
+                'choices' => [
+                    'Homme' => 'm',
+                    'Femme' => 'f',
+                ],
+                'expanded' => true,
+                'label_attr' => ['class' => 'radio-custom radio-inline'],
+            ])
+            ->add('firstName', TextType::class, [
+                'label' => 'Prénom',
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => 'Nom',
+            ])
+            ->add('licenseNumber', TextType::class, [
+                'label' => 'Numéro de license',
+                'required' => false,
+            ])
+            ->add('licenseEndAt', DateType::class, [
+                'label' => 'Date de fin de validité',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('licenseType', ChoiceType::class, [
+                'label' => 'Type de license',
+                'choices' => User::getAvailableLicenseTypes(),
+            ])
+            ->add('rowerCategory', ChoiceType::class, [
+                'label' => 'Catégorie rameur',
+                'choices' => User::getAvailableRowerCategories(),
+            ])
+            ->add('address', AddressType::class, [
+                'label' => 'Adresse',
+            ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'mapped' => false,
+            ])
+            ->add('birthday', BirthdayType::class, [
+                'label' => 'Date de naissance',
+                'widget' => 'single_text',
+            ])
+            ->add('legalRepresentative', TextType::class, [
+                'label' => 'Représentant légal',
+                'required' => false,
+            ])
+            ->add('subscriptionDate', DateType::class, [
+                'label' => 'Date d\'inscription',
+                'widget' => 'single_text',
+            ])
+            ->add('medicalCertificates', CollectionType::class, [
+                'label' => 'Certificats médicaux',
+                'entry_type' => MedicalCertificateType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
             ])
         ;
 

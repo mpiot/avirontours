@@ -20,18 +20,30 @@ namespace App\Security;
 
 use App\Entity\User;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserChecker implements UserCheckerInterface
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function checkPreAuth(UserInterface $user)
     {
         if (!$user instanceof User) {
             return;
         }
 
-        if (null !== $user->getMember() && false === $user->getMember()->isLicenseValid()) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+
+        if (false === $user->isLicenseValid()) {
             throw new CustomUserMessageAuthenticationException('Votre licence n\'est plus valide.');
         }
     }
