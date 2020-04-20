@@ -14,6 +14,7 @@ return new class extends DefaultDeployer
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
             ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'var/log'])
             ->fixPermissionsWithAcl('www-data')
+            ->resetOpCacheFor('https://my.avirontours.fr')
         ;
     }
 

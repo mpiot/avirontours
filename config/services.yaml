@@ -6,6 +6,7 @@
 parameters:
     default_admin_email: notifications@avirontours.fr
     default_sender_email: no-reply@avirontours.fr
+    container.dumper.inline_factories: true
 
 services:
     # default configuration for services in *this* file
