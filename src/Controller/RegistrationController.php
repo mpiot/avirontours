@@ -29,11 +29,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register", name="app_register")
+     * @Route("/register/{licenseType}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
      */
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function register(string $licenseType, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        $user = new User();
+        $user = (new User())->setLicenseType('indoor' === $licenseType ?  User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL);
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 

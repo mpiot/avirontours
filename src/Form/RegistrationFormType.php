@@ -80,10 +80,6 @@ class RegistrationFormType extends AbstractType
                 ],
                 'mapped' => false,
             ])
-            ->add('licenseType', ChoiceType::class, [
-                'label' => 'Type de license',
-                'choices' => User::getAvailableLicenseTypes(),
-            ])
             ->add('address', AddressType::class, [
                 'label' => 'Adresse',
             ])
@@ -101,8 +97,10 @@ class RegistrationFormType extends AbstractType
                 'by_reference' => false,
             ])
             ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'Conditions d\'utilisation',
-                'label_attr' => ['class' => 'switch-custom'],
+                'label' => 'J\'accepte les conditions d\'utilisation',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'help' => '<a href="#">Lire les conditions d\'utilisation</a>',
+                'help_html' => true,
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [

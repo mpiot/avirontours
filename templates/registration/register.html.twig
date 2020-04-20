@@ -72,25 +72,12 @@
 
                 <div class="card mt-3">
                     <div class="card-header">
-                        Licence
+                        Certificat
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(registrationForm.licenseType) }}
-                            </div>
-                        </div>
+                        {{ form_row(registrationForm.medicalCertificates.0, {'label': false}) }}
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="card mt-3">
-            <div class="card-header">
-                Certificat
-            </div>
-            <div class="card-body">
-                {{ form_row(registrationForm.medicalCertificates.0, {'label': false}) }}
             </div>
         </div>
 
