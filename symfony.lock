@@ -87,8 +87,29 @@
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
     },
+    "google/recaptcha": {
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.1",
+            "ref": "d087df3e087f50da3955f2def05079380da5894b"
+        }
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "karser/karser-recaptcha3-bundle": {
+        "version": "0.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "0.1",
+            "ref": "107a3a758fe331292f1c23c13d73c66cb3a268c7"
+        },
+        "files": [
+            "config/packages/karser_recaptcha3.yaml"
+        ]
     },
     "knplabs/knp-components": {
         "version": "v2.3.3"
@@ -445,6 +466,9 @@
     },
     "symfony/string": {
         "version": "v5.0.2"
+    },
+    "symfony/templating": {
+        "version": "v5.0.7"
     },
     "symfony/test-pack": {
         "version": "v1.0.6"
