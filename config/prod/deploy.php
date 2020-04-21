@@ -14,7 +14,6 @@ return new class extends DefaultDeployer
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
             ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'var/log'])
             ->fixPermissionsWithAcl('www-data')
-            ->resetOpCacheFor('https://my.avirontours.fr')
         ;
     }
 
@@ -40,7 +39,9 @@ return new class extends DefaultDeployer
 
     public function beforeFinishingDeploy()
     {
-        $this->log('<h3>Migrate the databae</>');
+        $this->log('<h3>Restart PHP FPM for Preloading</>');
+        $this->runRemote('sudo systemctl restart php7.4-fpm');
+        $this->log('<h3>Migrate the database</>');
         $this->runRemote('{{ console_bin }} doctrine:migration:migrate');
     }
 };
