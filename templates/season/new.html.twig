@@ -1,0 +1,15 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Ajouter une saison{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item active">Ajouter une saison</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une saison</h1>
+
+    {{ include('season/_form.html.twig') }}
+{% endblock %}

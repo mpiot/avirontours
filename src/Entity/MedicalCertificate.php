@@ -55,14 +55,9 @@ class MedicalCertificate
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank()
+     * @Assert\GreaterThan("-1 year", message="Le certificat médical doit avoir moins d'un an.")
      */
     private $date;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="medicalCertificates")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
 
     public function __construct()
     {
@@ -129,18 +124,6 @@ class MedicalCertificate
     public function setDate(\DateTime $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }

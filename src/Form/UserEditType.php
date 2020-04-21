@@ -19,8 +19,11 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserEditType extends AbstractType
 {
@@ -34,7 +37,14 @@ class UserEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
-            $builder->get('plainPassword')->setRequired(false);
+            $builder->add('plainPassword', PasswordType::class, [
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'constraints' => [
+                    new Length(['min' => 6, 'max' => 4096])
+                ],
+                'required' => false,
+            ]);
         } else {
             $builder->remove('plainPassword');
         }

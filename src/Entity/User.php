@@ -175,11 +175,11 @@ class User implements UserInterface
     private $logbookEntries;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\MedicalCertificate", mappedBy="user", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\OrderBy({"date": "desc"})
+     * @ORM\OneToMany(targetEntity="App\Entity\SeasonUser", mappedBy="user", cascade={"persist", "remove"})
+     * @Assert\Count(min="1")
      * @Assert\Valid()
      */
-    private $medicalCertificates;
+    private $seasonUsers;
 
     public function __construct()
     {
@@ -188,7 +188,7 @@ class User implements UserInterface
         $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
-        $this->medicalCertificates = new ArrayCollection();
+        $this->seasonUsers = new ArrayCollection();
     }
 
     public function __toString()
@@ -302,7 +302,7 @@ class User implements UserInterface
 
     public function setFirstName(string $firstName): self
     {
-        $this->firstName = $firstName;
+        $this->firstName = u($firstName)->title(true);
 
         return $this;
     }
@@ -314,7 +314,7 @@ class User implements UserInterface
 
     public function setLastName(string $lastName): self
     {
-        $this->lastName = $lastName;
+        $this->lastName = u($lastName)->title(true);
 
         return $this;
     }
@@ -551,37 +551,6 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|MedicalCertificate[]
-     */
-    public function getMedicalCertificates(): Collection
-    {
-        return $this->medicalCertificates;
-    }
-
-    public function addMedicalCertificate(MedicalCertificate $medicalCertificate): self
-    {
-        if (!$this->medicalCertificates->contains($medicalCertificate)) {
-            $this->medicalCertificates[] = $medicalCertificate;
-            $medicalCertificate->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedicalCertificate(MedicalCertificate $medicalCertificate): self
-    {
-        if ($this->medicalCertificates->contains($medicalCertificate)) {
-            $this->medicalCertificates->removeElement($medicalCertificate);
-            // set the owning side to null (unless already changed)
-            if ($medicalCertificate->getUser() === $this) {
-                $medicalCertificate->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @Assert\Callback()
      */
     public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
@@ -621,5 +590,36 @@ class User implements UserInterface
             'B' => self::ROWER_CATEGORY_B,
             'C' => self::ROWER_CATEGORY_C,
         ];
+    }
+
+    /**
+     * @return Collection|SeasonUser[]
+     */
+    public function getSeasonUsers(): Collection
+    {
+        return $this->seasonUsers;
+    }
+
+    public function addSeasonUser(SeasonUser $seasonUser): self
+    {
+        if (!$this->seasonUsers->contains($seasonUser)) {
+            $this->seasonUsers[] = $seasonUser;
+            $seasonUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeasonUser(SeasonUser $seasonUser): self
+    {
+        if ($this->seasonUsers->contains($seasonUser)) {
+            $this->seasonUsers->removeElement($seasonUser);
+            // set the owning side to null (unless already changed)
+            if ($seasonUser->getUser() === $this) {
+                $seasonUser->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

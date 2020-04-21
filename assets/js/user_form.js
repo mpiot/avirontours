@@ -4,5 +4,5 @@ const $ = require('jquery');
 require('./components/select2');
 
 $(function() {
-    collectionType($('div#user_medicalCertificates, div#user_edit_medicalCertificates'), 'Ajouter une attestation médicale');
+    collectionType($('div#user_seasonUsers, div#user_edit_seasonUsers'), 'Ajouter une saison', null, true, false);
 });

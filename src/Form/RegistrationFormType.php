@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\MedicalCertificate;
 use App\Entity\User;
+use App\Form\Model\RegistrationModel;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
@@ -63,24 +64,10 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Email',
             ])
             ->add('plainPassword', RepeatedType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passes doivent être identiques.',
                 'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Répéter le mot de passe'],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                ],
-                'mapped' => false,
             ])
             ->add('address', AddressType::class, [
                 'label' => 'Adresse',
@@ -93,10 +80,8 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Représentant légal',
                 'required' => false,
             ])
-            ->add('medicalCertificates', CollectionType::class, [
-                'label' => 'Certificats médicaux',
-                'entry_type' => MedicalCertificateType::class,
-                'by_reference' => false,
+            ->add('medicalCertificate', MedicalCertificateType::class, [
+                'label' => false,
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'label' => 'J\'accepte les conditions d\'utilisation',
@@ -119,20 +104,12 @@ class RegistrationFormType extends AbstractType
                 ]
             ])
         ;
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /** @var User $data */
-            $data = $event->getData();
-            $data->addMedicalCertificate(new MedicalCertificate());
-
-            $event->setData($data);
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => RegistrationModel::class,
         ]);
     }
 }

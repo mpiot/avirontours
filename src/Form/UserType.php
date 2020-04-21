@@ -30,6 +30,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -84,6 +86,10 @@ class UserType extends AbstractType
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
                 'mapped' => false,
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['min' => 6, 'max' => 4096])
+                ],
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
@@ -97,11 +103,10 @@ class UserType extends AbstractType
                 'label' => 'Date d\'inscription',
                 'widget' => 'single_text',
             ])
-            ->add('medicalCertificates', CollectionType::class, [
-                'label' => 'Certificats médicaux',
-                'entry_type' => MedicalCertificateType::class,
+            ->add('seasonUsers', CollectionType::class, [
+                'label' => false,
+                'entry_type' => SeasonUserType::class,
                 'allow_add' => true,
-                'allow_delete' => true,
                 'by_reference' => false,
             ])
         ;

@@ -1,0 +1,21 @@
+{% extends 'club_management/base.html.twig' %}
+
+{% block title %}Modifier un bâteau{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item active">Modifier une saison</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier une saison</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('season/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('season/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}

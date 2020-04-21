@@ -19,7 +19,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\Model\RegistrationModel;
 use App\Form\RegistrationFormType;
+use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,27 +33,27 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register/{licenseType}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
      */
-    public function register(string $licenseType, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function register(string $licenseType, Request $request, UserPasswordEncoderInterface $passwordEncoder, SeasonRepository $seasonRepository): Response
     {
-        $user = (new User())->setLicenseType('indoor' === $licenseType ?  User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL);
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $season = $seasonRepository->findOneBy([], ['name' => 'DESC']);
+        if (null === $season) {
+            $this->addFlash('error', 'Il n\'y a pas de saison active.');
+            $this->redirectToRoute('app_register');
+        }
+
+        $registrationModel = new RegistrationModel();
+        $form = $this->createForm(RegistrationFormType::class, $registrationModel);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $passwordEncoder->encodePassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $user = $registrationModel->generateUser($licenseType, $season, $passwordEncoder);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
             // do anything else you need here, like send an email
-            $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera activé après paiement.');
+            $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
             return $this->redirectToRoute('app_login');
         }

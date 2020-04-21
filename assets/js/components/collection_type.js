@@ -1,6 +1,6 @@
 const $ = require('jquery');
 
-export function collectionType(container, buttonText, buttonId, fieldStart, functions) {
+export function collectionType(container, buttonText, buttonId, fieldStart, allowDelete, functions) {
     // If the container is not a div, exit the function
     if (!container.length > 0) {
         return;
@@ -12,6 +12,10 @@ export function collectionType(container, buttonText, buttonId, fieldStart, func
 
     if (fieldStart === undefined) {
         fieldStart = false;
+    }
+
+    if (allowDelete === undefined) {
+        allowDelete = true;
     }
 
     if (functions === undefined) {
@@ -42,7 +46,7 @@ export function collectionType(container, buttonText, buttonId, fieldStart, func
     let index = container.children('fieldset').length;
 
     // If the index is > 0, fields already exists, then, add a deleteButton to this fields
-    if (index > 0) {
+    if (index > 0 && true === allowDelete) {
         container.children('fieldset').each(function() {
             addDeleteButton($(this));
             addFunctions($(this));
