@@ -120,6 +120,8 @@ class UserType extends AbstractType
                     'Utilisateur' => 'ROLE_USER',
                 ],
                 'multiple' => true,
+                'expanded' => true,
+                'label_attr' => ['class' => 'checkbox-custom'],
             ]);
         }
     }
