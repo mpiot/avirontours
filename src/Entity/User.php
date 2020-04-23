@@ -516,7 +516,7 @@ class User implements UserInterface
 
     public function getFormattedAddress(): string
     {
-        $address = "{$this->getNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
+        $address = "{$this->getLaneNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
         $address .= "{$this->getPostalCode()} {$this->getCity()}";
 
         return $address;
