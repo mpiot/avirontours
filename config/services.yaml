@@ -30,9 +30,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Doctrine\EventListener\FixPostgreSQLDefaultSchemaListener:
+    App\EventListener\FixPostgreSQLDefaultSchemaListener:
         tags:
             - { name: doctrine.event_listener, event: postGenerateSchema }
+
+    App\EventListener\ShellAbbreviationSubscriber:
+        tags:
+            - { name: 'doctrine.event_subscriber' }
 
     Monolog\Processor\WebProcessor:
         tags:

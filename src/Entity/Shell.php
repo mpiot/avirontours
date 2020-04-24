@@ -138,7 +138,7 @@ class Shell
         $this->logbookEntries = new ArrayCollection();
         $this->personalBoat = false;
         $this->shellDamages = new ArrayCollection();
-        $this->rowerCategory = Member::ROWER_CATEGORY_C;
+        $this->rowerCategory = User::ROWER_CATEGORY_C;
         $this->rowingType = self::ROWING_TYPE_BOTH;
         $this->mileage = 0;
     }

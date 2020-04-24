@@ -18,7 +18,7 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Doctrine\EventListener;
+namespace App\EventListener;
 
 use Doctrine\DBAL\Schema\PostgreSqlSchemaManager;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;
