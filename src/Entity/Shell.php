@@ -48,6 +48,7 @@ class Shell
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex("/1|2|4|8/", message="Le nombre de rameur doit être: 1, 2, 4 ou 8.")
+     * @Assert\NotBlank()
      */
     private $numberRowers;
 

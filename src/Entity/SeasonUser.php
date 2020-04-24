@@ -38,6 +38,7 @@ class SeasonUser
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="seasonUsers")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $season;
 
@@ -50,6 +51,7 @@ class SeasonUser
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\MedicalCertificate", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      * @Assert\Valid()
      */
     private $medicalCertificate;

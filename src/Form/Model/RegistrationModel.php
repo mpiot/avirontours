@@ -25,6 +25,7 @@ use App\Entity\User;
 use App\Validator\UniqueUser;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @UniqueUser()
@@ -150,5 +151,19 @@ class RegistrationModel
         ;
 
         return $user;
+    }
+
+    /**
+     * @Assert\Callback()
+     */
+    public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
+    {
+        $birthday = empty($this->birthday) ? 0 : $this->birthday->diff(new \DateTime())->y;
+
+        if ($birthday < 18 && empty($this->legalRepresentative)) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
+                ->atPath('legalRepresentative')
+                ->addViolation();
+        }
     }
 }

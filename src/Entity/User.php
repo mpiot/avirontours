@@ -152,7 +152,7 @@ class User implements UserInterface
     private $laneName;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=5, nullable=true)
      * @Assert\NotBlank()
      */
     private $postalCode;
@@ -478,12 +478,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPostalCode(): ?int
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
 
-    public function setPostalCode(int $postalCode): self
+    public function setPostalCode(string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -551,11 +551,42 @@ class User implements UserInterface
     }
 
     /**
+     * @return Collection|SeasonUser[]
+     */
+    public function getSeasonUsers(): Collection
+    {
+        return $this->seasonUsers;
+    }
+
+    public function addSeasonUser(SeasonUser $seasonUser): self
+    {
+        if (!$this->seasonUsers->contains($seasonUser)) {
+            $this->seasonUsers[] = $seasonUser;
+            $seasonUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeasonUser(SeasonUser $seasonUser): self
+    {
+        if ($this->seasonUsers->contains($seasonUser)) {
+            $this->seasonUsers->removeElement($seasonUser);
+            // set the owning side to null (unless already changed)
+            if ($seasonUser->getUser() === $this) {
+                $seasonUser->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @Assert\Callback()
      */
     public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
     {
-        if ($this->getAge() < 18) {
+        if ($this->getAge() < 18 && empty($this->legalRepresentative)) {
             $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
                 ->atPath('legalRepresentative')
                 ->addViolation();
@@ -590,36 +621,5 @@ class User implements UserInterface
             'B' => self::ROWER_CATEGORY_B,
             'C' => self::ROWER_CATEGORY_C,
         ];
-    }
-
-    /**
-     * @return Collection|SeasonUser[]
-     */
-    public function getSeasonUsers(): Collection
-    {
-        return $this->seasonUsers;
-    }
-
-    public function addSeasonUser(SeasonUser $seasonUser): self
-    {
-        if (!$this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers[] = $seasonUser;
-            $seasonUser->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeasonUser(SeasonUser $seasonUser): self
-    {
-        if ($this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers->removeElement($seasonUser);
-            // set the owning side to null (unless already changed)
-            if ($seasonUser->getUser() === $this) {
-                $seasonUser->setUser(null);
-            }
-        }
-
-        return $this;
     }
 }

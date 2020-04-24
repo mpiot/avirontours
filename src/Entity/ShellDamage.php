@@ -20,6 +20,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ShellDamageRepository")
@@ -40,6 +41,7 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ShellDamageCategory")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $category;
 
@@ -56,6 +58,7 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $shell;
 

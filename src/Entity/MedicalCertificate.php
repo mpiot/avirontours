@@ -75,7 +75,7 @@ class MedicalCertificate
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -96,7 +96,7 @@ class MedicalCertificate
         return $this->level;
     }
 
-    public function setLevel(string $level): self
+    public function setLevel(?string $level): self
     {
         $this->level = $level;
 
@@ -121,7 +121,7 @@ class MedicalCertificate
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): self
+    public function setDate(?\DateTime $date): self
     {
         $this->date = $date;
 

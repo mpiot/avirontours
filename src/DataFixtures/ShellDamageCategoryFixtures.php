@@ -44,6 +44,7 @@ class ShellDamageCategoryFixtures extends Fixture
         return [
             ['ShellDamage Category High', ShellDamageCategory::PRIORITY_HIGH],
             ['ShellDamage Category Medium', ShellDamageCategory::PRIORITY_MEDIUM],
+            ['ShellDamage Category To Delete', ShellDamageCategory::PRIORITY_MEDIUM],
         ];
     }
 }

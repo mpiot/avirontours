@@ -41,7 +41,7 @@ class AddressType extends AbstractType
             ->add('laneName', TextType::class, [
                 'label' => 'Nom de voie',
             ])
-            ->add('postalCode', NumberType::class, [
+            ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
             ])
             ->add('city', TextType::class, [
