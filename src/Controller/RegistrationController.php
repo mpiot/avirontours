@@ -18,7 +18,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\Model\RegistrationModel;
 use App\Form\RegistrationFormType;
 use App\Repository\SeasonRepository;

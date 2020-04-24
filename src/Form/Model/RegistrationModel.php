@@ -118,7 +118,7 @@ class RegistrationModel
 
     public function generateUser(string $licenseType, Season $season, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $licenseType = $licenseType = 'indoor' === $licenseType ?  User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL;
+        $licenseType = $licenseType = 'indoor' === $licenseType ? User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL;
 
         $seasonUser = (new SeasonUser())
             ->setMedicalCertificate($this->medicalCertificate)

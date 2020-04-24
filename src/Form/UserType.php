@@ -88,7 +88,7 @@ class UserType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['min' => 6, 'max' => 4096])
+                    new Length(['min' => 6, 'max' => 4096]),
                 ],
             ])
             ->add('birthday', BirthdayType::class, [

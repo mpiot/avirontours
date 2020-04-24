@@ -23,7 +23,6 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserEditType extends AbstractType
 {
@@ -41,7 +40,7 @@ class UserEditType extends AbstractType
                 'label' => 'Mot de passe',
                 'mapped' => false,
                 'constraints' => [
-                    new Length(['min' => 6, 'max' => 4096])
+                    new Length(['min' => 6, 'max' => 4096]),
                 ],
                 'required' => false,
             ]);

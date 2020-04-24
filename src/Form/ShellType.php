@@ -18,9 +18,8 @@
 
 namespace App\Form;
 
-use App\Entity\Member;
 use App\Entity\Shell;
-use App\Service\ShellAbbreviationGenerator;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,19 +28,10 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ShellType extends AbstractType
 {
-    private $abbreviationGenerator;
-
-    public function __construct(ShellAbbreviationGenerator $abbreviationGenerator)
-    {
-        $this->abbreviationGenerator = $abbreviationGenerator;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -79,9 +69,9 @@ class ShellType extends AbstractType
             ->add('rowerCategory', ChoiceType::class, [
                 'label' => 'Catégorie rameur',
                 'choices' => [
-                    'A' => Member::ROWER_CATEGORY_A,
-                    'B' => Member::ROWER_CATEGORY_B,
-                    'C' => Member::ROWER_CATEGORY_C,
+                    'A' => User::ROWER_CATEGORY_A,
+                    'B' => User::ROWER_CATEGORY_B,
+                    'C' => User::ROWER_CATEGORY_C,
                 ],
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
@@ -134,13 +124,6 @@ class ShellType extends AbstractType
                 'label_attr' => ['class' => 'radio-custom'],
             ])
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            /* @var Shell $data */
-            $data = $event->getData();
-
-            $data->setAbbreviation($this->abbreviationGenerator->generateAbbreviation($data));
-        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
