@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: "test"
+      DATABASE_URL: "pgsql://postgres:postgres@localhost:5432/postgres"
+
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Install PHP CS fixer
+        run: |
+          wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
+          sudo chmod a+x php-cs-fixer
+          sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
+
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Build assets
+        run: |
+          yarn install
+          yarn build
+
+      - name: Update database
+        run: bin/console d:m:m -n
+
+      - name: Run fixtures
+        run: bin/console d:f:l -n
+
+      - name: Lint
+        run: |
+          php-cs-fixer fix --diff --dry-run -v
+          bin/console lint:yaml config --parse-tags
+          bin/console lint:twig templates --env=prod
+          bin/console lint:container
+          bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+      - name: Security check
+        run: bin/console security:check
+
+      - name: Composer validate
+        run: composer validate
+
+      - name: Run test suite
+        run: bin/phpunit

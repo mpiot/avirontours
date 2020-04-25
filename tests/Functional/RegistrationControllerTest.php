@@ -21,7 +21,6 @@ namespace App\Tests\Functional;
 use App\Entity\MedicalCertificate;
 use App\Entity\User;
 use App\Tests\AppWebTestCase;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class RegistrationControllerTest extends AppWebTestCase
 {
