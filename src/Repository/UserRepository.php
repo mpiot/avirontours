@@ -57,6 +57,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
+    public function findUserProfile(User $user)
+    {
+        $query = $this->createQueryBuilder('user')
+            ->leftJoin('user.seasonUsers', 'seasonUser')->addSelect('seasonUser')
+            ->leftJoin('seasonUser.season', 'season')->addSelect('season')
+            ->leftJoin('seasonUser.medicalCertificate', 'medicalCertificate')->addSelect('medicalCertificate')
+            ->orderBy('season.name', 'DESC')
+            ->where('user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+        ;
+
+        return $query->getOneOrNullResult();
+    }
+
     public function findPaginated($query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')

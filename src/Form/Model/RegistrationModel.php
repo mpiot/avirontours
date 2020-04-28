@@ -121,9 +121,8 @@ class RegistrationModel
     {
         $licenseType = $licenseType = 'indoor' === $licenseType ? User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL;
 
-        $seasonUser = (new SeasonUser())
+        $seasonUser = (new SeasonUser($season))
             ->setMedicalCertificate($this->medicalCertificate)
-            ->setSeason($season)
         ;
 
         $user = new User();

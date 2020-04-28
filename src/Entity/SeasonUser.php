@@ -56,6 +56,12 @@ class SeasonUser
      */
     private $medicalCertificate;
 
+    public function __construct(Season $season = null, User $user = null)
+    {
+        $this->season = $season;
+        $this->user = $user;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

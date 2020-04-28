@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
      */
     public function register(string $licenseType, Request $request, UserPasswordEncoderInterface $passwordEncoder, SeasonRepository $seasonRepository): Response
     {
-        $season = $seasonRepository->findOneBy([], ['name' => 'DESC']);
+        $season = $seasonRepository->findLastSeason();
         if (null === $season) {
             $this->addFlash('error', 'Il n\'y a pas de saison active.');
             $this->redirectToRoute('app_register');
