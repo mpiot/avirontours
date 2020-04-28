@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinscription à Aviron Tours{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">Mon profil</a></li>
+    <li class="breadcrumb-item active">Réinscription à Aviron Tours</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Réinscription pour la saison {{ season.name }}</h1>
+
+    {{ form_start(form) }}
+        <div class="card mt-3">
+            <div class="card-header">
+                Certificat
+            </div>
+            <div class="card-body">
+                {{ form_row(form.medicalCertificate, { 'label': false }) }}
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3">Se réinscrire</button>
+    {{ form_end(form) }}
+{% endblock %}

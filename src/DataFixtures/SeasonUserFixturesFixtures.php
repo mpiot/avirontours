@@ -29,10 +29,8 @@ class SeasonUserFixturesFixtures extends Fixture implements DependentFixtureInte
     public function load(ObjectManager $manager): void
     {
         foreach ($this->getSeasonData() as [$season, $user, $certificateLevel]) {
-            $seasonUser = new SeasonUser();
+            $seasonUser = new SeasonUser($season, $user);
             $seasonUser
-                ->setSeason($season)
-                ->setUser($user)
                 ->setMedicalCertificate(
                     (new MedicalCertificate())
                         ->setType(MedicalCertificate::TYPE_CERTIFICATE)

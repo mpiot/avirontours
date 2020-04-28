@@ -19,7 +19,6 @@ security:
             guard:
                 authenticators:
                     - App\Security\AppLoginAuthenticator
-            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -42,7 +41,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/logbook-entry, allow_if: "is_granted('ROLE_USER') and user.isLicenseValid()" }
 
     role_hierarchy:
         ROLE_ADMIN:

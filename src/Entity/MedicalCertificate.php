@@ -106,14 +106,14 @@ class MedicalCertificate
     public function getTextLevel(): string
     {
         if (self::LEVEL_PRACTICE === $this->level) {
-            return 'Attestation';
+            return 'Pratique';
         }
 
         if (self::LEVEL_UPGRADE === $this->level) {
             return 'Surclassement';
         }
 
-        return 'Pratique';
+        return 'Compétition';
     }
 
     public function getDate(): ?\DateTime

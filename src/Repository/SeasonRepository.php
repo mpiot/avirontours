@@ -35,32 +35,13 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
-    // /**
-    //  * @return Season[] Returns an array of Season objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findLastSeason()
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        $query = $this->createQueryBuilder('season')
+            ->orderBy('season.name', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+            ->setMaxResults(1);
 
-    /*
-    public function findOneBySomeField($value): ?Season
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $query->getOneOrNullResult();
     }
-    */
 }

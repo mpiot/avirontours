@@ -18,8 +18,12 @@
 
 namespace App\Controller;
 
+use App\Entity\SeasonUser;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
+use App\Form\RenewType;
+use App\Repository\SeasonRepository;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,19 +31,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * @Route("/profile")
+ */
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/my-profile", name="profile_show", methods="GET")
+     * @Route("/", name="profile_show", methods="GET")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
-    public function show(): Response
+    public function show(UserRepository $userRepository): Response
     {
-        return $this->render('profile/show.html.twig');
+        $user = $userRepository->findUserProfile($this->getUser());
+
+        return $this->render('profile/show.html.twig', [
+            'user' => $user,
+        ]);
     }
 
     /**
-     * @Route("/my-profile/edit", name="profile_edit", methods="GET|POST")
+     * @Route("/edit", name="profile_edit", methods="GET|POST")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function edit(Request $request)
@@ -63,7 +74,7 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @Route("/my-profile/edit-password", name="profile_edit_password", methods="GET|POST")
+     * @Route("/edit-password", name="profile_edit_password", methods="GET|POST")
      * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
      */
     public function editPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
@@ -91,6 +102,34 @@ class ProfileController extends AbstractController
 
         return $this->render('profile/edit_password.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/renew", name="renew")
+     * @Security("is_granted('RENEW', user)", statusCode=404)
+     */
+    public function renew(Request $request, SeasonRepository $seasonRepository): Response
+    {
+        $season = $seasonRepository->findLastSeason();
+        $seasonUser = new SeasonUser($season, $this->getUser());
+        $form = $this->createForm(RenewType::class, $seasonUser);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($seasonUser);
+            $entityManager->flush();
+
+            // do anything else you need here, like send an email
+            $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
+
+            return $this->redirectToRoute('profile_show');
+        }
+
+        return $this->render('profile/renew.html.twig', [
+            'form' => $form->createView(),
+            'season' => $season,
         ]);
     }
 }

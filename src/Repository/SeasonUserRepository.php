@@ -19,6 +19,7 @@
 namespace App\Repository;
 
 use App\Entity\SeasonUser;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,32 +36,17 @@ class SeasonUserRepository extends ServiceEntityRepository
         parent::__construct($registry, SeasonUser::class);
     }
 
-    // /**
-    //  * @return SeasonUser[] Returns an array of SeasonUser objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findLastUserSeason(User $user)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        $query = $this->createQueryBuilder('user_season')
+            ->innerJoin('user_season.user', 'user')
+            ->innerJoin('user_season.season', 'season')->addSelect('season')
+            ->where('user = :user')
+            ->orderBy('season.name', 'DESC')
+            ->setParameter('user', $user)
             ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+            ->setMaxResults(1);
 
-    /*
-    public function findOneBySomeField($value): ?SeasonUser
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $query->getOneOrNullResult();
     }
-    */
 }
