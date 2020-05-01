@@ -8,11 +8,13 @@ monolog:
         error:
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.error.log"
+            buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             level: debug
             max_files: 10
         access:
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.access.log"
+            buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             level: debug
             max_files: 180
         console:
@@ -22,6 +24,7 @@ monolog:
         deprecation:
             type: rotating_file
             path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
+            buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             max_files: 10
         deprecation_filter:
             type: filter
