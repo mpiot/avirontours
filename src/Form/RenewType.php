@@ -32,6 +32,6 @@ class RenewType extends AbstractType
 
     public function getParent()
     {
-        return SeasonUserType::class;
+        return LicenseType::class;
     }
 }

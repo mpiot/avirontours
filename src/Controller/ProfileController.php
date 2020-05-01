@@ -18,7 +18,7 @@
 
 namespace App\Controller;
 
-use App\Entity\SeasonUser;
+use App\Entity\License;
 use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
 use App\Form\RenewType;
@@ -112,13 +112,13 @@ class ProfileController extends AbstractController
     public function renew(Request $request, SeasonRepository $seasonRepository): Response
     {
         $season = $seasonRepository->findLastSeason();
-        $seasonUser = new SeasonUser($season, $this->getUser());
-        $form = $this->createForm(RenewType::class, $seasonUser);
+        $license = new License($season, $this->getUser());
+        $form = $this->createForm(RenewType::class, $license);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($seasonUser);
+            $entityManager->persist($license);
             $entityManager->flush();
 
             // do anything else you need here, like send an email

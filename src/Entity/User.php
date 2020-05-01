@@ -32,7 +32,6 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.")
- * @UniqueEntity(fields={"licenseNumber"}, message="Un compte existe déjà avec ce numéro de licence.")
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface
@@ -93,11 +92,6 @@ class User implements UserInterface
      * @Assert\NotBlank()
      */
     private $lastName;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
-     */
-    private $licenseNumber;
 
     /**
      * @ORM\Column(type="date", nullable=true)
@@ -175,11 +169,11 @@ class User implements UserInterface
     private $logbookEntries;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SeasonUser", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="user", cascade={"persist", "remove"})
      * @Assert\Count(min="1")
      * @Assert\Valid()
      */
-    private $seasonUsers;
+    private $licenses;
 
     public function __construct()
     {
@@ -188,7 +182,7 @@ class User implements UserInterface
         $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
-        $this->seasonUsers = new ArrayCollection();
+        $this->licenses = new ArrayCollection();
     }
 
     public function __toString()
@@ -322,18 +316,6 @@ class User implements UserInterface
     public function getFullName(): string
     {
         return $this->getFirstName().' '.$this->getLastName();
-    }
-
-    public function getLicenseNumber(): ?string
-    {
-        return $this->licenseNumber;
-    }
-
-    public function setLicenseNumber(?string $licenseNumber): self
-    {
-        $this->licenseNumber = $licenseNumber;
-
-        return $this;
     }
 
     public function getLicenseEndAt(): ?\DateTimeInterface
@@ -551,30 +533,30 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|SeasonUser[]
+     * @return Collection|License[]
      */
-    public function getSeasonUsers(): Collection
+    public function getLicenses(): Collection
     {
-        return $this->seasonUsers;
+        return $this->licenses;
     }
 
-    public function addSeasonUser(SeasonUser $seasonUser): self
+    public function addLicense(License $license): self
     {
-        if (!$this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers[] = $seasonUser;
-            $seasonUser->setUser($this);
+        if (!$this->licenses->contains($license)) {
+            $this->licenses[] = $license;
+            $license->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeSeasonUser(SeasonUser $seasonUser): self
+    public function removeLicense(License $license): self
     {
-        if ($this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers->removeElement($seasonUser);
+        if ($this->licenses->contains($license)) {
+            $this->licenses->removeElement($license);
             // set the owning side to null (unless already changed)
-            if ($seasonUser->getUser() === $this) {
-                $seasonUser->setUser(null);
+            if ($license->getUser() === $this) {
+                $license->setUser(null);
             }
         }
 

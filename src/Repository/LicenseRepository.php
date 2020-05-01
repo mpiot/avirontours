@@ -18,29 +18,30 @@
 
 namespace App\Repository;
 
-use App\Entity\SeasonUser;
+use App\Entity\License;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method SeasonUser|null find($id, $lockMode = null, $lockVersion = null)
- * @method SeasonUser|null findOneBy(array $criteria, array $orderBy = null)
- * @method SeasonUser[]    findAll()
- * @method SeasonUser[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method License|null find($id, $lockMode = null, $lockVersion = null)
+ * @method License|null findOneBy(array $criteria, array $orderBy = null)
+ * @method License[]    findAll()
+ * @method License[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class SeasonUserRepository extends ServiceEntityRepository
+class LicenseRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, SeasonUser::class);
+        parent::__construct($registry, License::class);
     }
 
     public function findLastUserSeason(User $user)
     {
-        $query = $this->createQueryBuilder('user_season')
-            ->innerJoin('user_season.user', 'user')
-            ->innerJoin('user_season.season', 'season')->addSelect('season')
+        $query = $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')
+            ->innerJoin('license.seasonCategory', 'seasonCategory')->addSelect('seasonCategory')
+            ->innerJoin('seasonCategory.season', 'season')->addSelect('season')
             ->where('user = :user')
             ->orderBy('season.name', 'DESC')
             ->setParameter('user', $user)

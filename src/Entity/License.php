@@ -23,10 +23,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SeasonUserRepository")
- * @UniqueEntity(fields={"season", "user"}, message="Déjà inscrit pour cette saison.")
+ * @ORM\Entity(repositoryClass="App\Repository\LicenseRepository")
+ * @UniqueEntity(fields={"seasonCategory", "user"}, message="Déjà inscrit pour cette saison.")
  */
-class SeasonUser
+class License
 {
     /**
      * @ORM\Id()
@@ -36,14 +36,14 @@ class SeasonUser
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="seasonUsers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SeasonCategory", inversedBy="licenses")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
      */
-    private $season;
+    private $seasonCategory;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="seasonUsers")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
      * @ORM\JoinColumn(name="app_user", nullable=false)
      */
     private $user;
@@ -56,9 +56,14 @@ class SeasonUser
      */
     private $medicalCertificate;
 
-    public function __construct(Season $season = null, User $user = null)
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $licenseNumber;
+
+    public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
     {
-        $this->season = $season;
+        $this->seasonCategory = $seasonCategory;
         $this->user = $user;
     }
 
@@ -67,14 +72,14 @@ class SeasonUser
         return $this->id;
     }
 
-    public function getSeason(): ?Season
+    public function getSeasonCategory(): ?SeasonCategory
     {
-        return $this->season;
+        return $this->seasonCategory;
     }
 
-    public function setSeason(?Season $season): self
+    public function setSeasonCategory(?SeasonCategory $seasonCategory): self
     {
-        $this->season = $season;
+        $this->seasonCategory = $seasonCategory;
 
         return $this;
     }
@@ -99,6 +104,18 @@ class SeasonUser
     public function setMedicalCertificate(MedicalCertificate $medicalCertificate): self
     {
         $this->medicalCertificate = $medicalCertificate;
+
+        return $this;
+    }
+
+    public function getLicenseNumber(): ?string
+    {
+        return $this->licenseNumber;
+    }
+
+    public function setLicenseNumber(string $licenseNumber): self
+    {
+        $this->licenseNumber = $licenseNumber;
 
         return $this;
     }

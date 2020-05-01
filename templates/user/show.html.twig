@@ -96,10 +96,6 @@
                             <span>{{ user.licenseEndAt ? user.licenseEndAt|date('d/m/Y') : '-' }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
-                            Numéro de licence
-                            <span>{{ user.licenseNumber ? user.licenseNumber : '-' }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
                             Catégorie rameur
                             <span>{{ user.textRowerCategory }}</span>
                         </li>
@@ -122,11 +118,11 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for seasonUser in user.seasonUsers %}
+                            {% for license in user.licenses %}
                                 <tr>
-                                    <td>{{ seasonUser.season.name }}</td>
-                                    <td>{{ seasonUser.medicalCertificate.textType }}</td>
-                                    <td>{{ seasonUser.medicalCertificate.textLevel }}</td>
+                                    <td>{{ license.season.name }}</td>
+                                    <td>{{ license.medicalCertificate.textType }}</td>
+                                    <td>{{ license.medicalCertificate.textLevel }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

@@ -37,14 +37,14 @@
 
     <div class="row">
         <div class="col-6">
-            {% for seasonUser in user.seasonUsers %}
+            {% for license in user.licenses %}
                 <div class="card mt-3">
                     <div class="card-header">
-                        Saison {{ seasonUser.season.name }}
+                        Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
                     </div>
                     <div class="card-body">
-                        <p>{{ (seasonUser.medicalCertificate.textType ~ ' ' ~ seasonUser.medicalCertificate.textLevel)|capitalize }} du {{ seasonUser.medicalCertificate.date|date('d/m/Y') }}</p>
-                        <p>Fin de validité: {{ seasonUser.season.licenseEndAt|date('d/m/Y') }}</p>
+                        <p>{{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}</p>
+                        <p>Fin de validité: {{ license.seasonCategory.season.licenseEndAt|date('d/m/Y') }}</p>
                     </div>
                 </div>
             {% endfor %}

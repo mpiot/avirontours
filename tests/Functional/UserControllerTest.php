@@ -88,7 +88,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][city]' => '',
             'user[address][phoneNumber]' => '',
             'user[licenseEndAt]' => '',
-            'user[licenseNumber]' => '',
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
@@ -124,14 +123,13 @@ class UserControllerTest extends AppWebTestCase
             'user[address][phoneNumber]' => '0102030405',
             'user[licenseType]' => User::LICENSE_TYPE_ANNUAL,
             'user[licenseEndAt]' => '2020-10-01',
-            'user[licenseNumber]' => '0123456789',
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $values = $form->getPhpValues();
-        $values['user']['seasonUsers'][0]['season'] = 1;
-        $values['user']['seasonUsers'][0]['medicalCertificate']['type'] = MedicalCertificate::TYPE_CERTIFICATE;
-        $values['user']['seasonUsers'][0]['medicalCertificate']['level'] = MedicalCertificate::LEVEL_COMPETITION;
-        $values['user']['seasonUsers'][0]['medicalCertificate']['date'] = '2020-09-30';
+        $values['user']['licenses'][0]['seasonCategory'] = 1;
+        $values['user']['licenses'][0]['medicalCertificate']['type'] = MedicalCertificate::TYPE_CERTIFICATE;
+        $values['user']['licenses'][0]['medicalCertificate']['level'] = MedicalCertificate::LEVEL_COMPETITION;
+        $values['user']['licenses'][0]['medicalCertificate']['date'] = '2020-09-30';
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
         $this->assertResponseRedirects();
         /** @var User $user */
@@ -153,11 +151,10 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
         $this->assertSame('2020-10-01', $user->getLicenseEndAt()->format('Y-m-d'));
-        $this->assertSame('0123456789', $user->getLicenseNumber());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
-        $this->assertCount(1, $user->getSeasonUsers());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getSeason());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getMedicalCertificate());
+        $this->assertCount(1, $user->getLicenses());
+        $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
+        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
     }
 
     public function testEditUser()
@@ -193,7 +190,6 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[address][phoneNumber]' => '0102030405',
             'user_edit[licenseType]' => User::LICENSE_TYPE_ANNUAL,
             'user_edit[licenseEndAt]' => '2020-10-01',
-            'user_edit[licenseNumber]' => '0123456789',
             'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $this->assertResponseRedirects();
@@ -215,9 +211,8 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
         $this->assertSame('2020-10-01', $user->getLicenseEndAt()->format('Y-m-d'));
-        $this->assertSame('0123456789', $user->getLicenseNumber());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
-        $this->assertCount(1, $user->getSeasonUsers());
+        $this->assertCount(1, $user->getLicenses());
     }
 
     public function testDeleteUser()

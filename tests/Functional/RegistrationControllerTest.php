@@ -19,6 +19,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\MedicalCertificate;
+use App\Entity\Season;
 use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
@@ -27,7 +28,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testAnnualRegistration()
     {
         $client = static::createClient();
-        $url = '/register/annual';
+        $url = '/register/5';
 
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
@@ -106,17 +107,16 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
         $this->assertNull($user->getLicenseEndAt());
-        $this->assertNull($user->getLicenseNumber());
         $this->assertSame(User::ROWER_CATEGORY_C, $user->getRowerCategory());
-        $this->assertCount(1, $user->getSeasonUsers());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getSeason());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getMedicalCertificate());
+        $this->assertCount(1, $user->getLicenses());
+        $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
+        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
     }
 
     public function testIndoorRegistration()
     {
         $client = static::createClient();
-        $url = '/register/indoor';
+        $url = '/register/8';
 
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
@@ -195,10 +195,23 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::LICENSE_TYPE_INDOOR, $user->getLicenseType());
         $this->assertNull($user->getLicenseEndAt());
-        $this->assertNull($user->getLicenseNumber());
         $this->assertSame(User::ROWER_CATEGORY_C, $user->getRowerCategory());
-        $this->assertCount(1, $user->getSeasonUsers());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getSeason());
-        $this->assertNotNull($user->getSeasonUsers()->first()->getMedicalCertificate());
+        $this->assertCount(1, $user->getLicenses());
+        $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
+        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
+    }
+
+    public function testNonEnabledRegistration()
+    {
+        $client = static::createClient();
+
+        $em = $this->getEntityManager();
+        $season = $em->getRepository(Season::class)->find(2);
+        $season->setSubscriptionEnabled(false);
+        $em->flush();
+
+        $url = '/register/8';
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(404);
     }
 }

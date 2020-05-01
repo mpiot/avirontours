@@ -19,8 +19,8 @@
 namespace App\Security\Voter;
 
 use App\Entity\User;
+use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
-use App\Repository\SeasonUserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,12 +28,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserRenewVoter extends Voter
 {
     private $seasonRepository;
-    private $seasonUserRepository;
+    private $licenseRepository;
 
-    public function __construct(SeasonRepository $seasonRepository, SeasonUserRepository $seasonUserRepository)
+    public function __construct(SeasonRepository $seasonRepository, LicenseRepository $licenseRepository)
     {
         $this->seasonRepository = $seasonRepository;
-        $this->seasonUserRepository = $seasonUserRepository;
+        $this->licenseRepository = $licenseRepository;
     }
 
     protected function supports($attribute, $subject)
@@ -49,10 +49,10 @@ class UserRenewVoter extends Voter
             return false;
         }
 
-        $lastUserSeason = $this->seasonUserRepository->findLastUserSeason($user);
+        $lastUserSeason = $this->licenseRepository->findLastUserSeason($user);
         $lastSeason = $this->seasonRepository->findLastSeason();
 
-        if (null === $lastUserSeason || $lastUserSeason->getSeason() !== $lastSeason) {
+        if (null === $lastUserSeason || $lastUserSeason->getSeasonCategory()->getSeason() !== $lastSeason) {
             return true;
         }
 

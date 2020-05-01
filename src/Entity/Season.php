@@ -49,11 +49,6 @@ class Season
     private $licenseEndAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SeasonUser", mappedBy="season")
-     */
-    private $seasonUsers;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
      * @Assert\Count(min="1")
      */
@@ -71,7 +66,6 @@ class Season
 
     public function __construct()
     {
-        $this->seasonUsers = new ArrayCollection();
         $this->seasonCategories = new ArrayCollection();
         $this->subscriptionEnabled = false;
         $this->active = false;
@@ -102,37 +96,6 @@ class Season
     public function setLicenseEndAt(?\DateTimeInterface $licenseEndAt): self
     {
         $this->licenseEndAt = $licenseEndAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|SeasonUser[]
-     */
-    public function getSeasonUsers(): Collection
-    {
-        return $this->seasonUsers;
-    }
-
-    public function addSeasonUser(SeasonUser $seasonUser): self
-    {
-        if (!$this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers[] = $seasonUser;
-            $seasonUser->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeasonUser(SeasonUser $seasonUser): self
-    {
-        if ($this->seasonUsers->contains($seasonUser)) {
-            $this->seasonUsers->removeElement($seasonUser);
-            // set the owning side to null (unless already changed)
-            if ($seasonUser->getSeason() === $this) {
-                $seasonUser->setSeason(null);
-            }
-        }
 
         return $this;
     }

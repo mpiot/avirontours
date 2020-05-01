@@ -18,9 +18,9 @@
 
 namespace App\Form\Model;
 
+use App\Entity\License;
 use App\Entity\MedicalCertificate;
-use App\Entity\Season;
-use App\Entity\SeasonUser;
+use App\Entity\SeasonCategory;
 use App\Entity\User;
 use App\Validator\UniqueUser;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -117,11 +117,9 @@ class RegistrationModel
      */
     public $medicalCertificate;
 
-    public function generateUser(string $licenseType, Season $season, UserPasswordEncoderInterface $passwordEncoder)
+    public function generateUser(SeasonCategory $seasonCategory, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $licenseType = $licenseType = 'indoor' === $licenseType ? User::LICENSE_TYPE_INDOOR : User::LICENSE_TYPE_ANNUAL;
-
-        $seasonUser = (new SeasonUser($season))
+        $license = (new License($seasonCategory))
             ->setMedicalCertificate($this->medicalCertificate)
         ;
 
@@ -145,8 +143,8 @@ class RegistrationModel
             ->setPostalCode($this->postalCode)
             ->setCity($this->city)
             ->setPhoneNumber($this->phoneNumber)
-            ->setLicenseType($licenseType)
-            ->addSeasonUser($seasonUser)
+            ->setLicenseType($seasonCategory->getLicenseType())
+            ->addLicense($license)
         ;
 
         return $user;

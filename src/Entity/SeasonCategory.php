@@ -18,6 +18,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -61,6 +63,16 @@ class SeasonCategory
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="seasonCategory")
+     */
+    private $licenses;
+
+    public function __construct()
+    {
+        $this->licenses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,6 +135,37 @@ class SeasonCategory
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|License[]
+     */
+    public function getLicenses(): Collection
+    {
+        return $this->licenses;
+    }
+
+    public function addLicense(License $license): self
+    {
+        if (!$this->licenses->contains($license)) {
+            $this->licenses[] = $license;
+            $license->setSeasonCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLicense(License $license): self
+    {
+        if ($this->licenses->contains($license)) {
+            $this->licenses->removeElement($license);
+            // set the owning side to null (unless already changed)
+            if ($license->getSeasonCategory() === $this) {
+                $license->setSeasonCategory(null);
+            }
+        }
 
         return $this;
     }

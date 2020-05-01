@@ -33,6 +33,8 @@ class SeasonFixtures extends Fixture
             $season
                 ->setName($name)
                 ->setLicenseEndAt($licenseEndAt)
+                ->setActive(true)
+                ->setSubscriptionEnabled(true)
             ;
 
             foreach ($this->getSeasonCategoryData() as [$categoryName, $price, $licenseType, $description]) {

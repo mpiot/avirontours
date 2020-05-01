@@ -60,10 +60,6 @@ class UserType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('licenseNumber', TextType::class, [
-                'label' => 'Numéro de license',
-                'required' => false,
-            ])
             ->add('licenseEndAt', DateType::class, [
                 'label' => 'Date de fin de validité',
                 'widget' => 'single_text',
@@ -103,9 +99,9 @@ class UserType extends AbstractType
                 'label' => 'Date d\'inscription',
                 'widget' => 'single_text',
             ])
-            ->add('seasonUsers', CollectionType::class, [
+            ->add('licenses', CollectionType::class, [
                 'label' => false,
-                'entry_type' => SeasonUserType::class,
+                'entry_type' => LicenseType::class,
                 'allow_add' => true,
                 'by_reference' => false,
             ])

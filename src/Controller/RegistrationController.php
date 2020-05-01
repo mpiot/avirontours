@@ -18,9 +18,9 @@
 
 namespace App\Controller;
 
+use App\Entity\SeasonCategory;
 use App\Form\Model\RegistrationModel;
 use App\Form\RegistrationFormType;
-use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,14 +30,12 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register/{licenseType}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
+     * @Route("/register/{seasonCategory}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
      */
-    public function register(string $licenseType, Request $request, UserPasswordEncoderInterface $passwordEncoder, SeasonRepository $seasonRepository): Response
+    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        $season = $seasonRepository->findLastSeason();
-        if (null === $season) {
-            $this->addFlash('error', 'Il n\'y a pas de saison active.');
-            $this->redirectToRoute('app_register');
+        if (false === $seasonCategory->getSeason()->getSubscriptionEnabled()) {
+            throw $this->createNotFoundException();
         }
 
         $registrationModel = new RegistrationModel();
@@ -45,7 +43,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $registrationModel->generateUser($licenseType, $season, $passwordEncoder);
+            $user = $registrationModel->generateUser($seasonCategory, $passwordEncoder);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);

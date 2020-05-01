@@ -48,7 +48,6 @@
                         <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
                     </td>
                     <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                    <td>{{ user.licenseNumber }}</td>
                     <td>{{ user.textLicenseType }}</td>
                     <td class="{{ user.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ user.licenseEndAt ? user.licenseEndAt|date('d/m/Y') : '-' }}</td>
                     <td class="text-right">

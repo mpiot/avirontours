@@ -60,9 +60,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findUserProfile(User $user)
     {
         $query = $this->createQueryBuilder('user')
-            ->leftJoin('user.seasonUsers', 'seasonUser')->addSelect('seasonUser')
-            ->leftJoin('seasonUser.season', 'season')->addSelect('season')
-            ->leftJoin('seasonUser.medicalCertificate', 'medicalCertificate')->addSelect('medicalCertificate')
+            ->leftJoin('user.licenses', 'license')->addSelect('license')
+            ->leftJoin('license.seasonCategory', 'seasonCategory')->addSelect('seasonCategory')
+            ->leftJoin('seasonCategory.season', 'season')->addSelect('season')
+            ->leftJoin('license.medicalCertificate', 'medicalCertificate')->addSelect('medicalCertificate')
             ->orderBy('season.name', 'DESC')
             ->where('user = :user')
             ->setParameter('user', $user)
@@ -84,7 +85,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->orWhere('LOWER(app_user.firstName) LIKE :query')
                 ->orWhere('LOWER(app_user.lastName) LIKE :query')
                 ->orWhere('LOWER(app_user.email) LIKE :query')
-                ->orWhere('app_user.licenseNumber LIKE :query')
                 ->setParameter('query', '%'.u($query)->lower()->toString().'%')
             ;
         }

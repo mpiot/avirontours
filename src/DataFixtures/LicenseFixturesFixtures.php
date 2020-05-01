@@ -18,19 +18,19 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\License;
 use App\Entity\MedicalCertificate;
-use App\Entity\SeasonUser;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class SeasonUserFixturesFixtures extends Fixture implements DependentFixtureInterface
+class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->getSeasonData() as [$season, $user, $certificateLevel]) {
-            $seasonUser = new SeasonUser($season, $user);
-            $seasonUser
+        foreach ($this->getSeasonData() as [$seasonCategory, $user, $certificateLevel]) {
+            $license = new License($seasonCategory, $user);
+            $license
                 ->setMedicalCertificate(
                     (new MedicalCertificate())
                         ->setType(MedicalCertificate::TYPE_CERTIFICATE)
@@ -38,8 +38,8 @@ class SeasonUserFixturesFixtures extends Fixture implements DependentFixtureInte
                         ->setDate(new \DateTime('-3 months'))
                 )
             ;
-            $manager->persist($seasonUser);
-            $this->addReference($season->getName().'-'.$user->getFullName(), $seasonUser);
+            $manager->persist($license);
+            $this->addReference($seasonCategory->getName().'-'.$user->getFullName(), $license);
         }
 
         $manager->flush();
@@ -47,11 +47,13 @@ class SeasonUserFixturesFixtures extends Fixture implements DependentFixtureInte
 
     private function getSeasonData(): array
     {
+        $seasonCategory = $this->getReference('2019')->getSeasonCategories()->first();
+
         return [
-            [$this->getReference('2019'), $this->getReference('a.user'), MedicalCertificate::LEVEL_PRACTICE],
-            [$this->getReference('2019'), $this->getReference('b.user'), MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2019'), $this->getReference('c.user'), MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2019'), $this->getReference('indoor.user'), MedicalCertificate::LEVEL_PRACTICE],
+            [$seasonCategory, $this->getReference('a.user'), MedicalCertificate::LEVEL_PRACTICE],
+            [$seasonCategory, $this->getReference('b.user'), MedicalCertificate::LEVEL_COMPETITION],
+            [$seasonCategory, $this->getReference('c.user'), MedicalCertificate::LEVEL_COMPETITION],
+            [$seasonCategory, $this->getReference('indoor.user'), MedicalCertificate::LEVEL_PRACTICE],
         ];
     }
 
