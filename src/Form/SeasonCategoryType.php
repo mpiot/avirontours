@@ -18,35 +18,34 @@
 
 namespace App\Form;
 
-use App\Entity\Season;
+use App\Entity\SeasonCategory;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SeasonType extends AbstractType
+class SeasonCategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', NumberType::class, [
+            ->add('name', TextType::class, [
                 'label' => 'Nom',
-                'help' => 'Année de la saison',
             ])
-            ->add('licenseEndAt', DateType::class, [
-                'label' => 'Date de fin de validité de la licence',
-                'widget' => 'single_text',
+            ->add('price', MoneyType::class, [
+                'label' => 'Prix',
             ])
-            ->add('seasonCategories', CollectionType::class, [
-                'label' => 'Catégories',
-                'entry_type' => SeasonCategoryType::class,
-                'entry_options' => [
-                    'label' => false,
-                ],
-                'allow_add' => true,
-                'by_reference' => false,
+            ->add('licenseType', ChoiceType::class, [
+                'label' => 'Type de license',
+                'choices' => User::getAvailableLicenseTypes(),
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'required' => false,
             ])
         ;
     }
@@ -54,7 +53,7 @@ class SeasonType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Season::class,
+            'data_class' => SeasonCategory::class,
         ]);
     }
 }

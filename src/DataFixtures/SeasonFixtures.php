@@ -19,6 +19,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Season;
+use App\Entity\SeasonCategory;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -32,6 +34,18 @@ class SeasonFixtures extends Fixture
                 ->setName($name)
                 ->setLicenseEndAt($licenseEndAt)
             ;
+
+            foreach ($this->getSeasonCategoryData() as [$categoryName, $price, $licenseType, $description]) {
+                $seasonCategory = new SeasonCategory();
+                $seasonCategory
+                    ->setName($categoryName)
+                    ->setPrice($price)
+                    ->setLicenseType($licenseType)
+                    ->setDescription($description)
+                ;
+                $season->addSeasonCategory($seasonCategory);
+            }
+
             $manager->persist($season);
             $this->addReference($name, $season);
         }
@@ -44,6 +58,16 @@ class SeasonFixtures extends Fixture
         return [
             [2019, new \DateTime('2020-10-15')],
             [2020, new \DateTime('2021-10-15')],
+        ];
+    }
+
+    private function getSeasonCategoryData(): array
+    {
+        return [
+            ['Jeune', 214.0, User::LICENSE_TYPE_ANNUAL, null],
+            ['Etudiant', 256.0, User::LICENSE_TYPE_ANNUAL, null],
+            ['Adulte', 320.0, User::LICENSE_TYPE_ANNUAL, null],
+            ['Indoor', 130.0, User::LICENSE_TYPE_INDOOR, null],
         ];
     }
 }

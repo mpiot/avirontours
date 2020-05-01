@@ -53,9 +53,28 @@ class Season
      */
     private $seasonUsers;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
+     * @Assert\Count(min="1")
+     */
+    private $seasonCategories;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $subscriptionEnabled;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
     public function __construct()
     {
         $this->seasonUsers = new ArrayCollection();
+        $this->seasonCategories = new ArrayCollection();
+        $this->subscriptionEnabled = false;
+        $this->active = false;
     }
 
     public function getId(): ?int
@@ -80,7 +99,7 @@ class Season
         return $this->licenseEndAt;
     }
 
-    public function setLicenseEndAt(\DateTimeInterface $licenseEndAt): self
+    public function setLicenseEndAt(?\DateTimeInterface $licenseEndAt): self
     {
         $this->licenseEndAt = $licenseEndAt;
 
@@ -114,6 +133,61 @@ class Season
                 $seasonUser->setSeason(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SeasonCategory[]
+     */
+    public function getSeasonCategories(): Collection
+    {
+        return $this->seasonCategories;
+    }
+
+    public function addSeasonCategory(SeasonCategory $seasonCategory): self
+    {
+        if (!$this->seasonCategories->contains($seasonCategory)) {
+            $this->seasonCategories[] = $seasonCategory;
+            $seasonCategory->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeasonCategory(SeasonCategory $seasonCategory): self
+    {
+        if ($this->seasonCategories->contains($seasonCategory)) {
+            $this->seasonCategories->removeElement($seasonCategory);
+            // set the owning side to null (unless already changed)
+            if ($seasonCategory->getSeason() === $this) {
+                $seasonCategory->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSubscriptionEnabled(): ?bool
+    {
+        return $this->subscriptionEnabled;
+    }
+
+    public function setSubscriptionEnabled(bool $subscriptionEnabled): self
+    {
+        $this->subscriptionEnabled = $subscriptionEnabled;
+
+        return $this;
+    }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }

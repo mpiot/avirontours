@@ -19,6 +19,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Season;
+use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
 class SeasonControllerTest extends AppWebTestCase
@@ -58,20 +59,33 @@ class SeasonControllerTest extends AppWebTestCase
 
         $crawler = $client->submitForm('Sauver', [
             'season[name]' => '',
-            'season[licenseEndAt]' => '2020-10-03',
+            'season[licenseEndAt]' => '',
         ]);
         $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
-        $this->assertCount(1, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="season_licenseEndAt"] .form-error-message')->text());
+        $this->assertCount(3, $crawler->filter('.form-error-message'));
 
-        $client->submitForm('Sauver', [
+        $form = $crawler->selectButton('Sauver')->form([
             'season[name]' => 2030,
             'season[licenseEndAt]' => '2030-10-15',
         ]);
+        $values = $form->getPhpValues();
+        $values['season']['seasonCategories'][0]['name'] = 'My category name';
+        $values['season']['seasonCategories'][0]['price'] = 99.32;
+        $values['season']['seasonCategories'][0]['licenseType'] = User::LICENSE_TYPE_ANNUAL;
+        $values['season']['seasonCategories'][0]['description'] = 'My category description';
+        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
         $this->assertResponseRedirects();
         $season = $this->getEntityManager()->getRepository(Season::class)->findOneBy(['name' => 2030]);
         $this->assertInstanceOf(Season::class, $season);
         $this->assertSame('2030-10-15', $season->getLicenseEndAt()->format('Y-m-d'));
+        $this->assertCount(1, $season->getSeasonCategories());
+        $this->assertSame('My category name', $season->getSeasonCategories()->first()->getName());
+        $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());
+        $this->assertSame(User::LICENSE_TYPE_ANNUAL, $season->getSeasonCategories()->first()->getLicenseType());
+        $this->assertSame('My category description', $season->getSeasonCategories()->first()->getdescription());
     }
 
     public function testEditSeason()
