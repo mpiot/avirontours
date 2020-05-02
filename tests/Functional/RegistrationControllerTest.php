@@ -19,7 +19,6 @@
 namespace App\Tests\Functional;
 
 use App\Entity\MedicalCertificate;
-use App\Entity\Season;
 use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
@@ -28,7 +27,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testAnnualRegistration()
     {
         $client = static::createClient();
-        $url = '/register/5';
+        $url = '/register/9';
 
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
@@ -116,7 +115,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testIndoorRegistration()
     {
         $client = static::createClient();
-        $url = '/register/8';
+        $url = '/register/12';
 
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
@@ -204,14 +203,70 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testNonEnabledRegistration()
     {
         $client = static::createClient();
+        $url = '/register/1';
 
-        $em = $this->getEntityManager();
-        $season = $em->getRepository(Season::class)->find(2);
-        $season->setSubscriptionEnabled(false);
-        $em->flush();
-
-        $url = '/register/8';
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testRegistrationAsLogInUser()
+    {
+        $client = static::createClient();
+        $url = '/register/12';
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/profile/');
+    }
+
+    public function testRenew()
+    {
+        $client = static::createClient();
+        $url = '/renew/9';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('S\'inscrire', [
+            'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
+            'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'renew[medicalCertificate][date]' => '2020-01-01',
+        ]);
+        $this->assertResponseRedirects();
+        /** @var User $user */
+        $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['username' => 'a.user']);
+        $this->assertCount(3, $user->getLicenses());
+        $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
+        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
+        $this->assertSame('2020-01-01', $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
+
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testNonEnabledRenew()
+    {
+        $client = static::createClient();
+        $url = '/renew/1';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(404);
+    }
+
+    public function testRenewAsAnonymousUser()
+    {
+        $client = static::createClient();
+        $url = '/renew/12';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
     }
 }

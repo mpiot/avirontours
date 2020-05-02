@@ -26,7 +26,7 @@ class RenewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->remove('season')
+            ->remove('seasonCategory')
         ;
     }
 

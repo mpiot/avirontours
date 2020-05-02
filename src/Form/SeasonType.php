@@ -21,7 +21,6 @@ namespace App\Form;
 use App\Entity\Season;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,10 +33,6 @@ class SeasonType extends AbstractType
             ->add('name', NumberType::class, [
                 'label' => 'Nom',
                 'help' => 'Année de la saison',
-            ])
-            ->add('licenseEndAt', DateType::class, [
-                'label' => 'Date de fin de validité de la licence',
-                'widget' => 'single_text',
             ])
             ->add('seasonCategories', CollectionType::class, [
                 'label' => 'Catégories',

@@ -18,7 +18,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Season;
 use App\Entity\SeasonCategory;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,32 +37,25 @@ class SeasonCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, SeasonCategory::class);
     }
 
-    // /**
-    //  * @return SeasonCategory[] Returns an array of SeasonCategory objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findSubscriptionSeasonCategory(int $id, User $user = null)
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $queryBuilder = $this->createQueryBuilder('season_category')
+            ->innerJoin('season_category.season', 'season')->addSelect('season')
+            ->andWhere('season_category.id = :id')
+            ->andWhere('season.subscriptionEnabled = true')
+            ->setParameter('id', $id)
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?SeasonCategory
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if (null !== $user) {
+            $unavailableSeasons = $this->getEntityManager()->getRepository(Season::class)->findUnavailableSeasonForUser($user);
+            if (!empty($unavailableSeasons)) {
+                $queryBuilder
+                    ->andWhere($queryBuilder->expr()->notIn('season.id', ':unavailableSeasons'))
+                    ->setParameter('unavailableSeasons', $unavailableSeasons)
+                ;
+            }
+        }
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
-    */
 }

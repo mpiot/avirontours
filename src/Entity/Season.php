@@ -43,12 +43,6 @@ class Season
     private $name;
 
     /**
-     * @ORM\Column(type="date")
-     * @Assert\NotNull()
-     */
-    private $licenseEndAt;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
      * @Assert\Count(min="1")
      */
@@ -84,18 +78,6 @@ class Season
     public function setName(int $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getLicenseEndAt(): ?\DateTimeInterface
-    {
-        return $this->licenseEndAt;
-    }
-
-    public function setLicenseEndAt(?\DateTimeInterface $licenseEndAt): self
-    {
-        $this->licenseEndAt = $licenseEndAt;
 
         return $this;
     }

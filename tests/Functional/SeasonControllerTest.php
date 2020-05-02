@@ -59,17 +59,14 @@ class SeasonControllerTest extends AppWebTestCase
 
         $crawler = $client->submitForm('Sauver', [
             'season[name]' => '',
-            'season[licenseEndAt]' => '',
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="season_licenseEndAt"] .form-error-message')->text());
-        $this->assertCount(3, $crawler->filter('.form-error-message'));
+        $this->assertCount(2, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Sauver')->form([
             'season[name]' => 2030,
-            'season[licenseEndAt]' => '2030-10-15',
         ]);
         $values = $form->getPhpValues();
         $values['season']['seasonCategories'][0]['name'] = 'My category name';
@@ -80,7 +77,6 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $season = $this->getEntityManager()->getRepository(Season::class)->findOneBy(['name' => 2030]);
         $this->assertInstanceOf(Season::class, $season);
-        $this->assertSame('2030-10-15', $season->getLicenseEndAt()->format('Y-m-d'));
         $this->assertCount(1, $season->getSeasonCategories());
         $this->assertSame('My category name', $season->getSeasonCategories()->first()->getName());
         $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());
@@ -106,18 +102,16 @@ class SeasonControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'season[name]' => 2030,
-            'season[licenseEndAt]' => '2030-10-15',
         ]);
         $this->assertResponseRedirects();
         $season = $this->getEntityManager()->getRepository(Season::class)->find(1);
         $this->assertSame(2030, $season->getName());
-        $this->assertSame('2030-10-15', $season->getLicenseEndAt()->format('Y-m-d'));
     }
 
     public function testDeleteSeason()
     {
         $client = static::createClient();
-        $url = '/season/2/edit';
+        $url = '/season/3/edit';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -132,7 +126,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         $client->submitForm('Supprimer');
         $this->assertResponseRedirects('/season/');
-        $group = $this->getEntityManager()->getRepository(Season::class)->find(2);
-        $this->assertNull($group);
+        $season = $this->getEntityManager()->getRepository(Season::class)->find(3);
+        $this->assertNull($season);
     }
 }

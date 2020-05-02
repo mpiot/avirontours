@@ -18,9 +18,14 @@
 
 namespace App\Controller;
 
+use App\Entity\License;
 use App\Entity\SeasonCategory;
 use App\Form\Model\RegistrationModel;
 use App\Form\RegistrationFormType;
+use App\Form\RenewType;
+use App\Repository\SeasonCategoryRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,11 +36,12 @@ class RegistrationController extends AbstractController
 {
     /**
      * @Route("/register/{seasonCategory}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
+     * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(seasonCategory)")
      */
     public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        if (false === $seasonCategory->getSeason()->getSubscriptionEnabled()) {
-            throw $this->createNotFoundException();
+        if ($this->getUser()) {
+            return $this->redirectToRoute('profile_show');
         }
 
         $registrationModel = new RegistrationModel();
@@ -57,6 +63,38 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/renew/{seasonCategory}", name="renew")
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function renew(int $seasonCategory, SeasonCategoryRepository $repository, Request $request): Response
+    {
+        $seasonCategory = $repository->findSubscriptionSeasonCategory($seasonCategory, $this->getUser());
+        if (null === $seasonCategory) {
+            throw $this->createNotFoundException();
+        }
+
+        $license = new License($seasonCategory, $this->getUser());
+        $form = $this->createForm(RenewType::class, $license);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($license);
+            $entityManager->flush();
+
+            // do anything else you need here, like send an email
+            $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
+
+            return $this->redirectToRoute('profile_show');
+        }
+
+        return $this->render('registration/renew.html.twig', [
+            'form' => $form->createView(),
+            'season_category' => $seasonCategory,
         ]);
     }
 }

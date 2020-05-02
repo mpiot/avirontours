@@ -19,7 +19,9 @@
 namespace App\Repository;
 
 use App\Entity\Season;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -35,13 +37,39 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
-    public function findLastSeason()
+    public function findRenewSeason(User $user)
     {
-        $query = $this->createQueryBuilder('season')
+        $queryBuilder = $this->createQueryBuilder('season');
+        $queryBuilder
+            ->innerJoin('season.seasonCategories', 'season_categories')->addSelect('season_categories')
+            ->andWhere('season.subscriptionEnabled = true')
             ->orderBy('season.name', 'DESC')
             ->getQuery()
-            ->setMaxResults(1);
+            ->setMaxResults(1)
+        ;
 
-        return $query->getOneOrNullResult();
+        $unavailableSeasons = $this->findUnavailableSeasonForUser($user);
+        if (!empty($unavailableSeasons)) {
+            $queryBuilder
+                ->andWhere($queryBuilder->expr()->notIn('season.id', ':unavailableSeasons'))
+                ->setParameter('unavailableSeasons', $unavailableSeasons)
+            ;
+        }
+
+        return new Paginator($queryBuilder->getQuery());
+    }
+
+    public function findUnavailableSeasonForUser(User $user)
+    {
+        $query = $this->createQueryBuilder('unavailable_season')
+            ->select(['unavailable_season.id'])
+            ->innerJoin('unavailable_season.seasonCategories', 'season_categories')
+            ->innerJoin('season_categories.licenses', 'licenses')
+            ->innerJoin('licenses.user', 'user')
+            ->where('user = :user')
+            ->setParameter('user', $user)
+            ->getQuery();
+
+        return $query->getArrayResult();
     }
 }

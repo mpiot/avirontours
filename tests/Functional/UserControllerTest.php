@@ -126,7 +126,7 @@ class UserControllerTest extends AppWebTestCase
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $values = $form->getPhpValues();
-        $values['user']['licenses'][0]['seasonCategory'] = 1;
+        $values['user']['licenses'][0]['seasonCategory'] = 9;
         $values['user']['licenses'][0]['medicalCertificate']['type'] = MedicalCertificate::TYPE_CERTIFICATE;
         $values['user']['licenses'][0]['medicalCertificate']['level'] = MedicalCertificate::LEVEL_COMPETITION;
         $values['user']['licenses'][0]['medicalCertificate']['date'] = '2020-09-30';
@@ -212,7 +212,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
         $this->assertSame('2020-10-01', $user->getLicenseEndAt()->format('Y-m-d'));
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
-        $this->assertCount(1, $user->getLicenses());
+        $this->assertCount(2, $user->getLicenses());
     }
 
     public function testDeleteUser()

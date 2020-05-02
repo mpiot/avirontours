@@ -21,7 +21,8 @@
             <thead>
             <tr>
                 <th>Nom</th>
-                <th>Date fin de licence</th>
+                <th>Active</th>
+                <th>Inscriptions</th>
                 <th></th>
             </tr>
             </thead>
@@ -29,7 +30,20 @@
             {% for season in seasons %}
                 <tr>
                     <td>{{ season.name }}</td>
-                    <td>{{ season.licenseEndAt|date('d/m/Y') }}</td>
+                    <td>
+                        {% if season.active %}
+                            <span class="badge badge-pill badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-pill badge-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if season.subscriptionEnabled %}
+                            <span class="badge badge-pill badge-success">Ouvertes</span>
+                        {% else %}
+                            <span class="badge badge-pill badge-danger">Fermées</span>
+                        {% endif %}
+                    </td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('season_edit', {'id': season.id}) }}">

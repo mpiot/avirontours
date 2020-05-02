@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Réinscription pour la saison {{ season.name }}</h1>
+    <h1>Réinscription pour la saison {{ season_category.season.name }} - {{ season_category.name }}</h1>
 
     {{ form_start(form) }}
         <div class="card mt-3">
@@ -21,6 +21,6 @@
             </div>
         </div>
 
-        <button class="btn btn-primary mt-3">Se réinscrire</button>
+        <button class="btn btn-primary mt-3">S'inscrire</button>
     {{ form_end(form) }}
 {% endblock %}

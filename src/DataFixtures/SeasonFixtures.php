@@ -28,13 +28,12 @@ class SeasonFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->getSeasonData() as [$name, $licenseEndAt]) {
+        foreach ($this->getSeasonData() as [$name, $active, $subscription]) {
             $season = new Season();
             $season
                 ->setName($name)
-                ->setLicenseEndAt($licenseEndAt)
-                ->setActive(true)
-                ->setSubscriptionEnabled(true)
+                ->setActive($active)
+                ->setSubscriptionEnabled($subscription)
             ;
 
             foreach ($this->getSeasonCategoryData() as [$categoryName, $price, $licenseType, $description]) {
@@ -58,8 +57,9 @@ class SeasonFixtures extends Fixture
     private function getSeasonData(): array
     {
         return [
-            [2019, new \DateTime('2020-10-15')],
-            [2020, new \DateTime('2021-10-15')],
+            [2018, false, false],
+            [2019, true, false],
+            [2020, true, true],
         ];
     }
 

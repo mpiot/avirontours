@@ -18,38 +18,20 @@
 
 namespace App\Tests\Functional;
 
-use App\Entity\MedicalCertificate;
-use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
 class ProfileControllerTest extends AppWebTestCase
 {
-    public function testRenew()
+    public function testProfileShow()
     {
         $client = static::createClient();
-        $url = '/profile/renew';
+        $url = '/profile/';
 
         $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseRedirects('/login');
 
         $this->logIn($client, 'a.user');
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Se réinscrire', [
-            'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'renew[medicalCertificate][date]' => '2020-01-01',
-        ]);
-        $this->assertResponseRedirects();
-        /** @var User $user */
-        $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['username' => 'a.user']);
-        $this->assertCount(2, $user->getSeasonUsers());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getSeasonUsers()->get(1)->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getSeasonUsers()->get(1)->getMedicalCertificate()->getLevel());
-        $this->assertSame('2020-01-01', $user->getSeasonUsers()->get(1)->getMedicalCertificate()->getdate()->format('Y-m-d'));
-
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(404);
     }
 }
