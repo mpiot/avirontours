@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace App\Tests\Functional;
+namespace App\Tests\Controller;
 
 use App\Entity\Shell;
 use App\Tests\AppWebTestCase;

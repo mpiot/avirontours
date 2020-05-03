@@ -16,18 +16,17 @@
  * limitations under the License.
  */
 
-namespace App\Tests\Functional;
+namespace App\Tests\Controller;
 
-use App\Entity\Season;
-use App\Entity\SeasonCategory;
+use App\Entity\ShellDamage;
 use App\Tests\AppWebTestCase;
 
-class SeasonControllerTest extends AppWebTestCase
+class ShellDamageControllerTest extends AppWebTestCase
 {
-    public function testIndexSeasons()
+    public function testIndexShellDamages()
     {
         $client = static::createClient();
-        $url = '/season/';
+        $url = '/shell-damage/';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -41,10 +40,10 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewSeason()
+    public function testNewShellDamage()
     {
         $client = static::createClient();
-        $url = '/season/new';
+        $url = '/shell-damage/new';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -58,36 +57,33 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'season[name]' => '',
+            'shell_damage[shell]' => '',
+            'shell_damage[category]' => '',
+            'shell_damage[description]' => '',
+            'shell_damage[repairAt]' => '',
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_shell"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_category"] .form-error-message')->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
 
-        $form = $crawler->selectButton('Sauver')->form([
-            'season[name]' => 2030,
+        $client->submitForm('Sauver', [
+            'shell_damage[shell]' => 1,
+            'shell_damage[category]' => 2,
+            'shell_damage[description]' => 'My description',
         ]);
-        $values = $form->getPhpValues();
-        $values['season']['seasonCategories'][0]['name'] = 'My category name';
-        $values['season']['seasonCategories'][0]['price'] = 99.32;
-        $values['season']['seasonCategories'][0]['licenseType'] = SeasonCategory::LICENSE_TYPE_ANNUAL;
-        $values['season']['seasonCategories'][0]['description'] = 'My category description';
-        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
         $this->assertResponseRedirects();
-        $season = $this->getEntityManager()->getRepository(Season::class)->findOneBy(['name' => 2030]);
-        $this->assertInstanceOf(Season::class, $season);
-        $this->assertCount(1, $season->getSeasonCategories());
-        $this->assertSame('My category name', $season->getSeasonCategories()->first()->getName());
-        $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());
-        $this->assertSame(SeasonCategory::LICENSE_TYPE_ANNUAL, $season->getSeasonCategories()->first()->getLicenseType());
-        $this->assertSame('My category description', $season->getSeasonCategories()->first()->getdescription());
+        $shellDamage = $this->getEntityManager()->getRepository(ShellDamage::class)->findOneBy(['description' => 'My description']);
+        $this->assertInstanceOf(ShellDamage::class, $shellDamage);
+        $this->assertSame(1, $shellDamage->getshell()->getId());
+        $this->assertSame(2, $shellDamage->getCategory()->getId());
+        $this->assertNull($shellDamage->getRepairAt());
     }
 
-    public function testEditSeason()
+    public function testEditShellDamage()
     {
         $client = static::createClient();
-        $url = '/season/1/edit';
+        $url = '/shell-damage/1/edit';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -101,17 +97,23 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
-            'season[name]' => 2030,
+            'shell_damage[shell]' => 1,
+            'shell_damage[category]' => 2,
+            'shell_damage[description]' => 'A modified description',
+            'shell_damage[repairAt]' => '2020-01-01',
         ]);
         $this->assertResponseRedirects();
-        $season = $this->getEntityManager()->getRepository(Season::class)->find(1);
-        $this->assertSame(2030, $season->getName());
+        $shellDamage = $this->getEntityManager()->getRepository(ShellDamage::class)->find(1);
+        $this->assertSame('A modified description', $shellDamage->getDescription());
+        $this->assertSame(1, $shellDamage->getshell()->getId());
+        $this->assertSame(2, $shellDamage->getCategory()->getId());
+        $this->assertSame('2020-01-01', $shellDamage->getRepairAt()->format('Y-m-d'));
     }
 
-    public function testDeleteSeason()
+    public function testDeleteShellDamage()
     {
         $client = static::createClient();
-        $url = '/season/3/edit';
+        $url = '/shell-damage/1/edit';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -125,8 +127,8 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/season/');
-        $season = $this->getEntityManager()->getRepository(Season::class)->find(3);
-        $this->assertNull($season);
+        $this->assertResponseRedirects('/shell-damage/');
+        $group = $this->getEntityManager()->getRepository(ShellDamage::class)->find(1);
+        $this->assertNull($group);
     }
 }

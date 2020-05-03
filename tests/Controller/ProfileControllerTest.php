@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-namespace App\Tests\Functional;
+namespace App\Tests\Controller;
 
 use App\Tests\AppWebTestCase;
 
-class HomepageControllerTest extends AppWebTestCase
+class ProfileControllerTest extends AppWebTestCase
 {
-    public function testIndex()
+    public function testProfileShow()
     {
         $client = static::createClient();
-        $url = '/';
+        $url = '/profile/';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
