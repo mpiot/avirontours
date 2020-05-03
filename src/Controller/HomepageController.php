@@ -18,6 +18,7 @@
 
 namespace App\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,6 +26,7 @@ class HomepageController extends AbstractController
 {
     /**
      * @Route("", name="homepage")
+     * @Security("is_granted('ROLE_USER')")
      */
     public function homepage()
     {

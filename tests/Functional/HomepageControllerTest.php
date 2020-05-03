@@ -28,6 +28,10 @@ class HomepageControllerTest extends AppWebTestCase
         $url = '/';
 
         $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 }
