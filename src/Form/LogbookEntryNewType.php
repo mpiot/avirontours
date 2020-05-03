@@ -18,6 +18,7 @@
 
 namespace App\Form;
 
+use App\Entity\SeasonCategory;
 use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
@@ -93,14 +94,15 @@ class LogbookEntryNewType extends AbstractType
                         ->getQuery()
                         ->getArrayResult();
 
-                    $queryBuilder = $er->createQueryBuilder('app_user');
-                    $queryBuilder
-                        ->select('app_user')
-                        ->andWhere('app_user.licenseType = :licenseType')
-                        ->andWhere('app_user.licenseEndAt >= CURRENT_DATE()')
+                    $queryBuilder = $er->createQueryBuilder('app_user')
+                        ->leftJoin('app_user.licenses', 'licenses')
+                        ->leftJoin('licenses.seasonCategory', 'seasonCategory')
+                        ->leftJoin('seasonCategory.season', 'season')
+                        ->andWhere('seasonCategory.licenseType = :licenseType')
+                        ->andWhere('season.active = true')
                         ->orderBy('app_user.firstName', 'ASC')
                         ->addOrderBy('app_user.lastName', 'ASC')
-                        ->setParameter('licenseType', User::LICENSE_TYPE_ANNUAL);
+                        ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL);
 
                     if (!empty($unavailableUsers)) {
                         $queryBuilder

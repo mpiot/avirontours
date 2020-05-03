@@ -47,18 +47,15 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
 
     private function getSeasonData(): array
     {
-        $seasonCategory2018 = $this->getReference('2018')->getSeasonCategories()->first();
-        $seasonCategory2019 = $this->getReference('2019')->getSeasonCategories()->first();
-
         return [
-            [$seasonCategory2018, $this->getReference('a.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
-            [$seasonCategory2018, $this->getReference('b.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
-            [$seasonCategory2018, $this->getReference('c.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
-            [$seasonCategory2018, $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
-            [$seasonCategory2019, $this->getReference('a.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
-            [$seasonCategory2019, $this->getReference('b.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
-            [$seasonCategory2019, $this->getReference('c.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
-            [$seasonCategory2019, $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
+            [$this->getReference('2018-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
+            [$this->getReference('2018-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
+            [$this->getReference('2018-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
+            [$this->getReference('2018-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
+            [$this->getReference('2019-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
+            [$this->getReference('2019-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
+            [$this->getReference('2019-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
+            [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
         ];
     }
 

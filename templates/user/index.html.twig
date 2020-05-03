@@ -35,9 +35,6 @@
             <tr>
                 <th>Nom</th>
                 <th>Email</th>
-                <th>Numéro de license</th>
-                <th>Licence</th>
-                <th>Date de fin de validité</th>
                 <th></th>
             </tr>
             </thead>
@@ -48,8 +45,6 @@
                         <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
                     </td>
                     <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                    <td>{{ user.textLicenseType }}</td>
-                    <td class="{{ user.isLicenseValid ? 'text-success' : 'text-danger' }}">{{ user.licenseEndAt ? user.licenseEndAt|date('d/m/Y') : '-' }}</td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('user_edit', {'id': user.id}) }}">

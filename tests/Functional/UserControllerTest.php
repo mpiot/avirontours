@@ -44,7 +44,7 @@ class UserControllerTest extends AppWebTestCase
     public function testShowUser()
     {
         $client = static::createClient();
-        $url = '/user/1';
+        $url = '/user/3';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -87,7 +87,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][postalCode]' => '',
             'user[address][city]' => '',
             'user[address][phoneNumber]' => '',
-            'user[licenseEndAt]' => '',
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
@@ -121,8 +120,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][postalCode]' => '01000',
             'user[address][city]' => 'One City',
             'user[address][phoneNumber]' => '0102030405',
-            'user[licenseType]' => User::LICENSE_TYPE_ANNUAL,
-            'user[licenseEndAt]' => '2020-10-01',
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $values = $form->getPhpValues();
@@ -149,8 +146,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
-        $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
-        $this->assertSame('2020-10-01', $user->getLicenseEndAt()->format('Y-m-d'));
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
@@ -188,8 +183,6 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[address][postalCode]' => '01000',
             'user_edit[address][city]' => 'One City',
             'user_edit[address][phoneNumber]' => '0102030405',
-            'user_edit[licenseType]' => User::LICENSE_TYPE_ANNUAL,
-            'user_edit[licenseEndAt]' => '2020-10-01',
             'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $this->assertResponseRedirects();
@@ -209,8 +202,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
-        $this->assertSame(User::LICENSE_TYPE_ANNUAL, $user->getLicenseType());
-        $this->assertSame('2020-10-01', $user->getLicenseEndAt()->format('Y-m-d'));
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
         $this->assertCount(2, $user->getLicenses());
     }

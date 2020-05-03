@@ -19,7 +19,6 @@
 namespace App\Form;
 
 use App\Entity\SeasonCategory;
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -41,7 +40,7 @@ class SeasonCategoryType extends AbstractType
             ])
             ->add('licenseType', ChoiceType::class, [
                 'label' => 'Type de license',
-                'choices' => User::getAvailableLicenseTypes(),
+                'choices' => SeasonCategory::getAvailableLicenseTypes(),
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',

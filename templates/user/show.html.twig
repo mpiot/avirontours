@@ -88,10 +88,6 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between">
-                            Type de licence
-                            <span>{{ user.textLicenseType }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
                             Catégorie rameur
                             <span>{{ user.textRowerCategory }}</span>
                         </li>
@@ -116,7 +112,7 @@
                             <tbody>
                             {% for license in user.licenses %}
                                 <tr>
-                                    <td>{{ license.season.name }}</td>
+                                    <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
                                     <td>{{ license.medicalCertificate.textType }}</td>
                                     <td>{{ license.medicalCertificate.textLevel }}</td>
                                 </tr>

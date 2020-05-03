@@ -28,6 +28,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SeasonCategory
 {
+    const LICENSE_TYPE_ANNUAL = 'A';
+    const LICENSE_TYPE_INDOOR = 'I';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -127,6 +130,11 @@ class SeasonCategory
         return $this;
     }
 
+    public function getTextLicenseType(): ?string
+    {
+        return array_flip(self::getAvailableLicenseTypes())[$this->licenseType];
+    }
+
     public function getDescription(): ?string
     {
         return $this->description;
@@ -168,5 +176,13 @@ class SeasonCategory
         }
 
         return $this;
+    }
+
+    public static function getAvailableLicenseTypes(): array
+    {
+        return [
+            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
+            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
+        ];
     }
 }

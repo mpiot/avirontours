@@ -37,8 +37,8 @@ class LicenseType extends AbstractType
                 'query_builder' => function (EntityRepository $repository) {
                     return $repository->createQueryBuilder('season_category')
                         ->innerJoin('season_category.season', 'season')
-                        ->where('season.subscriptionEnabled = true')
-                        ->orderBy('season_category.name', 'ASC');
+                        ->orderBy('season.name', 'DESC')
+                        ->addOrderBy('season_category.name', 'ASC');
                 },
                 'choice_label' => function (SeasonCategory $seasonCategory) {
                     return $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName();

@@ -35,7 +35,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register/{seasonCategory}", requirements={"licenseType"= "annual|indoor"}, name="app_register")
+     * @Route("/register/{seasonCategory}", name="app_register")
      * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(seasonCategory)")
      */
     public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response

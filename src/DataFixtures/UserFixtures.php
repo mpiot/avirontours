@@ -34,7 +34,7 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->getUserData() as [$email, $roles, $gender, $firstName, $lastName, $licenseType, $rowerCategory, $birthday, $licenseEndAt]) {
+        foreach ($this->getUserData() as [$email, $roles, $gender, $firstName, $lastName, $rowerCategory, $birthday]) {
             $user = new User();
             $user
                 ->setEmail($email)
@@ -43,10 +43,8 @@ class UserFixtures extends Fixture
                 ->setGender($gender)
                 ->setFirstName($firstName)
                 ->setLastName($lastName)
-                ->setLicenseType($licenseType)
                 ->setRowerCategory($rowerCategory)
                 ->setBirthday($birthday)
-                ->setLicenseEndAt($licenseEndAt)
             ;
             $manager->persist($user);
             $this->addReference($user->getUsername(), $user);
@@ -58,13 +56,13 @@ class UserFixtures extends Fixture
     private function getUserData(): array
     {
         return [
-            ['super-administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Super Admin', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
-            ['administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Admin', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
-            ['annual-a@avirontours.fr', ['ROLE_USER'], 'm', 'A', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_A, new \DateTime(), new \DateTime('+1 year')],
-            ['annual-b@avirontours.fr', ['ROLE_USER'], 'm', 'B', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_B, new \DateTime(), new \DateTime('+1 year')],
-            ['annual-c@avirontours.fr', ['ROLE_USER'], 'm', 'C', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
-            ['indoor@avirontours.fr', ['ROLE_USER'], 'm', 'Indoor', 'User', User::LICENSE_TYPE_INDOOR, User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
-            ['outdated@avirontours.fr', ['ROLE_USER'], 'm', 'Outdated', 'User', User::LICENSE_TYPE_ANNUAL, User::ROWER_CATEGORY_A, new \DateTime(), new \DateTime('-1 day')],
+            ['super-administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Super Admin', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
+            ['administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Admin', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
+            ['annual-a@avirontours.fr', ['ROLE_USER'], 'm', 'A', 'User', User::ROWER_CATEGORY_A, new \DateTime(), new \DateTime('+1 year')],
+            ['annual-b@avirontours.fr', ['ROLE_USER'], 'm', 'B', 'User', User::ROWER_CATEGORY_B, new \DateTime(), new \DateTime('+1 year')],
+            ['annual-c@avirontours.fr', ['ROLE_USER'], 'm', 'C', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
+            ['indoor@avirontours.fr', ['ROLE_USER'], 'm', 'Indoor', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
+            ['outdated@avirontours.fr', ['ROLE_USER'], 'm', 'Outdated', 'User', User::ROWER_CATEGORY_A, new \DateTime(), new \DateTime('-1 day')],
         ];
     }
 }

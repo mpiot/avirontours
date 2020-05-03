@@ -19,7 +19,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\Season;
-use App\Entity\User;
+use App\Entity\SeasonCategory;
 use App\Tests\AppWebTestCase;
 
 class SeasonControllerTest extends AppWebTestCase
@@ -71,7 +71,7 @@ class SeasonControllerTest extends AppWebTestCase
         $values = $form->getPhpValues();
         $values['season']['seasonCategories'][0]['name'] = 'My category name';
         $values['season']['seasonCategories'][0]['price'] = 99.32;
-        $values['season']['seasonCategories'][0]['licenseType'] = User::LICENSE_TYPE_ANNUAL;
+        $values['season']['seasonCategories'][0]['licenseType'] = SeasonCategory::LICENSE_TYPE_ANNUAL;
         $values['season']['seasonCategories'][0]['description'] = 'My category description';
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
         $this->assertResponseRedirects();
@@ -80,7 +80,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertCount(1, $season->getSeasonCategories());
         $this->assertSame('My category name', $season->getSeasonCategories()->first()->getName());
         $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());
-        $this->assertSame(User::LICENSE_TYPE_ANNUAL, $season->getSeasonCategories()->first()->getLicenseType());
+        $this->assertSame(SeasonCategory::LICENSE_TYPE_ANNUAL, $season->getSeasonCategories()->first()->getLicenseType());
         $this->assertSame('My category description', $season->getSeasonCategories()->first()->getdescription());
     }
 

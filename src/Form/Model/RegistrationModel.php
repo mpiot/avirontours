@@ -143,7 +143,6 @@ class RegistrationModel
             ->setPostalCode($this->postalCode)
             ->setCity($this->city)
             ->setPhoneNumber($this->phoneNumber)
-            ->setLicenseType($seasonCategory->getLicenseType())
             ->addLicense($license)
         ;
 

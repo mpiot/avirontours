@@ -60,15 +60,6 @@ class UserType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('licenseEndAt', DateType::class, [
-                'label' => 'Date de fin de validité',
-                'widget' => 'single_text',
-                'required' => false,
-            ])
-            ->add('licenseType', ChoiceType::class, [
-                'label' => 'Type de license',
-                'choices' => User::getAvailableLicenseTypes(),
-            ])
             ->add('rowerCategory', ChoiceType::class, [
                 'label' => 'Catégorie rameur',
                 'choices' => User::getAvailableRowerCategories(),

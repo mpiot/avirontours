@@ -42,9 +42,6 @@ class User implements UserInterface
     const ROWER_CATEGORY_B = 2;
     const ROWER_CATEGORY_C = 3;
 
-    const LICENSE_TYPE_ANNUAL = 'A';
-    const LICENSE_TYPE_INDOOR = 'I';
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -92,17 +89,6 @@ class User implements UserInterface
      * @Assert\NotBlank()
      */
     private $lastName;
-
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $licenseEndAt;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
-    private $licenseType;
 
     /**
      * @ORM\Column(type="integer")
@@ -178,7 +164,6 @@ class User implements UserInterface
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
-        $this->licenseType = self::LICENSE_TYPE_ANNUAL;
         $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
@@ -316,46 +301,6 @@ class User implements UserInterface
     public function getFullName(): string
     {
         return $this->getFirstName().' '.$this->getLastName();
-    }
-
-    public function getLicenseEndAt(): ?\DateTimeInterface
-    {
-        return $this->licenseEndAt;
-    }
-
-    public function setLicenseEndAt(?\DateTimeInterface $licenseEndAt): self
-    {
-        $this->licenseEndAt = $licenseEndAt;
-
-        return $this;
-    }
-
-    public function isLicenseValid(): bool
-    {
-        $now = (new \DateTime())->setTime(0, 0, 0, 0);
-
-        if ($this->licenseEndAt >= $now) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function getLicenseType(): ?string
-    {
-        return $this->licenseType;
-    }
-
-    public function setLicenseType(?string $licenseType): self
-    {
-        $this->licenseType = $licenseType;
-
-        return $this;
-    }
-
-    public function getTextLicenseType(): ?string
-    {
-        return array_flip(self::getAvailableLicenseTypes())[$this->licenseType];
     }
 
     public function getRowerCategory(): ?int
@@ -563,6 +508,17 @@ class User implements UserInterface
         return $this;
     }
 
+    public function hasValidLicense(): bool
+    {
+        foreach ($this->licenses as $license) {
+            if ($license->getSeasonCategory()->getSeason()->getActive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @Assert\Callback()
      */
@@ -586,14 +542,6 @@ class User implements UserInterface
         $lastName = $slugger->slug($this->lastName)->lower();
 
         $this->username = "$firstName.$lastName";
-    }
-
-    public static function getAvailableLicenseTypes(): array
-    {
-        return [
-            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
-            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
-        ];
     }
 
     public static function getAvailableRowerCategories(): array
