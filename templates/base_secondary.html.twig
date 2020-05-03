@@ -22,9 +22,18 @@
                     align-items: center;
                     padding-top: 40px;
                     padding-bottom: 40px;
-                    background-color: #f5f5f5;
-                    background-image:url({{ asset('build/images/cover2.webp') }});
-                    background-position: 50% 50%;
+                    background: url('{{ preload(asset(random([
+                        'build/images/cover1.webp',
+                        'build/images/cover2.webp',
+                        'build/images/cover3.webp',
+                        'build/images/cover4.webp',
+                        'build/images/cover5.webp',
+                        'build/images/cover6.webp',
+                        'build/images/cover7.webp',
+                    ])), { as: 'image' }) }}') no-repeat center center fixed;
+                    -webkit-background-size: cover;
+                    -moz-background-size: cover;
+                    -o-background-size: cover;
                     background-size: cover;
                 }
 
