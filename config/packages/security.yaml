@@ -42,7 +42,7 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/logbook-entry, allow_if: "is_granted('ROLE_USER') and user.hasValidLicense()" }
+        - { path: ^/logbook-entry, allow_if: "(is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')" }
 
     role_hierarchy:
         ROLE_ADMIN:

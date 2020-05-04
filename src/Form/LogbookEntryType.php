@@ -21,6 +21,7 @@ namespace App\Form;
 use App\Entity\LogbookEntry;
 use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
+use App\Entity\User;
 use App\Form\Type\ShellDamageType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

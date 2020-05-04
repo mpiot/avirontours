@@ -325,7 +325,7 @@ class Shell
 
     public function getMileage(): ?float
     {
-        return $this->mileage;
+        return round($this->mileage, 1);
     }
 
     public function setMileage(?float $mileage): self

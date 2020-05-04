@@ -38,6 +38,24 @@ services:
         tags:
             - { name: 'doctrine.event_subscriber' }
 
+    App\EventListener\ShellMileageUpdater:
+        tags:
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'prePersist'
+                entity: 'App\Entity\LogbookEntry'
+                lazy: true
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preUpdate'
+                entity: 'App\Entity\LogbookEntry'
+                lazy: true
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preRemove'
+                entity: 'App\Entity\LogbookEntry'
+                lazy: true
+
     Monolog\Processor\WebProcessor:
         tags:
             - { name: monolog.processor }

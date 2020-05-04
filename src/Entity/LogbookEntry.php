@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LogbookEntryRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class LogbookEntry
 {
@@ -48,7 +49,7 @@ class LogbookEntry
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
      * @Assert\NotNull()
-     * @Assert\Expression("value.count() == this.getShell().getCrewSize()", message="Le nombre de membre d'équipage ne correspond pas au nombre de place.")
+     * @Assert\Expression("null === this.getShell() or value.count() == this.getShell().getCrewSize()", message="Le nombre de membre d'équipage ne correspond pas au nombre de place.")
      */
     private $crewMembers;
 
@@ -152,7 +153,7 @@ class LogbookEntry
         return $this->startAt;
     }
 
-    public function setStartAt(\DateTimeInterface $startAt): self
+    public function setStartAt(?\DateTimeInterface $startAt): self
     {
         $this->startAt = $startAt;
 
@@ -220,10 +221,20 @@ class LogbookEntry
      */
     public function validateCrew(ExecutionContextInterface $context, $payload)
     {
-        $invalidCrewMembers = [];
-        foreach ($this->getCrewMembers() as $crewMember) {
-            if ($crewMember->getRowerCategory() > $this->getShell()->getRowerCategory()) {
-                $invalidCrewMembers[] = $crewMember->getFullName();
+        if (null === $this->getShell()) {
+            return;
+        }
+
+        if ($this->getCrewMembers()->isEmpty()) {
+            return;
+        }
+
+        if (null !== $this->getShell()) {
+            $invalidCrewMembers = [];
+            foreach ($this->getCrewMembers() as $crewMember) {
+                if ($crewMember->getRowerCategory() > $this->getShell()->getRowerCategory()) {
+                    $invalidCrewMembers[] = $crewMember->getFullName();
+                }
             }
         }
 
