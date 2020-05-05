@@ -67,6 +67,8 @@ class SeasonControllerTest extends AppWebTestCase
 
         $form = $crawler->selectButton('Sauver')->form([
             'season[name]' => 2030,
+            'season[active]' => 1,
+            'season[subscriptionEnabled]' => 1,
         ]);
         $values = $form->getPhpValues();
         $values['season']['seasonCategories'][0]['name'] = 'My category name';
@@ -77,6 +79,8 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $season = $this->getEntityManager()->getRepository(Season::class)->findOneBy(['name' => 2030]);
         $this->assertInstanceOf(Season::class, $season);
+        $this->assertTrue($season->getActive());
+        $this->assertTrue($season->getSubscriptionEnabled());
         $this->assertCount(1, $season->getSeasonCategories());
         $this->assertSame('My category name', $season->getSeasonCategories()->first()->getName());
         $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());

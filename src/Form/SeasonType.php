@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\Season;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -33,6 +34,16 @@ class SeasonType extends AbstractType
             ->add('name', NumberType::class, [
                 'label' => 'Nom',
                 'help' => 'Année de la saison',
+            ])
+            ->add('active', CheckboxType::class, [
+                'label' => 'Saison active',
+                'label_attr' => ['class' => 'switch-custom'],
+                'required' => false,
+            ])
+            ->add('subscriptionEnabled', CheckboxType::class, [
+                'label' => 'Inscriptions active',
+                'label_attr' => ['class' => 'switch-custom'],
+                'required' => false,
             ])
             ->add('seasonCategories', CollectionType::class, [
                 'label' => 'Catégories',
