@@ -52,6 +52,7 @@ class ShellRepository extends ServiceEntityRepository
             ->addSelect('COUNT(logbook_entries) as totalSessions')
             ->leftJoin('shell.logbookEntries', 'logbook_entries')
             ->where('logbook_entries.date BETWEEN :p30days AND :today')
+            ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalSessions', 'DESC')
             ->groupBy('shell')
             ->setParameters([

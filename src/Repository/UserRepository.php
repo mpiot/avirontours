@@ -104,6 +104,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->addSelect('SUM(logbook_entries.coveredDistance) as totalDistance')
             ->leftJoin('app_user.logbookEntries', 'logbook_entries')
             ->where('logbook_entries.date BETWEEN :p30days AND :today')
+            ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalDistance', 'DESC')
             ->groupBy('app_user.id')
             ->setParameters([
@@ -124,6 +125,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->addSelect('COUNT(logbook_entries) as totalSessions')
             ->leftJoin('app_user.logbookEntries', 'logbook_entries')
             ->where('logbook_entries.date BETWEEN :p30days AND :today')
+            ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalSessions', 'DESC')
             ->groupBy('app_user.id')
             ->setParameters([
