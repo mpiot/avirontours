@@ -1,0 +1,15 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Ajouter une catégorie d'avarie{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('shell_damage_category_index') }}">Gestion des catégories  d'avarie</a></li>
+    <li class="breadcrumb-item active">Ajouter une catégorie d'avarie</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une catégorie d'avarie</h1>
+
+    {{ include('admin/shell_damage_category/_form.html.twig') }}
+{% endblock %}

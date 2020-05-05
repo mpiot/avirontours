@@ -1,0 +1,15 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Ajouter une avarie{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('shell_damage_index') }}">Gestion des avaries</a></li>
+    <li class="breadcrumb-item active">Ajouter une avarie</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une avarie</h1>
+
+    {{ include('admin/shell_damage/_form.html.twig') }}
+{% endblock %}

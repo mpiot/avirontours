@@ -1,0 +1,127 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ user.fullName }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des membres</a></li>
+    <li class="breadcrumb-item active">{{ user.fullName }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>{{ user.fullName }}</h1>
+
+        <div class="ml-auto align-self-center ">
+            {% embed 'admin/user/_delete_form.html.twig' %}
+                {% block buttons %}
+                    <div class="btn-group-sm">
+                        <a class="btn btn-outline-warning" href="{{ path('user_edit', {'id': user.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+
+                        {{ parent() }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    <div>
+        <div class="mb-3">Date d'inscription: {{ user.subscriptionDate|date('d/m/Y') }}</div>
+
+        <div class="row">
+            <div class="col-xl">
+                <div class="card">
+                    <div class="card-header">
+                        Membre
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Genre
+                            <span>{{ user.textGender }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Nom
+                            <span>{{ user.fullName }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Email
+                            <span>{{ user.email }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Date de naissance
+                            <span>{{ user.birthday|date('d/m/Y') }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Représentant légal
+                            <span>{{ user.legalRepresentative ? user.legalRepresentative : '-' }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-xl mt-3 mt-xl-0">
+                <div class="card">
+                    <div class="card-header">
+                        Adresse
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Adresse
+                            <span>{{ user.formattedAddress|nl2br }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Numéro de téléphone
+                            <span>{{ user.phoneNumber }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-xl">
+                <div class="card">
+                    <div class="card-header">
+                        Licence
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Catégorie rameur
+                            <span>{{ user.textRowerCategory }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-xl mt-3 mt-xl-0">
+                <div class="card">
+                    <div class="card-header">
+                        Saisons
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Saison</th>
+                                <th>Type certificat</th>
+                                <th>Niveau certificat</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for license in user.licenses %}
+                                <tr>
+                                    <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
+                                    <td>{{ license.medicalCertificate.textType }}</td>
+                                    <td>{{ license.medicalCertificate.textLevel }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

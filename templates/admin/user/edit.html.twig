@@ -1,0 +1,32 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('user_form')}}
+{% endblock %}
+
+{% block title %}Modifier un utilisateur{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
+    <li class="breadcrumb-item text-muted">{{ user.email }}</li>
+    <li class="breadcrumb-item active">Modifier un utilisateur</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier un utilisateur</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('admin/user/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('admin/user/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('user_form') }}
+{% endblock %}

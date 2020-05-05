@@ -1,0 +1,21 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier un bâteau{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('shell_damage_category_index') }}">Gestion des catégories  d'avarie</a></li>
+    <li class="breadcrumb-item active">Modifier une catégorie d'avarie</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier une catégorie d'avarie</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('admin/shell_damage_category/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('admin/shell_damage_category/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}

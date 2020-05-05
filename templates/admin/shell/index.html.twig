@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion du parc{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion du parc</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion du parc</h1>
+
+        <a href="{{ path('shell_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter un bâteau
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Type</th>
+                <th>Kilométrage</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for shell in shells %}
+                <tr>
+                    <td>
+                        <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
+                    </td>
+                    <td>{{ shell.abbreviation }}</td>
+                    <td>{{ shell.mileage }} km</td>
+                    <td class="text-right">
+                        <a class="btn btn-outline-warning btn-sm rounded-pill"
+                           href="{{ path('shell_edit', {'id': shell.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">Pas de bâteau</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

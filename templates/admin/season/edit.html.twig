@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+{% form_theme form _self %}
+
+{% block _season_seasonCategories_entry_widget %}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.children.name) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.price) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.licenseType) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.description) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('season_form')}}
+{% endblock %}
+
+{% block title %}Modifier une saison{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item active">Modifier une saison</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier une saison</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('admin/season/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('admin/season/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('season_form') }}
+{% endblock %}

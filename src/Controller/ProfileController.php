@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/profile")
- * @Security("is_granted('IS_AUTHENTICATED_REMEMBERED')")
+ * @Security("is_granted('ROLE_USER')")
  */
 class ProfileController extends AbstractController
 {
