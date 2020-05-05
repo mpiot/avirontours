@@ -18,6 +18,8 @@
 
 namespace App\Form;
 
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,6 +36,13 @@ class ResetPasswordRequestFormType extends AbstractType
                 'help' => 'Entrez votre nom d\'utilisateur et nous vous enverrons un lien pour réinitialiser votre mot de passe.',
                 'constraints' => [
                     new NotBlank(),
+                ],
+            ])
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'action_name' => 'reset_password_request',
+                'mapped' => false,
+                'constraints' => [
+                    new Recaptcha3(),
                 ],
             ])
         ;
