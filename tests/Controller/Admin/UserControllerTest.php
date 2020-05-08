@@ -38,6 +38,10 @@ class UserControllerTest extends AppWebTestCase
 
         $this->logIn($client, 'admin.user');
         $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'super-admin.user');
+        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
@@ -55,6 +59,10 @@ class UserControllerTest extends AppWebTestCase
 
         $this->logIn($client, 'admin.user');
         $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'super-admin.user');
+        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
@@ -71,6 +79,10 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(403);
 
         $this->logIn($client, 'admin.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'super-admin.user');
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
@@ -166,6 +178,10 @@ class UserControllerTest extends AppWebTestCase
 
         $this->logIn($client, 'admin.user');
         $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'super-admin.user');
+        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
@@ -219,6 +235,10 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(403);
 
         $this->logIn($client, 'admin.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'super-admin.user');
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 

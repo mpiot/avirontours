@@ -34,14 +34,16 @@
             </div>
         </a>
 
-        <a href="{{ path('user_index') }}">
-            <div class="card h-75 m-3" style="width: 15rem;">
-                <div class="card-body text-center">
-                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
-                    <h4 class="card-title">Utilisateurs</h4>
+        {% if is_granted('ROLE_USER_ADMIN') %}
+            <a href="{{ path('user_index') }}">
+                <div class="card h-75 m-3" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                        <h4 class="card-title">Utilisateurs</h4>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        {% endif %}
 
         <a href="{{ path('season_index') }}">
             <div class="card h-75 m-3" style="width: 15rem;">

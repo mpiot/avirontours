@@ -57,7 +57,7 @@ class UserFixtures extends Fixture
     {
         return [
             ['super-administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Super Admin', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
-            ['administrator@avirontours.fr', ['ROLE_SUPER_ADMIN'], 'm', 'Admin', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
+            ['administrator@avirontours.fr', ['ROLE_ADMIN'], 'm', 'Admin', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],
             ['annual-a@avirontours.fr', ['ROLE_USER'], 'm', 'A', 'User', User::ROWER_CATEGORY_A, new \DateTime(), new \DateTime('+1 year')],
             ['annual-b@avirontours.fr', ['ROLE_USER'], 'm', 'B', 'User', User::ROWER_CATEGORY_B, new \DateTime(), new \DateTime('+1 year')],
             ['annual-c@avirontours.fr', ['ROLE_USER'], 'm', 'C', 'User', User::ROWER_CATEGORY_C, new \DateTime(), new \DateTime('+1 year')],

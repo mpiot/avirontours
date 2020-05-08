@@ -30,7 +30,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/admin/user")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_USER_ADMIN')")
  */
 class UserController extends AbstractController
 {
