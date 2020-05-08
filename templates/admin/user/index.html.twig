@@ -49,12 +49,12 @@
                         {% if is_granted('ROLE_SUPER_ADMIN') %}
                             <a class="btn btn-outline-info btn-sm rounded-pill"
                                href="{{ path('homepage', {'_switch_user': user.username}) }}">
-                                <span class="fas fa-people-arrows"></span> Impersonate
+                                <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
                             </a>
                         {% endif %}
                         <a class="btn btn-outline-warning btn-sm rounded-pill"
                            href="{{ path('user_edit', {'id': user.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
+                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
                         </a>
                     </td>
                 </tr>

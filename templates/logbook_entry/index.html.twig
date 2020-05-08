@@ -57,13 +57,13 @@
                         {% if logbook_entry.endAt is null %}
                             <a class="btn btn-success btn-sm rounded-pill"
                                href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
-                                <span class="fas fa-flag-checkered"></span> Finir la sortie
+                                <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
                             </a>
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') %}
                             <a class="btn btn-outline-warning btn-sm rounded-pill"
                                href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
-                                <span class="fas fa-pencil-alt"></span> Modifier
+                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
                             </a>
                         {% endif %}
                     </td>
