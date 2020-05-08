@@ -106,6 +106,43 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(1, $crawler->filter('#logbook_entry_new_crewMembers > option'));
     }
 
+    public function testNewLogbookEntryWithNonUserCrewMember()
+    {
+        $client = static::createClient();
+        $url = '/logbook-entry/new';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'outdated.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'a.user');
+        $crawler = $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $this->assertCount(0, $crawler->filter('#logbook_entry_new_nonUserCrewMembers'));
+
+        $this->logIn($client, 'admin.user');
+        $crawler = $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $this->assertCount(1, $crawler->filter('#logbook_entry_new_nonUserCrewMembers'));
+
+        $client->submitForm('Sauver', [
+            'logbook_entry_new[shell]' => 2,
+            'logbook_entry_new[crewMembers]' => [3],
+            'logbook_entry_new[nonUserCrewMembers]' => 'John Doe',
+            'logbook_entry_new[startAt]' => '09:00',
+        ]);
+        $this->assertResponseRedirects();
+        $logBookEntry = $this->getEntityManager()->getRepository(LogbookEntry::class)->findOneBy([], ['id' => 'DESC']);
+        $this->assertInstanceOf(LogbookEntry::class, $logBookEntry);
+        $this->assertCount(1, $logBookEntry->getCrewMembers());
+        $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
+    }
+
     public function testEditLogbookEntry()
     {
         $client = static::createClient();

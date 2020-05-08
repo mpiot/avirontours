@@ -25,6 +25,9 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class ChangePasswordType extends AbstractType
 {
@@ -38,9 +41,14 @@ class ChangePasswordType extends AbstractType
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'invalid_message' => 'Les mots de passe ne sont pas identiques.',
+                'invalid_message' => 'Les mots de passes doivent être identiques.',
                 'first_options' => [
                     'label' => 'Mot de passe',
+                    'constraints' => [
+                        new NotBlank(),
+                        new Length(['min' => 6, 'max' => 4096]),
+                        new NotCompromisedPassword(),
+                    ],
                 ],
                 'second_options' => [
                     'label' => 'Répéter le mot de passe',

@@ -49,9 +49,14 @@ class LogbookEntry
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
      * @Assert\NotNull()
-     * @Assert\Expression("null === this.getShell() or value.count() == this.getShell().getCrewSize()", message="Le nombre de membre d'équipage ne correspond pas au nombre de place.")
+     * @Assert\Count(min="1")
      */
     private $crewMembers;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $nonUserCrewMembers = [];
 
     /**
      * @ORM\Column(type="date")
@@ -136,6 +141,18 @@ class LogbookEntry
         return $this;
     }
 
+    public function getNonUserCrewMembers(): ?array
+    {
+        return $this->nonUserCrewMembers;
+    }
+
+    public function setNonUserCrewMembers(?array $nonUserCrewMembers): self
+    {
+        $this->nonUserCrewMembers = $nonUserCrewMembers;
+
+        return $this;
+    }
+
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
@@ -214,6 +231,24 @@ class LogbookEntry
         }
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback()
+     */
+    public function validateCrewLength(ExecutionContextInterface $context, $payload)
+    {
+        if (null === $this->getShell()) {
+            return;
+        }
+
+        $numberCrewMembers = $this->getCrewMembers()->count() + \count($this->nonUserCrewMembers);
+
+        if ($numberCrewMembers !== $this->getShell()->getCrewSize()) {
+            $context->buildViolation('Le nombre de membre d\'équipage ne correspond pas au nombre de place.')
+                ->atPath('crewMembers')
+                ->addViolation();
+        }
     }
 
     /**

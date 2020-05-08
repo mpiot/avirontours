@@ -32,6 +32,7 @@ class LogbookEntryFinishType extends AbstractType
         $builder
             ->remove('shell')
             ->remove('crewMembers')
+            ->remove('nonUserCrewMembers')
             ->remove('startAt')
         ;
 

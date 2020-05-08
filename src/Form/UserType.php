@@ -32,6 +32,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class UserType extends AbstractType
 {
@@ -72,11 +73,12 @@ class UserType extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
-                'mapped' => false,
                 'constraints' => [
                     new NotBlank(),
                     new Length(['min' => 6, 'max' => 4096]),
+                    new NotCompromisedPassword(),
                 ],
+                'mapped' => false,
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',

@@ -1,5 +1,19 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    {{ form_row(form.shell) }}
+
+    {{ form_row(form.crewMembers) }}
+
+    {% if form.nonUserCrewMembers is defined %}
+        {{ form_row(form.nonUserCrewMembers) }}
+    {% endif %}
+
+    {{ form_row(form.startAt) }}
+
+    {{ form_row(form.endAt) }}
+
+    {{ form_row(form.coveredDistance) }}
+
+    {{ form_row(form.shellDamages) }}
 
     <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
 {{ form_end(form) }}

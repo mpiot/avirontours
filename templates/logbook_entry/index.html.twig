@@ -33,7 +33,18 @@
             {% for logbook_entry in logbook_entries %}
                 <tr>
                     <td>{{ logbook_entry.shell.fullName }}</td>
-                    <td>{{ logbook_entry.crewMembers|join(', ', ' et ') }}</td>
+                    <td>
+                        {% if logbook_entry.nonUserCrewMembers is empty %}
+                            {{ logbook_entry.crewMembers|join(', ', ' et ') }}
+                        {% else %}
+                            {{- logbook_entry.crewMembers|join(', ') -}}
+
+                            {%- for member in logbook_entry.nonUserCrewMembers -%}
+                                {%- if loop.last %} et {% else %}, {% endif -%}
+                                <b title="Non utilisateur">{{- member -}}</b>
+                            {%- endfor -%}
+                        {% endif %}
+                    </td>
                     <td>{{ logbook_entry.date|date('d/m/Y') }}</td>
                     <td>{{ logbook_entry.startAt|date('H:i') }}</td>
                     <td>{{ logbook_entry.endAt ? logbook_entry.endAt|date('H:i') }}</td>

@@ -25,6 +25,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class ChangePasswordFormType extends AbstractType
 {
@@ -33,15 +34,14 @@ class ChangePasswordFormType extends AbstractType
         $builder
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
+                'invalid_message' => 'Les mots de passes doivent être identiques.',
                 'first_options' => [
+                    'label' => 'Nouveau mot de passe',
                     'constraints' => [
                         new NotBlank(),
-                        new Length([
-                            'min' => 6,
-                            'max' => 4096,
-                        ]),
+                        new Length(['min' => 6, 'max' => 4096]),
+                        new NotCompromisedPassword(),
                     ],
-                    'label' => 'Nouveau mot de passe',
                 ],
                 'second_options' => [
                     'label' => 'Répéter le mot de passe',

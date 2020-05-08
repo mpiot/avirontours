@@ -22,6 +22,7 @@ use App\Entity\LogbookEntry;
 use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
+use App\Form\Type\NonUserCrewMemberType;
 use App\Form\Type\ShellDamageType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -31,9 +32,17 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
 class LogbookEntryType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -112,6 +121,14 @@ class LogbookEntryType extends AbstractType
                 'by_reference' => false,
             ])
         ;
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $builder->add('nonUserCrewMembers', NonUserCrewMemberType::class, [
+                'label' => 'Membres d\'équipage (sans utilisateur)',
+                'help' => 'John Doe, Foo Bar',
+                'required' => false,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

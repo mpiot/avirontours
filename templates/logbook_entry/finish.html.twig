@@ -11,7 +11,15 @@
 {% block body %}
     <h1>Finir une sortie</h1>
 
-    {{ include('logbook_entry/_form.html.twig', {'button_label': 'Terminer la sortie'}) }}
+    {{ form_start(form) }}
+        {{ form_row(form.endAt) }}
+
+        {{ form_row(form.coveredDistance) }}
+
+        {{ form_row(form.shellDamages) }}
+
+        <button class="btn btn-primary">Terminer la sortie</button>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
