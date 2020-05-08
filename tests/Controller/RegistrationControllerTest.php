@@ -27,7 +27,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testRegistration()
     {
         $client = static::createClient();
-        $url = '/register/9';
+        $url = '/register/2020-jeune';
 
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
@@ -113,7 +113,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testNonEnabledRegistration()
     {
         $client = static::createClient();
-        $url = '/register/1';
+        $url = '/register/2018-jeune';
 
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(404);
@@ -122,7 +122,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testRegistrationAsLogInUser()
     {
         $client = static::createClient();
-        $url = '/register/12';
+        $url = '/register/2020-indoor';
 
         $this->logIn($client, 'a.user');
         $client->request('GET', $url);
@@ -132,7 +132,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testRenew()
     {
         $client = static::createClient();
-        $url = '/renew/9';
+        $url = '/renew/2020-jeune';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -161,7 +161,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testNonEnabledRenew()
     {
         $client = static::createClient();
-        $url = '/renew/1';
+        $url = '/renew/2018-jeune';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -174,7 +174,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testRenewAsAnonymousUser()
     {
         $client = static::createClient();
-        $url = '/renew/12';
+        $url = '/renew/2020-indoor';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');

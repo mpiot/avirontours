@@ -21,6 +21,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -71,6 +72,19 @@ class SeasonCategory
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="seasonCategory")
      */
     private $licenses;
+
+    /**
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="season"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="-"),
+     *          @Gedmo\SlugHandlerOption(name="urilize", value=true)
+     *      })
+     * }, fields={"name"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -176,6 +190,11 @@ class SeasonCategory
         }
 
         return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     public static function getAvailableLicenseTypes(): array

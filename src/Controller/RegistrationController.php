@@ -35,8 +35,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register/{seasonCategory}", name="app_register")
-     * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(seasonCategory)")
+     * @Route("/register/{slug}", name="app_register")
+     * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(slug)")
      */
     public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
@@ -67,12 +67,12 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/renew/{seasonCategory}", name="renew")
+     * @Route("/renew/{slug}", name="renew")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function renew(int $seasonCategory, SeasonCategoryRepository $repository, Request $request): Response
+    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request): Response
     {
-        $seasonCategory = $repository->findSubscriptionSeasonCategory($seasonCategory, $this->getUser());
+        $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {
             throw $this->createNotFoundException();
         }

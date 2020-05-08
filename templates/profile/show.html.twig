@@ -44,7 +44,7 @@
                                     {{ seasonCategory.description|nl2br }}
                                 </div>
                             {% endif %}
-                            <a class="btn btn-lg btn-block btn-outline-primary mt-4" href="{{ path('renew', {'seasonCategory': seasonCategory.id}) }}">S'inscrire</a>
+                            <a class="btn btn-lg btn-block btn-outline-primary mt-4" href="{{ path('renew', {'slug': seasonCategory.slug}) }}">S'inscrire</a>
                         </div>
                     </div>
                 {% endfor %}

@@ -37,13 +37,13 @@ class SeasonCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, SeasonCategory::class);
     }
 
-    public function findSubscriptionSeasonCategory(int $id, User $user = null)
+    public function findSubscriptionSeasonCategory(string $slug, User $user = null)
     {
         $queryBuilder = $this->createQueryBuilder('season_category')
             ->innerJoin('season_category.season', 'season')->addSelect('season')
-            ->andWhere('season_category.id = :id')
+            ->andWhere('season_category.slug = :slug')
             ->andWhere('season.subscriptionEnabled = true')
-            ->setParameter('id', $id)
+            ->setParameter('slug', $slug)
         ;
 
         if (null !== $user) {
