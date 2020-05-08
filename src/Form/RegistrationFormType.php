@@ -32,6 +32,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class RegistrationFormType extends AbstractType
 {
@@ -59,8 +61,16 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passes doivent être identiques.',
-                'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Répéter le mot de passe'],
+                'first_options' => [
+                    'label' => 'Mot de passe',
+                    'constraints' => [
+                        new Length(['min' => 6, 'max' => 4096]),
+                        new NotCompromisedPassword(),
+                    ],
+                ],
+                'second_options' => [
+                    'label' => 'Répéter le mot de passe',
+                ],
             ])
             ->add('address', AddressType::class, [
                 'label' => 'Adresse',
