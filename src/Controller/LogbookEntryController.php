@@ -35,7 +35,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/logbook-entry")
- * @Security("is_granted('ROLE_USER')")
  */
 class LogbookEntryController extends AbstractController
 {

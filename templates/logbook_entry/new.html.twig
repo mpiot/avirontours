@@ -9,6 +9,7 @@
 
 {% block breadcrumb %}
     {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Cahier de sorties</a></li>
     <li class="breadcrumb-item active">Ajouter une sortie</li>
 {% endblock %}
 

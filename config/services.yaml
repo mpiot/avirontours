@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    logbook_subdomain: cahierdesorties
+    domain: '%env(APP_DOMAIN)%'
+    logbook_domain: '%logbook_subdomain%.%domain%'
     default_admin_email: notifications@avirontours.fr
     default_sender_email: no-reply@avirontours.fr
     container.dumper.inline_factories: true
@@ -15,6 +18,7 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $senderEmail: '%env(string:default:default_sender_email:SENDER_EMAIL)%'
+            string $logbookDomain: '%logbook_domain%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

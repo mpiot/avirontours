@@ -2,6 +2,7 @@ security:
     encoders:
         App\Entity\User:
             algorithm: auto
+        Symfony\Component\Security\Core\User\User: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -11,12 +12,27 @@ security:
                 class: App\Entity\User
                 property: username
 
+        logbook_user_provider:
+            memory:
+                users:
+                    logbook:
+                        password: '%env(APP_LOGBOOK_USER_PASSWORD)%'
+                        roles: 'ROLE_LOGBOOK_USER'
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        logbook:
+            host: '%logbook_subdomain%'
+            pattern: ^/logbook-entry
+            provider: logbook_user_provider
+            http_basic: ~
+
         main:
             anonymous: lazy
+            provider: app_user_provider
             guard:
                 authenticators:
                     - App\Security\AppLoginAuthenticator
@@ -43,7 +59,7 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/profile, roles: ROLE_USER }
-         - { path: ^/logbook-entry, allow_if: "(is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')" }
+         - { path: ^/logbook-entry, allow_if: "is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')" }
 
     role_hierarchy:
         ROLE_ADMIN:

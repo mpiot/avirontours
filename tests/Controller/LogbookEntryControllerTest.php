@@ -296,4 +296,64 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $shell = $this->getEntityManager()->getRepository(Shell::class)->find(2);
         $this->assertSame(0.0, $shell->getMileage());
     }
+
+    public function testLogbookIndexSubdomainAccess()
+    {
+        $client = static::createClient();
+        $url = '/logbook-entry/';
+
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_subdomain').$client->getContainer()->getParameter('domain')]
+        );
+        $this->assertResponseStatusCodeSame(401);
+
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_subdomain').$client->getContainer()->getParameter('domain')]
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testLogbookNewSubdomainAccess()
+    {
+        $client = static::createClient();
+        $url = '/logbook-entry/new';
+
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_subdomain').$client->getContainer()->getParameter('domain')]
+        );
+        $this->assertResponseStatusCodeSame(401);
+
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_subdomain').$client->getContainer()->getParameter('domain')]
+        );
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testLogbookFinishSubdomainAccess()
+    {
+        $client = static::createClient();
+        $url = '/logbook-entry/2/finish';
+
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+        );
+        $this->assertResponseStatusCodeSame(401);
+
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+        );
+        $this->assertResponseIsSuccessful();
+    }
 }
