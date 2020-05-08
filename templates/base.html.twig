@@ -62,22 +62,8 @@
         </header>
 
         <div class="container-fluid">
-            <div class="row flex-xl-nowrap">
-                <div class="col-md-3 col-xl-2 d-flex align-items-start">
-                    <nav class="left-nav-links collapse" id="left-nav">
-                        {% block nav %}
-                        {% endblock %}
-                    </nav>
-
-                    <button class="btn border d-md-none text-secondary px-3 my-3 float-right ml-auto" type="button" data-toggle="collapse" data-target="#left-nav" aria-controls="left-nav" aria-expanded="false">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" focusable="false">
-                            <title>Menu</title>
-                            <path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <main class="col-md-9 col-xl-10 py-md-3 pl-md-5" role="main">
+            {% block container %}
+                <main class="py-md-3" role="main">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             {% block breadcrumb %}
@@ -98,7 +84,7 @@
 
                     {% block body %}{% endblock %}
                 </main>
-            </div>
+            {% endblock %}
         </div>
 
         {% block javascripts %}
