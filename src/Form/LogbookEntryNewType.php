@@ -23,6 +23,8 @@ use App\Entity\Shell;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -114,6 +116,13 @@ class LogbookEntryNewType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'multiple' => true,
+            ])
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'action_name' => 'logbook_new',
+                'mapped' => false,
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
             ])
             ->remove('endAt')
             ->remove('coveredDistance')

@@ -19,6 +19,8 @@
 namespace App\Form;
 
 use App\Entity\LogbookEntry;
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -30,6 +32,13 @@ class LogbookEntryFinishType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'action_name' => 'logbook_finish',
+                'mapped' => false,
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
+            ])
             ->remove('shell')
             ->remove('crewMembers')
             ->remove('nonUserCrewMembers')
