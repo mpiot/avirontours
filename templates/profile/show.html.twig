@@ -37,14 +37,14 @@
                         <div class="card-header">
                             <h4 class="my-0 font-weight-normal">{{ seasonCategory.name }}</h4>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h1 class="card-title pricing-card-title">{{ seasonCategory.price }} € <small class="text-muted">/ an</small></h1>
                             {% if seasonCategory.description is not null %}
-                                <div class="mt-3">
-                                    {{ seasonCategory.description|nl2br }}
+                                <div class="mt-3 text-left">
+                                    {{ seasonCategory.description|markdown_to_html }}
                                 </div>
                             {% endif %}
-                            <a class="btn btn-lg btn-block btn-outline-primary mt-4" href="{{ path('renew', {'slug': seasonCategory.slug}) }}">S'inscrire</a>
+                            <a class="btn btn-lg btn-block btn-outline-primary mt-auto" href="{{ path('renew', {'slug': seasonCategory.slug}) }}">S'inscrire</a>
                         </div>
                     </div>
                 {% endfor %}

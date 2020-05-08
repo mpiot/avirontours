@@ -111,6 +111,9 @@
     "egulias/email-validator": {
         "version": "2.1.14"
     },
+    "erusev/parsedown": {
+        "version": "1.7.4"
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
     },
@@ -639,6 +642,9 @@
         "version": "v3.0.1"
     },
     "twig/inky-extra": {
+        "version": "v3.0.3"
+    },
+    "twig/markdown-extra": {
         "version": "v3.0.3"
     },
     "twig/twig": {
