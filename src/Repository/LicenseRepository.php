@@ -19,9 +19,13 @@
 namespace App\Repository;
 
 use App\Entity\License;
+use App\Entity\Season;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @method License|null find($id, $lockMode = null, $lockVersion = null)
@@ -31,9 +35,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class LicenseRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $paginator;
+
+    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, License::class);
+        $this->paginator = $paginator;
     }
 
     public function findLastUserSeason(User $user)
@@ -49,5 +56,32 @@ class LicenseRepository extends ServiceEntityRepository
             ->setMaxResults(1);
 
         return $query->getOneOrNullResult();
+    }
+
+    public function findBySeasonPaginated(Season $season, $query = null, $page = 1): PaginationInterface
+    {
+        $qb = $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')->addSelect('user')
+            ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
+            ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
+            ->innerJoin('season_category.season', 'season')
+            ->where('season = :season')
+            ->orderBy('user.firstName', 'ASC')
+            ->addOrderBy('user.lastName', 'ASC')
+            ->setParameter('season', $season)
+        ;
+
+        if ($query) {
+            $qb
+                ->andWhere('LOWER(user.firstName) LIKE :query OR LOWER(user.lastName) LIKE :query OR LOWER(user.email) LIKE :query')
+                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+            ;
+        }
+
+        return $this->paginator->paginate(
+            $qb->getQuery(),
+            $page,
+            License::NUM_ITEMS
+        );
     }
 }

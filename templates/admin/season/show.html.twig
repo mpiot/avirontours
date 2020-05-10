@@ -1,0 +1,126 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ season.name }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item active">{{ season.name }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>{{ season.name }}</h1>
+
+        <div class="ml-auto align-self-center ">
+            {% embed 'admin/season/_delete_form.html.twig' %}
+                {% block buttons %}
+                    <div class="btn-group-sm">
+                        <a class="btn btn-outline-warning" href="{{ path('season_edit', {'id': season.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+
+                        {{ parent() }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    <div class="accordion mb-3" id="accordionExample">
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
+                <span class="h5">Catégories</span>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prix</th>
+                                <th>Type de licence</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for category in season.seasonCategories %}
+                                <tr>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.price }} €</td>
+                                    <td>{{ category.textLicenseType }}</td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header d-flex">
+            <span class="h5 align-self-center">Licences</span>
+
+            <form method="get" class="ml-auto">
+                <div class="form-row align-items-center">
+                    <div class="col-md-auto col-sm-12 ml-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><span class="fa fa-search"></span></div>
+                            </div>
+                            <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for license in licenses %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
+                            </td>
+                            <td><a href="mailto:{{ license.user.email }}">{{ license.user.email }}</a></td>
+                            <td class="text-right">
+                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <a class="btn btn-outline-info btn-sm rounded-pill"
+                                       href="{{ path('homepage', {'_switch_user': license.user.username}) }}">
+                                        <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
+                                    </a>
+                                {% endif %}
+                                <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                   href="{{ path('user_edit', {'id': license.user.id}) }}">
+                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Pas de licence</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if licenses|length < licenses.totalItemCount %}
+                    {{ knp_pagination_render(licenses) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

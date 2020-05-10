@@ -29,7 +29,7 @@
             <tbody>
             {% for season in seasons %}
                 <tr>
-                    <td>{{ season.name }}</td>
+                    <td><a href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</a></td>
                     <td>
                         {% if season.active %}
                             <span class="badge badge-pill badge-success">Active</span>

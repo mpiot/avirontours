@@ -41,6 +41,23 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testShowSeason()
+    {
+        $client = static::createClient();
+        $url = '/admin/season/1';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'admin.user');
+        $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testNewSeason()
     {
         $client = static::createClient();

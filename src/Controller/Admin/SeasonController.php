@@ -20,6 +20,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Season;
 use App\Form\SeasonType;
+use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,6 +64,21 @@ class SeasonController extends AbstractController
         return $this->render('admin/season/new.html.twig', [
             'season' => $season,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="season_show", methods={"GET"})
+     */
+    public function show(Request $request, LicenseRepository $licenseRepository, Season $season): Response
+    {
+        return $this->render('admin/season/show.html.twig', [
+            'season' => $season,
+            'licenses' => $licenseRepository->findBySeasonPaginated(
+                $season,
+                $request->query->getAlnum('q'),
+                $request->query->getInt('page', 1)
+            ),
         ]);
     }
 
