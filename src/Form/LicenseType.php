@@ -19,7 +19,9 @@
 namespace App\Form;
 
 use App\Entity\License;
+use App\Entity\Season;
 use App\Entity\SeasonCategory;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,20 +33,42 @@ class LicenseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('user', EntityType::class, [
+                'label' => 'Utilisateur',
+                'class' => User::class,
+                'query_builder' => function (EntityRepository $repository) use ($options) {
+                    return $repository->createQueryBuilder('app_user')
+                        ->orderBy('app_user.firstName', 'ASC')
+                        ->addOrderBy('app_user.lastName', 'ASC');
+                },
+                'choice_label' => 'fullName',
+                'placeholder' => '--- Choisissez un utilisateur ---',
+            ])
             ->add('seasonCategory', EntityType::class, [
                 'label' => 'Catégorie',
                 'class' => SeasonCategory::class,
-                'query_builder' => function (EntityRepository $repository) {
-                    return $repository->createQueryBuilder('season_category')
+                'query_builder' => function (EntityRepository $repository) use ($options) {
+                    $qb = $repository->createQueryBuilder('season_category')
                         ->innerJoin('season_category.season', 'season')
                         ->orderBy('season.name', 'DESC')
                         ->addOrderBy('season_category.name', 'ASC');
+
+                    if (null !== $season = $options['season']) {
+                        $qb
+                            ->where('season = :season')
+                            ->setParameter('season', $season);
+                    }
+
+                    return $qb;
                 },
                 'choice_label' => function (SeasonCategory $seasonCategory) {
                     return $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName();
                 },
+                'placeholder' => '--- Choisissez une catégorie ---',
             ])
-            ->add('medicalCertificate', MedicalCertificateType::class)
+            ->add('medicalCertificate', MedicalCertificateType::class, [
+                'label' => false,
+            ])
         ;
     }
 
@@ -52,6 +76,9 @@ class LicenseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => License::class,
+            'season' => null,
         ]);
+
+        $resolver->setAllowedTypes('season', [Season::class, 'null']);
     }
 }

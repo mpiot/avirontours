@@ -1,0 +1,16 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Ajouter une licence{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</a></li>
+    <li class="breadcrumb-item active">Ajouter une licence</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter une licence</h1>
+
+    {{ include('admin/license/_form.html.twig') }}
+{% endblock %}

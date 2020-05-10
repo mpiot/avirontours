@@ -1,10 +1,5 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('user_form')}}
-{% endblock %}
-
 {% block title %}Modifier un utilisateur{% endblock %}
 
 {% block breadcrumb %}
@@ -24,9 +19,4 @@
     </div>
 
     {{ include('admin/user/_form.html.twig', {'button_label': 'Modifier'}) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('user_form') }}
 {% endblock %}

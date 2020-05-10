@@ -66,8 +66,13 @@
         <div class="card-header d-flex">
             <span class="h5 align-self-center">Licences</span>
 
-            <form method="get" class="ml-auto">
-                <div class="form-row align-items-center">
+            <a href="{{ path('license_new', { 'season_id': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+                <span class="fas fa-plus"></span> Ajouter une licence
+            </a>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="form-row align-self-center">
                     <div class="col-md-auto col-sm-12 ml-auto">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
@@ -78,8 +83,7 @@
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="card-body">
+
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -97,14 +101,8 @@
                             </td>
                             <td><a href="mailto:{{ license.user.email }}">{{ license.user.email }}</a></td>
                             <td class="text-right">
-                                {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                    <a class="btn btn-outline-info btn-sm rounded-pill"
-                                       href="{{ path('homepage', {'_switch_user': license.user.username}) }}">
-                                        <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
-                                    </a>
-                                {% endif %}
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('user_edit', {'id': license.user.id}) }}">
+                                   href="{{ path('license_edit', {'season_id': license.seasonCategory.season.id, 'id': license.id}) }}">
                                     <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
                                 </a>
                             </td>

@@ -18,7 +18,6 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\MedicalCertificate;
 use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
@@ -101,7 +100,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][phoneNumber]' => '',
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_subscriptionDate"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_gender')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_firstName"] .form-error-message')->text());
@@ -115,9 +113,9 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_city"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_phoneNumber"] .form-error-message')->text());
-        $this->assertCount(14, $crawler->filter('.form-error-message'));
+        $this->assertCount(13, $crawler->filter('.form-error-message'));
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $crawler = $client->submitForm('Sauver', [
             'user[subscriptionDate]' => '2019-09-01',
             'user[gender]' => 'm',
             'user[firstName]' => 'John',
@@ -134,12 +132,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][phoneNumber]' => '0102030405',
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
-        $values = $form->getPhpValues();
-        $values['user']['licenses'][0]['seasonCategory'] = 9;
-        $values['user']['licenses'][0]['medicalCertificate']['type'] = MedicalCertificate::TYPE_CERTIFICATE;
-        $values['user']['licenses'][0]['medicalCertificate']['level'] = MedicalCertificate::LEVEL_COMPETITION;
-        $values['user']['licenses'][0]['medicalCertificate']['date'] = '2020-09-30';
-        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
         $this->assertResponseRedirects();
         /** @var User $user */
         $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => 'john.doe@avirontours.fr']);
@@ -159,9 +151,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
-        $this->assertCount(1, $user->getLicenses());
-        $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
-        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
     }
 
     public function testEditUser()

@@ -157,7 +157,6 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="user", cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
-     * @Assert\Count(min="1")
      * @Assert\Valid()
      */
     private $licenses;

@@ -47,6 +47,7 @@ class License
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
      * @ORM\JoinColumn(name="app_user", nullable=false)
+     * @Assert\NotNull()
      */
     private $user;
 

@@ -1,10 +1,5 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('user_form')}}
-{% endblock %}
-
 {% block title %}Ajouter un utilisateur{% endblock %}
 
 {% block breadcrumb %}
@@ -17,9 +12,4 @@
     <h1>Ajouter un utilisateur</h1>
 
     {{ include('admin/user/_form.html.twig') }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('user_form') }}
 {% endblock %}

@@ -22,7 +22,6 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -91,12 +90,6 @@ class UserType extends AbstractType
             ->add('subscriptionDate', DateType::class, [
                 'label' => 'Date d\'inscription',
                 'widget' => 'single_text',
-            ])
-            ->add('licenses', CollectionType::class, [
-                'label' => false,
-                'entry_type' => LicenseType::class,
-                'allow_add' => true,
-                'by_reference' => false,
             ])
         ;
 
