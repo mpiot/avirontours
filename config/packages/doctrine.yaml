@@ -19,3 +19,5 @@ doctrine:
         dql:
             string_functions:
                 collate: App\DQL\Collate
+            datetime_functions:
+                DATE_PART: DoctrineExtensions\Query\Postgresql\DatePart

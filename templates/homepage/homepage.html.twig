@@ -1,5 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-muted">Dashboard</h1>
+    <div class="row">
+        <div class=" col-xl-6 col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <span class="h3">Mes sorties</span>
+                </div>
+                <div class="card-body">
+                    <canvas
+                        id="logbookChart"
+                        data-labels="{{ logbook_stats|map(value => "#{value.month}")|json_encode|e('html_attr') }}"
+                        data-distances="{{ logbook_stats|map(value => "#{value.distance}")|json_encode|e('html_attr') }}"
+                        data-sessions="{{ logbook_stats|map(value => "#{value.sessions}")|json_encode|e('html_attr') }}"
+                    ></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('homepage') }}
 {% endblock %}

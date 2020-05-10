@@ -19,6 +19,7 @@
 namespace App\Repository;
 
 use App\Entity\LogbookEntry;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
@@ -57,5 +58,26 @@ class LogbookEntryRepository extends ServiceEntityRepository
             $page,
             LogbookEntry::NUM_ITEMS
         );
+    }
+
+    public function findStatsByMonth(User $user, int $nbMonths = 6)
+    {
+        $today = new \DateTime();
+
+        $query = $this->createQueryBuilder('logbook_entry')
+            ->select('CONCAT(DATE_PART(\'month\', logbook_entry.date), \'-\', DATE_PART(\'year\', logbook_entry.date)) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as sessions')
+            ->leftJoin('logbook_entry.crewMembers', 'crew_members')
+            ->andWhere('crew_members = :user')
+            ->andWhere('logbook_entry.date BETWEEN :lastDay AND :today')
+            ->andWhere('logbook_entry.endAt IS NOT NULL')
+            ->groupBy('month')
+            ->setParameters([
+                'user' => $user,
+                'today' => $today->format('Y-m-d'),
+                'lastDay' => $today->modify('-'.$nbMonths.' months')->modify('first day of this month')->format('Y-m-d'),
+            ])
+            ->getQuery();
+
+        return $query->getResult();
     }
 }

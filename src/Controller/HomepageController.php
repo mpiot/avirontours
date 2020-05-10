@@ -18,6 +18,7 @@
 
 namespace App\Controller;
 
+use App\Repository\LogbookEntryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,8 +29,10 @@ class HomepageController extends AbstractController
      * @Route("", name="homepage")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function homepage()
+    public function homepage(LogbookEntryRepository $repository)
     {
-        return $this->render('homepage/homepage.html.twig');
+        return $this->render('homepage/homepage.html.twig', [
+            'logbook_stats' => $repository->findStatsByMonth($this->getUser()),
+        ]);
     }
 }
