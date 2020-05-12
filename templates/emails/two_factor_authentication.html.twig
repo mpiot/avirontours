@@ -6,10 +6,9 @@
             <columns>
                 <container class="text-left">
                     Bonjour {{ user.fullName }},<br>
-                    Pour réinitialiser votre mot de passe, veuillez vous rendre
-                    <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">ici</a>.
-                    Ce lien expirera dans {{ tokenLifetime|date('g') }} heure(s).
+                    Voici votre code d'authentification a usage unique:
                 </container>
+                <h1 class="text-center">{{ authCode }}</h1>
             </columns>
         </row>
     </container>

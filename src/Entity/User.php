@@ -21,6 +21,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface as EmailTwoFactorInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -34,7 +35,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.")
  * @ORM\HasLifecycleCallbacks()
  */
-class User implements UserInterface
+class User implements UserInterface, EmailTwoFactorInterface
 {
     const NUM_ITEMS = 20;
 
@@ -160,6 +161,11 @@ class User implements UserInterface
      * @Assert\Valid()
      */
     private $licenses;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $authCode;
 
     public function __construct()
     {
@@ -517,6 +523,32 @@ class User implements UserInterface
         }
 
         return false;
+    }
+
+    public function isEmailAuthEnabled(): bool
+    {
+        foreach ($this->roles as $role) {
+            if (null !== u($role)->indexOf('ADMIN')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getEmailAuthRecipient(): string
+    {
+        return $this->email;
+    }
+
+    public function getEmailAuthCode(): string
+    {
+        return $this->authCode;
+    }
+
+    public function setEmailAuthCode(string $authCode): void
+    {
+        $this->authCode = $authCode;
     }
 
     /**
