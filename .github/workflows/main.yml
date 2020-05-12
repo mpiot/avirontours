@@ -51,7 +51,7 @@ jobs:
         run: |
           php-cs-fixer fix --diff --dry-run -v
           bin/console lint:yaml config --parse-tags
-          bin/console lint:twig templates --env=prod
+          bin/console lint:twig templates
           bin/console lint:container
           bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
