@@ -1,0 +1,49 @@
+{% extends 'base_background.html.twig' %}
+
+{% block title %}Double authentification{% endblock %}
+
+{% block body %}
+    <form class="form" action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
+        {% if authenticationError %}
+            <div class="alert alert-danger d-flex">
+                <div class="align-self-center">
+                    <span class="fas fa-2x fa-exclamation-circle"></span>
+                </div>
+                <div class="align-self-center ml-3">
+                    {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="form-label-group">
+            <input
+                type="text"
+                id="_auth_code"
+                name="{{ authCodeParameterName }}"
+                class="form-control"
+                placeholder="Code d'authentification"
+                autocomplete="one-time-code"
+                autofocus
+                inputmode="numeric"
+                pattern="[0-9]*"
+            />
+            <label for="_auth_code">Code d'authentification</label>
+        </div>
+
+        {% if displayTrustedOption %}
+            <div class="custom-control custom-switch mb-3">
+                <input type="checkbox" class="custom-control-input" id="_trusted" name="{{ trustedParameterName }}">
+                <label class="custom-control-label" for="_trusted">{{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label>
+            </div>
+        {% endif %}
+        {% if isCsrfProtectionEnabled %}
+            <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+        {% endif %}
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
+    </form>
+
+    <p class="mt-3">
+        <a href="{{ logoutPath }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
+    </p>
+{% endblock %}
