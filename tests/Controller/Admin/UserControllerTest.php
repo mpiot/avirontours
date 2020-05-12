@@ -174,21 +174,20 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
-            'user[subscriptionDate]' => '2019-09-01',
-            'user[gender]' => 'm',
-            'user[firstName]' => 'John',
-            'user[lastName]' => 'Doe',
-            'user[email]' => 'john.doe@avirontours.fr',
-            'user[plainPassword]' => 'engage',
-            'user[birthday]' => '2010-01-01',
-            'user[legalRepresentative]' => 'Miss Doe',
-            'user[address][laneNumber]' => '999',
-            'user[address][laneType]' => 'Rue',
-            'user[address][laneName]' => 'de ouf',
-            'user[address][postalCode]' => '01000',
-            'user[address][city]' => 'One City',
-            'user[address][phoneNumber]' => '0102030405',
-            'user[rowerCategory]' => User::ROWER_CATEGORY_A,
+            'user_edit[subscriptionDate]' => '2019-09-01',
+            'user_edit[gender]' => 'm',
+            'user_edit[firstName]' => 'John',
+            'user_edit[lastName]' => 'Doe',
+            'user_edit[email]' => 'john.doe@avirontours.fr',
+            'user_edit[birthday]' => '2010-01-01',
+            'user_edit[legalRepresentative]' => 'Miss Doe',
+            'user_edit[address][laneNumber]' => '999',
+            'user_edit[address][laneType]' => 'Rue',
+            'user_edit[address][laneName]' => 'de ouf',
+            'user_edit[address][postalCode]' => '01000',
+            'user_edit[address][city]' => 'One City',
+            'user_edit[address][phoneNumber]' => '0102030405',
+            'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
         ]);
         $this->assertResponseRedirects();
         $user = $this->getEntityManager()->getRepository(User::class)->find(5);
@@ -197,7 +196,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
-        $this->assertNotNull($user->getPassword());
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
         $this->assertSame('Miss Doe', $user->getLegalRepresentative());
