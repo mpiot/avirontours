@@ -64,10 +64,21 @@ class License
      */
     private $licenseNumber;
 
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $marking;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $transitionContexts;
+
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
     {
         $this->seasonCategory = $seasonCategory;
         $this->user = $user;
+        $this->transitionContexts = [];
     }
 
     public function getId(): ?int
@@ -121,5 +132,35 @@ class License
         $this->licenseNumber = $licenseNumber;
 
         return $this;
+    }
+
+    public function getMarking()
+    {
+        return $this->marking;
+    }
+
+    public function isValid(): bool
+    {
+        return null !== $this->marking && \array_key_exists('validated', $this->marking) && 1 === $this->marking['validated'];
+    }
+
+    public function setMarking($marking, $context = [])
+    {
+        $this->marking = $marking;
+        $this->transitionContexts[] = [
+            'new_marking' => $marking,
+            'context' => $context,
+            'time' => (new \DateTime())->format('c'),
+        ];
+    }
+
+    public function getTransitionContexts()
+    {
+        return $this->transitionContexts;
+    }
+
+    public function setTransitionContexts($transitionContexts)
+    {
+        $this->transitionContexts = $transitionContexts;
     }
 }

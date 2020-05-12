@@ -52,7 +52,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertCount(5, $crawler->filter('.form-error-message'));
 
         $client->submitForm('Sauver', [
-            'license[user]' => 7,
+            'license[user]' => 2,
             'license[seasonCategory]' => 7,
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
@@ -61,7 +61,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $license = $this->getEntityManager()->getRepository(License::class)->findOneBy([], ['id' => 'DESC']);
         $this->assertInstanceOf(License::class, $license);
-        $this->assertSame(7, $license->getUser()->getId());
+        $this->assertSame(2, $license->getUser()->getId());
         $this->assertSame(7, $license->getSeasonCategory()->getId());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
@@ -92,7 +92,7 @@ class LicenseControllerTest extends AppWebTestCase
     public function testEditLicense()
     {
         $client = static::createClient();
-        $url = '/admin/season/2/license/5/edit';
+        $url = '/admin/season/2/license/6/edit';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -112,7 +112,7 @@ class LicenseControllerTest extends AppWebTestCase
             'license_edit[medicalCertificate][date]' => '2020-05-01',
         ]);
         $this->assertResponseRedirects();
-        $license = $this->getEntityManager()->getRepository(License::class)->find(5);
+        $license = $this->getEntityManager()->getRepository(License::class)->find(6);
         $this->assertSame(6, $license->getSeasonCategory()->getId());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
@@ -122,7 +122,7 @@ class LicenseControllerTest extends AppWebTestCase
     public function testDeleteLicense()
     {
         $client = static::createClient();
-        $url = '/admin/season/2/license/5/edit';
+        $url = '/admin/season/2/license/6/edit';
 
         $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
@@ -137,7 +137,49 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->submitForm('Supprimer');
         $this->assertResponseRedirects('/admin/season/2');
-        $license = $this->getEntityManager()->getRepository(License::class)->find(5);
+        $license = $this->getEntityManager()->getRepository(License::class)->find(6);
         $this->assertNull($license);
+    }
+
+    public function testApplyMarking()
+    {
+        $client = static::createClient();
+        $url = '/admin/season/2';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'admin.user');
+        $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider le certificat médical');
+        $this->assertResponseRedirects();
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_validated' => 1,
+        ], $license->getMarking());
+
+        $client->followRedirect();
+        $client->submitForm('Valider le paiement');
+        $this->assertResponseRedirects();
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'medical_certificate_validated' => 1,
+            'payment_validated' => 1,
+        ], $license->getMarking());
+
+        $client->followRedirect();
+        $client->submitForm('Valider la licence');
+        $this->assertResponseRedirects();
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'validated' => 1,
+        ], $license->getMarking());
     }
 }

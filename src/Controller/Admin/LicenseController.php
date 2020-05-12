@@ -22,12 +22,14 @@ use App\Entity\License;
 use App\Entity\Season;
 use App\Form\LicenseEditType;
 use App\Form\LicenseType;
+use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
  * @Route("/admin/season/{season_id}/license")
@@ -71,7 +73,9 @@ class LicenseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('season_index');
+            return $this->redirectToRoute('season_show', [
+                'id' => $license->getSeasonCategory()->getSeason()->getId(),
+            ]);
         }
 
         return $this->render('admin/license/edit.html.twig', [
@@ -93,5 +97,25 @@ class LicenseController extends AbstractController
         }
 
         return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
+    }
+
+    /**
+     * @Route("/{id}/apply-transition", name="license_apply_transition", methods={"POST"})
+     */
+    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license)
+    {
+        try {
+            $licenseWorkflow
+                ->apply($license, $request->request->get('transition'), [
+                    'time' => date('y-m-d H:i:s'),
+                ]);
+            $this->getDoctrine()->getManager()->flush();
+        } catch (ExceptionInterface $e) {
+            $this->addFlash('danger', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('season_show', [
+            'id' => $license->getSeasonCategory()->getSeason()->getId(),
+        ]);
     }
 }

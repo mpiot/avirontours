@@ -50,7 +50,7 @@ class LogbookFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             [$this->getReference('Double Cat B'), [$this->getReference('a.user'), $this->getReference('b.user')], new \DateTime('+1 hour'), 10],
-            [$this->getReference('Single medium damaged'), [$this->getReference('outdated.user')], null, null],
+            [$this->getReference('Single medium damaged'), [$this->getReference('admin.user')], null, null],
         ];
     }
 

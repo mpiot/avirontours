@@ -21,3 +21,4 @@ doctrine:
                 collate: App\DQL\Collate
             datetime_functions:
                 DATE_PART: DoctrineExtensions\Query\Postgresql\DatePart
+                JSON_GET_TEXT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Postgresql\JsonGetText

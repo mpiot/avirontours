@@ -102,9 +102,11 @@ class LogbookEntryNewType extends AbstractType
                         ->leftJoin('seasonCategory.season', 'season')
                         ->andWhere('seasonCategory.licenseType = :licenseType')
                         ->andWhere('season.active = true')
+                        ->andWhere('JSON_GET_TEXT(licenses.marking, \'validated\') = \'1\'')
                         ->orderBy('app_user.firstName', 'ASC')
                         ->addOrderBy('app_user.lastName', 'ASC')
-                        ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL);
+                        ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL)
+                    ;
 
                     if (!empty($unavailableUsers)) {
                         $queryBuilder

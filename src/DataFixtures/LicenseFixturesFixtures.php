@@ -28,7 +28,7 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
 {
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->getSeasonData() as [$seasonCategory, $user, $certificateType, $certificateLevel]) {
+        foreach ($this->getSeasonData() as [$seasonCategory, $user, $certificateType, $certificateLevel, $isValid]) {
             $license = new License($seasonCategory, $user);
             $license
                 ->setMedicalCertificate(
@@ -38,6 +38,11 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
                         ->setDate(new \DateTime('-3 months'))
                 )
             ;
+
+            if ($isValid) {
+                $license->setMarking(['validated' => 1]);
+            }
+
             $manager->persist($license);
             $this->addReference($seasonCategory->getSeason()->getName().'-'.$seasonCategory->getName().'-'.$user->getFullName(), $license);
         }
@@ -48,14 +53,16 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
     private function getSeasonData(): array
     {
         return [
-            [$this->getReference('2018-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2018-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2018-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
-            [$this->getReference('2018-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE],
-            [$this->getReference('2019-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2019-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION],
-            [$this->getReference('2019-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
-            [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE],
+            [$this->getReference('2018-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2018-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2018-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2018-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2018-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2019-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2019-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2019-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2019-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
+            [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
         ];
     }
 
