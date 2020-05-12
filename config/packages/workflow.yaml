@@ -1,0 +1,50 @@
+framework:
+    workflows:
+        license:
+            type: workflow
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: method
+            supports:
+                - App\Entity\License
+            initial_marking: [wait_medical_certificate_validation, wait_payment_validation]
+            places:
+                wait_medical_certificate_validation:
+                    metadata:
+                        title: Attente de validation du certificat
+                        badge: danger
+                medical_certificate_validated:
+                    metadata:
+                        title: Certificat médical validé
+                        badge: info
+                wait_payment_validation:
+                    metadata:
+                        title: Attente de validation du paiement
+                        badge: danger
+                payment_validated:
+                    metadata:
+                        title: Paiement validé
+                        badge: info
+                validated:
+                    metadata:
+                        title: Validée
+                        badge: success
+            transitions:
+                validate_medical_certificate:
+                    from: wait_medical_certificate_validation
+                    to:   medical_certificate_validated
+                    metadata:
+                        title: Valider le certificat médical
+                validate_payment:
+                    from: wait_payment_validation
+                    to:   payment_validated
+                    metadata:
+                        title: Valider le paiement
+                validate_license:
+                    from:
+                        - medical_certificate_validated
+                        - payment_validated
+                    to:   validated
+                    metadata:
+                        title: Valider la licence

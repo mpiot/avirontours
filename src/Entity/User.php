@@ -517,7 +517,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function hasValidLicense(): bool
     {
         foreach ($this->licenses as $license) {
-            if ($license->getSeasonCategory()->getSeason()->getActive()) {
+            if ($license->isValid() && $license->getSeasonCategory()->getSeason()->getActive()) {
                 return true;
             }
         }

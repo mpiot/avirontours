@@ -103,7 +103,19 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $crawler = $client->request('GET', $url);
         $this->assertCount(3, $crawler->filter('#logbook_entry_new_shell > option'));
-        $this->assertCount(1, $crawler->filter('#logbook_entry_new_crewMembers > option'));
+        $this->assertSame('C User', $crawler->filter('#logbook_entry_new_crewMembers')->text());
+    }
+
+    public function testUserListLogbookEntryForm()
+    {
+        $client = static::createClient();
+        $url = '/logbook-entry/new';
+
+        $this->logIn($client, 'a.user');
+        $crawler = $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $this->assertSame('A UserB UserC User', $crawler->filter('#logbook_entry_new_crewMembers')->text());
     }
 
     public function testNewLogbookEntryWithNonUserCrewMember()

@@ -89,7 +89,8 @@
                     <thead>
                     <tr>
                         <th>Nom</th>
-                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Status de la licence</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -99,8 +100,27 @@
                             <td>
                                 <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
                             </td>
-                            <td><a href="mailto:{{ license.user.email }}">{{ license.user.email }}</a></td>
-                            <td class="text-right">
+                            <td>{{ license.seasonCategory.textLicenseType }}</td>
+                            <td>
+                                {% for place in workflow_marked_places(license)  %}
+                                    <div>
+                                        <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }}">
+                                            {{ workflow_metadata(license, 'title', place) }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </td>
+                            <td class="d-flex justify-content-end align-items-center">
+                                <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
+                                    <div class="btn-group-vertical btn-group-sm mr-3" role="group">
+                                        {% for transition in workflow_transitions(license) %}
+                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-primary">
+                                                {{ workflow_metadata(license, 'title', transition) }}
+                                            </button>
+                                        {% endfor %}
+                                    </div>
+                                </form>
+
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('license_edit', {'season_id': license.seasonCategory.season.id, 'id': license.id}) }}">
                                     <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
