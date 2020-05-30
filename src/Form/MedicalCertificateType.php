@@ -24,9 +24,18 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\RouterInterface;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class MedicalCertificateType extends AbstractType
 {
+    private $router;
+
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -52,6 +61,18 @@ class MedicalCertificateType extends AbstractType
             ->add('date', DateType::class, [
                 'label' => 'Date',
                 'widget' => 'single_text',
+            ])
+            ->add('file', VichFileType::class, [
+                'label' => 'Fichier',
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => function (MedicalCertificate $medicalCertificate) {
+                    if (null === $medicalCertificate->getFileName()) {
+                        return null;
+                    }
+
+                    return $this->router->generate('medical_certificate_download', ['id' => $medicalCertificate->getId()]);
+                },
             ])
         ;
     }

@@ -51,13 +51,15 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="license_medicalCertificate_date"] .form-error-message')->text());
         $this->assertCount(5, $crawler->filter('.form-error-message'));
 
-        $client->submitForm('Sauver', [
+        $form = $crawler->selectButton('Sauver')->form([
             'license[user]' => 2,
             'license[seasonCategory]' => 7,
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'license[medicalCertificate][date]' => '2020-05-01',
         ]);
+        $form['license[medicalCertificate][file][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/medical-certificate.pdf');
+        $client->submit($form);
         $this->assertResponseRedirects();
         $license = $this->getEntityManager()->getRepository(License::class)->findOneBy([], ['id' => 'DESC']);
         $this->assertInstanceOf(License::class, $license);

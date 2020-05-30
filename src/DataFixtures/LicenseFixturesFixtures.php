@@ -23,6 +23,8 @@ use App\Entity\MedicalCertificate;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -36,6 +38,7 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
                         ->setType($certificateType)
                         ->setLevel($certificateLevel)
                         ->setDate(new \DateTime('-3 months'))
+                        ->setFile($this->getUploadedFile())
                 )
             ;
 
@@ -72,5 +75,23 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
             SeasonFixtures::class,
             UserFixtures::class,
         ];
+    }
+
+    private function getUploadedFile(): UploadedFile
+    {
+        $file = 'medical-certificate.pdf';
+        $fs = new Filesystem();
+        $targetPath = sys_get_temp_dir().'/'.$file;
+        $fs->copy(__DIR__.'/Files/'.$file, $targetPath, true);
+
+        $file = new UploadedFile(
+            $targetPath,
+            'my-certificate.pdf',
+            'application/pdf',
+            null,
+            true
+        );
+
+        return $file;
     }
 }
