@@ -83,7 +83,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Représentant légal',
                 'required' => false,
             ])
-            ->add('medicalCertificate', MedicalCertificateType::class, [
+            ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
                 'label' => false,
             ])
             ->add('agreeTerms', CheckboxType::class, [

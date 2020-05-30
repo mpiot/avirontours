@@ -29,7 +29,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $client = static::createClient();
         $url = '/register/2020-jeune';
 
-        $client->request('GET', $url);
+        $crawler = $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
@@ -60,13 +60,12 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_city"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_phoneNumber"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_type')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_medicalCertificate_date"] .form-error-message')->text());
         $this->assertStringContainsString('Vous devez accepter les conditions d\'utilisation.', $crawler->filter('label[for="registration_form_agreeTerms"] .form-error-message')->text());
-        $this->assertCount(16, $crawler->filter('.form-error-message'));
+        $this->assertCount(15, $crawler->filter('.form-error-message'));
 
-        $client->submitForm('Sauver', [
+        $form = $crawler->selectButton('Sauver')->form([
             'registration_form[gender]' => 'm',
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
@@ -81,11 +80,12 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
             'registration_form[address][phoneNumber]' => '0102030405',
-            'registration_form[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
             'registration_form[agreeTerms]' => 1,
         ]);
+        $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $client->submit($form);
         $this->assertResponseRedirects();
         /** @var User $user */
         $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => 'john.doe@avirontours.fr']);
@@ -108,6 +108,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
+        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
     }
 
     public function testNonEnabledRegistration()
@@ -138,14 +139,16 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
 
         $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
+        $crawler = $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('S\'inscrire', [
+        $form = $crawler->selectButton('S\'inscrire')->form([
             'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
             'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'renew[medicalCertificate][date]' => '2020-01-01',
         ]);
+        $form['renew[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $client->submit($form);
         $this->assertResponseRedirects();
         /** @var User $user */
         $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['username' => 'a.user']);

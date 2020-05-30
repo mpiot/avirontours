@@ -18,21 +18,31 @@
 
 namespace App\Form;
 
+use App\Entity\MedicalCertificate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
-class RenewType extends AbstractType
+class RegistrationMedicalCertificateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->remove('seasonCategory')
-            ->remove('user')
+            ->remove('type')
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            /** @var MedicalCertificate $data */
+            $data = $event->getData();
+            $data->setType(MedicalCertificate::TYPE_CERTIFICATE);
+
+            $event->setData($data);
+        });
     }
 
     public function getParent()
     {
-        return LicenseType::class;
+        return MedicalCertificateType::class;
     }
 }
