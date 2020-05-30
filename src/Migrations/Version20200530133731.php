@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200514173738 extends AbstractMigration
+final class Version20200530133731 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -22,8 +22,8 @@ final class Version20200514173738 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('ALTER TABLE medical_certificate ADD file_name VARCHAR(255) NOT NULL');
-        $this->addSql('ALTER TABLE medical_certificate ADD file_size INT NOT NULL');
+        $this->addSql('ALTER TABLE medical_certificate ADD file_name VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE medical_certificate ADD file_size INT DEFAULT NULL');
         $this->addSql('ALTER TABLE medical_certificate ADD updated_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL');
     }
 
