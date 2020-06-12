@@ -62,4 +62,4 @@ jobs:
         run: composer validate
 
       - name: Run test suite
-        run: bin/phpunit
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
