@@ -31,7 +31,8 @@ security:
             http_basic: ~
 
         main:
-            anonymous: lazy
+            anonymous: true
+            lazy: true
             provider: app_user_provider
             guard:
                 authenticators:
