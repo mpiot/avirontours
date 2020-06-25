@@ -99,6 +99,9 @@ class ShellType extends AbstractType
             ->add('mileage', NumberType::class, [
                 'label' => 'Distance parcourue',
                 'html5' => true,
+                'attr' => [
+                    'step' => 0.1,
+                ],
                 'required' => false,
             ])
             ->add('riggerMaterial', ChoiceType::class, [

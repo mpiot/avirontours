@@ -92,7 +92,7 @@ class ShellControllerTest extends AppWebTestCase
         $client->submitForm('Sauver', [
             'shell[name]' => 'A new shell',
             'shell[numberRowers]' => 2,
-            'shell[mileage]' => 1000,
+            'shell[mileage]' => 1000.0,
         ]);
         $this->assertResponseRedirects();
         $shell = $this->getEntityManager()->getRepository(Shell::class)->findOneBy(['name' => 'A new shell']);
