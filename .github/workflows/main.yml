@@ -1,4 +1,4 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
@@ -24,17 +24,34 @@ jobs:
         ports:
           - 5432:5432
 
+    strategy:
+      fail-fast: true
+
     steps:
-      - name: Install PHP CS fixer
-        run: |
-          wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
-          sudo chmod a+x php-cs-fixer
-          sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
+      - name: Composer validate
+        run: composer validate
 
-      - name: Install dependencies
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/composer/files
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/yarn
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Build assets
         run: |
@@ -42,24 +59,35 @@ jobs:
           yarn build
 
       - name: Update database
-        run: bin/console d:m:m -n
+        run: bin/console doctrine:migrations:migrate -n
 
       - name: Run fixtures
-        run: bin/console d:f:l -n
+        run: bin/console doctrine:fixtures:load -n
+
+      - name: Install PHP CS fixer
+        run: |
+          wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
+          sudo chmod a+x php-cs-fixer
+          sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
 
       - name: Lint
         run: |
-          php-cs-fixer fix --diff --dry-run -v
-          bin/console lint:yaml config --parse-tags
+          php-cs-fixer fix --diff --dry-run --no-interaction -v
+          bin/console lint:yaml config --parse-tags config
           bin/console lint:twig templates
           bin/console lint:container
-          bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+      - name: Verify schema
+        run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+      - name: Install Security checker
+        run: |
+          wget https://get.sensiolabs.org/security-checker.phar -O security-checker
+          sudo chmod a+x security-checker
+          sudo mv security-checker /usr/local/bin/security-checker
 
       - name: Security check
-        run: bin/console security:check
-
-      - name: Composer validate
-        run: composer validate
+        run: security-checker security:check
 
       - name: Run test suite
         run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
