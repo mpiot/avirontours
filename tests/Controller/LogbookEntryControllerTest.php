@@ -99,6 +99,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertNull($logBookEntry->getEndAt());
         $this->assertNull($logBookEntry->getCoveredDistance());
         $this->assertEmpty($logBookEntry->getShellDamages());
+        $this->getEntityManager()->refresh($logBookEntry->getShell());
         $this->assertSame(10.0, $logBookEntry->getShell()->getMileage());
 
         $crawler = $client->request('GET', $url);
@@ -192,6 +193,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame('16:00', $logBookEntry->getEndAt()->format('H:i'));
         $this->assertSame(12.2, $logBookEntry->getCoveredDistance());
         $this->assertEmpty($logBookEntry->getShellDamages());
+        $this->getEntityManager()->refresh($logBookEntry->getShell());
         $this->assertSame(12.2, $logBookEntry->getShell()->getMileage());
     }
 
@@ -213,9 +215,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $logBookEntry = $this->getEntityManager()->getRepository(LogbookEntry::class)->find(1);
         $this->assertSame(3, $logBookEntry->getShell()->getId());
+        $this->getEntityManager()->refresh($logBookEntry->getShell());
         $this->assertSame(10.0, $logBookEntry->getShell()->getMileage());
 
         $previousShell = $this->getEntityManager()->getRepository(Shell::class)->find(2);
+        $this->getEntityManager()->refresh($previousShell);
         $this->assertSame(0.0, $previousShell->getMileage());
     }
 
@@ -243,6 +247,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $logBookEntry = $this->getEntityManager()->getRepository(LogbookEntry::class)->find(2);
         $this->assertSame('16:00', $logBookEntry->getEndAt()->format('H:i'));
         $this->assertSame(12.2, $logBookEntry->getCoveredDistance());
+        $this->getEntityManager()->refresh($logBookEntry->getShell());
         $this->assertSame(12.2, $logBookEntry->getShell()->getMileage());
     }
 
@@ -306,6 +311,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $logbookEntry = $this->getEntityManager()->getRepository(LogbookEntry::class)->find(1);
         $this->assertNull($logbookEntry);
         $shell = $this->getEntityManager()->getRepository(Shell::class)->find(2);
+        $this->getEntityManager()->refresh($shell);
         $this->assertSame(0.0, $shell->getMileage());
     }
 

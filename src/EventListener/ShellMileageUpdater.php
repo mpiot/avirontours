@@ -24,6 +24,11 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ShellMileageUpdater
 {
+    private $oldShell;
+    private $newShell;
+    private $oldCoveredDistance;
+    private $newCoveredDistance;
+
     public function prePersist(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
     {
         if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
@@ -39,28 +44,38 @@ class ShellMileageUpdater
             return;
         }
 
-        // Define old and new distance
+        // Set mileages
+        $this->oldCoveredDistance = $logbookEntry->getCoveredDistance();
+        $this->newCoveredDistance = $logbookEntry->getCoveredDistance();
+
         if (true === $args->hasChangedField('coveredDistance')) {
-            $oldDistance = $args->getOldValue('coveredDistance');
-            $newDistance = $args->getNewValue('coveredDistance');
-        } else {
-            $oldDistance = $logbookEntry->getCoveredDistance();
-            $newDistance = $logbookEntry->getCoveredDistance();
+            $this->oldCoveredDistance = $args->getOldValue('coveredDistance');
+            $this->newCoveredDistance = $args->getNewValue('coveredDistance');
         }
 
-        // Update shells
-        if (true === $args->hasChangedField('shell')) {
-            $oldShell = $args->getOldValue('shell');
-            $newShell = $args->getNewValue('shell');
+        // Set shells
+        $this->newShell = $logbookEntry->getShell();
 
-            $oldShell->removeToMileage($oldDistance ?? 0);
-            $newShell->addToMileage($newDistance ?? 0);
+        if (true === $args->hasChangedField('shell')) {
+            $this->oldShell = $args->getOldValue('shell');
+            $this->newShell = $args->getNewValue('shell');
+        }
+    }
+
+    public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
+    {
+        // Update shells
+        if (null !== $this->oldShell) {
+            $this->oldShell->removeToMileage($this->oldCoveredDistance ?? 0);
+            $this->newShell->addToMileage($this->newCoveredDistance ?? 0);
         } else {
-            $logbookEntry->getShell()
-                ->removeToMileage($oldDistance ?? 0)
-                ->addToMileage($newDistance ?? 0)
+            $this->newShell
+                ->removeToMileage($this->oldCoveredDistance ?? 0)
+                ->addToMileage($this->newCoveredDistance ?? 0)
             ;
         }
+
+        $args->getObjectManager()->flush();
     }
 
     public function preRemove(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
