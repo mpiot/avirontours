@@ -20,8 +20,6 @@ final class Version20200419141440 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE invitation DROP CONSTRAINT fk_f11d61a27597d3fe');
         $this->addSql('ALTER TABLE logbook_entry_member DROP CONSTRAINT fk_2ca459e7597d3fe');
         $this->addSql('ALTER TABLE medical_certificate DROP CONSTRAINT fk_b36515f87597d3fe');
@@ -68,8 +66,6 @@ final class Version20200419141440 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE invitation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE member_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE address_id_seq INCREMENT BY 1 MINVALUE 1 START 1');

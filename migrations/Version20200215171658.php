@@ -20,8 +20,6 @@ final class Version20200215171658 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE address_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE address (id INT NOT NULL, number VARCHAR(255) NOT NULL, lane_type VARCHAR(255) NOT NULL, lane_name VARCHAR(255) NOT NULL, postal_code INT NOT NULL, city VARCHAR(255) NOT NULL, phone_number VARCHAR(255) NOT NULL, usable VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('ALTER TABLE member ADD address_id INT NOT NULL');
@@ -40,8 +38,6 @@ final class Version20200215171658 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE member DROP CONSTRAINT FK_70E4FA78F5B7AF75');
         $this->addSql('DROP SEQUENCE address_id_seq CASCADE');
         $this->addSql('DROP TABLE address');

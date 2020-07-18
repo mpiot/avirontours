@@ -20,8 +20,6 @@ final class Version20200511144547 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE license ADD marking JSON DEFAULT NULL');
         $this->addSql('ALTER TABLE license ADD transition_contexts JSON DEFAULT NULL');
         $this->addSql('UPDATE license SET marking = \'{"validated":1}\'');
@@ -30,8 +28,6 @@ final class Version20200511144547 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE license DROP marking');
         $this->addSql('ALTER TABLE license DROP transition_contexts');
     }
