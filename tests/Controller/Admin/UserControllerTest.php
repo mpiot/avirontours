@@ -94,6 +94,7 @@ class UserControllerTest extends AppWebTestCase
             'user[birthday]' => '',
             'user[legalRepresentative]' => '',
             'user[address][laneNumber]' => '',
+            'user[address][laneType]' => '',
             'user[address][laneName]' => '',
             'user[address][postalCode]' => '',
             'user[address][city]' => '',
@@ -110,10 +111,11 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('label[for="user_legalRepresentative"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_laneName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_laneName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="user_address_laneType"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_city"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_phoneNumber"] .form-error-message')->text());
-        $this->assertCount(13, $crawler->filter('.form-error-message'));
+        $this->assertCount(14, $crawler->filter('.form-error-message'));
 
         $crawler = $client->submitForm('Sauver', [
             'user[subscriptionDate]' => '2019-09-01',

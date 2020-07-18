@@ -41,6 +41,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[birthday]' => '',
             'registration_form[legalRepresentative]' => '',
             'registration_form[address][laneNumber]' => '',
+            'registration_form[address][laneType]' => '',
             'registration_form[address][laneName]' => '',
             'registration_form[address][postalCode]' => '',
             'registration_form[address][city]' => '',
@@ -56,6 +57,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_birthday"] .form-error-message')->text());
         $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('label[for="registration_form_legalRepresentative"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_laneNumber"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="registration_form_address_laneType"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_laneName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_city"] .form-error-message')->text());
@@ -63,7 +65,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_medicalCertificate_date"] .form-error-message')->text());
         $this->assertStringContainsString('Vous devez accepter les conditions d\'utilisation.', $crawler->filter('label[for="registration_form_agreeTerms"] .form-error-message')->text());
-        $this->assertCount(15, $crawler->filter('.form-error-message'));
+        $this->assertCount(16, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Sauver')->form([
             'registration_form[gender]' => 'm',

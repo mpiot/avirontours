@@ -122,7 +122,7 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     private $laneType;
 

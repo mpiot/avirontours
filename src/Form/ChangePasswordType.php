@@ -36,7 +36,7 @@ class ChangePasswordType extends AbstractType
         $builder
             ->add('currentPassword', PasswordType::class, [
                 'label' => 'Mot de passe actuel',
-                'constraints' => new UserPassword(),
+                'constraints' => new UserPassword(['groups' => 'resetPassword']),
                 'mapped' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
@@ -45,9 +45,9 @@ class ChangePasswordType extends AbstractType
                 'first_options' => [
                     'label' => 'Mot de passe',
                     'constraints' => [
-                        new NotBlank(),
-                        new Length(['min' => 6, 'max' => 4096]),
-                        new NotCompromisedPassword(),
+                        new NotBlank(['groups' => 'resetPassword']),
+                        new Length(['min' => 6, 'max' => 4096, 'groups' => 'resetPassword']),
+                        new NotCompromisedPassword(['groups' => 'resetPassword']),
                     ],
                 ],
                 'second_options' => [
@@ -62,6 +62,7 @@ class ChangePasswordType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'validation_groups' => ['resetPassword'],
         ]);
     }
 }

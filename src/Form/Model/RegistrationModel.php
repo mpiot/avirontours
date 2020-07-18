@@ -83,7 +83,7 @@ class RegistrationModel
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     public $laneType;
 
