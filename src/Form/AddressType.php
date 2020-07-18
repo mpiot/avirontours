@@ -37,6 +37,7 @@ class AddressType extends AbstractType
             ->add('laneType', ChoiceType::class, [
                 'label' => 'Type de voie',
                 'choices' => $this->getLaneTypes(),
+                'placeholder' => '--- Sélectionner un type de voie ---',
             ])
             ->add('laneName', TextType::class, [
                 'label' => 'Nom de voie',

@@ -138,6 +138,16 @@
                 </a>
             </div>
 
+            {# List flashes messages #}
+            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible d-print-none" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{ message|trans }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {% block body %}
             {% endblock %}
         </div>

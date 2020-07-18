@@ -29,7 +29,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $client = static::createClient();
         $url = '/register/2020-jeune';
 
-        $crawler = $client->request('GET', $url);
+        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
@@ -109,6 +109,40 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
+    }
+
+    public function testRegistrationTwice()
+    {
+        $client = static::createClient();
+        $url = '/register/2020-jeune';
+
+        $crawler = $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form([
+            'registration_form[gender]' => 'm',
+            'registration_form[firstName]' => 'A',
+            'registration_form[lastName]' => 'User',
+            'registration_form[email]' => 'annual-a@avirontours.fr',
+            'registration_form[plainPassword][first]' => 'engage',
+            'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthday]' => '2010-01-01',
+            'registration_form[legalRepresentative]' => 'Miss Doe',
+            'registration_form[address][laneNumber]' => '999',
+            'registration_form[address][laneType]' => 'Rue',
+            'registration_form[address][laneName]' => 'de ouf',
+            'registration_form[address][postalCode]' => '01000',
+            'registration_form[address][city]' => 'One City',
+            'registration_form[address][phoneNumber]' => '0102030405',
+            'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration_form[medicalCertificate][date]' => '2020-01-01',
+            'registration_form[agreeTerms]' => 1,
+        ]);
+        $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $crawler = $client->submit($form);
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('label[for="registration_form_firstName"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
     }
 
     public function testNonEnabledRegistration()

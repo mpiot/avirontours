@@ -13,15 +13,15 @@
             <span class="user-profile-picture">{{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}</span>
         </div>
         <div class="ml-5">
-            <h3>{{ user.email }}</h3>
+            <h3>{{ user.fullName }} <small>{{ user.email }}</small></h3>
 
             <div class="btn-group btn-group-sm" role="group">
                 <a class="btn btn-secondary" href="{{ path('profile_edit_password') }}">
-                    <span class="fas fa-key" aria-hidden="true"></span> Change password
+                    <span class="fas fa-key" aria-hidden="true"></span> Modifier mon mot de passe
                 </a>
 
                 <a class="btn btn-warning" href="{{ path('profile_edit') }}">
-                    <span class="fas fa-pencil-alt" aria-hidden="true"></span> Edit
+                    <span class="fas fa-pencil-alt" aria-hidden="true"></span> Modifier mon profil
                 </a>
             </div>
         </div>

@@ -59,7 +59,7 @@ class ProfileController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            $this->addFlash('success', 'Your profile have been successfully edited.');
+            $this->addFlash('success', 'Votre profil a été modifié avec succès.');
 
             return $this->redirectToRoute('profile_show');
         }
@@ -91,7 +91,7 @@ class ProfileController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
 
-            $this->addFlash('success', 'Your password have been successfully changed.');
+            $this->addFlash('success', 'Votre mot de passe a été modifié avec succès.');
 
             return $this->redirectToRoute('profile_show');
         }

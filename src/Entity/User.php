@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
- * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.")
+ * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.", repositoryMethod="findForUniqueness")
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface, EmailTwoFactorInterface
@@ -201,9 +201,13 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
-        $this->email = u($email)->lower();
+        if (null !== $email) {
+            $email = u($email)->lower();
+        }
+
+        $this->email = $email;
 
         return $this;
     }
@@ -285,9 +289,13 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setFirstName(?string $firstName): self
     {
-        $this->firstName = u($firstName)->title(true);
+        if (null !== $firstName) {
+            $firstName = u($firstName)->title(true);
+        }
+
+        $this->firstName = $firstName;
 
         return $this;
     }
@@ -297,9 +305,13 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
+    public function setLastName(?string $lastName): self
     {
-        $this->lastName = u($lastName)->title(true);
+        if (null !== $lastName) {
+            $lastName = u($lastName)->title(true);
+        }
+
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -380,7 +392,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->laneNumber;
     }
 
-    public function setLaneNumber(string $laneNumber): self
+    public function setLaneNumber(?string $laneNumber): self
     {
         $this->laneNumber = $laneNumber;
 
@@ -392,7 +404,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->laneType;
     }
 
-    public function setLaneType(string $laneType): self
+    public function setLaneType(?string $laneType): self
     {
         $this->laneType = $laneType;
 
@@ -404,7 +416,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->laneName;
     }
 
-    public function setLaneName(string $laneName): self
+    public function setLaneName(?string $laneName): self
     {
         $this->laneName = $laneName;
 
@@ -416,7 +428,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->postalCode;
     }
 
-    public function setPostalCode(string $postalCode): self
+    public function setPostalCode(?string $postalCode): self
     {
         $this->postalCode = $postalCode;
 
@@ -428,7 +440,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->city;
     }
 
-    public function setCity(string $city): self
+    public function setCity(?string $city): self
     {
         $this->city = $city;
 
@@ -440,7 +452,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber): self
+    public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
 
