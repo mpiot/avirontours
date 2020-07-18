@@ -20,8 +20,6 @@ final class Version20200212212511 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE invitation_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE shell_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE shell_damage_category_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -59,8 +57,6 @@ final class Version20200212212511 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE logbook_entry DROP CONSTRAINT FK_7E7DB59A13AF1BA4');
         $this->addSql('ALTER TABLE shell_damage DROP CONSTRAINT FK_BD5C86F713AF1BA4');
         $this->addSql('ALTER TABLE shell_damage DROP CONSTRAINT FK_BD5C86F712469DE2');

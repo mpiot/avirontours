@@ -20,8 +20,6 @@ final class Version20200501183215 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE season_category_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE season_category (id INT NOT NULL, season_id INT NOT NULL, name VARCHAR(255) NOT NULL, price DOUBLE PRECISION NOT NULL, license_type VARCHAR(1) NOT NULL, description TEXT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_8ABA1C9B4EC001D1 ON season_category (season_id)');
@@ -35,8 +33,6 @@ final class Version20200501183215 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('DROP SEQUENCE season_category_id_seq CASCADE');
         $this->addSql('DROP TABLE season_category');
         $this->addSql('ALTER TABLE season DROP subscription_enabled');

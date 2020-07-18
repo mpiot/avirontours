@@ -20,8 +20,6 @@ final class Version20200425101759 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE app_user ALTER postal_code TYPE VARCHAR(5)');
         $this->addSql('ALTER TABLE app_user ALTER postal_code DROP DEFAULT');
     }
@@ -29,8 +27,6 @@ final class Version20200425101759 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE app_user ALTER postal_code TYPE INT');
         $this->addSql('ALTER TABLE app_user ALTER postal_code DROP DEFAULT');
         $this->addSql('ALTER TABLE app_user ALTER postal_code TYPE INT');

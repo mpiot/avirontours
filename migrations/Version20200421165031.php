@@ -20,8 +20,6 @@ final class Version20200421165031 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('CREATE SEQUENCE season_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE season_user_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE season (id INT NOT NULL, name INT NOT NULL, license_end_at DATE NOT NULL, PRIMARY KEY(id))');
@@ -38,8 +36,6 @@ final class Version20200421165031 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE season_user DROP CONSTRAINT FK_BDA4AD74EC001D1');
         $this->addSql('DROP SEQUENCE season_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE season_user_id_seq CASCADE');

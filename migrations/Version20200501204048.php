@@ -20,8 +20,6 @@ final class Version20200501204048 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('DROP SEQUENCE season_user_id_seq CASCADE');
         $this->addSql('CREATE SEQUENCE license_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE license (id INT NOT NULL, season_id INT NOT NULL, app_user INT NOT NULL, medical_certificate_id INT NOT NULL, PRIMARY KEY(id))');
@@ -37,8 +35,6 @@ final class Version20200501204048 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('DROP SEQUENCE license_id_seq CASCADE');
         $this->addSql('CREATE SEQUENCE season_user_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE season_user (id INT NOT NULL, season_id INT NOT NULL, app_user INT NOT NULL, medical_certificate_id INT NOT NULL, PRIMARY KEY(id))');

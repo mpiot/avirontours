@@ -20,8 +20,6 @@ final class Version20200501205821 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE license DROP CONSTRAINT fk_5768f4194ec001d1');
         $this->addSql('DROP INDEX idx_5768f4194ec001d1');
         $this->addSql('ALTER TABLE license ADD license_number VARCHAR(255) DEFAULT NULL');
@@ -35,8 +33,6 @@ final class Version20200501205821 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
         $this->addSql('ALTER TABLE license DROP CONSTRAINT FK_5768F4195AC49564');
         $this->addSql('DROP INDEX IDX_5768F4195AC49564');
         $this->addSql('ALTER TABLE license DROP license_number');

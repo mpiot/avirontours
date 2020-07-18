@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200222154401 extends AbstractMigration
+final class Version20200214210813 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,16 +20,12 @@ final class Version20200222154401 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('CREATE SEQUENCE medical_certificate_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('ALTER TABLE shell_damage RENAME COLUMN done_at TO repair_at');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
-
-        $this->addSql('DROP SEQUENCE medical_certificate_id_seq CASCADE');
+        $this->addSql('ALTER TABLE shell_damage RENAME COLUMN repair_at TO done_at');
     }
 }
