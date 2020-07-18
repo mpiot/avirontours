@@ -18,7 +18,6 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\MedicalCertificate;
 use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
