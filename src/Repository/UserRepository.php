@@ -137,4 +137,26 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $query->getResult();
     }
+
+    public function findForUniqueness($args)
+    {
+        if (null === $args['firstName'] || null === $args['lastName']) {
+            return [];
+        }
+
+        $firstName = u($args['firstName'])->lower()->toString();
+        $lastName = u($args['lastName'])->lower()->toString();
+
+        $query = $this->createQueryBuilder('user')
+            ->where('LOWER(user.firstName) = :firstName')
+            ->andWhere('LOWER(user.lastName) = :lastName')
+            ->setParameters([
+                'firstName' => $firstName,
+                'lastName' => $lastName,
+            ])
+            ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
 }
