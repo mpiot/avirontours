@@ -65,7 +65,7 @@ class MedicalCertificate
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
-     * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize")
+     * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize", mimeType="fileMimeType")
      *
      * @var File|null
      *
@@ -90,6 +90,13 @@ class MedicalCertificate
      * @var int|null
      */
     private $fileSize;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string|null
+     */
+    private $fileMimeType;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -216,5 +223,17 @@ class MedicalCertificate
     public function getFileSize(): ?int
     {
         return $this->fileSize;
+    }
+
+    public function setFileMimeType(?string $fileMimeType): self
+    {
+        $this->fileMimeType = $fileMimeType;
+
+        return $this;
+    }
+
+    public function getFileMimeType(): ?string
+    {
+        return $this->fileMimeType;
     }
 }
