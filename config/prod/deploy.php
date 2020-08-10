@@ -12,7 +12,7 @@ return new class extends DefaultDeployer
             ->repositoryUrl('git@github.com:mpiot/atm-management.git')
             ->repositoryBranch('develop')
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
-            ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'var/log'])
+            ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'protected_files', 'var/log'])
             ->fixPermissionsWithAcl('www-data')
         ;
     }
