@@ -91,6 +91,7 @@
                         <th>Nom</th>
                         <th>Type</th>
                         <th>Status de la licence</th>
+                        <th>Certificat</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -109,6 +110,11 @@
                                         </span>
                                     </div>
                                 {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}">
+                                    <span class="far fa-file-pdf"></span> Certificat
+                                </a>
                             </td>
                             <td class="d-flex justify-content-end align-items-center">
                                 <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">

@@ -35,8 +35,8 @@ class MedicalCertificateController extends AbstractController
      * @Route("/{id}/dowload", name="medical_certificate_download", methods="GET")
      * @Security("is_granted('ROLE_ADMIN')")
      */
-    public function edit(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
+    public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {
-        return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file');
+        return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file', null, null, false);
     }
 }
