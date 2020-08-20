@@ -65,7 +65,6 @@ class MedicalCertificateType extends AbstractType
             ->add('file', VichFileType::class, [
                 'label' => 'Fichier',
                 'required' => false,
-                'allow_delete' => true,
                 'download_uri' => function (MedicalCertificate $medicalCertificate) {
                     if (null === $medicalCertificate->getFileName()) {
                         return null;

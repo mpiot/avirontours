@@ -64,8 +64,9 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_phoneNumber"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_medicalCertificate_date"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.form-error-message')->text());
         $this->assertStringContainsString('Vous devez accepter les conditions d\'utilisation.', $crawler->filter('label[for="registration_form_agreeTerms"] .form-error-message')->text());
-        $this->assertCount(16, $crawler->filter('.form-error-message'));
+        $this->assertCount(17, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Sauver')->form([
             'registration_form[gender]' => 'm',

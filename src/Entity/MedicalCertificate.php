@@ -74,6 +74,7 @@ class MedicalCertificate
      *     mimeTypes = {"application/pdf", "application/x-pdf", "image/*"},
      *     mimeTypesMessage = "Le fichier doit être au format PDF ou bien une image."
      * )
+     * @Assert\NotNull(groups={"new"})
      */
     private $file;
 
