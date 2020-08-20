@@ -20,6 +20,7 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RenewType extends AbstractType
 {
@@ -28,11 +29,19 @@ class RenewType extends AbstractType
         $builder
             ->remove('seasonCategory')
             ->remove('user')
+            ->get('medicalCertificate')->get('file')->setRequired(true)
         ;
     }
 
     public function getParent()
     {
         return LicenseType::class;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'validation_groups' => ['Default', 'new'],
+        ]);
     }
 }

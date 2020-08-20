@@ -22,7 +22,7 @@
             {% if is_granted('ROLE_USER') %}
                 <div class="navbar-nav-scroll">
                     <ul class="navbar-nav flex-row">
-                        {% if is_granted('ROLE_USER') %}
+                        {% if is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
                             </li>
@@ -54,7 +54,7 @@
                     </div>
                 {% endif %}
 
-                {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+                {% if is_granted('IS_IMPERSONATOR') %}
                     <a class="btn btn-danger rounded-pill"
                        href="{{ path('user_index', {'_switch_user': '_exit'}) }}">
                         <span class="fas fa-user-slash"></span> Quitter l'impersonation

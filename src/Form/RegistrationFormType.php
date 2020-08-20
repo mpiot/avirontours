@@ -113,6 +113,7 @@ class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RegistrationModel::class,
+            'validation_groups' => ['Default', 'new'],
         ]);
     }
 }
