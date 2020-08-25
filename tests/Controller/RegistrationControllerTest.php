@@ -65,7 +65,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_medicalCertificate_date"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.form-error-message')->text());
-        $this->assertStringContainsString('Vous devez accepter les conditions d\'utilisation.', $crawler->filter('label[for="registration_form_agreeTerms"] .form-error-message')->text());
+        $this->assertStringContainsString('Vous devez savoir nager pour vous inscrire.', $crawler->filter('label[for="registration_form_agreeSwim"] .form-error-message')->text());
         $this->assertCount(17, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Sauver')->form([
@@ -85,7 +85,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][phoneNumber]' => '0102030405',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
-            'registration_form[agreeTerms]' => 1,
+            'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -139,7 +139,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][phoneNumber]' => '0102030405',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
-            'registration_form[agreeTerms]' => 1,
+            'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $crawler = $client->submit($form);
@@ -183,6 +183,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
             'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'renew[medicalCertificate][date]' => '2020-01-01',
+            'renew[agreeSwim]' => 1,
         ]);
         $form['renew[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);

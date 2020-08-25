@@ -18,15 +18,37 @@
 
 namespace App\Form;
 
+use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
+use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
 
 class RenewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('agreeSwim', CheckboxType::class, [
+                'label' => 'J\'atteste savoir nager',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+                'mapped' => false,
+                'constraints' => [
+                    new IsTrue([
+                        'message' => 'Vous devez savoir nager pour vous inscrire.',
+                    ]),
+                ],
+            ])
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'action_name' => 'register',
+                'mapped' => false,
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
+            ])
             ->remove('seasonCategory')
             ->remove('user')
             ->get('medicalCertificate')->get('file')->setRequired(true)

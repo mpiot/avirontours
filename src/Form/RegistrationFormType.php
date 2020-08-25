@@ -86,16 +86,14 @@ class RegistrationFormType extends AbstractType
             ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
                 'label' => false,
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'label' => 'J\'accepte les conditions d\'utilisation',
+            ->add('agreeSwim', CheckboxType::class, [
+                'label' => 'J\'atteste savoir nager',
                 'label_attr' => ['class' => 'checkbox-custom'],
-                'help' => '<a href="#">Lire les conditions d\'utilisation</a>',
-                'help_html' => true,
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'Vous devez accepter les conditions d\'utilisation.',
+                        'message' => 'Vous devez savoir nager pour vous inscrire.',
                     ]),
                 ],
             ])

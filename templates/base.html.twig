@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" class="h-100">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,7 +13,7 @@
         <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
     </head>
 
-    <body class="d-flex flex-column">
+    <body class="d-flex flex-column h-100">
         <header class="navbar navbar-expand navbar-light bg-white flex-column flex-md-row border-bottom shadow-sm top-navbar">
             <a class="navbar-brand mr-0 mr-md-2" href="{{ path('homepage') }}">
                 <img src="{{ asset('build/images/logo_50.png') }}" class="d-inline-block align-top" alt="">
@@ -63,7 +63,7 @@
             {% endif %}
         </header>
 
-        <div class="container-fluid">
+        <div class="container-fluid flex-shrink-0">
             {% block container %}
                 <main class="py-md-3" role="main">
                     <nav aria-label="breadcrumb">
@@ -88,6 +88,12 @@
                 </main>
             {% endblock %}
         </div>
+
+        <footer class="footer mt-auto bg-white border-top py-3">
+            <div class="container-fluid d-flex">
+                <a href="{{ path('legal_notice') }}">Mentions légales</a>
+            </div>
+        </footer>
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
