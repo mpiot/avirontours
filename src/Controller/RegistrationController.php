@@ -26,9 +26,11 @@ use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -38,7 +40,7 @@ class RegistrationController extends AbstractController
      * @Route("/register/{slug}", name="app_register")
      * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(slug)")
      */
-    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
@@ -51,11 +53,23 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $registrationModel->generateUser($seasonCategory, $passwordEncoder);
 
+            // Persist user
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Send email
+            $email = (new TemplatedEmail())
+                ->to($user->getEmailAuthRecipient())
+                ->subject('Inscription à l\'Aviron Tours Métropole')
+                ->htmlTemplate('emails/registration_notification.html.twig')
+                ->context([
+                    'user' => $user,
+                ])
+            ;
+            $mailer->send($email);
+
+            // Add flash message
             $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
             return $this->redirectToRoute('app_login');
@@ -70,7 +84,7 @@ class RegistrationController extends AbstractController
      * @Route("/renew/{slug}", name="renew")
      * @Security("is_granted('ROLE_USER')")
      */
-    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request): Response
+    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, MailerInterface $mailer): Response
     {
         $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {
@@ -82,11 +96,23 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Persist user
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($license);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Send email
+            $email = (new TemplatedEmail())
+                ->to($this->getUser()->getEmailAuthRecipient())
+                ->subject('Inscription à l\'Aviron Tours Métropole')
+                ->htmlTemplate('emails/renew_notification.html.twig')
+                ->context([
+                    'user' => $this->getUser(),
+                ])
+            ;
+            $mailer->send($email);
+
+            // Add flash message
             $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
 
             return $this->redirectToRoute('profile_show');

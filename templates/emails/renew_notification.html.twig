@@ -1,0 +1,23 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block body %}
+    <container>
+        <row>
+            <columns>
+                <container class="text-left">
+                    Bonjour {{ user.fullName }},<br>
+                    Le club Aviron Tours Métropole vous remercie de votre réinscription.
+                </container>
+
+                <container class="text-left">
+                    Nous mettons à votre disposition un <a href="{{ absolute_url('files/guide_atm_2020.pdf') }}">guide informatif sur le fonctionnement du club</a>.
+                </container>
+
+                <container class="text-left">
+                    Sportivement,<br>
+                    Aviron Tours Métropole
+                </container>
+            </columns>
+        </row>
+    </container>
+{% endblock %}

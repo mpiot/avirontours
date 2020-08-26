@@ -87,13 +87,13 @@ class RegistrationFormType extends AbstractType
                 'label' => false,
             ])
             ->add('agreeSwim', CheckboxType::class, [
-                'label' => 'J\'atteste savoir nager',
+                'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
                     new IsTrue([
-                        'message' => 'Vous devez savoir nager pour vous inscrire.',
+                        'message' => 'Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.',
                     ]),
                 ],
             ])
