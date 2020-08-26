@@ -1,0 +1,28 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block body %}
+    <container>
+        <row>
+            <columns>
+                <container class="text-left">
+                    Bonjour {{ user.fullName }},<br>
+                    Le club Aviron Tours Métropole vous souhaites la bienvenue et vous remercie de votre inscription.
+                </container>
+
+                <container class="text-left">
+                    Vous pouvez vous connecter à votre espace personnel sur <a href="{{ absolute_url(path('homepage')) }}">my.avirontours.fr</a>
+                    avec votre mot de passe et votre identifiant: <b>{{ user.username }}</b>.
+                </container>
+
+                <container class="text-left">
+                    Nous mettons également à votre disposition un <a href="{{ absolute_url(asset('files/guide_atm_2020.pdf')) }}">guide informatif sur le fonctionnement du club</a>.
+                </container>
+
+                <container class="text-left">
+                    Sportivement,<br>
+                    Aviron Tours Métropole
+                </container>
+            </columns>
+        </row>
+    </container>
+{% endblock %}
