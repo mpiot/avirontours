@@ -14,7 +14,7 @@
     </head>
 
     <body class="d-flex flex-column h-100">
-        <header class="navbar navbar-expand navbar-light bg-white flex-column flex-md-row border-bottom shadow-sm top-navbar">
+        <header class="navbar navbar-expand navbar-light bg-white border-bottom shadow-sm top-navbar flex-column flex-md-row ">
             <a class="navbar-brand mr-0 mr-md-2" href="{{ path('homepage') }}">
                 <img src="{{ asset('build/images/logo_50.png') }}" class="d-inline-block align-top" alt="">
             </a>
@@ -63,9 +63,9 @@
             {% endif %}
         </header>
 
-        <div class="container-fluid flex-shrink-0">
+        <div class="container-fluid">
             {% block container %}
-                <main class="py-md-3" role="main">
+                <main role="main" class="mt-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             {% block breadcrumb %}

@@ -109,7 +109,7 @@ li {
     display: block!important;
     position: sticky;
     top: 80px;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 80px - 60px);
   }
 
   @media (max-width:769px) {
