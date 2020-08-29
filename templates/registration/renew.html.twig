@@ -11,13 +11,45 @@
 {% block body %}
     <h1>Réinscription pour la saison {{ season_category.season.name }} - {{ season_category.name }}</h1>
 
+    <div class="alert alert-info" role="alert">
+        <span class="fas fa-info-circle"></span> Le document à fournir doit être un des deux suivant:
+        <ul>
+            <li>Un <b>certificat médical</b> d'aptitude à la pratique de l'aviron de moins de 3 mois</li>
+            <li>Une <b>attestation</b> questionnaire santé, et non pas le questionnaire santé lui même</li>
+        </ul>
+    </div>
+
     {{ form_start(form) }}
         <div class="card mt-3">
             <div class="card-header">
                 Certificat médical ou attestation
             </div>
             <div class="card-body">
-                {{ form_row(form.medicalCertificate, { 'label': false }) }}
+                {{ form_row(form.medicalCertificate.type) }}
+                {{ form_row(form.medicalCertificate.level) }}
+                {{ form_row(form.medicalCertificate.date) }}
+
+                {{ form_row(form.medicalCertificate.file) }}
+
+                <div>
+                    <ul>
+                        <li>
+                            <a href="{{ asset('files/cerfa-15699-01-1-questionnaire-de-sante-qs-sport.pdf') }}">
+                                <span class="far fa-file-pdf"></span> Questionnaire santé
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport-pdf.pdf') }}">
+                                <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport.docx') }}">
+                                <span class="far fa-file-word"></span> Attestation questionnaire santé (Word)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
