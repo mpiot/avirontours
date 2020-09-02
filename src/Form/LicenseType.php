@@ -25,6 +25,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -68,6 +69,12 @@ class LicenseType extends AbstractType
             ])
             ->add('medicalCertificate', MedicalCertificateType::class, [
                 'label' => false,
+            ])
+            ->add('federationEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails de la Fédération Française d\'Aviron',
+                'help' => 'Choisir d\'être dans la liste de diffusion de la fédération',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
             ])
         ;
     }

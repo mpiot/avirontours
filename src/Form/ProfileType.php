@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,6 +46,16 @@ class ProfileType extends AbstractType
             ])
             ->add('address', AddressType::class, [
                 'inherit_data' => true,
+            ])
+            ->add('clubEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails du club',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
+            ->add('partnersEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails à propos des partenariats du club',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
             ])
         ;
     }

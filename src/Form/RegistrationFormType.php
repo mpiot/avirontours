@@ -86,6 +86,22 @@ class RegistrationFormType extends AbstractType
             ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
                 'label' => false,
             ])
+            ->add('federationEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails de la Fédération Française d\'Aviron',
+                'help' => 'Choisir d\'être dans la liste de diffusion de la fédération',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
+            ->add('clubEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails du club',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
+            ->add('partnersEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails à propos des partenariats du club',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
             ->add('agreeSwim', CheckboxType::class, [
                 'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
                 'label_attr' => ['class' => 'checkbox-custom'],

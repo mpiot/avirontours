@@ -167,6 +167,16 @@ class User implements UserInterface, EmailTwoFactorInterface
      */
     private $authCode;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $clubEmailAllowed;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $partnersEmailAllowed;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -174,6 +184,8 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
         $this->licenses = new ArrayCollection();
+        $this->clubEmailAllowed = true;
+        $this->partnersEmailAllowed = false;
     }
 
     public function __toString()
@@ -595,5 +607,29 @@ class User implements UserInterface, EmailTwoFactorInterface
             'B' => self::ROWER_CATEGORY_B,
             'C' => self::ROWER_CATEGORY_C,
         ];
+    }
+
+    public function getClubEmailAllowed(): ?bool
+    {
+        return $this->clubEmailAllowed;
+    }
+
+    public function setClubEmailAllowed(bool $clubEmailAllowed): self
+    {
+        $this->clubEmailAllowed = $clubEmailAllowed;
+
+        return $this;
+    }
+
+    public function getPartnersEmailAllowed(): ?bool
+    {
+        return $this->partnersEmailAllowed;
+    }
+
+    public function setPartnersEmailAllowed(bool $partnersEmailAllowed): self
+    {
+        $this->partnersEmailAllowed = $partnersEmailAllowed;
+
+        return $this;
     }
 }
