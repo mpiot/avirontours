@@ -86,6 +86,9 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
             'registration_form[agreeSwim]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[partnersEmailAllowed]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -107,11 +110,14 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
+        $this->assertTrue($user->getClubEmailAllowed());
+        $this->assertTrue($user->getPartnersEmailAllowed());
         $this->assertSame(User::ROWER_CATEGORY_C, $user->getRowerCategory());
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
+        $this->assertTrue($user->getLicenses()->first()->getFederationEmailAllowed());
     }
 
     public function testRegistrationTwice()
@@ -184,6 +190,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'renew[medicalCertificate][date]' => '2020-01-01',
             'renew[agreeSwim]' => 1,
+            'renew[federationEmailAllowed]' => 1,
         ]);
         $form['renew[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -194,6 +201,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame('2020-01-01', $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
+        $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
 
         $client->request('GET', $url);
         $this->assertResponseStatusCodeSame(404);

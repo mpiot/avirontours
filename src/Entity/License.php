@@ -74,11 +74,17 @@ class License
      */
     private $transitionContexts;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $federationEmailAllowed;
+
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
     {
         $this->seasonCategory = $seasonCategory;
         $this->user = $user;
         $this->transitionContexts = [];
+        $this->federationEmailAllowed = false;
     }
 
     public function getId(): ?int
@@ -162,5 +168,17 @@ class License
     public function setTransitionContexts($transitionContexts)
     {
         $this->transitionContexts = $transitionContexts;
+    }
+
+    public function getFederationEmailAllowed(): ?bool
+    {
+        return $this->federationEmailAllowed;
+    }
+
+    public function setFederationEmailAllowed(bool $federationEmailAllowed): self
+    {
+        $this->federationEmailAllowed = $federationEmailAllowed;
+
+        return $this;
     }
 }

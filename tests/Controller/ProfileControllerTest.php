@@ -84,6 +84,8 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][postalCode]' => '01000',
             'profile[address][city]' => 'One City',
             'profile[address][phoneNumber]' => '0123456789',
+            'profile[clubEmailAllowed]' => 1,
+            'profile[partnersEmailAllowed]' => 1,
         ]);
         $client->submit($form);
         $this->assertResponseRedirects();
@@ -101,9 +103,11 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0123456789', $user->getPhoneNumber());
+        $this->assertTrue($user->getClubEmailAllowed());
+        $this->assertTrue($user->getPartnersEmailAllowed());
     }
 
-    public function testRegistration()
+    public function testEditPassword()
     {
         $client = static::createClient();
         $url = '/profile/edit-password';

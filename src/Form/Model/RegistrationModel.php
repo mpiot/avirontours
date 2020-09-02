@@ -117,10 +117,26 @@ class RegistrationModel
      */
     public $medicalCertificate;
 
+    /**
+     * @var bool
+     */
+    public $federationEmailAllowed = false;
+
+    /**
+     * @var bool
+     */
+    public $clubEmailAllowed = true;
+
+    /**
+     * @var bool
+     */
+    public $partnersEmailAllowed = false;
+
     public function generateUser(SeasonCategory $seasonCategory, UserPasswordEncoderInterface $passwordEncoder)
     {
         $license = (new License($seasonCategory))
             ->setMedicalCertificate($this->medicalCertificate)
+            ->setFederationEmailAllowed($this->federationEmailAllowed)
         ;
 
         $user = new User();
@@ -144,6 +160,8 @@ class RegistrationModel
             ->setCity($this->city)
             ->setPhoneNumber($this->phoneNumber)
             ->addLicense($license)
+            ->setClubEmailAllowed($this->clubEmailAllowed)
+            ->setPartnersEmailAllowed($this->partnersEmailAllowed)
         ;
 
         return $user;
