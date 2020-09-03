@@ -72,7 +72,6 @@ class LicenseType extends AbstractType
             ])
             ->add('federationEmailAllowed', CheckboxType::class, [
                 'label' => 'Recevoir les emails de la Fédération Française d\'Aviron',
-                'help' => 'Choisir d\'être dans la liste de diffusion de la fédération',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])

@@ -88,7 +88,6 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('federationEmailAllowed', CheckboxType::class, [
                 'label' => 'Recevoir les emails de la Fédération Française d\'Aviron',
-                'help' => 'Choisir d\'être dans la liste de diffusion de la fédération',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
@@ -98,7 +97,8 @@ class RegistrationFormType extends AbstractType
                 'required' => false,
             ])
             ->add('partnersEmailAllowed', CheckboxType::class, [
-                'label' => 'Recevoir les emails à propos des partenariats du club',
+                'label' => 'Recevoir les emails à propos lié aux partenariats du club',
+                'help' => 'Recevoir de la part du club des emails de partenaires.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
