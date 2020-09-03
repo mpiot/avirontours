@@ -8,8 +8,8 @@ return new class extends DefaultDeployer
     {
         return $this->getConfigBuilder()
             ->server('my.avirontours.fr:2222')
-            ->deployDir('/var/www/atm-management')
-            ->repositoryUrl('git@github.com:mpiot/atm-management.git')
+            ->deployDir('/var/www/avirontours')
+            ->repositoryUrl('git@github.com:mpiot/avirontours.git')
             ->repositoryBranch('develop')
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
             ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'protected_files', 'var/log'])
