@@ -64,6 +64,17 @@ class AddressType extends AbstractType
     private function getLaneTypes(): array
     {
         $types = [
+            'Allee',
+            'Avenue',
+            'Boulevard',
+            'Carrefour',
+            'Chaussee',
+            'Chemin',
+            'Cite',
+            'Clos',
+            'Cours',
+            'Domaine',
+            'Enclos',
             'Faubourg',
             'Grande Rue',
             'Hameau',
