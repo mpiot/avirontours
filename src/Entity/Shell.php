@@ -28,9 +28,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Shell
 {
+    const ROWER_CATEGORY_A = 1;
+    const ROWER_CATEGORY_B = 2;
+    const ROWER_CATEGORY_C = 3;
+
     const ROWING_TYPE_BOTH = 'both';
     const ROWING_TYPE_SCULL = 'scull';
     const ROWING_TYPE_SWEEP = 'sweep';
+
+    const WEIGHT_CATEGORY_50 = 50;
+    const WEIGHT_CATEGORY_60 = 60;
+    const WEIGHT_CATEGORY_70 = 70;
+    const WEIGHT_CATEGORY_80 = 80;
+    const WEIGHT_CATEGORY_90 = 90;
+
+    const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
+    const RIGGER_MATERIAL_CARBON = 'carbon';
+
+    const RIGGER_POSITION_BACK = 'back';
+    const RIGGER_POSITION_FRONT = 'front';
 
     /**
      * @ORM\Id()
@@ -190,23 +206,14 @@ class Shell
         return $this->rowingType;
     }
 
-    public function getStringRowingType(): string
+    public function getTextRowingType(): string
     {
-        switch ($this->rowingType) {
-            case self::ROWING_TYPE_BOTH:
-                return 'Les deux';
-                break;
-
-            case self::ROWING_TYPE_SCULL:
-                return 'Couple';
-                break;
-
-            case self::ROWING_TYPE_SWEEP:
-                return 'Pointe';
-                break;
+        $availableRowingTypes = array_flip(self::getAvailableRowingTypes());
+        if (!\array_key_exists($this->rowingType, $availableRowingTypes)) {
+            throw new \Exception(sprintf('The rowingType "%s" is not available, the method "getAvailableRowingTypes" only return that rowingTypes: %s.', $this->rowingType, implode(', ', self::getAvailableRowingTypes())));
         }
 
-        return '';
+        return $availableRowingTypes[$this->rowingType];
     }
 
     public function setRowingType(string $rowingType): self
@@ -304,6 +311,16 @@ class Shell
         return $this->weightCategory;
     }
 
+    public function getTextWeightCategory(): ?string
+    {
+        $availableWeightCategories = array_flip(self::getAvailableWeightCategories());
+        if (!\array_key_exists($this->weightCategory, $availableWeightCategories)) {
+            throw new \Exception(sprintf('The weightCategory "%s" is not available, the method "getAvailableWeightCategories" only return that weightCategories: %s.', $this->weightCategory, implode(', ', self::getAvailableWeightCategories())));
+        }
+
+        return $availableWeightCategories[$this->weightCategory];
+    }
+
     public function setWeightCategory(?string $weightCategory): self
     {
         $this->weightCategory = $weightCategory;
@@ -354,6 +371,16 @@ class Shell
         return $this->riggerMaterial;
     }
 
+    public function getTextRiggerMaterial(): ?string
+    {
+        $availableRiggerMaterials = array_flip(self::getAvailableRiggerMaterials());
+        if (!\array_key_exists($this->riggerMaterial, $availableRiggerMaterials)) {
+            throw new \Exception(sprintf('The riggerMaterial "%s" is not available, the method "getAvailableRiggerMaterials" only return that riggerMaterials: %s.', $this->riggerMaterial, implode(', ', self::getAvailableGenders())));
+        }
+
+        return $availableRiggerMaterials[$this->riggerMaterial];
+    }
+
     public function setRiggerMaterial(?string $riggerMaterial): self
     {
         $this->riggerMaterial = $riggerMaterial;
@@ -364,6 +391,16 @@ class Shell
     public function getRiggerPosition(): ?string
     {
         return $this->riggerPosition;
+    }
+
+    public function getTextRiggerPosition(): ?string
+    {
+        $availableRiggerPositions = array_flip(self::getAvailableRiggerPositions());
+        if (!\array_key_exists($this->riggerPosition, $availableRiggerPositions)) {
+            throw new \Exception(sprintf('The riggerPosition "%s" is not available, the method "getAvailableRiggerPositions" only return that riggerPositions: %s.', $this->riggerPosition, implode(', ', self::getAvailableRiggerPositions())));
+        }
+
+        return $availableRiggerPositions[$this->riggerPosition];
     }
 
     public function setRiggerPosition(?string $riggerPosition): self
@@ -388,6 +425,16 @@ class Shell
     public function getRowerCategory(): ?int
     {
         return $this->rowerCategory;
+    }
+
+    public function getTextRowerCategory(): string
+    {
+        $availableRowerCategories = array_flip(self::getAvailableRowerCategories());
+        if (!\array_key_exists($this->rowerCategory, $availableRowerCategories)) {
+            throw new \Exception(sprintf('The rowerCategory "%s" is not available, the method "getAvailableRowerCategories" only return that categories: %s.', $this->rowerCategory, implode(', ', self::getAvailableRowerCategories())));
+        }
+
+        return $availableRowerCategories[$this->rowerCategory];
     }
 
     public function setRowerCategory(int $rowerCategory): self
@@ -438,5 +485,50 @@ class Shell
         }
 
         return $this;
+    }
+
+    public static function getAvailableRiggerMaterials(): array
+    {
+        return [
+            'Aluminium' => self::RIGGER_MATERIAL_ALUMINIUM,
+            'Carbone' => self::RIGGER_MATERIAL_CARBON,
+        ];
+    }
+
+    public static function getAvailableRiggerPositions(): array
+    {
+        return [
+            'Arrière' => self::RIGGER_POSITION_BACK,
+            'Avant' => self::RIGGER_POSITION_FRONT,
+        ];
+    }
+
+    public static function getAvailableRowerCategories(): array
+    {
+        return [
+            'A' => self::ROWER_CATEGORY_A,
+            'B' => self::ROWER_CATEGORY_B,
+            'C' => self::ROWER_CATEGORY_C,
+        ];
+    }
+
+    public static function getAvailableRowingTypes(): array
+    {
+        return [
+            'Les deux' => self::ROWING_TYPE_BOTH,
+            'Couple' => self::ROWING_TYPE_SCULL,
+            'Pointe' => self::ROWING_TYPE_SWEEP,
+        ];
+    }
+
+    public static function getAvailableWeightCategories(): array
+    {
+        return [
+            '50-60' => self::WEIGHT_CATEGORY_50,
+            '60-70' => self::WEIGHT_CATEGORY_60,
+            '70-80' => self::WEIGHT_CATEGORY_70,
+            '80-90' => self::WEIGHT_CATEGORY_80,
+            '90+' => self::WEIGHT_CATEGORY_90,
+        ];
     }
 }

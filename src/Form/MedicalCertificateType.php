@@ -41,20 +41,13 @@ class MedicalCertificateType extends AbstractType
         $builder
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de certificat',
-                'choices' => [
-                    'Attestation' => MedicalCertificate::TYPE_ATTESTATION,
-                    'Certificat' => MedicalCertificate::TYPE_CERTIFICATE,
-                ],
+                'choices' => MedicalCertificate::getAvailableTypes(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])
             ->add('level', ChoiceType::class, [
                 'label' => 'Niveau',
-                'choices' => [
-                    'Pratique' => MedicalCertificate::LEVEL_PRACTICE,
-                    'Compétition' => MedicalCertificate::LEVEL_COMPETITION,
-                    'Surclassement' => MedicalCertificate::LEVEL_UPGRADE,
-                ],
+                'choices' => MedicalCertificate::getAvailableLevels(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])

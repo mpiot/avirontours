@@ -40,6 +40,9 @@ class User implements UserInterface, EmailTwoFactorInterface
 {
     const NUM_ITEMS = 20;
 
+    const GENDER_FEMALE = 'f';
+    const GENDER_MALE = 'm';
+
     const ROWER_CATEGORY_A = 1;
     const ROWER_CATEGORY_B = 2;
     const ROWER_CATEGORY_C = 3;
@@ -285,11 +288,12 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function getTextGender(): ?string
     {
-        if ('f' === $this->gender) {
-            return 'Femme';
+        $availableGenders = array_flip(self::getAvailableGenders());
+        if (!\array_key_exists($this->gender, $availableGenders)) {
+            throw new \Exception(sprintf('The gender "%s" is not available, the method "getAvailableGenders" only return that genders: %s.', $this->gender, implode(', ', self::getAvailableGenders())));
         }
 
-        return 'Homme';
+        return $availableGenders[$this->gender];
     }
 
     public function setGender(string $gender): self
@@ -306,10 +310,6 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setFirstName(?string $firstName): self
     {
-        if (null !== $firstName) {
-            $firstName = u($firstName)->title(true);
-        }
-
         $this->firstName = $firstName;
 
         return $this;
@@ -322,10 +322,6 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setLastName(?string $lastName): self
     {
-        if (null !== $lastName) {
-            $lastName = u($lastName)->title(true);
-        }
-
         $this->lastName = $lastName;
 
         return $this;
@@ -341,16 +337,21 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->rowerCategory;
     }
 
+    public function getTextRowerCategory(): string
+    {
+        $availableRowerCategories = array_flip(self::getAvailableRowerCategories());
+        if (!\array_key_exists($this->rowerCategory, $availableRowerCategories)) {
+            throw new \Exception(sprintf('The rowerCategory "%s" is not available, the method "getAvailableRowerCategories" only return that categories: %s.', $this->rowerCategory, implode(', ', self::getAvailableRowerCategories())));
+        }
+
+        return $availableRowerCategories[$this->rowerCategory];
+    }
+
     public function setRowerCategory(int $rowerCategory): self
     {
         $this->rowerCategory = $rowerCategory;
 
         return $this;
-    }
-
-    public function getTextRowerCategory(): string
-    {
-        return array_flip(self::getAvailableRowerCategories())[$this->rowerCategory];
     }
 
     public function getBirthday(): ?\DateTimeInterface
@@ -490,26 +491,6 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this->logbookEntries;
     }
 
-    public function addLogbookEntry(LogbookEntry $logbookEntry): self
-    {
-        if (!$this->logbookEntries->contains($logbookEntry)) {
-            $this->logbookEntries[] = $logbookEntry;
-            $logbookEntry->addCrew($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLogbookEntry(LogbookEntry $logbookEntry): self
-    {
-        if ($this->logbookEntries->contains($logbookEntry)) {
-            $this->logbookEntries->removeElement($logbookEntry);
-            $logbookEntry->removeCrew($this);
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|License[]
      */
@@ -578,6 +559,30 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->authCode = $authCode;
     }
 
+    public function getClubEmailAllowed(): ?bool
+    {
+        return $this->clubEmailAllowed;
+    }
+
+    public function setClubEmailAllowed(bool $clubEmailAllowed): self
+    {
+        $this->clubEmailAllowed = $clubEmailAllowed;
+
+        return $this;
+    }
+
+    public function getPartnersEmailAllowed(): ?bool
+    {
+        return $this->partnersEmailAllowed;
+    }
+
+    public function setPartnersEmailAllowed(bool $partnersEmailAllowed): self
+    {
+        $this->partnersEmailAllowed = $partnersEmailAllowed;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback()
      */
@@ -603,6 +608,14 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->username = "$firstName.$lastName";
     }
 
+    public static function getAvailableGenders(): array
+    {
+        return [
+            'Femme' => self::GENDER_FEMALE,
+            'Homme' => self::GENDER_MALE,
+        ];
+    }
+
     public static function getAvailableRowerCategories(): array
     {
         return [
@@ -610,29 +623,5 @@ class User implements UserInterface, EmailTwoFactorInterface
             'B' => self::ROWER_CATEGORY_B,
             'C' => self::ROWER_CATEGORY_C,
         ];
-    }
-
-    public function getClubEmailAllowed(): ?bool
-    {
-        return $this->clubEmailAllowed;
-    }
-
-    public function setClubEmailAllowed(bool $clubEmailAllowed): self
-    {
-        $this->clubEmailAllowed = $clubEmailAllowed;
-
-        return $this;
-    }
-
-    public function getPartnersEmailAllowed(): ?bool
-    {
-        return $this->partnersEmailAllowed;
-    }
-
-    public function setPartnersEmailAllowed(bool $partnersEmailAllowed): self
-    {
-        $this->partnersEmailAllowed = $partnersEmailAllowed;
-
-        return $this;
     }
 }

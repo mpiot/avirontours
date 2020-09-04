@@ -70,10 +70,28 @@ class ShellDamageCategory
         return $this->priority;
     }
 
+    public function getTextPriority(): ?string
+    {
+        $availablePriorities = array_flip(self::getAvailablePriorities());
+        if (!\array_key_exists($this->priority, $availablePriorities)) {
+            throw new \Exception(sprintf('The priority "%s" is not available, the method "getAvailablePriorities" only return that priorities: %s.', $this->priority, implode(', ', self::getAvailablePriorities())));
+        }
+
+        return $availablePriorities[$this->priority];
+    }
+
     public function setPriority(int $priority): self
     {
         $this->priority = $priority;
 
         return $this;
+    }
+
+    public static function getAvailablePriorities(): array
+    {
+        return [
+            'Intermédiaire' => self::PRIORITY_MEDIUM,
+            'Importante' => self::PRIORITY_HIGH,
+        ];
     }
 }
