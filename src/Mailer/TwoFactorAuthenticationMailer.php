@@ -20,8 +20,8 @@ namespace App\Mailer;
 
 use Scheb\TwoFactorBundle\Mailer\AuthCodeMailerInterface;
 use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class TwoFactorAuthenticationMailer implements AuthCodeMailerInterface
 {
@@ -35,16 +35,20 @@ class TwoFactorAuthenticationMailer implements AuthCodeMailerInterface
     public function sendAuthCode(TwoFactorInterface $user): void
     {
         // Send email
-        $email = (new TemplatedEmail())
-            ->to($user->getEmailAuthRecipient())
-            ->subject('Code d\'authentification')
-            ->htmlTemplate('emails/two_factor_authentication.html.twig')
-            ->context([
-                'user' => $user,
-                'authCode' => $user->getEmailAuthCode(),
-            ])
+        $email = new Email();
+        $email->to($user->getEmail())
+            ->text('')
+            ->setHeaders(
+                $email->getHeaders()
+                    ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
+                    ->addTextHeader('X-MJ-TemplateID', '1669931')
+                    ->addTextHeader('X-MJ-TemplateLanguage', '1')
+                    ->addTextHeader('X-MJ-Vars', json_encode([
+                        'fullName' => $user->getFullName(),
+                        'authCode' => $user->getEmailAuthCode(),
+                    ]))
+            )
         ;
-
         $this->mailer->send($email);
     }
 }
