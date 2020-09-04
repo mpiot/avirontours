@@ -19,7 +19,6 @@
 namespace App\Form;
 
 use App\Entity\Shell;
-use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -43,11 +42,7 @@ class ShellType extends AbstractType
             ])
             ->add('rowingType', ChoiceType::class, [
                 'label' => 'Type',
-                'choices' => [
-                    'Les deux' => Shell::ROWING_TYPE_BOTH,
-                    'Couple' => Shell::ROWING_TYPE_SCULL,
-                    'Pointe' => Shell::ROWING_TYPE_SWEEP,
-                ],
+                'choices' => Shell::getAvailableRowingTypes(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
             ])
@@ -68,11 +63,7 @@ class ShellType extends AbstractType
             ])
             ->add('rowerCategory', ChoiceType::class, [
                 'label' => 'Catégorie rameur',
-                'choices' => [
-                    'A' => User::ROWER_CATEGORY_A,
-                    'B' => User::ROWER_CATEGORY_B,
-                    'C' => User::ROWER_CATEGORY_C,
-                ],
+                'choices' => Shell::getAvailableRowerCategories(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
             ])
@@ -83,13 +74,7 @@ class ShellType extends AbstractType
             ])
             ->add('weightCategory', ChoiceType::class, [
                 'label' => 'Catégorie porteur',
-                'choices' => [
-                    '50-60' => 50,
-                    '60-70' => 60,
-                    '70-80' => 70,
-                    '80-90' => 80,
-                    '90+' => 90,
-                ],
+                'choices' => Shell::getAvailableWeightCategories(),
                 'required' => false,
             ])
             ->add('newPrice', MoneyType::class, [
@@ -106,10 +91,7 @@ class ShellType extends AbstractType
             ])
             ->add('riggerMaterial', ChoiceType::class, [
                 'label' => 'Matériaux portants',
-                'choices' => [
-                    'Aluminium' => 'aluminum',
-                    'Carbone' => 'carbon',
-                ],
+                'choices' => Shell::getAvailableRiggerMaterials(),
                 'placeholder' => 'N/A',
                 'required' => false,
                 'expanded' => true,
@@ -117,10 +99,7 @@ class ShellType extends AbstractType
             ])
             ->add('riggerPosition', ChoiceType::class, [
                 'label' => 'Position portants',
-                'choices' => [
-                    'Avant' => 'front',
-                    'Arrière' => 'back',
-                ],
+                'choices' => Shell::getAvailableRiggerPositions(),
                 'placeholder' => 'N/A',
                 'required' => false,
                 'expanded' => true,

@@ -122,6 +122,16 @@ class MedicalCertificate
         return $this->type;
     }
 
+    public function getTextType(): ?string
+    {
+        $availableTypes = array_flip(self::getAvailableTypes());
+        if (!\array_key_exists($this->type, $availableTypes)) {
+            throw new \Exception(sprintf('The type "%s" is not available, the method "getAvailableTypes" only return that types: %s.', $this->type, implode(', ', self::getAvailableTypes())));
+        }
+
+        return $availableTypes[$this->type];
+    }
+
     public function setType(?string $type): self
     {
         $this->type = $type;
@@ -129,18 +139,19 @@ class MedicalCertificate
         return $this;
     }
 
-    public function getTextType(): string
-    {
-        if (self::TYPE_ATTESTATION === $this->type) {
-            return 'Attestation';
-        }
-
-        return 'Certificat';
-    }
-
     public function getLevel(): ?string
     {
         return $this->level;
+    }
+
+    public function getTextLevel(): ?string
+    {
+        $availableLevels = array_flip(self::getAvailableLevels());
+        if (!\array_key_exists($this->level, $availableLevels)) {
+            throw new \Exception(sprintf('The level "%s" is not available, the method "getAvailableLevels" only return that levels: %s.', $this->level, implode(', ', self::getAvailableLevels())));
+        }
+
+        return $availableLevels[$this->level];
     }
 
     public function setLevel(?string $level): self
@@ -148,19 +159,6 @@ class MedicalCertificate
         $this->level = $level;
 
         return $this;
-    }
-
-    public function getTextLevel(): string
-    {
-        if (self::LEVEL_PRACTICE === $this->level) {
-            return 'Pratique';
-        }
-
-        if (self::LEVEL_UPGRADE === $this->level) {
-            return 'Surclassement';
-        }
-
-        return 'Compétition';
     }
 
     public function getDate(): ?\DateTime
@@ -236,5 +234,22 @@ class MedicalCertificate
     public function getFileMimeType(): ?string
     {
         return $this->fileMimeType;
+    }
+
+    public static function getAvailableLevels(): array
+    {
+        return [
+            'Pratique' => self::LEVEL_PRACTICE,
+            'Compétition' => self::LEVEL_COMPETITION,
+            'Surclassement' => self::LEVEL_UPGRADE,
+        ];
+    }
+
+    public static function getAvailableTypes(): array
+    {
+        return [
+            'Attestation' => self::TYPE_ATTESTATION,
+            'Certificat' => self::TYPE_CERTIFICATE,
+        ];
     }
 }

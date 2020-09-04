@@ -18,6 +18,7 @@
 
 namespace App\Form;
 
+use App\Entity\User;
 use App\Form\Model\RegistrationModel;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
@@ -42,10 +43,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('gender', ChoiceType::class, [
                 'label' => 'Genre',
-                'choices' => [
-                    'Homme' => 'm',
-                    'Femme' => 'f',
-                ],
+                'choices' => User::getAvailableGenders(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])

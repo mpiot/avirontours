@@ -47,10 +47,7 @@ class UserType extends AbstractType
         $builder
             ->add('gender', ChoiceType::class, [
                 'label' => 'Genre',
-                'choices' => [
-                    'Homme' => 'm',
-                    'Femme' => 'f',
-                ],
+                'choices' => User::getAvailableGenders(),
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])

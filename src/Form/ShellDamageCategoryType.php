@@ -32,10 +32,7 @@ class ShellDamageCategoryType extends AbstractType
         $builder
             ->add('priority', ChoiceType::class, [
                 'label' => 'Priorité',
-                'choices' => [
-                    'Intermédiaire' => ShellDamageCategory::PRIORITY_MEDIUM,
-                    'Importante' => ShellDamageCategory::PRIORITY_HIGH,
-                ],
+                'choices' => ShellDamageCategory::getAvailablePriorities(),
             ])
             ->add('name', TextType::class, [
                 'label' => 'Nom',
