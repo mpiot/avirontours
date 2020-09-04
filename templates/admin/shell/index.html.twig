@@ -22,6 +22,7 @@
             <tr>
                 <th>Nom</th>
                 <th>Type</th>
+                <th>Porteur</th>
                 <th>Kilométrage</th>
                 <th></th>
             </tr>
@@ -33,6 +34,13 @@
                         <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
                     </td>
                     <td>{{ shell.abbreviation }}</td>
+                    <td>
+                        {% if shell.weightCategory is not null %}
+                            {{ shell.textWeightCategory }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     <td>{{ shell.mileage }} km</td>
                     <td class="text-right">
                         <a class="btn btn-outline-warning btn-sm rounded-pill"

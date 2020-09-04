@@ -311,14 +311,20 @@ class Shell
         return $this->weightCategory;
     }
 
-    public function getTextWeightCategory(): ?string
+    public function getTextWeightCategory($withUnit = true): ?string
     {
         $availableWeightCategories = array_flip(self::getAvailableWeightCategories());
         if (!\array_key_exists($this->weightCategory, $availableWeightCategories)) {
             throw new \Exception(sprintf('The weightCategory "%s" is not available, the method "getAvailableWeightCategories" only return that weightCategories: %s.', $this->weightCategory, implode(', ', self::getAvailableWeightCategories())));
         }
 
-        return $availableWeightCategories[$this->weightCategory];
+        $text = $availableWeightCategories[$this->weightCategory];
+
+        if (true === $withUnit) {
+            $text .= ' Kg';
+        }
+
+        return $text;
     }
 
     public function setWeightCategory(?string $weightCategory): self
