@@ -50,12 +50,22 @@ class LogbookEntryNewType extends AbstractType
                 'class' => Shell::class,
                 'choice_label' => 'fullName',
                 'choice_attr' => function (Shell $shell) {
+                    $badges = [];
+
                     if ($shell->getRowerCategory() <= 2) {
-                        return ['data-badge' => 'competition'];
+                        $badges[] = ['color' => 'primary', 'value' => 'Compétition'];
                     }
 
                     if (true === $shell->getPersonalBoat()) {
-                        return ['data-badge' => 'personnal'];
+                        $badges[] = ['color' => 'warning', 'value' => 'Personnel'];
+                    }
+
+                    if (null !== $shell->getWeightCategory()) {
+                        $badges[] = ['color' => 'info', 'value' => $shell->getTextWeightCategory()];
+                    }
+
+                    if (!empty($badges)) {
+                        return ['data-badges' => json_encode($badges)];
                     }
 
                     return [];

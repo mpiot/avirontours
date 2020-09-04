@@ -10,17 +10,18 @@ $(function() {
         templateResult: formatState,
     });
 
-    function formatState (data) {
-        let badge = $(data.element).data('badge');
+    function formatState (state) {
+        const badges = $(state.element).data('badges');
 
-        if ('competition' === badge) {
-            return $(document.createTextNode(data.text)).add($('<span class="badge badge-primary ml-2">Compétition</span>'));
+        if (undefined === badges) {
+            return state.text;
         }
 
-        if ('personnal' === badge) {
-             return $(document.createTextNode(data.text)).add($('<span class="badge badge-warning ml-2">Personnel</span>'));
+        let $state = $(document.createTextNode(state.text));
+        for (let i = 0, len = badges.length; i < len; i++) {
+            $state = $state.add($('<span class="badge badge-' + badges[i]['color'] + ' ml-2">' + badges[i]['value'] + '</span>'));
         }
 
-        return data.text;
+        return $state;
     }
 });
