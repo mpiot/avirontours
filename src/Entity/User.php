@@ -18,7 +18,7 @@
 
 namespace App\Entity;
 
-use App\Validator\TitleCase;
+use App\Validator as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -83,14 +83,14 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @TitleCase()
+     * @AppAssert\TitleCase()
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @TitleCase()
+     * @AppAssert\TitleCase ()
      */
     private $lastName;
 

@@ -22,13 +22,13 @@ use App\Entity\License;
 use App\Entity\MedicalCertificate;
 use App\Entity\SeasonCategory;
 use App\Entity\User;
-use App\Validator\UniqueUser;
+use App\Validator as AppAssert;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * @UniqueUser()
+ * @AppAssert\UniqueUser()
  */
 class RegistrationModel
 {
