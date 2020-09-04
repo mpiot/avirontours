@@ -6,5 +6,4 @@ return array (
   'MAILER_DSN' => NULL,
   'RECAPTCHA3_KEY' => NULL,
   'RECAPTCHA3_SECRET' => NULL,
-  'SENTRY_DSN' => NULL,
 );
