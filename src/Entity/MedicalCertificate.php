@@ -70,7 +70,7 @@ class MedicalCertificate
      * @var File|null
      *
      * @Assert\File(
-     *     maxSize = "2M",
+     *     maxSize = "3M",
      *     mimeTypes = {"application/pdf", "application/x-pdf", "image/*"},
      *     mimeTypesMessage = "Le fichier doit être au format PDF ou bien une image."
      * )
