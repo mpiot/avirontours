@@ -61,12 +61,21 @@ class LicenseRepository extends ServiceEntityRepository
     public function findBySeasonPaginated(Season $season, $query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('license')
+            ->addSelect('(
+                    CASE WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN 2
+                         WHEN JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN 3
+                         WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' THEN 4
+                         WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN 5
+                         ELSE 1
+                    END) AS HIDDEN mainSort'
+            )
             ->innerJoin('license.user', 'user')->addSelect('user')
             ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
             ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
             ->innerJoin('season_category.season', 'season')
             ->where('season = :season')
-            ->orderBy('user.firstName', 'ASC')
+            ->addOrderBy('mainSort', 'ASC')
+            ->addOrderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
             ->setParameter('season', $season)
         ;
