@@ -151,7 +151,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('label[for="registration_form_firstName"] .form-error-message')->text());
-        $this->assertCount(1, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur doit être en title-case (ex: Jean-Baptiste Doe).', $crawler->filter('label[for="registration_form_firstName"] .form-error-message')->eq(1)->text());
+        $this->assertCount(2, $crawler->filter('.form-error-message'));
     }
 
     public function testNonEnabledRegistration()

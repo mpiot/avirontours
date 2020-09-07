@@ -55,12 +55,14 @@ class RegistrationModel
     /**
      * @var string
      * @Assert\NotBlank()
+     * @AppAssert\TitleCase()
      */
     public $firstName;
 
     /**
      * @var string
      * @Assert\NotBlank()
+     * @AppAssert\TitleCase()
      */
     public $lastName;
 

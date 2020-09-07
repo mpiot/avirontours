@@ -33,7 +33,7 @@ class UniqueUserValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
-        $users = $this->userRepository->findBy(['firstName' => $value->firstName, 'lastName' => $value->lastName]);
+        $users = $this->userRepository->findForUniqueness(['firstName' => $value->firstName, 'lastName' => $value->lastName]);
 
         if (!empty($users)) {
             $this->context->buildViolation($constraint->message)
