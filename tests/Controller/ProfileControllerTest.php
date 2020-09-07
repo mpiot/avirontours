@@ -80,7 +80,7 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[legalRepresentative]' => 'Miss Doe',
             'profile[address][laneNumber]' => '999',
             'profile[address][laneType]' => 'Rue',
-            'profile[address][laneName]' => 'de Ouf',
+            'profile[address][laneName]' => 'De Ouf',
             'profile[address][postalCode]' => '01000',
             'profile[address][city]' => 'One City',
             'profile[address][phoneNumber]' => '0123456789',
@@ -99,7 +99,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertSame('Miss Doe', $user->getLegalRepresentative());
         $this->assertSame('999', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
-        $this->assertSame('de Ouf', $user->getLaneName());
+        $this->assertSame('De Ouf', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0123456789', $user->getPhoneNumber());

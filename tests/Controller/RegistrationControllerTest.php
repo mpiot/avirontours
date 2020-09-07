@@ -79,7 +79,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[legalRepresentative]' => 'Miss Doe',
             'registration_form[address][laneNumber]' => '999',
             'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'de ouf',
+            'registration_form[address][laneName]' => 'De Ouf',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
             'registration_form[address][phoneNumber]' => '0102030405',
@@ -106,7 +106,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('Miss Doe', $user->getLegalRepresentative());
         $this->assertSame('999', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
-        $this->assertSame('de ouf', $user->getLaneName());
+        $this->assertSame('De Ouf', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
@@ -139,7 +139,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[legalRepresentative]' => 'Miss Doe',
             'registration_form[address][laneNumber]' => '999',
             'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'de ouf',
+            'registration_form[address][laneName]' => 'De Ouf',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
             'registration_form[address][phoneNumber]' => '0102030405',
@@ -151,8 +151,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('label[for="registration_form_firstName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur doit être en title-case (ex: Jean-Baptiste Doe).', $crawler->filter('label[for="registration_form_firstName"] .form-error-message')->eq(1)->text());
-        $this->assertCount(2, $crawler->filter('.form-error-message'));
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
     }
 
     public function testNonEnabledRegistration()

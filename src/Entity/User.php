@@ -18,7 +18,6 @@
 
 namespace App\Entity;
 
-use App\Validator as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -86,14 +85,12 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @AppAssert\TitleCase()
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @AppAssert\TitleCase ()
      */
     private $lastName;
 
@@ -310,6 +307,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setFirstName(?string $firstName): self
     {
+        if (null !== $firstName) {
+            $firstName = u($firstName)->lower()->title(true);
+        }
+
         $this->firstName = $firstName;
 
         return $this;
@@ -322,6 +323,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setLastName(?string $lastName): self
     {
+        if (null !== $lastName) {
+            $lastName = u($lastName)->lower()->title(true);
+        }
+
         $this->lastName = $lastName;
 
         return $this;
@@ -386,6 +391,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setLegalRepresentative(?string $legalRepresentative): self
     {
+        if (null !== $legalRepresentative) {
+            $legalRepresentative = u($legalRepresentative)->lower()->title(true);
+        }
+
         $this->legalRepresentative = $legalRepresentative;
 
         return $this;
@@ -434,6 +443,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setLaneName(?string $laneName): self
     {
+        if (null !== $laneName) {
+            $laneName = u($laneName)->lower()->title(true);
+        }
+
         $this->laneName = $laneName;
 
         return $this;
@@ -458,6 +471,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function setCity(?string $city): self
     {
+        if (null !== $city) {
+            $city = u($city)->lower()->title(true);
+        }
+
         $this->city = $city;
 
         return $this;

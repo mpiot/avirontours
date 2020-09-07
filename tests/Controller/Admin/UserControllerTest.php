@@ -128,7 +128,7 @@ class UserControllerTest extends AppWebTestCase
             'user[legalRepresentative]' => 'Miss Doe',
             'user[address][laneNumber]' => '999',
             'user[address][laneType]' => 'Rue',
-            'user[address][laneName]' => 'de ouf',
+            'user[address][laneName]' => 'De Ouf',
             'user[address][postalCode]' => '01000',
             'user[address][city]' => 'One City',
             'user[address][phoneNumber]' => '0102030405',
@@ -148,7 +148,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('Miss Doe', $user->getLegalRepresentative());
         $this->assertSame('999', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
-        $this->assertSame('de ouf', $user->getLaneName());
+        $this->assertSame('De Ouf', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
@@ -185,7 +185,7 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[legalRepresentative]' => 'Miss Doe',
             'user_edit[address][laneNumber]' => '999',
             'user_edit[address][laneType]' => 'Rue',
-            'user_edit[address][laneName]' => 'de ouf',
+            'user_edit[address][laneName]' => 'De Ouf',
             'user_edit[address][postalCode]' => '01000',
             'user_edit[address][city]' => 'One City',
             'user_edit[address][phoneNumber]' => '0102030405',
@@ -203,7 +203,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('Miss Doe', $user->getLegalRepresentative());
         $this->assertSame('999', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
-        $this->assertSame('de ouf', $user->getLaneName());
+        $this->assertSame('De Ouf', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
