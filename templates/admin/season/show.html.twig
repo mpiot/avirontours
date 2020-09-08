@@ -90,6 +90,7 @@
                     <tr>
                         <th>Nom</th>
                         <th>Type</th>
+                        <th>Level</th>
                         <th>Status de la licence</th>
                         <th>Certificat</th>
                         <th></th>
@@ -101,7 +102,8 @@
                             <td>
                                 <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
                             </td>
-                            <td>{{ license.seasonCategory.textLicenseType }}</td>
+                            <td>{{ license.medicalCertificate.textType }}</td>
+                            <td>{{ license.medicalCertificate.textLevel }}</td>
                             <td>
                                 {% for place in workflow_marked_places(license)  %}
                                     <div>
