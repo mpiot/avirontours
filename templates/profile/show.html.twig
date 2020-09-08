@@ -9,10 +9,10 @@
 
 {% block body %}
     <div class="d-flex my-3">
-        <div>
+        <div class="d-none d-sm-block mr-3">
             <span class="user-profile-picture">{{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}</span>
         </div>
-        <div class="ml-5">
+        <div>
             <h3>{{ user.fullName }} <small>{{ user.email }}</small></h3>
 
             <div class="btn-group btn-group-sm" role="group">
@@ -53,7 +53,7 @@
     {% endif %}
 
     <div class="row">
-        <div class="col-6">
+        <div class="col-lg-6">
             {% for license in user.licenses %}
                 <div class="card mt-3">
                     <div class="card-header">
