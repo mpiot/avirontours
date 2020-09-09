@@ -79,6 +79,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('legalRepresentative', TextType::class, [
                 'label' => 'Représentant légal',
+                'help' => 'Uniquement pour mineur, majeur sous tutelle,...',
                 'required' => false,
             ])
             ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
