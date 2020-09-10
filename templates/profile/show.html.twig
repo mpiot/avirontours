@@ -56,11 +56,21 @@
         <div class="col-lg-6">
             {% for license in user.licenses %}
                 <div class="card mt-3">
-                    <div class="card-header">
-                        Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
+                    <div class="card-header d-flex">
+                        <div class="align-self-center">
+                            Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
+                        </div>
+
+                        <div class="ml-auto align-self-center d-flex flex-column">
+                            {% for place in workflow_marked_places(license)  -%}
+                                <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
+                                    {{- workflow_metadata(license, 'title', place) -}}
+                                </span>
+                            {%- endfor %}
+                        </div>
                     </div>
                     <div class="card-body">
-                        <p>{{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}</p>
+                        {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}
                     </div>
                 </div>
             {% endfor %}
