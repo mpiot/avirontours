@@ -122,7 +122,7 @@
                                 <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
                                     <div class="btn-group-vertical btn-group-sm mr-3" role="group">
                                         {% for transition in workflow_transitions(license) %}
-                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-primary">
+                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
                                                 {{ workflow_metadata(license, 'title', transition) }}
                                             </button>
                                         {% endfor %}

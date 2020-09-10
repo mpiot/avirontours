@@ -65,7 +65,8 @@ class LicenseRepository extends ServiceEntityRepository
                     CASE WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN 2
                          WHEN JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN 3
                          WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' THEN 4
-                         WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN 5
+                         WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN 5
+                         WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN 6
                          ELSE 1
                     END) AS HIDDEN mainSort'
             )

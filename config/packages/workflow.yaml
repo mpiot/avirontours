@@ -13,19 +13,23 @@ framework:
                 wait_medical_certificate_validation:
                     metadata:
                         title: Attente de validation du certificat
-                        badge: danger
+                        badge: warning
                 medical_certificate_validated:
                     metadata:
                         title: Certificat médical validé
-                        badge: info
+                        badge: success
+                medical_certificate_rejected:
+                    metadata:
+                        title: Certificat médical invalide
+                        badge: danger
                 wait_payment_validation:
                     metadata:
                         title: Attente de validation du paiement
-                        badge: danger
+                        badge: warning
                 payment_validated:
                     metadata:
                         title: Paiement validé
-                        badge: info
+                        badge: success
                 validated:
                     metadata:
                         title: Validée
@@ -36,11 +40,25 @@ framework:
                     to:   medical_certificate_validated
                     metadata:
                         title: Valider le certificat médical
+                        button: primary
+                validate_rejected_medical_certificate:
+                    from: medical_certificate_rejected
+                    to:   medical_certificate_validated
+                    metadata:
+                        title: Valider le certificat médical
+                        button: danger
+                reject_medical_certificate:
+                    from: wait_medical_certificate_validation
+                    to: medical_certificate_rejected
+                    metadata:
+                        title: Rejeter le certificat médical
+                        button: warning
                 validate_payment:
                     from: wait_payment_validation
                     to:   payment_validated
                     metadata:
                         title: Valider le paiement
+                        button: primary
                 validate_license:
                     from:
                         - medical_certificate_validated
@@ -48,3 +66,4 @@ framework:
                     to:   validated
                     metadata:
                         title: Valider la licence
+                        button: primary
