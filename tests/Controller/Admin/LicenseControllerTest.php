@@ -159,8 +159,26 @@ class LicenseControllerTest extends AppWebTestCase
         $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
+        $client->submitForm('Rejeter le certificat médical');
+        $this->assertResponseRedirects($url);
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_rejected' => 1,
+        ], $license->getMarking());
+
+        $client->followRedirect();
+        $client->submitForm('Passer le certificat en attente de validation');
+        $this->assertResponseRedirects($url);
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'wait_medical_certificate_validation' => 1,
+        ], $license->getMarking());
+
+        $client->followRedirect();
         $client->submitForm('Valider le certificat médical');
-        $this->assertResponseRedirects();
+        $this->assertResponseRedirects($url);
         $license = $this->getEntityManager()->getRepository(License::class)->find(9);
         $this->assertSame([
             'wait_payment_validation' => 1,
@@ -169,7 +187,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->followRedirect();
         $client->submitForm('Valider le paiement');
-        $this->assertResponseRedirects();
+        $this->assertResponseRedirects($url);
         $license = $this->getEntityManager()->getRepository(License::class)->find(9);
         $this->assertSame([
             'medical_certificate_validated' => 1,
@@ -178,10 +196,35 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->followRedirect();
         $client->submitForm('Valider la licence');
-        $this->assertResponseRedirects();
+        $this->assertResponseRedirects($url);
         $license = $this->getEntityManager()->getRepository(License::class)->find(9);
         $this->assertSame([
             'validated' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testChainMedicalCertificateValidation()
+    {
+        $client = static::createClient();
+        $url = '/admin/season/2/license/chain-medical-certificate-validation';
+
+        $client->request('GET', $url);
+        $this->assertResponseRedirects('/login');
+
+        $this->logIn($client, 'a.user');
+        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(403);
+
+        $this->logIn($client, 'admin.user');
+        $client->request('GET', $url);
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider le certificat médical');
+        $this->assertResponseRedirects($url);
+        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_validated' => 1,
         ], $license->getMarking());
     }
 }

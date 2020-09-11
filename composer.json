@@ -51,6 +51,7 @@
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/inky-extra": "^3.0",
         "twig/markdown-extra": "^3.0",
+        "twig/string-extra": "^3.0",
         "twig/twig": "^2.12|^3.0",
         "vich/uploader-bundle": "^1.13"
     },

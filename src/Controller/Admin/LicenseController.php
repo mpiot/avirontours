@@ -22,6 +22,8 @@ use App\Entity\License;
 use App\Entity\Season;
 use App\Form\LicenseEditType;
 use App\Form\LicenseType;
+use App\Repository\LicenseRepository;
+use DoctrineExtensions\Query\Mysql\Date;
 use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -114,8 +116,32 @@ class LicenseController extends AbstractController
             $this->addFlash('danger', $e->getMessage());
         }
 
+        if ($request->request->has('redirectUrl')) {
+            return $this->redirect($request->request->get('redirectUrl'));
+        }
+
         return $this->redirectToRoute('season_show', [
             'id' => $license->getSeasonCategory()->getSeason()->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/chain-medical-certificate-validation", name="license_validate_medical_certificate", methods={"GET"})
+     * @Entity("season", expr="repository.find(season_id)")
+     * @Entity("license", expr="repository.findOneForValidation(season)")
+     */
+    public function chainValidation(Season $season, LicenseRepository $repository): Response
+    {
+        $license = $repository->findOneForValidation($season);
+
+        if (null !== $license) {
+            $previousLicenses = $repository->findUserLicences($license->getUser(), (new \DateTime('-3 years'))->format('Y'), ($season->getName() - 1));
+        }
+
+        return $this->render('admin/license/chain_validation.html.twig', [
+            'season' => $season,
+            'license' => $license,
+            'previous_licences' => $previousLicenses ?? null,
         ]);
     }
 }

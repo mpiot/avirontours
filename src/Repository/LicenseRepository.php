@@ -94,4 +94,50 @@ class LicenseRepository extends ServiceEntityRepository
             License::NUM_ITEMS
         );
     }
+
+    public function findOneForValidation(Season $season): ?License
+    {
+        $query = $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')->addSelect('user')
+            ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
+            ->innerJoin('license.seasonCategory', 'season_category')
+            ->innerJoin('season_category.season', 'season')
+            ->where('season = :season')
+            ->andWhere('license.marking IS NULL OR JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
+            ->orderBy('license.id', 'ASC')
+            ->setParameter('season', $season)
+            ->setMaxResults(1)
+            ->getQuery()
+        ;
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findUserLicences(User $user, ?int $minYear = null, ?int $maxYear = null): array
+    {
+        $qb = $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')->addSelect('user')
+            ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
+            ->innerJoin('season_category.season', 'season')->addSelect('season')
+            ->andWhere('user = :user')
+            ->orderBy('season.name', 'ASC')
+            ->setParameter('user', $user)
+        ;
+
+        if (null !== $minYear) {
+            $qb
+                ->andWhere('season.name >= :minYear')
+                ->setParameter('minYear', $minYear)
+            ;
+        }
+
+        if (null !== $maxYear) {
+            $qb
+                ->andWhere('season.name <= :maxYear')
+                ->setParameter('maxYear', $maxYear)
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

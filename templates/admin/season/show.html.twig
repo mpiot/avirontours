@@ -71,18 +71,26 @@
             </a>
         </div>
         <div class="card-body">
-            <form method="get">
-                <div class="form-row align-self-center">
-                    <div class="col-md-auto col-sm-12 ml-auto">
-                        <div class="input-group mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text"><span class="fa fa-search"></span></div>
+            <div class="d-flex">
+                <div>
+                    <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-info rounded-pill">
+                        <span class="fas fa-file-medical-alt"></span> Valider les certificats médicaux
+                    </a>
+                </div>
+
+                <form method="get" class="ml-auto">
+                    <div class="form-row align-self-center">
+                        <div class="col-md-auto col-sm-12 ml-auto">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><span class="fa fa-search"></span></div>
+                                </div>
+                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
                             </div>
-                            <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
 
             <div class="table-responsive">
                 <table class="table table-striped">
