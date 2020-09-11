@@ -19,6 +19,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Blameable\Traits\BlameableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,6 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class License
 {
     const NUM_ITEMS = 20;
+
+    use BlameableEntity;
 
     /**
      * @ORM\Id()
