@@ -12,11 +12,13 @@
     <h1>Réinscription pour la saison {{ season_category.season.name }} - {{ season_category.name }}</h1>
 
     <div class="alert alert-info" role="alert">
-        <span class="fas fa-info-circle"></span> Le document à fournir doit être un des deux suivant:
+        <h2>Le document à fournir doit être un des deux suivant:</h2>
         <ul>
-            <li>Un <b>certificat médical</b> d'aptitude à la pratique de l'aviron de moins de 3 mois</li>
+            <li>Un <b>certificat médical</b> d'aptitude à la pratique de l'aviron de moins d'1an</li>
             <li>Une <b>attestation</b> questionnaire santé, et non pas le questionnaire santé lui même</li>
         </ul>
+
+        {{ include('registration/_medical_certificate_info.html.twig') }}
     </div>
 
     {{ form_start(form) }}
