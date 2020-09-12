@@ -49,7 +49,6 @@ class LogbookEntry
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
      * @Assert\NotNull()
-     * @Assert\Count(min="1")
      */
     private $crewMembers;
 

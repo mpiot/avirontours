@@ -141,6 +141,10 @@ class LogbookEntryNewType extends AbstractType
             ->remove('shellDamages')
         ;
 
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $builder->get('crewMembers')->setRequired(false);
+        }
+
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             if ($this->security->isGranted('ROLE_USER')) {
                 $data = $event->getData();

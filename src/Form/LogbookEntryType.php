@@ -123,6 +123,7 @@ class LogbookEntryType extends AbstractType
         ;
 
         if ($this->security->isGranted('ROLE_ADMIN')) {
+            $builder->get('crewMembers')->setRequired(false);
             $builder->add('nonUserCrewMembers', NonUserCrewMemberType::class, [
                 'label' => 'Membres d\'équipage (sans utilisateur)',
                 'help' => 'John Doe, Foo Bar',

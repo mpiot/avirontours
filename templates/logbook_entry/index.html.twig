@@ -42,6 +42,13 @@
                     <td>
                         {% if logbook_entry.nonUserCrewMembers is empty %}
                             {{ logbook_entry.crewMembers|join(', ', ' et ') }}
+                        {% elseif logbook_entry.crewMembers is empty %}
+                            {%- for member in logbook_entry.nonUserCrewMembers -%}
+                                {% if not loop.first and logbook_entry.crewMembers is empty %}
+                                    {%- if loop.last %} et {% else %}, {% endif -%}
+                                {% endif %}
+                                <b title="Non utilisateur">{{- member -}}</b>
+                            {%- endfor -%}
                         {% else %}
                             {{- logbook_entry.crewMembers|join(', ') -}}
 
