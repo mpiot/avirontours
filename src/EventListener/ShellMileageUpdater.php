@@ -64,6 +64,10 @@ class ShellMileageUpdater
 
     public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
     {
+        if (null === $this->oldShell && null === $this->newShell) {
+            return;
+        }
+
         // Update shells
         if (null !== $this->oldShell) {
             $this->oldShell->removeToMileage($this->oldCoveredDistance ?? 0);
