@@ -1,0 +1,19 @@
+{% extends 'base_background.html.twig' %}
+
+{% block title %}Changelog{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .body-content {
+            max-width: 980px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% apply markdown_to_html %}
+        {{ changelog }}
+    {% endapply %}
+{% endblock %}

@@ -19,6 +19,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StaticController extends AbstractController
@@ -29,5 +30,19 @@ class StaticController extends AbstractController
     public function legalNotice()
     {
         return $this->render('static/legal_notice.html.twig');
+    }
+
+    /**
+     * @Route("/changelog", name="changelog")
+     */
+    public function changelog(string $projectDir)
+    {
+        $finder = new Finder();
+        $finder->in($projectDir)->files()->depth('== 0')->name('CHANGELOG.md');
+        $changelog = array_values(iterator_to_array($finder))[0]->getContents();
+
+        return $this->render('static/changelog.html.twig', [
+            'changelog' => $changelog,
+        ]);
     }
 }

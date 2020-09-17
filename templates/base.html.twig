@@ -89,9 +89,15 @@
         </main>
 
         <footer class="footer">
-            <div class="container">
-                <a href="{{ path('legal_notice') }}">Mentions légales</a>
-                <a href="{{ asset('files/guide_atm_2020.pdf') }}" class="ml-3">Guide 2020</a>
+            <div class="container d-flex">
+                <div>
+                    <a href="{{ path('legal_notice') }}">Mentions légales</a>
+                    <a href="{{ asset('files/guide_atm_2020.pdf') }}" class="ml-3">Guide 2020</a>
+                </div>
+
+                <div class="ml-auto">
+                    <a href="{{ path('changelog') }}" class="text-muted">v{{ APP_VERSION }}</a>
+                </div>
             </div>
         </footer>
 
