@@ -31,6 +31,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          ini-values: date.timezone = Europe/Paris
+
       - name: Composer validate
         run: composer validate
 
@@ -53,22 +59,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Build assets
-        run: |
-          yarn install
-          yarn build
-
-      - name: Update database
-        run: bin/console doctrine:migrations:migrate -n
-
-      - name: Run fixtures
-        run: bin/console doctrine:fixtures:load -n
-
       - name: Install PHP CS fixer
         run: |
           wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
           sudo chmod a+x php-cs-fixer
           sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
+
+      - name: Install node modules
+        run: |
+          yarn install
 
       - name: Lint
         run: |
@@ -80,14 +79,23 @@ jobs:
       - name: Verify schema
         run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-      - name: Install Security checker
-        run: |
-          wget https://get.sensiolabs.org/security-checker.phar -O security-checker
-          sudo chmod a+x security-checker
-          sudo mv security-checker /usr/local/bin/security-checker
+      - name: Cache security-checked vulnerabilities db
+        uses: actions/cache@v2
+        with:
+          path: ~/.symfony/cache
+          key: security-checker-vulns-db
 
-      - name: Security check
-        run: security-checker security:check
+      - uses: symfonycorp/security-checker-action@v1
+
+      - name: Build assets
+        run: |
+          yarn build
+
+      - name: Update database
+        run: bin/console doctrine:migrations:migrate -n
+
+      - name: Run fixtures
+        run: bin/console doctrine:fixtures:load -n
 
       - name: Run test suite
         run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
