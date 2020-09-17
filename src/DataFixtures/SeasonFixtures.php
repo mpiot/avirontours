@@ -21,7 +21,7 @@ namespace App\DataFixtures;
 use App\Entity\Season;
 use App\Entity\SeasonCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class SeasonFixtures extends Fixture
 {

@@ -21,7 +21,7 @@ namespace App\DataFixtures;
 use App\Entity\Shell;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class ShellFixtures extends Fixture
 {
