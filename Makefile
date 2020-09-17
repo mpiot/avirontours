@@ -6,8 +6,11 @@ SYMFONY?=symfony
 
 .DEFAULT_GOAL := help
 .PHONY: help
+.PHONY: start stop install uninstall
 .PHONY: db-reset db-fixtures
-.PHONY: tests
+.PHONY: assets-server assets-watch assets-dev assets-build
+.PHONY: tests tests-weak tets-all test-all-weak lint lint-symfony lint-yaml lint-twig lint-container php-cs security-check validate-schema
+.PHONY: deps
 
 help:
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
@@ -29,6 +32,9 @@ install:                                                                        
 	$(MAKE) deps
 	$(MAKE) db-fixtures
 
+uninstall:                                                                                             ## Uninstall the project
+	$(DOCKER_COMPOSE) down
+	rm -R node_modules/  var/ vendor/
 
 ##
 ## Database
@@ -39,7 +45,7 @@ db-reset:                                                                       
 	$(CONSOLE) doctrine:database:create --if-not-exists
 	$(CONSOLE) doctrine:migrations:migrate -n
 
-db-fixtures: db-reset                                                                                 ## Apply doctrine fixtures
+db-fixtures: db-reset                                                                                  ## Apply doctrine fixtures
 	$(CONSOLE) doctrine:fixtures:load -n
 
 
@@ -47,11 +53,17 @@ db-fixtures: db-reset                                                           
 ## Assets
 ##---------------------------------------------------------------------------
 
-assets-watch: node_modules                                                                                    ## Watch the assets and build their development version on change
+assets-server: node_modules                                                                            ## Run assets server
+	yarn dev-server
+
+assets-watch: node_modules                                                                             ## Watch the assets and build their development version on change
 	yarn watch
 
-assets: node_modules                                                                                   ## Build the development version of the assets
+assets-dev: node_modules                                                                               ## Build the development version of the assets
 	yarn dev
+
+assets-build: node_modules                                                                             ## Build the production version of the assets
+	yarn build
 
 ##
 ## Tests
@@ -63,13 +75,13 @@ tests: db-fixtures                                                              
 tests-weak: db-fixtures                                                                                ## Run all the PHP tests without Deprecations helper
 	SYMFONY_DEPRECATIONS_HELPER=weak $(RUN) php bin/phpunit
 
-test-all: lint test-schema security-check tests                                                        ## Lint all, check vulnerable dependencies, run PHP tests
+test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests
 
-test-all-weak: lint test-schema security-check tests-weak                                              ## Lint all, check vulnerable dependencies, run PHP tests without Deprecations helper
+test-all-weak: lint validate-schema security-check tests-weak                                          ## Lint all, check vulnerable dependencies, run PHP tests without Deprecations helper
 
 lint: lint-symfony php-cs                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
 
-lint-symfony: lint-yaml lint-twig                                                                      ## Lint Symfony (Twig and YAML) files
+lint-symfony: lint-yaml lint-twig lint-container                                                       ## Lint Symfony (Twig and YAML) files
 
 lint-yaml:                                                                                             ## Lint YAML files
 	$(CONSOLE) lint:yaml --parse-tags config
@@ -77,13 +89,16 @@ lint-yaml:                                                                      
 lint-twig:                                                                                             ## Lint Twig files
 	$(CONSOLE) lint:twig templates
 
+lint-container:                                                                                        ## Lint Symfony Container
+	$(CONSOLE) lint:container
+
 php-cs:                                                                                                ## Lint PHP code
 	$(PHPCSFIXER) fix --diff --dry-run --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check
 
-test-schema:                                                                                           ## Test the doctrine Schema
+validate-schema:                                                                                       ## Test the doctrine Schema
 	$(CONSOLE) doctrine:schema:validate --skip-sync -vvv --no-interaction
 
 
@@ -91,7 +106,7 @@ test-schema:                                                                    
 ## Dependencies
 ##---------------------------------------------------------------------------
 
-deps: vendor assets                                                                                    ## Install the project dependencies
+deps: vendor assets-dev                                                                                ## Install the project dependencies
 
 
 ##
