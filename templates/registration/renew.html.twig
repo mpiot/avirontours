@@ -18,7 +18,9 @@
             <li>Une <b>attestation</b> questionnaire santé, et non pas le questionnaire santé lui même</li>
         </ul>
 
-        {{ include('registration/_medical_certificate_info.html.twig') }}
+        <a href="{{ asset('files/ffaviron-fiche-pratique-certificats-medicaux.pdf') }}" class="btn btn-primary">
+            <span class="fas fa-file-pdf"></span> Bien comprendre quel document fournir
+        </a>
     </div>
 
     {{ form_start(form) }}
