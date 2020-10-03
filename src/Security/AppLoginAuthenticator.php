@@ -35,6 +35,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Security\Guard\PasswordAuthenticatedInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use function Symfony\Component\String\u;
 
 class AppLoginAuthenticator extends AbstractFormLoginAuthenticator implements PasswordAuthenticatedInterface
 {
@@ -62,7 +63,7 @@ class AppLoginAuthenticator extends AbstractFormLoginAuthenticator implements Pa
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'username' => mb_strtolower($request->request->get('username')),
+            'username' => u($request->request->get('username'))->lower(),
             'password' => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
