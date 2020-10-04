@@ -179,6 +179,11 @@ class User implements UserInterface, EmailTwoFactorInterface
      */
     private $partnersEmailAllowed;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $licenseNumber;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -616,6 +621,18 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setPartnersEmailAllowed(bool $partnersEmailAllowed): self
     {
         $this->partnersEmailAllowed = $partnersEmailAllowed;
+
+        return $this;
+    }
+
+    public function getLicenseNumber(): ?string
+    {
+        return $this->licenseNumber;
+    }
+
+    public function setLicenseNumber(string $licenseNumber): self
+    {
+        $this->licenseNumber = $licenseNumber;
 
         return $this;
     }

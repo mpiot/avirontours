@@ -65,11 +65,6 @@ class License
     private $medicalCertificate;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $licenseNumber;
-
-    /**
      * @ORM\Column(type="json", nullable=true)
      */
     private $marking;
@@ -129,18 +124,6 @@ class License
     public function setMedicalCertificate(MedicalCertificate $medicalCertificate): self
     {
         $this->medicalCertificate = $medicalCertificate;
-
-        return $this;
-    }
-
-    public function getLicenseNumber(): ?string
-    {
-        return $this->licenseNumber;
-    }
-
-    public function setLicenseNumber(string $licenseNumber): self
-    {
-        $this->licenseNumber = $licenseNumber;
 
         return $this;
     }

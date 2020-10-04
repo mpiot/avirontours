@@ -61,6 +61,10 @@ class UserType extends AbstractType
                 'label' => 'Catégorie rameur',
                 'choices' => User::getAvailableRowerCategories(),
             ])
+            ->add('licenseNumber', TextType::class, [
+                'label' => 'Numéro de licence',
+                'required' => false,
+            ])
             ->add('address', AddressType::class, [
                 'label' => 'Adresse',
             ])

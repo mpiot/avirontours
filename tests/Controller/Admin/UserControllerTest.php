@@ -133,6 +133,7 @@ class UserControllerTest extends AppWebTestCase
             'user[address][city]' => 'One City',
             'user[address][phoneNumber]' => '0102030405',
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
+            'user[licenseNumber]' => '0123456789',
         ]);
         $this->assertResponseRedirects();
         /** @var User $user */
@@ -153,6 +154,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
+        $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
     public function testEditUser()
@@ -190,6 +192,7 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[address][city]' => 'One City',
             'user_edit[address][phoneNumber]' => '0102030405',
             'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
+            'user_edit[licenseNumber]' => '0123456789',
         ]);
         $this->assertResponseRedirects();
         $user = $this->getEntityManager()->getRepository(User::class)->find(5);
@@ -209,6 +212,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
         $this->assertCount(2, $user->getLicenses());
+        $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
     public function testDeleteUser()
