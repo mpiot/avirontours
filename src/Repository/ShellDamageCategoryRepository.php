@@ -20,7 +20,7 @@ namespace App\Repository;
 
 use App\Entity\ShellDamageCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ShellDamageCategory|null find($id, $lockMode = null, $lockVersion = null)
