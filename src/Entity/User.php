@@ -292,6 +292,16 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $availableGenders[$this->gender];
     }
 
+    public function getTextCivility(): ?string
+    {
+        $availableCivilities = array_flip(self::getAvailableCivilities());
+        if (!\array_key_exists($this->gender, $availableCivilities)) {
+            throw new \Exception(sprintf('The gender "%s" is not available, the method "getAvailableCivilities" only return that civilities: %s.', $this->gender, implode(', ', self::getAvailableCivilities())));
+        }
+
+        return $availableCivilities[$this->gender];
+    }
+
     public function setGender(string $gender): self
     {
         $this->gender = $gender;
@@ -479,6 +489,17 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this;
     }
 
+    public function isMobilePhone(): ?bool
+    {
+        if (null === $this->phoneNumber) {
+            return null;
+        }
+
+        $u = u($this->phoneNumber)->collapseWhitespace();
+
+        return $u->startsWith('06') || $u->startsWith('07');
+    }
+
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
@@ -622,6 +643,14 @@ class User implements UserInterface, EmailTwoFactorInterface
         $lastName = $slugger->slug($this->lastName)->lower();
 
         $this->username = "$firstName.$lastName";
+    }
+
+    public static function getAvailableCivilities(): array
+    {
+        return [
+            'Madame' => self::GENDER_FEMALE,
+            'Monsieur' => self::GENDER_MALE,
+        ];
     }
 
     public static function getAvailableGenders(): array

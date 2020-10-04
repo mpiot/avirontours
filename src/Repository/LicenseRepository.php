@@ -58,6 +58,28 @@ class LicenseRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function findBySeason(Season $season, $statusReadyToLicense = false): array
+    {
+        $qb = $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')->addSelect('user')
+            ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
+            ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
+            ->innerJoin('season_category.season', 'season')
+            ->andWhere('season = :season')
+            ->orderBy('user.firstName', 'ASC')
+            ->addOrderBy('user.lastName', 'ASC')
+            ->setParameter('season', $season)
+        ;
+
+        if (true === $statusReadyToLicense) {
+            $qb
+                ->andWhere('JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\'')
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function findBySeasonPaginated(Season $season, $query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('license')

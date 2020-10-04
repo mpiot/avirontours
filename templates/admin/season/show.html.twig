@@ -73,8 +73,16 @@
         <div class="card-body">
             <div class="d-flex">
                 <div class="align-self-center">
-                    <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                    <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-success">
                         <span class="fas fa-file-medical-alt"></span> Valider les certificats
+                    </a>
+
+                    <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                        <span class="fas fa-file-export"></span> Exporter les contacts
+                    </a>
+
+                    <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                        <span class="fas fa-file-export"></span> Exporter les licences
                     </a>
                 </div>
 

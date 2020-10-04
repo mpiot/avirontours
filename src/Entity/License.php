@@ -18,6 +18,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -32,6 +33,7 @@ class License
     const NUM_ITEMS = 20;
 
     use BlameableEntity;
+    use TimestampableEntity;
 
     /**
      * @ORM\Id()

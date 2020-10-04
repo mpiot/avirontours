@@ -22,10 +22,13 @@ use App\Entity\Season;
 use App\Form\SeasonType;
 use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
+use App\Service\SeasonCsvGenerator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -116,5 +119,61 @@ class SeasonController extends AbstractController
         }
 
         return $this->redirectToRoute('season_index');
+    }
+
+    /**
+     * @Route("/{id}/export/contact", name="season_export_contact", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
+    public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
+    {
+        $csv = $csvGenerator->exportContacts($season);
+
+        if (null === $csv) {
+            $this->addFlash('danger', 'Aucun contacts à exporter.');
+
+            return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
+        }
+
+        $response = new StreamedResponse(function () use ($csv) {
+            $outputStream = fopen('php://output', 'w');
+            fwrite($outputStream, $csv);
+        });
+        $response->headers->set('Content-Type', 'text/csv');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            "season_contact_{$season->getName()}.csv"
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/{id}/export/license", name="season_export_license", methods={"GET"})
+     * @Security("is_granted('ROLE_ADMIN')")
+     */
+    public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
+    {
+        $csv = $csvGenerator->exportLicenses($season);
+
+        if (null === $csv) {
+            $this->addFlash('danger', 'Aucune licences à exporter.');
+
+            return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
+        }
+
+        $response = new StreamedResponse(function () use ($csv) {
+            $outputStream = fopen('php://output', 'w');
+            fwrite($outputStream, $csv);
+        });
+        $response->headers->set('Content-Type', 'text/csv');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            "season_license_{$season->getName()}.csv"
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
     }
 }
