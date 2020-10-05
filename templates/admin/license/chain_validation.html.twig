@@ -48,11 +48,16 @@
                 {% endfor %}
 
                 <div class="card border-primary mt-3">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-primary text-white d-flex">
                         Saison {{ license.seasonCategory.season.name }}
+
+                        <a href="{{ path('license_edit', { 'season_id': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ml-auto align-self-center">
+                            <span class="fas fa-pencil-alt"></span>
+                        </a>
                     </div>
 
                     <div class="card-body">
+                        Date du certificat: {{ license.createdAt|date('d/m/Y') }}<br>
                         Type de certificat : {{ license.medicalCertificate.textType }}<br>
                         Niveau de certificat: {{ license.medicalCertificate.textLevel }}
                     </div>
