@@ -50,40 +50,27 @@ class ProfileControllerTest extends AppWebTestCase
 
         $crawler = $client->submitForm('Modifier', [
             'profile[email]' => '',
+            'profile[phoneNumber]' => '',
             'profile[firstName]' => '',
             'profile[lastName]' => '',
-            'profile[legalRepresentative]' => '',
-            'profile[address][laneNumber]' => '',
-            'profile[address][laneType]' => '',
-            'profile[address][laneName]' => '',
-            'profile[address][postalCode]' => '',
-            'profile[address][city]' => '',
-            'profile[address][phoneNumber]' => '',
+            'profile[postalCode]' => '',
+            'profile[city]' => '',
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_email"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_firstName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_lastName"] .form-error-message')->text());
-        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('label[for="profile_legalRepresentative"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneNumber"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="profile_address_laneType"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_city"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_phoneNumber"] .form-error-message')->text());
-        $this->assertCount(10, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_postalCode"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_city"] .form-error-message')->text());
+        $this->assertCount(5, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Modifier')->form([
             'profile[email]' => 'john.doe@avirontours.fr',
+            'profile[phoneNumber]' => '0123456789',
             'profile[firstName]' => 'John',
             'profile[lastName]' => 'Doe',
-            'profile[legalRepresentative]' => 'Miss Doe',
-            'profile[address][laneNumber]' => '999',
-            'profile[address][laneType]' => 'Rue',
-            'profile[address][laneName]' => 'De Ouf',
-            'profile[address][postalCode]' => '01000',
-            'profile[address][city]' => 'One City',
-            'profile[address][phoneNumber]' => '0123456789',
+            'profile[postalCode]' => '01000',
+            'profile[city]' => 'One City',
             'profile[clubEmailAllowed]' => 1,
             'profile[partnersEmailAllowed]' => 1,
         ]);
@@ -93,16 +80,12 @@ class ProfileControllerTest extends AppWebTestCase
         $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
+        $this->assertSame('0123456789', $user->getPhoneNumber());
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
-        $this->assertSame('Miss Doe', $user->getLegalRepresentative());
-        $this->assertSame('999', $user->getLaneNumber());
-        $this->assertSame('Rue', $user->getLaneType());
-        $this->assertSame('De Ouf', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
-        $this->assertSame('0123456789', $user->getPhoneNumber());
         $this->assertTrue($user->getClubEmailAllowed());
         $this->assertTrue($user->getPartnersEmailAllowed());
     }

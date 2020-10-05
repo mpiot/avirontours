@@ -25,7 +25,6 @@ use App\Entity\User;
 use App\Validator as AppAssert;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @AppAssert\UniqueUser()
@@ -38,6 +37,11 @@ class RegistrationModel
      * @Assert\Email()
      */
     public $email;
+
+    /**
+     * @var string
+     */
+    public $phoneNumber;
 
     /**
      * @var string
@@ -71,29 +75,6 @@ class RegistrationModel
     public $birthday;
 
     /**
-     * @var string
-     */
-    public $legalRepresentative;
-
-    /**
-     * @var int
-     * @Assert\NotBlank()
-     */
-    public $laneNumber;
-
-    /**
-     * @var string
-     * @Assert\NotNull()
-     */
-    public $laneType;
-
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     */
-    public $laneName;
-
-    /**
      * @var int
      * @Assert\NotBlank()
      */
@@ -104,12 +85,6 @@ class RegistrationModel
      * @Assert\NotBlank()
      */
     public $city;
-
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     */
-    public $phoneNumber;
 
     /**
      * @var MedicalCertificate
@@ -142,6 +117,7 @@ class RegistrationModel
         $user = new User();
         $user
             ->setEmail($this->email)
+            ->setPhoneNumber($this->phoneNumber)
             ->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -152,32 +128,13 @@ class RegistrationModel
             ->setFirstName($this->firstName)
             ->setLastName($this->lastName)
             ->setBirthday($this->birthday)
-            ->setLegalRepresentative($this->legalRepresentative)
-            ->setLaneNumber($this->laneNumber)
-            ->setLaneType($this->laneType)
-            ->setLaneName($this->laneName)
             ->setPostalCode($this->postalCode)
             ->setCity($this->city)
-            ->setPhoneNumber($this->phoneNumber)
             ->addLicense($license)
             ->setClubEmailAllowed($this->clubEmailAllowed)
             ->setPartnersEmailAllowed($this->partnersEmailAllowed)
         ;
 
         return $user;
-    }
-
-    /**
-     * @Assert\Callback()
-     */
-    public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
-    {
-        $birthday = empty($this->birthday) ? 0 : $this->birthday->diff(new \DateTime())->y;
-
-        if ($birthday < 18 && empty($this->legalRepresentative)) {
-            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
-                ->atPath('legalRepresentative')
-                ->addViolation();
-        }
     }
 }

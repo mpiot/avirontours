@@ -27,7 +27,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -64,6 +63,11 @@ class User implements UserInterface, EmailTwoFactorInterface
      * @Assert\Email()
      */
     private $email;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $phoneNumber;
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -107,33 +111,10 @@ class User implements UserInterface, EmailTwoFactorInterface
     private $birthday;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $legalRepresentative;
-
-    /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank()
      */
     private $subscriptionDate;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $laneNumber;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotNull()
-     */
-    private $laneType;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $laneName;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
@@ -146,12 +127,6 @@ class User implements UserInterface, EmailTwoFactorInterface
      * @Assert\NotBlank()
      */
     private $city;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $phoneNumber;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="crewMembers")
@@ -227,6 +202,18 @@ class User implements UserInterface, EmailTwoFactorInterface
         }
 
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+
+    public function setPhoneNumber(?string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
@@ -398,22 +385,6 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $interval->y;
     }
 
-    public function getLegalRepresentative(): ?string
-    {
-        return $this->legalRepresentative;
-    }
-
-    public function setLegalRepresentative(?string $legalRepresentative): self
-    {
-        if (null !== $legalRepresentative) {
-            $legalRepresentative = u($legalRepresentative)->lower()->title(true);
-        }
-
-        $this->legalRepresentative = $legalRepresentative;
-
-        return $this;
-    }
-
     public function getSubscriptionDate(): ?\DateTimeInterface
     {
         return $this->subscriptionDate;
@@ -422,46 +393,6 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setSubscriptionDate(?\DateTimeInterface $subscriptionDate): self
     {
         $this->subscriptionDate = $subscriptionDate;
-
-        return $this;
-    }
-
-    public function getLaneNumber(): ?string
-    {
-        return $this->laneNumber;
-    }
-
-    public function setLaneNumber(?string $laneNumber): self
-    {
-        $this->laneNumber = $laneNumber;
-
-        return $this;
-    }
-
-    public function getLaneType(): ?string
-    {
-        return $this->laneType;
-    }
-
-    public function setLaneType(?string $laneType): self
-    {
-        $this->laneType = $laneType;
-
-        return $this;
-    }
-
-    public function getLaneName(): ?string
-    {
-        return $this->laneName;
-    }
-
-    public function setLaneName(?string $laneName): self
-    {
-        if (null !== $laneName) {
-            $laneName = u($laneName)->lower()->title(true);
-        }
-
-        $this->laneName = $laneName;
 
         return $this;
     }
@@ -494,35 +425,9 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this;
     }
 
-    public function isMobilePhone(): ?bool
-    {
-        if (null === $this->phoneNumber) {
-            return null;
-        }
-
-        $u = u($this->phoneNumber)->collapseWhitespace();
-
-        return $u->startsWith('06') || $u->startsWith('07');
-    }
-
-    public function getPhoneNumber(): ?string
-    {
-        return $this->phoneNumber;
-    }
-
-    public function setPhoneNumber(?string $phoneNumber): self
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
     public function getFormattedAddress(): string
     {
-        $address = "{$this->getLaneNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
-        $address .= "{$this->getPostalCode()} {$this->getCity()}";
-
-        return $address;
+        return "{$this->getPostalCode()} {$this->getCity()}";
     }
 
     /**
@@ -635,18 +540,6 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->licenseNumber = $licenseNumber;
 
         return $this;
-    }
-
-    /**
-     * @Assert\Callback()
-     */
-    public function validateLegalRepresentative(ExecutionContextInterface $context, $payload)
-    {
-        if ($this->getAge() < 18 && empty($this->legalRepresentative)) {
-            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
-                ->atPath('legalRepresentative')
-                ->addViolation();
-        }
     }
 
     /**

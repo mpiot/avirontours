@@ -25,6 +25,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,6 +46,10 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('subscriptionDate', DateType::class, [
+                'label' => 'Date d\'inscription',
+                'widget' => 'single_text',
+            ])
             ->add('gender', ChoiceType::class, [
                 'label' => 'Genre',
                 'choices' => User::getAvailableGenders(),
@@ -57,19 +62,12 @@ class UserType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('rowerCategory', ChoiceType::class, [
-                'label' => 'Catégorie rameur',
-                'choices' => User::getAvailableRowerCategories(),
-            ])
-            ->add('licenseNumber', TextType::class, [
-                'label' => 'Numéro de licence',
-                'required' => false,
-            ])
-            ->add('address', AddressType::class, [
-                'label' => 'Adresse',
-            ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+            ])
+            ->add('phoneNumber', TelType::class, [
+                'label' => 'Numéro de téléphone',
+                'required' => false,
             ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Mot de passe',
@@ -84,13 +82,19 @@ class UserType extends AbstractType
                 'label' => 'Date de naissance',
                 'widget' => 'single_text',
             ])
-            ->add('legalRepresentative', TextType::class, [
-                'label' => 'Représentant légal',
+            ->add('rowerCategory', ChoiceType::class, [
+                'label' => 'Catégorie rameur',
+                'choices' => User::getAvailableRowerCategories(),
+            ])
+            ->add('licenseNumber', TextType::class, [
+                'label' => 'Numéro de licence',
                 'required' => false,
             ])
-            ->add('subscriptionDate', DateType::class, [
-                'label' => 'Date d\'inscription',
-                'widget' => 'single_text',
+            ->add('postalCode', TextType::class, [
+                'label' => 'Code postal',
+            ])
+            ->add('city', TextType::class, [
+                'label' => 'Ville',
             ])
         ;
 

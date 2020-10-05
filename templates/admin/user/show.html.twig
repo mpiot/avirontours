@@ -47,16 +47,8 @@
                             <span>{{ user.fullName }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
-                            Email
-                            <span>{{ user.email }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
                             Date de naissance
-                            <span>{{ user.birthday|date('d/m/Y') }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Représentant légal
-                            <span>{{ user.legalRepresentative ? user.legalRepresentative : '-' }}</span>
+                            <span>{{ user.birthday|date('d/m/Y') }} ({{ user.age }} ans)</span>
                         </li>
                     </ul>
                 </div>
@@ -65,16 +57,20 @@
             <div class="col-xl mt-3 mt-xl-0">
                 <div class="card">
                     <div class="card-header">
-                        Adresse
+                        Contact
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between">
-                            Adresse
-                            <span>{{ user.formattedAddress|nl2br }}</span>
+                            Email
+                            <span>{{ user.email }}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             Numéro de téléphone
                             <span>{{ user.phoneNumber }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Ville
+                            <span>{{ user.formattedAddress|nl2br }}</span>
                         </li>
                     </ul>
                 </div>

@@ -22,6 +22,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,9 +35,8 @@ class ProfileType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Email',
             ])
-            ->add('legalRepresentative', TextType::class, [
-                'label' => 'Représentant légal',
-                'help' => 'Uniquement pour mineur, majeur sous tutelle,...',
+            ->add('phoneNumber', TelType::class, [
+                'label' => 'Numéro de téléphone',
                 'required' => false,
             ])
             ->add('firstName', TextType::class, [
@@ -45,8 +45,11 @@ class ProfileType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('address', AddressType::class, [
-                'inherit_data' => true,
+            ->add('postalCode', TextType::class, [
+                'label' => 'Code postal',
+            ])
+            ->add('city', TextType::class, [
+                'label' => 'Ville',
             ])
             ->add('clubEmailAllowed', CheckboxType::class, [
                 'label' => 'Recevoir les emails du club',
