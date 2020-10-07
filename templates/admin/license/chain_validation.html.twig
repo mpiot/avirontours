@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="card-body">
-                        Date du certificat: {{ license.createdAt|date('d/m/Y') }}<br>
+                        Date du certificat: {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
                         Type de certificat : {{ license.medicalCertificate.textType }}<br>
                         Niveau de certificat: {{ license.medicalCertificate.textLevel }}
                     </div>
