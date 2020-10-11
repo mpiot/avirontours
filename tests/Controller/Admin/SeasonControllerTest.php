@@ -18,69 +18,84 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\Season;
 use App\Entity\SeasonCategory;
+use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class SeasonControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForRegularUser($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $season = SeasonFactory::new()->create();
+            $url = str_replace('{id}', $season->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/admin/season'];
+        yield ['GET', '/admin/season/{id}'];
+        yield ['GET', '/admin/season/new'];
+        yield ['POST', '/admin/season/new'];
+        yield ['GET', '/admin/season/{id}/edit'];
+        yield ['POST', '/admin/season/{id}/edit'];
+        yield ['DELETE', '/admin/season/{id}'];
+    }
+
     public function testIndexSeasons()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testShowSeason()
     {
+        $season = SeasonFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/1';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId());
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testNewSeason()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/new';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $crawler = $client->request('GET', '/admin/season/new');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
-
-        $crawler = $client->submitForm('Sauver', [
-            'season[name]' => '',
-        ]);
-        $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
-        $this->assertCount(2, $crawler->filter('.form-error-message'));
 
         $form = $crawler->selectButton('Sauver')->form([
             'season[name]' => 2030,
@@ -93,9 +108,11 @@ class SeasonControllerTest extends AppWebTestCase
         $values['season']['seasonCategories'][0]['licenseType'] = SeasonCategory::LICENSE_TYPE_ANNUAL;
         $values['season']['seasonCategories'][0]['description'] = 'My category description';
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
         $this->assertResponseRedirects();
-        $season = $this->getEntityManager()->getRepository(Season::class)->findOneBy(['name' => 2030]);
-        $this->assertInstanceOf(Season::class, $season);
+
+        $season = SeasonFactory::repository()->findOneBy(['name' => 2030]);
+
         $this->assertTrue($season->getActive());
         $this->assertTrue($season->getSubscriptionEnabled());
         $this->assertCount(1, $season->getSeasonCategories());
@@ -105,49 +122,63 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertSame('My category description', $season->getSeasonCategories()->first()->getdescription());
     }
 
+    public function testNewSeasonWithoutData()
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'season[name]' => '',
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
+        $this->assertCount(2, $crawler->filter('.form-error-message'));
+
+        SeasonFactory::repository()->assertCount(0);
+    }
+
     public function testEditSeason()
     {
+        $season = SeasonFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/1/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
             'season[name]' => 2030,
         ]);
+
         $this->assertResponseRedirects();
-        $season = $this->getEntityManager()->getRepository(Season::class)->find(1);
+
+        $season->refresh();
+
         $this->assertSame(2030, $season->getName());
     }
 
     public function testDeleteSeason()
     {
+        $season = SeasonFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/3/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/admin/season/');
-        $season = $this->getEntityManager()->getRepository(Season::class)->find(3);
-        $this->assertNull($season);
+
+        $this->assertResponseRedirects('/admin/season');
+
+        SeasonFactory::repository()->assertNotExists($season);
     }
 }

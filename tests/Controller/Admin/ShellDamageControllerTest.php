@@ -18,42 +18,99 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\ShellDamage;
+use App\Factory\ShellDamageCategoryFactory;
+use App\Factory\ShellDamageFactory;
+use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShellDamageControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForRegularUser($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $damage = ShellDamageFactory::new()->create();
+            $url = str_replace('{id}', $damage->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/admin/shell-damage'];
+        yield ['GET', '/admin/shell-damage/new'];
+        yield ['POST', '/admin/shell-damage/new'];
+        yield ['GET', '/admin/shell-damage/{id}/edit'];
+        yield ['POST', '/admin/shell-damage/{id}/edit'];
+        yield ['DELETE', '/admin/shell-damage/{id}'];
+    }
+
     public function testIndexShellDamages()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage/';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testNewShellDamage()
     {
+        $shell = ShellFactory::new()->create();
+        $category = ShellDamageCategoryFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage/new';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage/new');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
+        $client->submitForm('Sauver', [
+            'shell_damage[shell]' => $shell->getId(),
+            'shell_damage[category]' => $category->getId(),
+            'shell_damage[description]' => 'My description',
+        ]);
 
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
+        $this->assertResponseRedirects();
+
+        $damage = ShellDamageFactory::repository()->findOneBy(['description' => 'My description']);
+
+        $this->assertSame('My description', $damage->getDescription());
+        $this->assertSame($shell->getId(), $damage->getshell()->getId());
+        $this->assertSame($category->getId(), $damage->getCategory()->getId());
+        $this->assertNull($damage->getRepairAt());
+    }
+
+    public function testNewShellDamageWithoutData()
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage/new');
+
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
@@ -62,73 +119,61 @@ class ShellDamageControllerTest extends AppWebTestCase
             'shell_damage[description]' => '',
             'shell_damage[repairAt]' => '',
         ]);
+
         $this->assertResponseIsSuccessful();
+
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_shell"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_category"] .form-error-message')->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
 
-        $client->submitForm('Sauver', [
-            'shell_damage[shell]' => 1,
-            'shell_damage[category]' => 2,
-            'shell_damage[description]' => 'My description',
-        ]);
-        $this->assertResponseRedirects();
-        $shellDamage = $this->getEntityManager()->getRepository(ShellDamage::class)->findOneBy(['description' => 'My description']);
-        $this->assertInstanceOf(ShellDamage::class, $shellDamage);
-        $this->assertSame(1, $shellDamage->getshell()->getId());
-        $this->assertSame(2, $shellDamage->getCategory()->getId());
-        $this->assertNull($shellDamage->getRepairAt());
+        ShellDamageFactory::repository()->assertCount(0);
     }
 
     public function testEditShellDamage()
     {
+        $damage = ShellDamageFactory::new()->create();
+        $shell = ShellFactory::new()->create();
+        $category = ShellDamageCategoryFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage/1/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage/'.$damage->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
-            'shell_damage[shell]' => 1,
-            'shell_damage[category]' => 2,
+            'shell_damage[shell]' => $shell->getId(),
+            'shell_damage[category]' => $category->getId(),
             'shell_damage[description]' => 'A modified description',
             'shell_damage[repairAt]' => '2020-01-01',
         ]);
+
         $this->assertResponseRedirects();
-        $shellDamage = $this->getEntityManager()->getRepository(ShellDamage::class)->find(1);
-        $this->assertSame('A modified description', $shellDamage->getDescription());
-        $this->assertSame(1, $shellDamage->getshell()->getId());
-        $this->assertSame(2, $shellDamage->getCategory()->getId());
-        $this->assertSame('2020-01-01', $shellDamage->getRepairAt()->format('Y-m-d'));
+
+        $damage->refresh();
+
+        $this->assertSame('A modified description', $damage->getDescription());
+        $this->assertSame($shell->getId(), $damage->getshell()->getId());
+        $this->assertSame($category->getId(), $damage->getCategory()->getId());
+        $this->assertSame('2020-01-01', $damage->getRepairAt()->format('Y-m-d'));
     }
 
     public function testDeleteShellDamage()
     {
+        $damage = ShellDamageFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage/1/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage/'.$damage->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/admin/shell-damage/');
-        $group = $this->getEntityManager()->getRepository(ShellDamage::class)->find(1);
-        $this->assertNull($group);
+
+        $this->assertResponseRedirects('/admin/shell-damage');
+
+        ShellDamageFactory::repository()->assertNotExists($damage);
     }
 }

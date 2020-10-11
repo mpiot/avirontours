@@ -36,7 +36,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class ProfileController extends AbstractController
 {
     /**
-     * @Route("/", name="profile_show", methods="GET")
+     * @Route("", name="profile_show", methods="GET")
      */
     public function show(UserRepository $userRepository, SeasonRepository $seasonRepository): Response
     {

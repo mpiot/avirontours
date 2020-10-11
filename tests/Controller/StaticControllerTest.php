@@ -25,18 +25,16 @@ class StaticControllerTest extends AppWebTestCase
     public function testLegalNotice()
     {
         $client = static::createClient();
-        $url = '/mentions-legales';
+        $client->request('GET', '/mentions-legales');
 
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testChangelog()
     {
         $client = static::createClient();
-        $url = '/changelog';
+        $client->request('GET', '/changelog');
 
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 }

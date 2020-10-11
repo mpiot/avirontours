@@ -35,7 +35,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShellController extends AbstractController
 {
     /**
-     * @Route("/", name="shell_index", methods={"GET"})
+     * @Route("", name="shell_index", methods={"GET"})
      */
     public function index(ShellRepository $shellRepository): Response
     {

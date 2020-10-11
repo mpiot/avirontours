@@ -40,7 +40,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class LogbookEntryController extends AbstractController
 {
     /**
-     * @Route("/", name="logbook_entry_index", methods={"GET"})
+     * @Route("", name="logbook_entry_index", methods={"GET"})
      */
     public function index(Request $request, LogbookEntryRepository $logbookEntryRepository): Response
     {

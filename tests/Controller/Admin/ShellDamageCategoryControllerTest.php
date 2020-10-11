@@ -19,105 +19,144 @@
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\ShellDamageCategory;
+use App\Factory\ShellDamageCategoryFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShellDamageCategoryControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForRegularUser($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $category = ShellDamageCategoryFactory::new()->create();
+            $url = str_replace('{id}', $category->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/admin/shell-damage-category'];
+        yield ['GET', '/admin/shell-damage-category/new'];
+        yield ['POST', '/admin/shell-damage-category/new'];
+        yield ['GET', '/admin/shell-damage-category/{id}/edit'];
+        yield ['POST', '/admin/shell-damage-category/{id}/edit'];
+        yield ['DELETE', '/admin/shell-damage-category/{id}'];
+    }
+
     public function testIndexShellDamageCategorys()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage-category/';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage-category');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testNewShellDamageCategory()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage-category/new';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage-category/new');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
-
-        $crawler = $client->submitForm('Sauver', [
-            'shell_damage_category[name]' => '',
-        ]);
-        $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_damage_category_name"] .form-error-message')->text());
-        $this->assertCount(1, $crawler->filter('.form-error-message'));
 
         $client->submitForm('Sauver', [
             'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
             'shell_damage_category[name]' => 'A new shell damage',
         ]);
+
         $this->assertResponseRedirects();
-        $shellDamageCategory = $this->getEntityManager()->getRepository(ShellDamageCategory::class)->findOneBy(['name' => 'A new shell damage']);
-        $this->assertInstanceOf(ShellDamageCategory::class, $shellDamageCategory);
-        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $shellDamageCategory->getPriority());
+
+        $category = ShellDamageCategoryFactory::repository()->findOneBy(['name' => 'A new shell damage']);
+
+        $this->assertSame('A new shell damage', $category->getName());
+        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
+    }
+
+    public function testNewShellDamageCategoryWithoutData()
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage-category/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'shell_damage_category[name]' => '',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_damage_category_name"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        ShellDamageCategoryFactory::repository()->assertCount(0);
     }
 
     public function testEditShellDamageCategory()
     {
+        $category = ShellDamageCategoryFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage-category/1/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
             'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
             'shell_damage_category[name]' => 'A modified shell damage category',
         ]);
+
         $this->assertResponseRedirects();
-        $shellDamageCategory = $this->getEntityManager()->getRepository(ShellDamageCategory::class)->find(1);
-        $this->assertSame('A modified shell damage category', $shellDamageCategory->getName());
-        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $shellDamageCategory->getPriority());
+
+        $category->refresh();
+
+        $this->assertSame('A modified shell damage category', $category->getName());
+        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
     }
 
     public function testDeleteShellDamageCategory()
     {
+        $category = ShellDamageCategoryFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/shell-damage-category/3/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/admin/shell-damage-category/');
-        $group = $this->getEntityManager()->getRepository(ShellDamageCategory::class)->find(3);
-        $this->assertNull($group);
+
+        $this->assertResponseRedirects('/admin/shell-damage-category');
+
+        ShellDamageCategoryFactory::repository()->assertNotExists($category);
     }
 }

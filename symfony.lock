@@ -123,6 +123,9 @@
     "erusev/parsedown": {
         "version": "1.7.4"
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.1"
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
     },
@@ -725,5 +728,8 @@
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
+    },
+    "zenstruck/foundry": {
+        "version": "v1.2.0"
     }
 }

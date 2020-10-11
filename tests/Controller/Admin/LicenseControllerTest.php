@@ -18,31 +18,111 @@
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\License;
 use App\Entity\MedicalCertificate;
+use App\Factory\LicenseFactory;
+use App\Factory\SeasonCategoryFactory;
+use App\Factory\SeasonFactory;
+use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class LicenseControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForRegularUser($method, $url)
+    {
+        if (mb_strpos($url, '{season_id}')) {
+            $season = SeasonFactory::new()->create();
+            $url = str_replace('{id}', $season->getId(), $url);
+        }
+
+        if (mb_strpos($url, '{id}')) {
+            $license = LicenseFactory::new()->create(['season' => $season]);
+            $url = str_replace('{id}', $license->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/admin/season/{season_id}/license/new'];
+        yield ['POST', '/admin/season/{season_id}/license/new'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/edit'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/edit'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/apply-transition'];
+        yield ['DELETE', '/admin/season/{season_id}/license/{id}'];
+        yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
+    }
+
     public function testNewLicense()
     {
+        $season = SeasonFactory::new()->create();
+        $user = UserFactory::new()->create();
+        $season = SeasonFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/2/license/new';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $crawler = $client->request('GET', '/admin/season/'.$season->getId().'/license/new');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
+        $form = $crawler->selectButton('Sauver')->form([
+            'license[user]' => $user->getId(),
+            'license[seasonCategory]' => $season->getSeasonCategories()->first()->getId(),
+            'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'license[medicalCertificate][date]' => '2020-05-01',
+        ]);
+        $form['license[medicalCertificate][file][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/medical-certificate.pdf');
+        $client->submit($form);
 
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
+        $this->assertResponseRedirects();
+
+        $license = LicenseFactory::repository()->findOneBy([], ['id' => 'DESC']);
+
+        $this->assertSame($user->getId(), $license->getUser()->getId());
+        $this->assertSame($season->getSeasonCategories()->first()->getId(), $license->getSeasonCategory()->getId());
+        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
+        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+    }
+
+    public function testNewLicenseWithoutData()
+    {
+        $season = SeasonFactory::new()->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/license/new');
+
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
             'license[medicalCertificate][date]' => '',
         ]);
+
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="license_user"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="license_seasonCategory"] .form-error-message')->text());
@@ -51,71 +131,60 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="license_medicalCertificate_date"] .form-error-message')->text());
         $this->assertCount(5, $crawler->filter('.form-error-message'));
 
-        $form = $crawler->selectButton('Sauver')->form([
-            'license[user]' => 2,
-            'license[seasonCategory]' => 7,
-            'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'license[medicalCertificate][date]' => '2020-05-01',
-        ]);
-        $form['license[medicalCertificate][file][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/medical-certificate.pdf');
-        $client->submit($form);
-        $this->assertResponseRedirects();
-        $license = $this->getEntityManager()->getRepository(License::class)->findOneBy([], ['id' => 'DESC']);
-        $this->assertInstanceOf(License::class, $license);
-        $this->assertSame(2, $license->getUser()->getId());
-        $this->assertSame(7, $license->getSeasonCategory()->getId());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
-        $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+        LicenseFactory::repository()->assertCount(0);
     }
 
     public function testNewLicenseNonUnique()
     {
-        $client = static::createClient();
-        $url = '/admin/season/2/license/new';
+        $license = LicenseFactory::new()->create();
 
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/new');
+
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'license[user]' => 3,
-            'license[seasonCategory]' => 7,
+            'license[user]' => $license->getUser()->getId(),
+            'license[seasonCategory]' => $license->getSeasonCategory()->getId(),
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'license[medicalCertificate][date]' => '2020-05-01',
         ]);
+
         $this->assertResponseIsSuccessful();
+
         $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.form-error-message')->text());
         $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        LicenseFactory::repository()->assertCount(1);
     }
 
     public function testEditLicense()
     {
+        $license = LicenseFactory::new()->create();
+        $seasonCategory = SeasonCategoryFactory::new()->create(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/2/license/6/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
-            'license_edit[seasonCategory]' => 6,
+            'license_edit[seasonCategory]' => $seasonCategory->getId(),
             'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
             'license_edit[medicalCertificate][date]' => '2020-05-01',
         ]);
+
         $this->assertResponseRedirects();
-        $license = $this->getEntityManager()->getRepository(License::class)->find(6);
-        $this->assertSame(6, $license->getSeasonCategory()->getId());
+
+        $license->refresh();
+
+        $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
         $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
@@ -123,108 +192,156 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testDeleteLicense()
     {
+        $license = LicenseFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/2/license/6/edit';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/admin/season/2');
-        $license = $this->getEntityManager()->getRepository(License::class)->find(6);
-        $this->assertNull($license);
-    }
 
-    public function testApplyMarking()
-    {
-        $client = static::createClient();
-        $url = '/admin/season/2';
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Rejeter le certificat médical');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
-        $this->assertSame([
-            'wait_payment_validation' => 1,
-            'medical_certificate_rejected' => 1,
-        ], $license->getMarking());
-
-        $client->followRedirect();
-        $client->submitForm('Passer le certificat en attente de validation');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
-        $this->assertSame([
-            'wait_payment_validation' => 1,
-            'wait_medical_certificate_validation' => 1,
-        ], $license->getMarking());
-
-        $client->followRedirect();
-        $client->submitForm('Valider le certificat médical');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
-        $this->assertSame([
-            'wait_payment_validation' => 1,
-            'medical_certificate_validated' => 1,
-        ], $license->getMarking());
-
-        $client->followRedirect();
-        $client->submitForm('Valider le paiement');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
-        $this->assertSame([
-            'medical_certificate_validated' => 1,
-            'payment_validated' => 1,
-        ], $license->getMarking());
-
-        $client->followRedirect();
-        $client->submitForm('Valider la licence');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
-        $this->assertSame([
-            'validated' => 1,
-        ], $license->getMarking());
+        LicenseFactory::repository()->assertNotExists($license);
     }
 
     public function testChainMedicalCertificateValidation()
     {
+        $license = LicenseFactory::new()->create(['marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1]]);
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/season/2/license/chain-medical-certificate-validation';
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Valider le certificat médical');
-        $this->assertResponseRedirects($url);
-        $license = $this->getEntityManager()->getRepository(License::class)->find(9);
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
+
+        $license->refresh();
+
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testValidateMedicalCertificate()
+    {
+        $license = LicenseFactory::new()->create(['marking' => null]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider le certificat médical');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $license->refresh();
+
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_validated' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testRejectMedicalCertificate()
+    {
+        $license = LicenseFactory::new()->create(['marking' => null]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Rejeter le certificat médical');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $license->refresh();
+
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_rejected' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testUnrejectMedicalCertificate()
+    {
+        $license = LicenseFactory::new()->create(['marking' => ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1]]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Passer le certificat en attente de validation');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $license->refresh();
+
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'wait_medical_certificate_validation' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testValidatePayment()
+    {
+        $license = LicenseFactory::new()->create(['marking' => null]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider le paiement');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $license->refresh();
+
+        $this->assertSame([
+            'wait_medical_certificate_validation' => 1,
+            'payment_validated' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testValidateLicense()
+    {
+        $license = LicenseFactory::new()->create(['marking' => ['medical_certificate_validated' => 1, 'payment_validated' => 1]]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider la licence');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+
+        $license->refresh();
+
+        $this->assertSame([
+            'validated' => 1,
         ], $license->getMarking());
     }
 }

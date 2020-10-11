@@ -18,34 +18,81 @@
 
 namespace App\Tests\Controller;
 
-use App\Entity\User;
 use App\Tests\AppWebTestCase;
 
 class ProfileControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/profile'];
+        yield ['GET', '/profile/edit'];
+        yield ['GET', '/profile/edit-password'];
+    }
+
     public function testProfileShow()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/profile/';
+        $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/profile');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testProfileEditProfile()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/profile/edit';
+        $user = $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/profile/edit');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseIsSuccessful();
 
+        $client->submitForm('Modifier', [
+            'profile[email]' => 'john.doe@avirontours.fr',
+            'profile[phoneNumber]' => '0123456789',
+            'profile[firstName]' => 'John',
+            'profile[lastName]' => 'Doe',
+            'profile[postalCode]' => '01000',
+            'profile[city]' => 'One City',
+            'profile[clubEmailAllowed]' => 1,
+            'profile[partnersEmailAllowed]' => 1,
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $user->refresh();
+
+        $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
+        $this->assertSame('0123456789', $user->getPhoneNumber());
+        $this->assertSame('John', $user->getFirstName());
+        $this->assertSame('Doe', $user->getLastName());
+        $this->assertSame('john.doe', $user->getUsername());
+        $this->assertSame('01000', $user->getPostalCode());
+        $this->assertSame('One City', $user->getCity());
+        $this->assertTrue($user->getClubEmailAllowed());
+        $this->assertTrue($user->getPartnersEmailAllowed());
+    }
+
+    public function testProfileEditProfileWithoutData()
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
         $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
+        $client->request('GET', '/profile/edit');
+
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Modifier', [
@@ -63,45 +110,38 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_city"] .form-error-message')->text());
         $this->assertCount(5, $crawler->filter('.form-error-message'));
-
-        $form = $crawler->selectButton('Modifier')->form([
-            'profile[email]' => 'john.doe@avirontours.fr',
-            'profile[phoneNumber]' => '0123456789',
-            'profile[firstName]' => 'John',
-            'profile[lastName]' => 'Doe',
-            'profile[postalCode]' => '01000',
-            'profile[city]' => 'One City',
-            'profile[clubEmailAllowed]' => 1,
-            'profile[partnersEmailAllowed]' => 1,
-        ]);
-        $client->submit($form);
-        $this->assertResponseRedirects();
-        /** @var User $user */
-        $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => 'john.doe@avirontours.fr']);
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
-        $this->assertSame('0123456789', $user->getPhoneNumber());
-        $this->assertSame('John', $user->getFirstName());
-        $this->assertSame('Doe', $user->getLastName());
-        $this->assertSame('john.doe', $user->getUsername());
-        $this->assertSame('01000', $user->getPostalCode());
-        $this->assertSame('One City', $user->getCity());
-        $this->assertTrue($user->getClubEmailAllowed());
-        $this->assertTrue($user->getPartnersEmailAllowed());
     }
 
     public function testEditPassword()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/profile/edit-password';
+        $user = $this->logIn($client, 'ROLE_USER');
+        $oldPassword = $user->getPassword();
+        $client->request('GET', '/profile/edit-password');
 
-        $originalPassword = $this->getEntityManager()->getRepository(User::class)->findOneBy(['username' => 'a.user'])->getPassword();
+        $this->assertResponseIsSuccessful();
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
+        $client->submitForm('Modifier', [
+            'change_password[currentPassword]' => 'engage',
+            'change_password[plainPassword][first]' => 'engage2',
+            'change_password[plainPassword][second]' => 'engage2',
+        ]);
 
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
+        $this->assertResponseRedirects();
+
+        $user->refresh();
+
+        $this->assertNotSame($oldPassword, $user->getPassword());
+    }
+
+    public function testEditPasswordWithoutData()
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/profile/edit-password');
+
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Modifier', [
@@ -113,17 +153,5 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $crawler->filter('label[for="change_password_currentPassword"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="change_password_plainPassword_first"] .form-error-message')->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
-
-        $form = $crawler->selectButton('Modifier')->form([
-            'change_password[currentPassword]' => 'engage',
-            'change_password[plainPassword][first]' => 'engage2',
-            'change_password[plainPassword][second]' => 'engage2',
-        ]);
-        $client->submit($form);
-        $this->assertResponseRedirects();
-        /** @var User $user */
-        $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['username' => 'a.user']);
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertNotSame($originalPassword, $user->getPassword());
     }
 }

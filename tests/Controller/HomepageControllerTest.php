@@ -24,14 +24,15 @@ class HomepageControllerTest extends AppWebTestCase
 {
     public function testIndex()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/';
+        $client->request('GET', '/');
 
-        $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
 
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
+        $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/');
+
         $this->assertResponseIsSuccessful();
     }
 }

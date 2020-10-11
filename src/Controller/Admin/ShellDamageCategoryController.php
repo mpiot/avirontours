@@ -34,7 +34,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShellDamageCategoryController extends AbstractController
 {
     /**
-     * @Route("/", name="shell_damage_category_index", methods={"GET"})
+     * @Route("", name="shell_damage_category_index", methods={"GET"})
      */
     public function index(ShellDamageCategoryRepository $shellDamageRepository): Response
     {

@@ -69,10 +69,11 @@ assets-build: node_modules                                                      
 ## Tests
 ##---------------------------------------------------------------------------
 
-tests: db-fixtures                                                                                     ## Run all the PHP tests
+tests: db-reset                                                                                        ## Run all the PHP tests
+	$(CONSOLE) cache:clear --env test
 	$(RUN) php bin/phpunit
 
-tests-weak: db-fixtures                                                                                ## Run all the PHP tests without Deprecations helper
+tests-weak: db-reset                                                                                   ## Run all the PHP tests without Deprecations helper
 	SYMFONY_DEPRECATIONS_HELPER=weak $(RUN) php bin/phpunit
 
 test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests

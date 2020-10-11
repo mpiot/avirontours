@@ -19,96 +19,103 @@
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\User;
+use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends AppWebTestCase
 {
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAnonymousUser($method, $url)
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request($method, $url);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForRegularUser($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $user = UserFactory::new()->create();
+            $url = str_replace('{id}', $user->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForAdminUser($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $user = UserFactory::new()->create();
+            $url = str_replace('{id}', $user->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function urlProvider()
+    {
+        yield ['GET', '/admin/user'];
+        yield ['GET', '/admin/user/{id}'];
+        yield ['GET', '/admin/user/new'];
+        yield ['POST', '/admin/user/new'];
+        yield ['GET', '/admin/user/{id}/edit'];
+        yield ['POST', '/admin/user/{id}/edit'];
+        yield ['DELETE', '/admin/user/{id}'];
+    }
+
     public function testIndexUsers()
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/user/';
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'super-admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testShowUser()
     {
+        $user = UserFactory::new()->create();
+
+        self::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/user/3';
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId());
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'super-admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
     }
 
     public function testNewUser()
     {
+        self::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/user/new';
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/new');
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'super-admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
-            'user[subscriptionDate]' => '',
-            'user[firstName]' => '',
-            'user[lastName]' => '',
-            'user[email]' => '',
-            'user[phoneNumber]' => '',
-            'user[plainPassword]' => '',
-            'user[birthday]' => '',
-            'user[postalCode]' => '',
-            'user[city]' => '',
-        ]);
-        $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_subscriptionDate"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_gender')->previousAll()->filter('legend')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_firstName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_lastName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_email"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_plainPassword"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_birthday"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_city"] .form-error-message')->text());
-        $this->assertCount(9, $crawler->filter('.form-error-message'));
-
-        $crawler = $client->submitForm('Sauver', [
+        $client->submitForm('Sauver', [
             'user[subscriptionDate]' => '2019-09-01',
             'user[gender]' => 'm',
             'user[firstName]' => 'John',
@@ -122,10 +129,11 @@ class UserControllerTest extends AppWebTestCase
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user[licenseNumber]' => '0123456789',
         ]);
+
         $this->assertResponseRedirects();
-        /** @var User $user */
-        $user = $this->getEntityManager()->getRepository(User::class)->findOneBy(['email' => 'john.doe@avirontours.fr']);
-        $this->assertInstanceOf(User::class, $user);
+
+        $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
+
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));
         $this->assertSame('m', $user->getGender());
         $this->assertSame('John', $user->getFirstName());
@@ -140,24 +148,48 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
+    public function testNewUserWithoutData()
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'user[subscriptionDate]' => '',
+            'user[firstName]' => '',
+            'user[lastName]' => '',
+            'user[email]' => '',
+            'user[phoneNumber]' => '',
+            'user[plainPassword]' => '',
+            'user[birthday]' => '',
+            'user[postalCode]' => '',
+            'user[city]' => '',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_subscriptionDate"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_gender')->previousAll()->filter('legend')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_firstName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_lastName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_email"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_plainPassword"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_birthday"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_postalCode"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_city"] .form-error-message')->text());
+        $this->assertCount(9, $crawler->filter('.form-error-message'));
+    }
+
     public function testEditUser()
     {
+        $user = UserFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/user/5/edit';
-
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'super-admin.user');
-        $client->request('GET', $url);
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId().'/edit');
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
@@ -173,8 +205,11 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user_edit[licenseNumber]' => '0123456789',
         ]);
+
         $this->assertResponseRedirects();
-        $user = $this->getEntityManager()->getRepository(User::class)->find(5);
+
+        $user->refresh();
+
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));
         $this->assertSame('m', $user->getGender());
         $this->assertSame('John', $user->getFirstName());
@@ -186,33 +221,24 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
-        $this->assertCount(2, $user->getLicenses());
+        $this->assertCount(0, $user->getLicenses());
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
     public function testDeleteUser()
     {
+        $user = UserFactory::new()->create();
+
+        static::ensureKernelShutdown();
         $client = static::createClient();
-        $url = '/admin/user/1';
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId());
 
-        $client->request('GET', $url);
-        $this->assertResponseRedirects('/login');
-
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
-
-        $this->logIn($client, 'super-admin.user');
-        $client->request('GET', $url);
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
-        $this->assertResponseRedirects('/admin/user/');
-        $group = $this->getEntityManager()->getRepository(User::class)->find(1);
-        $this->assertNull($group);
+
+        $this->assertResponseRedirects('/admin/user');
+        UserFactory::repository()->assertNotExists($user);
     }
 }

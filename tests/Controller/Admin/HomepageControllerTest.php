@@ -19,23 +19,25 @@
 namespace App\Tests\Controller\Admin;
 
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomepageControllerTest extends AppWebTestCase
 {
     public function testIndex()
     {
         $client = static::createClient();
-        $url = '/admin/';
+        $client->request('GET', '/admin');
 
-        $client->request('GET', $url);
         $this->assertResponseRedirects('/login');
 
-        $this->logIn($client, 'a.user');
-        $client->request('GET', $url);
-        $this->assertResponseStatusCodeSame(403);
+        $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/admin');
 
-        $this->logIn($client, 'admin.user');
-        $client->request('GET', $url);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/admin');
+
         $this->assertResponseIsSuccessful();
     }
 }

@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomepageController extends AbstractController
 {
     /**
-     * @Route("/admin/", name="admin_homepage")
+     * @Route("/admin", name="admin_homepage")
      * @Security("is_granted('ROLE_ADMIN')")
      */
     public function homepage()

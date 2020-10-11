@@ -19,29 +19,28 @@
 namespace App\Tests;
 
 use App\Entity\User;
+use App\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\AbstractBrowser;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Security\Guard\Token\PostAuthenticationGuardToken;
+use Zenstruck\Foundry\Proxy;
+use Zenstruck\Foundry\Test\Factories;
 
 abstract class AppWebTestCase extends WebTestCase
 {
-    protected function logIn(AbstractBrowser $client, string $username)
+    use Factories;
+
+    /**
+     * @return User|Proxy
+     */
+    protected function logIn(AbstractBrowser $client, string $role): Proxy
     {
-        $user = self::getEntityManager()->getRepository(User::class)->findOneBy(['username' => $username]);
+        /** @var User|Proxy $user */
+        $user = UserFactory::new()->create(['roles' => [$role]]);
 
-        $session = self::$container->get('session');
+        $client->loginUser($user->object());
 
-        $firewallName = 'main';
-        $firewallContext = 'main';
-
-        $token = new PostAuthenticationGuardToken($user, $firewallName, $user->getRoles());
-        $session->set('_security_'.$firewallContext, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $client->getCookieJar()->set($cookie);
+        return $user;
     }
 
     protected static function getEntityManager(): EntityManagerInterface
