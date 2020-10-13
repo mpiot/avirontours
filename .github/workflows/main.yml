@@ -95,7 +95,10 @@ jobs:
         run: bin/console doctrine:migrations:migrate -n
 
       - name: Run fixtures
-        run: bin/console doctrine:fixtures:load -n
+        run: bin/console doctrine:migrations:migrate -n
+
+      - name: Clear the test cache
+        run: bin/console cache:clear --env test
 
       - name: Run test suite
         run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
