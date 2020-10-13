@@ -107,6 +107,7 @@ class SeasonControllerTest extends AppWebTestCase
         $values['season']['seasonCategories'][0]['price'] = 99.32;
         $values['season']['seasonCategories'][0]['licenseType'] = SeasonCategory::LICENSE_TYPE_ANNUAL;
         $values['season']['seasonCategories'][0]['description'] = 'My category description';
+        $values['season']['seasonCategories'][0]['displayed'] = true;
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
         $this->assertResponseRedirects();
@@ -120,6 +121,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertSame(99.32, $season->getSeasonCategories()->first()->getPrice());
         $this->assertSame(SeasonCategory::LICENSE_TYPE_ANNUAL, $season->getSeasonCategories()->first()->getLicenseType());
         $this->assertSame('My category description', $season->getSeasonCategories()->first()->getdescription());
+        $this->assertTrue($season->getSeasonCategories()->first()->getDisplayed());
     }
 
     public function testNewSeasonWithoutData()

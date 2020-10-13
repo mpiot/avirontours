@@ -42,7 +42,18 @@ final class SeasonCategoryFactory extends ModelFactory
             'price' => self::faker()->randomElement([120, 200, 320]),
             'licenseType' => self::faker()->randomElement(SeasonCategory::getAvailableLicenseTypes()),
             'description' => self::faker()->text,
+            'displayed' => self::faker()->boolean(0.8),
         ];
+    }
+
+    public function displayed(): self
+    {
+        return $this->addState(['displayed' => true]);
+    }
+
+    public function notDisplayed(): self
+    {
+        return $this->addState(['displayed' => false]);
     }
 
     protected function initialize(): self

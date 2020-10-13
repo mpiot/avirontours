@@ -86,9 +86,15 @@ class SeasonCategory
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $displayed;
+
     public function __construct()
     {
         $this->licenses = new ArrayCollection();
+        $this->displayed = true;
     }
 
     public function getId(): ?int
@@ -203,5 +209,17 @@ class SeasonCategory
             'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
             'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
         ];
+    }
+
+    public function getDisplayed(): ?bool
+    {
+        return $this->displayed;
+    }
+
+    public function setDisplayed(bool $displayed): self
+    {
+        $this->displayed = $displayed;
+
+        return $this;
     }
 }

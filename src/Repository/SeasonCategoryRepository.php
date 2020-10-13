@@ -43,6 +43,7 @@ class SeasonCategoryRepository extends ServiceEntityRepository
             ->innerJoin('season_category.season', 'season')->addSelect('season')
             ->andWhere('season_category.slug = :slug')
             ->andWhere('season.subscriptionEnabled = true')
+            ->andWhere('season_category.displayed = true')
             ->setParameter('slug', $slug)
         ;
 

@@ -65,6 +65,16 @@ final class SeasonFactory extends ModelFactory
         return $this->addState(['subscriptionEnabled' => false]);
     }
 
+    public function seasonCategoriesDisplayed(): self
+    {
+        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->withoutPersisting()->displayed()->createMany(self::faker()->numberBetween(2, 5))]);
+    }
+
+    public function seasonCategoriesNotDisplayed(): self
+    {
+        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->withoutPersisting()->notDisplayed()->createMany(self::faker()->numberBetween(2, 5))]);
+    }
+
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization

@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\SeasonCategory;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -44,6 +45,13 @@ class SeasonCategoryType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
+                'required' => false,
+            ])
+            ->add('displayed', CheckboxType::class, [
+                'label' => 'Affiché',
+                'label_attr' => [
+                    'class' => 'checkbox-custom',
+                ],
                 'required' => false,
             ])
         ;

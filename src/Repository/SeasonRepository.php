@@ -43,6 +43,7 @@ class SeasonRepository extends ServiceEntityRepository
         $queryBuilder
             ->innerJoin('season.seasonCategories', 'season_categories')->addSelect('season_categories')
             ->andWhere('season.subscriptionEnabled = true')
+            ->andWhere('season_categories.displayed = true')
             ->orderBy('season.name', 'DESC')
             ->getQuery()
             ->setMaxResults(1)

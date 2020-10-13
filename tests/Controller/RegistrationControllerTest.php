@@ -30,7 +30,7 @@ class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration()
     {
-        $season = SeasonFactory::new()->subscriptionEnabled()->create();
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -89,7 +89,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRegistrationWithoutData()
     {
-        $season = SeasonFactory::new()->subscriptionEnabled()->create();
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -131,7 +131,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRegistrationTwice()
     {
-        $season = SeasonFactory::new()->subscriptionEnabled()->create();
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
         $license = LicenseFactory::new()->create(['seasonCategory' => $season->getSeasonCategories()->first()]);
 
         self::ensureKernelShutdown();
@@ -168,18 +168,29 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testNonEnabledRegistration()
     {
-        $season = SeasonFactory::new()->subscriptionDisabled()->create();
+        $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
 
-        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testNonDisplayedCategoryRegistration()
+    {
+        $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesNotDisplayed()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     public function testRegistrationAsLogInUser()
     {
-        $season = SeasonFactory::new()->subscriptionEnabled()->create();
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -191,7 +202,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRenew()
     {
-        $season = SeasonFactory::new()->subscriptionEnabled()->create();
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -222,9 +233,21 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
     }
 
+    public function testNonDisplayedCategoryRenew()
+    {
+        $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesNotDisplayed()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
     public function testNonEnabledRenew()
     {
-        $season = SeasonFactory::new()->subscriptionDisabled()->create();
+        $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -236,7 +259,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRenewAsAnonymousUser()
     {
-        $season = SeasonFactory::new()->subscriptionDisabled()->create();
+        $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
