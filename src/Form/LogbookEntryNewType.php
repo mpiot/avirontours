@@ -128,6 +128,8 @@ class LogbookEntryNewType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'multiple' => true,
+                'help' => '<div class="text-info"><span class="fa fa-info-circle"> Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.</span></div>',
+                'help_html' => true,
             ])
             ->add('recaptcha', Recaptcha3Type::class, [
                 'action_name' => 'logbook_new',
