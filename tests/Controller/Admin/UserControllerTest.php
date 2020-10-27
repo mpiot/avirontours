@@ -122,7 +122,6 @@ class UserControllerTest extends AppWebTestCase
             'user[lastName]' => 'Doe',
             'user[email]' => 'john.doe@avirontours.fr',
             'user[phoneNumber]' => '0102030405',
-            'user[plainPassword]' => 'engage',
             'user[birthday]' => '2010-01-01',
             'user[postalCode]' => '01000',
             'user[city]' => 'One City',
@@ -140,7 +139,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
         $this->assertSame('0102030405', $user->getPhoneNumber());
-        $this->assertNotNull($user->getPassword());
+        $this->assertNull($user->getPassword());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
@@ -163,7 +162,6 @@ class UserControllerTest extends AppWebTestCase
             'user[lastName]' => '',
             'user[email]' => '',
             'user[phoneNumber]' => '',
-            'user[plainPassword]' => '',
             'user[birthday]' => '',
             'user[postalCode]' => '',
             'user[city]' => '',
@@ -175,11 +173,10 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_firstName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_lastName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_email"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_plainPassword"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_birthday"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_postalCode"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_city"] .form-error-message')->text());
-        $this->assertCount(9, $crawler->filter('.form-error-message'));
+        $this->assertCount(8, $crawler->filter('.form-error-message'));
     }
 
     public function testEditUser()

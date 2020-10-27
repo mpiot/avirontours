@@ -24,15 +24,11 @@ use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class UserType extends AbstractType
 {
@@ -68,15 +64,6 @@ class UserType extends AbstractType
             ->add('phoneNumber', TelType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => false,
-            ])
-            ->add('plainPassword', PasswordType::class, [
-                'label' => 'Mot de passe',
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 6, 'max' => 4096]),
-                    new NotCompromisedPassword(),
-                ],
-                'mapped' => false,
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
