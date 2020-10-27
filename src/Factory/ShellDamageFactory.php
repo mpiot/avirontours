@@ -41,6 +41,9 @@ final class ShellDamageFactory extends ModelFactory
             'category' => ShellDamageCategoryFactory::new()->create(),
             'shell' => ShellFactory::new()->create(),
             'description' => self::faker()->text,
+            'note' => self::faker()->text,
+            'repairStartAt' => self::faker()->optional()->dateTimeThisYear,
+            'repairAt' => self::faker()->optional()->dateTimeThisYear,
         ];
     }
 

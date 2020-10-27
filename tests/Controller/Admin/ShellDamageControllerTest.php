@@ -92,16 +92,21 @@ class ShellDamageControllerTest extends AppWebTestCase
             'shell_damage[shell]' => $shell->getId(),
             'shell_damage[category]' => $category->getId(),
             'shell_damage[description]' => 'My description',
+            'shell_damage[note]' => 'My note',
+            'shell_damage[repairStartAt]' => '2020-09-01',
+            'shell_damage[repairAt]' => '2020-09-15',
         ]);
 
         $this->assertResponseRedirects();
 
         $damage = ShellDamageFactory::repository()->findOneBy(['description' => 'My description']);
 
-        $this->assertSame('My description', $damage->getDescription());
         $this->assertSame($shell->getId(), $damage->getshell()->getId());
         $this->assertSame($category->getId(), $damage->getCategory()->getId());
-        $this->assertNull($damage->getRepairAt());
+        $this->assertSame('My description', $damage->getDescription());
+        $this->assertSame('My note', $damage->getNote());
+        $this->assertSame('2020-09-01', $damage->getRepairStartAt()->format('Y-m-d'));
+        $this->assertSame('2020-09-15', $damage->getRepairAt()->format('Y-m-d'));
     }
 
     public function testNewShellDamageWithoutData()
@@ -117,6 +122,8 @@ class ShellDamageControllerTest extends AppWebTestCase
             'shell_damage[shell]' => '',
             'shell_damage[category]' => '',
             'shell_damage[description]' => '',
+            'shell_damage[note]' => '',
+            'shell_damage[repairStartAt]' => '',
             'shell_damage[repairAt]' => '',
         ]);
 
@@ -146,17 +153,21 @@ class ShellDamageControllerTest extends AppWebTestCase
             'shell_damage[shell]' => $shell->getId(),
             'shell_damage[category]' => $category->getId(),
             'shell_damage[description]' => 'A modified description',
-            'shell_damage[repairAt]' => '2020-01-01',
+            'shell_damage[note]' => 'A modified note',
+            'shell_damage[repairStartAt]' => '2020-01-01',
+            'shell_damage[repairAt]' => '2020-02-01',
         ]);
 
         $this->assertResponseRedirects();
 
         $damage->refresh();
 
-        $this->assertSame('A modified description', $damage->getDescription());
         $this->assertSame($shell->getId(), $damage->getshell()->getId());
         $this->assertSame($category->getId(), $damage->getCategory()->getId());
-        $this->assertSame('2020-01-01', $damage->getRepairAt()->format('Y-m-d'));
+        $this->assertSame('A modified description', $damage->getDescription());
+        $this->assertSame('A modified note', $damage->getNote());
+        $this->assertSame('2020-01-01', $damage->getRepairStartAt()->format('Y-m-d'));
+        $this->assertSame('2020-02-01', $damage->getRepairAt()->format('Y-m-d'));
     }
 
     public function testDeleteShellDamage()

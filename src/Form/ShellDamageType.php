@@ -66,8 +66,17 @@ class ShellDamageType extends AbstractType
                 'label' => 'Description',
                 'required' => false,
             ])
+            ->add('note', TextareaType::class, [
+                'label' => 'Note',
+                'required' => false,
+            ])
+            ->add('repairStartAt', DateType::class, [
+                'label' => 'Réparation commencé le',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
             ->add('repairAt', DateType::class, [
-                'label' => 'Fait le',
+                'label' => 'Réparé  le',
                 'widget' => 'single_text',
                 'required' => false,
             ])

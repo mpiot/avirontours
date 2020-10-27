@@ -51,6 +51,16 @@ class ShellDamage
     private $description;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $note;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $repairStartAt;
+
+    /**
      * @ORM\Column(type="date", nullable=true)
      */
     private $repairAt;
@@ -92,6 +102,30 @@ class ShellDamage
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getRepairStartAt(): ?\DateTimeInterface
+    {
+        return $this->repairStartAt;
+    }
+
+    public function setRepairStartAt(?\DateTimeInterface $repairStartAt): self
+    {
+        $this->repairStartAt = $repairStartAt;
 
         return $this;
     }
