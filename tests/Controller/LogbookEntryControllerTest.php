@@ -108,29 +108,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider onlyMainUrlProvider
-     */
-    public function testAccessSuccessOnSubDomain($method, $url)
-    {
-        if (mb_strpos($url, '{id}')) {
-            $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
-        }
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->setServerParameters([
-            'PHP_AUTH_USER' => 'logbook',
-            'PHP_AUTH_PW' => 'engage',
-        ]);
-        $client->request($method, $url, [], [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
-        );
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
     public function allUrlProvider()
     {
         yield ['GET', '/logbook-entry'];
@@ -138,6 +115,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         yield ['POST', '/logbook-entry/new'];
         yield ['GET', '/logbook-entry/{id}/finish'];
         yield ['POST', '/logbook-entry/{id}/finish'];
+        yield ['GET', '/logbook-entry/statistics'];
     }
 
     public function onlyMainUrlProvider()

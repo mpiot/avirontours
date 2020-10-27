@@ -140,7 +140,6 @@ class LogbookEntryController extends AbstractController
 
     /**
      * @Route("/statistics", name="logbook_entry_statistics")
-     * @Security("is_granted('ROLE_USER')")
      */
     public function statistics(ShellRepository $shellRepository, UserRepository $userRepository)
     {
