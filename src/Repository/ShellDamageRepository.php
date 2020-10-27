@@ -46,7 +46,14 @@ class ShellDamageRepository extends ServiceEntityRepository
     public function findAllPaginated($page = 1): PaginationInterface
     {
         $query = $this->createQueryBuilder('shell_damage')
-            ->orderBy('shell_damage.createdAt', 'DESC')
+            ->addSelect('(
+                CASE WHEN shell_damage.repairAt IS NOT NULL THEN 3
+                     WHEN category.priority = 1 THEN 2
+                     ELSE 1
+                END) AS HIDDEN mainSort'
+            )
+            ->innerJoin('shell_damage.category', 'category')->addSelect('category')
+            ->orderBy('shell_damage.createdAt', 'ASC')
             ->getQuery()
         ;
 
