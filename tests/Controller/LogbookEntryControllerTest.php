@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LogbookEntryControllerTest extends AppWebTestCase
 {
     /**
-     * @dataProvider allUrlProvider
+     * @dataProvider mainAndLogbookSubdomainUrlProvider
      */
     public function testAccessDeniedForAnonymousUser($method, $url)
     {
@@ -49,7 +49,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     }
 
     /**
-     * @dataProvider allUrlProvider
+     * @dataProvider mainAndLogbookSubdomainUrlProvider
      */
     public function testAccessDeniedForUnlicensedUser($method, $url)
     {
@@ -108,7 +108,30 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function allUrlProvider()
+    /**
+     * @dataProvider mainAndLogbookSubdomainUrlProvider
+     */
+    public function testAccessOnSubDomain($method, $url)
+    {
+        if (mb_strpos($url, '{id}')) {
+            $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
+            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request($method, $url, [], [],
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+        );
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function mainAndLogbookSubdomainUrlProvider()
     {
         yield ['GET', '/logbook-entry'];
         yield ['GET', '/logbook-entry/new'];
