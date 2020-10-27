@@ -53,7 +53,8 @@ class ShellDamageRepository extends ServiceEntityRepository
                 END) AS HIDDEN mainSort'
             )
             ->innerJoin('shell_damage.category', 'category')->addSelect('category')
-            ->orderBy('shell_damage.createdAt', 'ASC')
+            ->orderBy('mainSort', 'ASC')
+            ->addOrderBy('shell_damage.createdAt', 'ASC')
             ->getQuery()
         ;
 
