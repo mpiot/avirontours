@@ -19,6 +19,7 @@
 namespace App\Factory;
 
 use App\Entity\ShellDamage;
+use App\Entity\ShellDamageCategory;
 use App\Repository\ShellDamageRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -45,6 +46,20 @@ final class ShellDamageFactory extends ModelFactory
             'repairStartAt' => self::faker()->optional()->dateTimeThisYear,
             'repairAt' => self::faker()->optional()->dateTimeThisYear,
         ];
+    }
+
+    public function highlyDamaged(): self
+    {
+        return $this->addState([
+            'category' => ShellDamageCategoryFactory::new()->create(['priority' => ShellDamageCategory::PRIORITY_HIGH]),
+        ]);
+    }
+
+    public function mediumDamaged(): self
+    {
+        return $this->addState([
+            'category' => ShellDamageCategoryFactory::new()->create(['priority' => ShellDamageCategory::PRIORITY_MEDIUM]),
+        ]);
     }
 
     protected function initialize(): self

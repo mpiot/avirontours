@@ -43,11 +43,36 @@ final class LogbookEntryFactory extends ModelFactory
 
         return [
             'shell' => $shell,
-            'crewMembers' => UserFactory::new()->createMany($shell->getCrewSize()),
             'endAt' => $finished ? new \DateTime('+1 hour') : null,
             'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
             'shellDamages' => ShellDamageFactory::new()->createMany(self::faker()->numberBetween(0, 3)),
         ];
+    }
+
+    public function withActiveCrew(int $number): self
+    {
+        $licences = LicenseFactory::new()->annualActive()->createMany($number);
+        $crew = [];
+        foreach ($licences as $license) {
+            $crew[] = $license->getUser();
+        }
+
+        return $this->addState([
+            'crewMembers' => $crew,
+        ]);
+    }
+
+    public function withInactiveCrew(int $number): self
+    {
+        $licences = LicenseFactory::new()->annualInactive()->createMany($number);
+        $crew = [];
+        foreach ($licences as $license) {
+            $crew[] = $license->getUser();
+        }
+
+        return $this->addState([
+            'crewMembers' => $crew,
+        ]);
     }
 
     public function finished(): self

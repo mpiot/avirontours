@@ -55,24 +55,56 @@ final class LicenseFactory extends ModelFactory
         ];
     }
 
-    public function logbookUsable(): self
+    public function annualActive(): self
     {
         return $this->addState([
             'seasonCategory' => SeasonCategoryFactory::new()->create([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
                 'season' => SeasonFactory::new()->active()->create(),
             ]),
+        ]);
+    }
+
+    public function indoorActive(): self
+    {
+        return $this->addState([
+            'seasonCategory' => SeasonCategoryFactory::new()->create([
+                'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
+                'season' => SeasonFactory::new()->active()->create(),
+            ]),
+        ]);
+    }
+
+    public function annualInactive(): self
+    {
+        return $this->addState([
+            'seasonCategory' => SeasonCategoryFactory::new()->create([
+                'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
+                'season' => SeasonFactory::new()->inactive()->create(),
+            ]),
+        ]);
+    }
+
+    public function indoorInactive(): self
+    {
+        return $this->addState([
+            'seasonCategory' => SeasonCategoryFactory::new()->create([
+                'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
+                'season' => SeasonFactory::new()->inactive()->create(),
+            ]),
+        ]);
+    }
+
+    public function withValidLicense(): self
+    {
+        return $this->addState([
             'marking' => ['validated' => 1],
         ]);
     }
 
-    public function logbookUnusable(): self
+    public function withInvalidLicense(): self
     {
         return $this->addState([
-            'seasonCategory' => SeasonCategoryFactory::new()->create([
-                'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
-                'season' => SeasonFactory::new()->active()->create(),
-            ]),
             'marking' => null,
         ]);
     }

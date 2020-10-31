@@ -18,6 +18,7 @@
 
 namespace App\Entity;
 
+use App\Validator as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,13 +43,16 @@ class LogbookEntry
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="logbookEntries")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups={"start", "edit"})
+     * @AppAssert\ShellAvailable(groups={"start"})
+     * @AppAssert\ShellNotDamaged(groups={"start"})
      */
     private $shell;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups={"start", "edit"})
+     * @AppAssert\CrewAvailable(groups={"start"})
      */
     private $crewMembers;
 
@@ -59,13 +63,13 @@ class LogbookEntry
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups={"start", "edit"})
      */
     private $date;
 
     /**
      * @ORM\Column(type="time")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"start", "edit"})
      */
     private $startAt;
 
@@ -233,7 +237,7 @@ class LogbookEntry
     }
 
     /**
-     * @Assert\Callback()
+     * @Assert\Callback(groups={"start"})
      */
     public function validateCrewLength(ExecutionContextInterface $context, $payload)
     {
@@ -251,9 +255,9 @@ class LogbookEntry
     }
 
     /**
-     * @Assert\Callback()
+     * @Assert\Callback(groups={"start"})
      */
-    public function validateCrew(ExecutionContextInterface $context, $payload)
+    public function validateCrewRowerCategory(ExecutionContextInterface $context, $payload)
     {
         if (null === $this->getShell()) {
             return;

@@ -23,6 +23,7 @@ use App\Entity\User;
 use App\Factory\LicenseFactory;
 use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellDamageCategoryFactory;
+use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
@@ -161,19 +162,19 @@ class LogbookEntryControllerTest extends AppWebTestCase
     public function testNewLogbookEntry()
     {
         $shell = ShellFactory::new()->create(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
-        $licences = LicenseFactory::new()->logbookUsable()->createMany(2);
+        $licences = LicenseFactory::new()->annualActive()->withValidLicense()->createMany(2);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $client->loginUser($licences[0]->getUser());
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => $shell->getId(),
-            'logbook_entry_new[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
-            'logbook_entry_new[startAt]' => '09:00',
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '09:00',
         ]);
 
         $this->assertResponseRedirects();
@@ -199,13 +200,13 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => '',
-            'logbook_entry_new[startAt]' => '',
+            'logbook_entry_start[shell]' => '',
+            'logbook_entry_start[startAt]' => '',
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="logbook_entry_new_shell"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="logbook_entry_new_startAt"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="logbook_entry_start_shell"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="logbook_entry_start_startAt"] .form-error-message')->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
 
         LogbookEntryFactory::repository()->assertCount(0);
@@ -214,7 +215,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     public function testNewLogbookEntryInvalidCrewSize()
     {
         $shell = ShellFactory::new()->create(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
-        $licences = LicenseFactory::new()->logbookUsable()->createMany(2);
+        $licences = LicenseFactory::new()->annualActive()->createMany(2);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -224,23 +225,52 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => $shell->getId(),
-            'logbook_entry_new[crewMembers]' => [$licences[0]->getUser()->getId()],
-            'logbook_entry_new[startAt]' => '9:00',
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Le nombre de membre d\'équipage ne correspond pas au nombre de place.', $crawler->filter('label[for="logbook_entry_new_crewMembers"] .form-error-message')->text());
+        $this->assertStringContainsString('Le nombre de membre d\'équipage ne correspond pas au nombre de place.', $crawler->filter('label[for="logbook_entry_start_crewMembers"] .form-error-message')->text());
         $this->assertCount(1, $crawler->filter('.form-error-message'));
 
         LogbookEntryFactory::repository()->assertCount(0);
+    }
+
+    public function testNewLogbookEntryWithCrewMemberOnWater()
+    {
+        $shell = ShellFactory::new()->create(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
+        $licences = LicenseFactory::new()->annualActive()->createMany(2);
+        LogbookEntryFactory::new()->notFinished()->create([
+            'shell' => ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]),
+            'crewMembers' => [$licences[0]->getUser()],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString(sprintf('Certains membres d\'équipage sont déjà sortis: %s.', $licences[0]->getUser()->getFullName()), $crawler->filter('label[for="logbook_entry_start_crewMembers"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        LogbookEntryFactory::repository()->assertCount(1);
     }
 
     public function testNewLogbookEntryWithInvalidRowerCategory()
     {
         $shell = ShellFactory::new()->create(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_A]);
         $licences = LicenseFactory::new(['user' => UserFactory::new(['rowerCategory' => User::ROWER_CATEGORY_C])->create()])
-            ->logbookUsable()
+            ->annualActive()
             ->createMany(2)
         ;
 
@@ -252,23 +282,101 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => $shell->getId(),
-            'logbook_entry_new[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
-            'logbook_entry_new[startAt]' => '9:00',
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau:', $crawler->filter('label[for="logbook_entry_new_crewMembers"] .form-error-message')->text());
+        $this->assertStringContainsString('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau:', $crawler->filter('label[for="logbook_entry_start_crewMembers"] .form-error-message')->text());
         $this->assertCount(1, $crawler->filter('.form-error-message'));
 
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
+    public function testNewLogbookEntryWithShellOnWater()
+    {
+        $shell = ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+        LogbookEntryFactory::new()->withActiveCrew(1)->withoutDamages()->notFinished()->create([
+            'shell' => $shell,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('label[for="logbook_entry_start_shell"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        LogbookEntryFactory::repository()->assertCount(1);
+    }
+
+    public function testNewLogbookEntryWithHighlyDamagedShell()
+    {
+        $shell = ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
+        $shellDamage = ShellDamageFactory::new()->highlyDamaged()->create(['shell' => $shell]);
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
+            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('label[for="logbook_entry_start_shell"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        LogbookEntryFactory::repository()->assertCount(0);
+    }
+
+    public function testNewLogbookEntryWithMediumDamagedShell()
+    {
+        $shell = ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
+        $shellDamage = ShellDamageFactory::new()->mediumDamaged()->create(['shell' => $shell]);
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
+            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
+        ]);
+
+        $this->assertResponseRedirects();
+
+        LogbookEntryFactory::repository()->assertCount(1);
+    }
+
     public function testUserListLogbookEntryFormAsAdmin()
     {
-        LicenseFactory::new()->logbookUsable()->createMany(2);
-        LicenseFactory::new()->logbookUnusable()->createMany(2);
-        UserFactory::new()->createMany(2);
+        LicenseFactory::new()->annualActive()->createMany(2);
+        LicenseFactory::new()->annualInactive()->createMany(3);
+        UserFactory::new()->createMany(4);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -276,14 +384,14 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(2, $crawler->filter('#logbook_entry_new_crewMembers > option'));
+        $this->assertCount(10, $crawler->filter('#logbook_entry_start_crewMembers > option'));
     }
 
     public function testUserListLogbookEntryFormAsUser()
     {
-        $users = LicenseFactory::new()->logbookUsable()->createMany(2);
-        LicenseFactory::new()->logbookUnusable()->createMany(2);
-        UserFactory::new()->createMany(2);
+        $users = LicenseFactory::new()->annualActive()->withValidLicense()->createMany(2);
+        LicenseFactory::new()->annualInactive()->createMany(3);
+        UserFactory::new()->createMany(4);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -291,13 +399,13 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(2, $crawler->filter('#logbook_entry_new_crewMembers > option'));
+        $this->assertCount(2, $crawler->filter('#logbook_entry_start_crewMembers > option'));
     }
 
     public function testNewLogbookEntryWithNonUserCrewMember()
     {
         $shell = ShellFactory::new()->create(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
-        $license = LicenseFactory::new()->logbookUsable()->create();
+        $license = LicenseFactory::new()->annualInactive()->withInvalidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -305,10 +413,10 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $client->request('GET', '/logbook-entry/new');
 
         $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => $shell->getId(),
-            'logbook_entry_new[crewMembers]' => [$license->getUser()->getId()],
-            'logbook_entry_new[nonUserCrewMembers]' => 'John Doe',
-            'logbook_entry_new[startAt]' => '09:00',
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe',
+            'logbook_entry_start[startAt]' => '09:00',
         ]);
 
         $this->assertResponseRedirects();
@@ -321,7 +429,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser()
     {
-        $license = LicenseFactory::new()->logbookUsable()->create();
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -329,7 +437,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(0, $crawler->filter('#logbook_entry_new_nonUserCrewMembers'));
+        $this->assertCount(0, $crawler->filter('#logbook_entry_start_nonUserCrewMembers'));
     }
 
     public function testNewLogbookEntryWithOnlyNonUserCrewMembers()
@@ -344,9 +452,10 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Sauver', [
-            'logbook_entry_new[shell]' => $shell->getId(),
-            'logbook_entry_new[nonUserCrewMembers]' => 'John Doe, Foo Bar',
-            'logbook_entry_new[startAt]' => '09:00',
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [],
+            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe, Foo Bar',
+            'logbook_entry_start[startAt]' => '09:00',
         ]);
 
         $this->assertResponseRedirects();
@@ -393,7 +502,91 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame(12.2, $entry->getShell()->getMileage());
     }
 
-    public function testChangeShellLogbookEntry()
+    public function testEditLogbookEntryWithCrewMemberOnWater()
+    {
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+        LogbookEntryFactory::new()->notFinished()->create([
+            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create(),
+            'crewMembers' => [$license->getUser()],
+        ]);
+        $entry = LogbookEntryFactory::new()->notFinished()->create([
+            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create(),
+            'nonUserCrewMembers' => ['John Doe'],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Modifier', [
+            'logbook_entry[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry[nonUserCrewMembers]' => '',
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $entry->refresh();
+
+        $this->assertCount(1, $entry->getCrewMembers());
+        $this->assertSame($license->getUser()->getId(), $entry->getCrewMembers()->first()->getId());
+        $this->assertCount(0, $entry->getNonUserCrewMembers());
+    }
+
+    public function testEditLogbookEntryWithShellOnWater()
+    {
+        $entries = LogbookEntryFactory::new()->notFinished()->createMany(2, [
+            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create(),
+            'nonUserCrewMembers' => ['John Doe'],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/'.$entries[0]->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Modifier', [
+            'logbook_entry[shell]' => $entries[1]->getShell()->getId(),
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $entries[0]->refresh();
+
+        $this->assertSame($entries[1]->getShell()->getId(), $entries[0]->getShell()->getId());
+    }
+
+    public function testEditLogbookEntryWithDamagedShell()
+    {
+        $shellDamage = ShellDamageFactory::new()->highlyDamaged()->create();
+        $entry = LogbookEntryFactory::new()->notFinished()->create([
+            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create(),
+            'nonUserCrewMembers' => ['John Doe'],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_ADMIN');
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Modifier', [
+            'logbook_entry[shell]' => $shellDamage->getShell()->getId(),
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $entry->refresh();
+
+        $this->assertSame($shellDamage->getShell()->getId(), $entry->getShell()->getId());
+    }
+
+    public function testEditShellLogbookEntry()
     {
         $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create();
         $entryShell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create();

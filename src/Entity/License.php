@@ -135,7 +135,13 @@ class License
 
     public function isValid(): bool
     {
-        return null !== $this->marking && \array_key_exists('validated', $this->marking) && 1 === $this->marking['validated'];
+        return null !== $this->marking && (
+            (\array_key_exists('validated', $this->marking) && 1 === $this->marking['validated']) ||
+            (
+                (\array_key_exists('medical_certificate_validated', $this->marking) && 1 === $this->marking['medical_certificate_validated']) &&
+                (\array_key_exists('payment_validated', $this->marking) && 1 === $this->marking['payment_validated'])
+            )
+        );
     }
 
     public function setMarking($marking, $context = [])

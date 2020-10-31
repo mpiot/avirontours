@@ -159,4 +159,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $query->getResult();
     }
+
+    public function findOnWaterUsers(array $users = null)
+    {
+        $qb = $this->createQueryBuilder('user')
+            ->innerJoin('user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
+        ;
+
+        if (!empty($users)) {
+            $qb
+                ->where('user IN (:users)')
+                ->setParameter('users', $users)
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

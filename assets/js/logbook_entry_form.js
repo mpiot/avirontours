@@ -4,9 +4,11 @@ const $ = require('jquery');
 require('./components/select2');
 
 $(function() {
-    collectionType($('div#logbook_entry_finish_shellDamages, div#logbook_entry_shellDamages'), 'Ajouter une avarie');
-    $('#logbook_entry_new_crewMembers, #logbook_entry_crewMembers').select2();
-    $('#logbook_entry_new_shell, #logbook_entry_shell').select2({
+    collectionType($('div#logbook_entry_shellDamages, div#logbook_entry_finish_shellDamages'), 'Ajouter une avarie');
+    $('#logbook_entry_start_crewMembers, #logbook_entry_crewMembers').select2({
+        templateResult: formatState,
+    });
+    $('#logbook_entry_start_shell, #logbook_entry_shell').select2({
         templateResult: formatState,
     });
 

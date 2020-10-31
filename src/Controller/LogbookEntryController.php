@@ -20,7 +20,7 @@ namespace App\Controller;
 
 use App\Entity\LogbookEntry;
 use App\Form\LogbookEntryFinishType;
-use App\Form\LogbookEntryNewType;
+use App\Form\LogbookEntryStartType;
 use App\Form\LogbookEntryType;
 use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
@@ -55,7 +55,7 @@ class LogbookEntryController extends AbstractController
     public function new(Request $request): Response
     {
         $logbookEntry = new LogbookEntry();
-        $form = $this->createForm(LogbookEntryNewType::class, $logbookEntry);
+        $form = $this->createForm(LogbookEntryStartType::class, $logbookEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

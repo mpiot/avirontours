@@ -19,7 +19,9 @@
 namespace App\Form;
 
 use App\Entity\LogbookEntry;
+use App\Entity\SeasonCategory;
 use App\Entity\Shell;
+use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
 use App\Form\Type\NonUserCrewMemberType;
@@ -49,40 +51,44 @@ class LogbookEntryType extends AbstractType
             ->add('shell', EntityType::class, [
                 'label' => 'Bâteau',
                 'class' => Shell::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('shell')
+                        ->select('shell')
+                        ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
+                        ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')->addSelect('shell_damages')
+                        ->leftJoin('shell_damages.category', 'category')->addSelect('category')
+                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
+                        ;
+                },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (Shell $shell) {
+                    $badges = [];
+
                     if ($shell->getRowerCategory() <= 2) {
-                        return ['data-badge' => 'competition'];
+                        $badges[] = ['color' => 'primary', 'value' => 'Compétition'];
                     }
 
                     if (true === $shell->getPersonalBoat()) {
-                        return ['data-badge' => 'personnal'];
+                        $badges[] = ['color' => 'info', 'value' => 'Personnel'];
+                    }
+
+                    if (null !== $shell->getWeightCategory()) {
+                        $badges[] = ['color' => 'info', 'value' => $shell->getTextWeightCategory()];
+                    }
+
+                    if (false === $shell->getLogbookEntries()->isEmpty()) {
+                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-sign-out-alt"></span>'];
+                    }
+
+                    if (false === $shell->getShellDamages()->filter(function (ShellDamage $damage) { return ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority(); })->isEmpty()) {
+                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-tools"></span>'];
+                    }
+
+                    if (!empty($badges)) {
+                        return ['data-badges' => json_encode($badges)];
                     }
 
                     return [];
-                },
-                'query_builder' => function (EntityRepository $er) {
-                    $unavailableShells = $er->createQueryBuilder('s')
-                        ->select(['s.id'])
-                        ->innerJoin('s.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')
-                        ->innerJoin('shell_damages.category', 'category', 'WITH', 'category.priority = :priority_high')
-                        ->setParameter('priority_high', ShellDamageCategory::PRIORITY_HIGH)
-                        ->getQuery()
-                        ->getArrayResult();
-
-                    $queryBuilder = $er->createQueryBuilder('shell');
-                    $queryBuilder
-                        ->select('shell')
-                        ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
-                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
-
-                    if (!empty($unavailableShells)) {
-                        $queryBuilder
-                            ->andWhere($queryBuilder->expr()->notIn('shell.id', ':unavailableShells'))
-                            ->setParameter('unavailableShells', $unavailableShells);
-                    }
-
-                    return $queryBuilder;
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
@@ -90,12 +96,43 @@ class LogbookEntryType extends AbstractType
                 'label' => 'Membres d\'équipage',
                 'class' => User::class,
                 'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('app_user')
+                    $qb = $er->createQueryBuilder('app_user')
+                        ->leftJoin('app_user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
                         ->orderBy('app_user.firstName', 'ASC')
-                        ->addOrderBy('app_user.lastName', 'ASC');
+                        ->addOrderBy('app_user.lastName', 'ASC')
+                    ;
+
+                    if (!$this->security->isGranted('ROLE_ADMIN')) {
+                        $qb
+                            ->leftJoin('app_user.licenses', 'licenses')
+                            ->leftJoin('licenses.seasonCategory', 'seasonCategory')
+                            ->leftJoin('seasonCategory.season', 'season')
+                            ->andWhere('seasonCategory.licenseType = :licenseType')
+                            ->andWhere('season.active = true')
+                            ->andWhere('JSON_GET_TEXT(licenses.marking, \'validated\') = \'1\' OR (JSON_GET_TEXT(licenses.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(licenses.marking, \'payment_validated\') = \'1\')')
+                            ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL)
+                        ;
+                    }
+
+                    return $qb;
                 },
                 'choice_label' => 'fullName',
+                'choice_attr' => function (User $user) {
+                    $badges = [];
+
+                    if (false === $user->getLogbookEntries()->isEmpty()) {
+                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-sign-out-alt"></span>'];
+                    }
+
+                    if (!empty($badges)) {
+                        return ['data-badges' => json_encode($badges)];
+                    }
+
+                    return [];
+                },
                 'multiple' => true,
+                'help' => '<div class="text-info"><span class="fa fa-info-circle"> Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.</span></div>',
+                'help_html' => true,
             ])
             ->add('startAt', TimeType::class, [
                 'label' => 'Heure de départ',
@@ -104,6 +141,7 @@ class LogbookEntryType extends AbstractType
             ->add('endAt', TimeType::class, [
                 'label' => 'Heure de fin',
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('coveredDistance', NumberType::class, [
                 'label' => 'Distance parcourue',
@@ -112,6 +150,7 @@ class LogbookEntryType extends AbstractType
                 'attr' => [
                     'step' => 0.1,
                 ],
+                'required' => false,
             ])
             ->add('shellDamages', CollectionType::class, [
                 'label' => 'Avaries',
@@ -119,6 +158,7 @@ class LogbookEntryType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
+                'required' => false,
             ])
         ;
 
@@ -136,7 +176,7 @@ class LogbookEntryType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => LogbookEntry::class,
-            'validation_groups' => ['Default', 'finish'],
+            'validation_groups' => ['edit'],
         ]);
     }
 }

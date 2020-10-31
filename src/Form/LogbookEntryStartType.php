@@ -18,7 +18,6 @@
 
 namespace App\Form;
 
-use App\Entity\LogbookEntry;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
@@ -26,35 +25,38 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Security;
 
-class LogbookEntryFinishType extends AbstractType
+class LogbookEntryStartType extends AbstractType
 {
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('recaptcha', Recaptcha3Type::class, [
-                'action_name' => 'logbook_finish',
+                'action_name' => 'logbook_new',
                 'mapped' => false,
                 'constraints' => [
                     new Recaptcha3(),
                 ],
             ])
-            ->remove('shell')
-            ->remove('crewMembers')
-            ->remove('nonUserCrewMembers')
-            ->remove('startAt')
+            ->remove('endAt')
+            ->remove('coveredDistance')
+            ->remove('shellDamages')
         ;
 
-        $builder->get('endAt')->setRequired(true);
-        $builder->get('coveredDistance')->setRequired(true);
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            /* @var LogbookEntry $data */
-            $data = $event->getData();
-
-            $data->setEndAt(new \DateTime());
-
-            $event->setData($data);
+            if ($this->security->isGranted('ROLE_USER')) {
+                $data = $event->getData();
+                $data->addCrewMember($this->security->getUser());
+                $event->setData($data);
+            }
         });
     }
 
@@ -66,7 +68,7 @@ class LogbookEntryFinishType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'validation_groups' => ['finish'],
+            'validation_groups' => ['start'],
         ]);
     }
 }
