@@ -159,6 +159,11 @@ class User implements UserInterface, EmailTwoFactorInterface
      */
     private $licenseNumber;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Physiology::class, cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $physiology;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -578,5 +583,17 @@ class User implements UserInterface, EmailTwoFactorInterface
             'B' => self::ROWER_CATEGORY_B,
             'C' => self::ROWER_CATEGORY_C,
         ];
+    }
+
+    public function getPhysiology(): ?Physiology
+    {
+        return $this->physiology;
+    }
+
+    public function setPhysiology(?Physiology $physiology): self
+    {
+        $this->physiology = $physiology;
+
+        return $this;
     }
 }

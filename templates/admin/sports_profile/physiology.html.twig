@@ -1,0 +1,35 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier la physiologie de {{ user.fullname }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.fullName }}</a></li>
+    <li class="breadcrumb-item active">Physiologie</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Physiologie de {{ user.fullname }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-sm-6">
+                {{ form_row(form.maximumHeartRate) }}
+                {{ form_row(form.maximumOxygenConsumption) }}
+            </div>
+
+            <div class="col-sm-6">
+                {{ form_row(form.lightAerobicHeartRate) }}
+                {{ form_row(form.heavyAerobicHeartRate) }}
+                {{ form_row(form.anaerobicThresholdHeartRate) }}
+                {{ form_row(form.oxygenTransportationHeartRate) }}
+                {{ form_row(form.anaerobicHeartRate) }}
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3">Sauver</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="row">
-        <div class=" col-xl-6 col-lg-8">
+        <div class="col-lg-6">
             <div class="card">
                 <div class="card-header">
                     <span class="h3">Mes sorties</span>
@@ -17,6 +17,34 @@
                 </div>
             </div>
         </div>
+
+        {% if app.user.physiology is not null %}
+            <div class="col-lg-6 mt-lg-0 mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="h3">Ma physiologie</span>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            B1 - UT1
+                            <span>{{ app.user.physiology.heavyAerobicHeartRate ?? '-' }} bpm</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            B2 - AT
+                            <span>{{ app.user.physiology.anaerobicThresholdHeartRate ?? '-' }} bpm</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            FCmax
+                            <span>{{ app.user.physiology.maximumHeartRate ?? '-' }} bpm</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            VO2max
+                            <span>{{ app.user.physiology.maximumOxygenConsumption ?? '-' }} ml/min/kg</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

@@ -92,6 +92,7 @@ class UserType extends AbstractType
                     'Super administrateur' => 'ROLE_SUPER_ADMIN',
                     'Administrateur' => 'ROLE_ADMIN',
                     'Administrateur (utilisateurs)' => 'ROLE_USER_ADMIN',
+                    'Administrateur (sport)' => 'ROLE_SPORT_ADMIN',
                     'Utilisateur' => 'ROLE_USER',
                 ],
                 'multiple' => true,
