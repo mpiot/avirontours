@@ -62,6 +62,20 @@ final class ShellDamageFactory extends ModelFactory
         ]);
     }
 
+    public function repaired(): self
+    {
+        return $this->addState([
+            'repairAt' => self::faker()->dateTimeThisYear,
+        ]);
+    }
+
+    public function notRepaired(): self
+    {
+        return $this->addState([
+            'repairAt' => null,
+        ]);
+    }
+
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization

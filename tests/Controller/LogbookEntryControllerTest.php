@@ -324,8 +324,9 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testNewLogbookEntryWithHighlyDamagedShell()
     {
-        $shell = ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
-        $shellDamage = ShellDamageFactory::new()->highlyDamaged()->create(['shell' => $shell]);
+        $damage = ShellDamageFactory::new()->highlyDamaged()->notRepaired()->create([
+            'shell' => ShellFactory::new()->create(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]),
+        ]);
         $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
@@ -336,7 +337,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Sauver', [
-            'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
+            'logbook_entry_start[shell]' => $damage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
         ]);
