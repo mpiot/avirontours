@@ -1,0 +1,25 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}1RM de {{ user.fullname }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</a></li>
+    <li class="breadcrumb-item active">1RM de {{ user.fullName }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>1RM de {{ user.fullname }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+        {{ form_row(form.rowingTirage) }}
+        {{ form_row(form.benchPress) }}
+        {{ form_row(form.squat) }}
+        {{ form_row(form.legPress) }}
+        {{ form_row(form.clean) }}
+
+        <button class="btn btn-primary mt-3">Sauver</button>
+    {{ form_end(form) }}
+{% endblock %}

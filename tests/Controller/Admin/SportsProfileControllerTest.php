@@ -58,6 +58,7 @@ class SportsProfileControllerTest extends AppWebTestCase
     {
         yield ['GET', '/admin/sports-profile'];
         yield ['GET', '/admin/sports-profile/{id}/physiology'];
+        yield ['GET', '/admin/sports-profile/{id}/anatomy'];
     }
 
     public function testIndexUsers()
@@ -103,5 +104,106 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertSame(170, $user->getPhysiology()->getAnaerobicThresholdHeartRate());
         $this->assertSame(185, $user->getPhysiology()->getOxygenTransportationHeartRate());
         $this->assertSame(200, $user->getPhysiology()->getAnaerobicHeartRate());
+    }
+
+    public function testNewAnatomy()
+    {
+        $user = UserFactory::new()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/anatomy');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Sauver', [
+            'anatomy[height]' => 175,
+            'anatomy[weight]' => 69.1,
+            'anatomy[armSpan]' => 160,
+            'anatomy[bustLength]' => 75,
+            'anatomy[legLength]' => 100,
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $user->refresh();
+
+        $this->assertNotNull($user->getAnatomy());
+        $this->assertSame(175, $user->getAnatomy()->getHeight());
+        $this->assertSame(69.1, $user->getAnatomy()->getWeight());
+        $this->assertSame(160, $user->getAnatomy()->getArmSpan());
+        $this->assertSame(75, $user->getAnatomy()->getBustLength());
+        $this->assertSame(100, $user->getAnatomy()->getLegLength());
+    }
+
+    public function testNewPhysicalQualities()
+    {
+        $user = UserFactory::new()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/physical-qualities');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Sauver', [
+            'physical_qualities[proprioception]' => 1,
+            'physical_qualities[weightPowerRatio]' => 2,
+            'physical_qualities[explosiveStrength]' => 3,
+            'physical_qualities[enduranceStrength]' => 4,
+            'physical_qualities[maximumStrength]' => 5,
+            'physical_qualities[stressResistance]' => 6,
+            'physical_qualities[coreStrength]' => 7,
+            'physical_qualities[flexibility]' => 8,
+            'physical_qualities[recovery]' => 9,
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $user->refresh();
+
+        $this->assertNotNull($user->getPhysicalQualities());
+        $this->assertSame(1, $user->getPhysicalQualities()->getProprioception());
+        $this->assertSame(2, $user->getPhysicalQualities()->getWeightPowerRatio());
+        $this->assertSame(3, $user->getPhysicalQualities()->getExplosiveStrength());
+        $this->assertSame(4, $user->getPhysicalQualities()->getEnduranceStrength());
+        $this->assertSame(5, $user->getPhysicalQualities()->getMaximumStrength());
+        $this->assertSame(6, $user->getPhysicalQualities()->getStressResistance());
+        $this->assertSame(7, $user->getPhysicalQualities()->getCoreStrength());
+        $this->assertSame(8, $user->getPhysicalQualities()->getFlexibility());
+        $this->assertSame(9, $user->getPhysicalQualities()->getRecovery());
+    }
+
+    public function testNewWorkoutMaximumLoad()
+    {
+        $user = UserFactory::new()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/workout-maximum-load');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Sauver', [
+            'workout_maximum_load[rowingTirage]' => 1,
+            'workout_maximum_load[benchPress]' => 2,
+            'workout_maximum_load[squat]' => 3,
+            'workout_maximum_load[legPress]' => 4,
+            'workout_maximum_load[clean]' => 5,
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $user->refresh();
+
+        $this->assertNotNull($user->getWorkoutMaximumLoad());
+        $this->assertSame(1, $user->getWorkoutMaximumLoad()->getRowingTirage());
+        $this->assertSame(2, $user->getWorkoutMaximumLoad()->getBenchPress());
+        $this->assertSame(3, $user->getWorkoutMaximumLoad()->getSquat());
+        $this->assertSame(4, $user->getWorkoutMaximumLoad()->getLegPress());
+        $this->assertSame(5, $user->getWorkoutMaximumLoad()->getClean());
     }
 }

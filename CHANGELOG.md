@@ -9,3 +9,4 @@ Changelog
 - Season / Licenses management
 - Members registration
 - Members renew
+- Sports profile

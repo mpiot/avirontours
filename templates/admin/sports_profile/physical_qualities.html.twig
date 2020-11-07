@@ -1,0 +1,35 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Qualités physique de {{ user.fullname }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</a></li>
+    <li class="breadcrumb-item active">Qualités physique de {{ user.fullName }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Qualités physique de {{ user.fullname }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-sm-6">
+                {{ form_row(form.proprioception) }}
+                {{ form_row(form.weightPowerRatio) }}
+                {{ form_row(form.explosiveStrength) }}
+                {{ form_row(form.enduranceStrength) }}
+                {{ form_row(form.maximumStrength) }}
+            </div>
+            <div class="col-sm-6">
+                {{ form_row(form.stressResistance) }}
+                {{ form_row(form.coreStrength) }}
+                {{ form_row(form.flexibility) }}
+                {{ form_row(form.recovery) }}
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3">Sauver</button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -18,9 +18,15 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Anatomy;
+use App\Entity\PhysicalQualities;
 use App\Entity\Physiology;
 use App\Entity\User;
+use App\Entity\WorkoutMaximumLoad;
+use App\Form\AnatomyType;
+use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
+use App\Form\WorkoutMaximumLoadType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,10 +65,73 @@ class SportsProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('sports_profile_index');
         }
 
         return $this->render('admin/sports_profile/physiology.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/anatomy", name="sports_profile_anatomy", methods={"GET","POST"})
+     */
+    public function anatomy(Request $request, User $user): Response
+    {
+        $anatomy = $user->getAnatomy() ?? new Anatomy($user);
+        $form = $this->createForm(AnatomyType::class, $anatomy);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('sports_profile_index');
+        }
+
+        return $this->render('admin/sports_profile/anatomy.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/physical-qualities", name="sports_profile_physical_qualities", methods={"GET","POST"})
+     */
+    public function physicalQualities(Request $request, User $user): Response
+    {
+        $physicalQualities = $user->getPhysicalQualities() ?? new PhysicalQualities($user);
+        $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('sports_profile_index');
+        }
+
+        return $this->render('admin/sports_profile/physical_qualities.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/workout-maximum-load", name="sports_profile_workout_maximum_load", methods={"GET","POST"})
+     */
+    public function workoutMaximumLoad(Request $request, User $user): Response
+    {
+        $workoutMaximumLoad = $user->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($user);
+        $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('sports_profile_index');
+        }
+
+        return $this->render('admin/sports_profile/workout_maximum_load.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
         ]);

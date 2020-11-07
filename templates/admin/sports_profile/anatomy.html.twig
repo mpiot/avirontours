@@ -1,0 +1,32 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Anatomie de {{ user.fullname }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</a></li>
+    <li class="breadcrumb-item active">Anatomie de {{ user.fullName }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Anatomie de {{ user.fullname }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+        <div class="row">
+            <div class="col-sm-6">
+                {{ form_row(form.height) }}
+                {{ form_row(form.weight) }}
+            </div>
+
+            <div class="col-sm-6">
+                {{ form_row(form.armSpan) }}
+                {{ form_row(form.bustLength) }}
+                {{ form_row(form.legLength) }}
+            </div>
+        </div>
+
+        <button class="btn btn-primary mt-3">Sauver</button>
+    {{ form_end(form) }}
+{% endblock %}

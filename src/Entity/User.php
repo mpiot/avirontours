@@ -164,6 +164,21 @@ class User implements UserInterface, EmailTwoFactorInterface
      */
     private $physiology;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Anatomy::class, cascade={"persist", "remove"})
+     */
+    private $anatomy;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PhysicalQualities::class, cascade={"persist", "remove"})
+     */
+    private $physicalQualities;
+
+    /**
+     * @ORM\OneToOne(targetEntity=WorkoutMaximumLoad::class, cascade={"persist", "remove"})
+     */
+    private $workoutMaximumLoad;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -593,6 +608,42 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setPhysiology(?Physiology $physiology): self
     {
         $this->physiology = $physiology;
+
+        return $this;
+    }
+
+    public function getAnatomy(): ?Anatomy
+    {
+        return $this->anatomy;
+    }
+
+    public function setAnatomy(?Anatomy $anatomy): self
+    {
+        $this->anatomy = $anatomy;
+
+        return $this;
+    }
+
+    public function getPhysicalQualities(): ?PhysicalQualities
+    {
+        return $this->physicalQualities;
+    }
+
+    public function setPhysicalQualities(?PhysicalQualities $physicalQualities): self
+    {
+        $this->physicalQualities = $physicalQualities;
+
+        return $this;
+    }
+
+    public function getWorkoutMaximumLoad(): ?WorkoutMaximumLoad
+    {
+        return $this->workoutMaximumLoad;
+    }
+
+    public function setWorkoutMaximumLoad(?WorkoutMaximumLoad $workoutMaximumLoad): self
+    {
+        $this->workoutMaximumLoad = $workoutMaximumLoad;
 
         return $this;
     }
