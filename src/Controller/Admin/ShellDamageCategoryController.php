@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/shell-damage-category")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
  */
 class ShellDamageCategoryController extends AbstractController
 {
@@ -68,7 +68,6 @@ class ShellDamageCategoryController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="shell_damage_category_edit", methods={"GET","POST"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function edit(Request $request, ShellDamageCategory $shellDamage): Response
     {
@@ -89,7 +88,6 @@ class ShellDamageCategoryController extends AbstractController
 
     /**
      * @Route("/{id}", name="shell_damage_category_delete", methods={"DELETE"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function delete(Request $request, ShellDamageCategory $shellDamage): Response
     {

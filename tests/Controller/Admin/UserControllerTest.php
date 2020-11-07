@@ -55,24 +55,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAdminUser($method, $url)
-    {
-        if (mb_strpos($url, '{id}')) {
-            $user = UserFactory::new()->create();
-            $url = str_replace('{id}', $user->getId(), $url);
-        }
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
-        $client->request($method, $url);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
     public function urlProvider()
     {
         yield ['GET', '/admin/user'];

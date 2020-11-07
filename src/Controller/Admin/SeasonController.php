@@ -33,7 +33,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/season")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_USER_ADMIN')")
  */
 class SeasonController extends AbstractController
 {
@@ -87,7 +87,6 @@ class SeasonController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="season_edit", methods={"GET","POST"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function edit(Request $request, Season $season): Response
     {
@@ -108,7 +107,6 @@ class SeasonController extends AbstractController
 
     /**
      * @Route("/{id}", name="season_delete", methods={"DELETE"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function delete(Request $request, Season $season): Response
     {
@@ -123,7 +121,6 @@ class SeasonController extends AbstractController
 
     /**
      * @Route("/{id}/export/contact", name="season_export_contact", methods={"GET"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
@@ -151,7 +148,6 @@ class SeasonController extends AbstractController
 
     /**
      * @Route("/{id}/export/license", name="season_export_license", methods={"GET"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {

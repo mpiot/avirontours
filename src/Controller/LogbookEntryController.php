@@ -35,7 +35,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/logbook-entry")
- * @Security("is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN')")
  */
 class LogbookEntryController extends AbstractController
 {
@@ -103,7 +103,7 @@ class LogbookEntryController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="logbook_entry_edit", methods={"GET","POST"})
-     * @Security("is_granted('ROLE_ADMIN')")
+     * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
      */
     public function edit(Request $request, LogbookEntry $logbookEntry): Response
     {
@@ -124,7 +124,7 @@ class LogbookEntryController extends AbstractController
 
     /**
      * @Route("/{id}", name="logbook_entry_delete", methods={"DELETE"})
-     * @Security("is_granted('ROLE_ADMIN')")
+     * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
      */
     public function delete(Request $request, LogbookEntry $logbookEntry): Response
     {

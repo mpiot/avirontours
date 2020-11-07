@@ -70,7 +70,7 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
@@ -82,7 +82,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
@@ -92,7 +92,7 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $crawler = $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -128,7 +128,7 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -150,7 +150,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -172,7 +172,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();

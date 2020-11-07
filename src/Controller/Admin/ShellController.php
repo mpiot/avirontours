@@ -30,7 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/shell")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
  */
 class ShellController extends AbstractController
 {

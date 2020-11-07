@@ -35,7 +35,7 @@ use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
  * @Route("/admin/season/{season_id}/license")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_USER_ADMIN')")
  */
 class LicenseController extends AbstractController
 {
@@ -65,7 +65,6 @@ class LicenseController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="license_edit", methods={"GET","POST"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function edit(Request $request, License $license): Response
     {
@@ -88,7 +87,6 @@ class LicenseController extends AbstractController
 
     /**
      * @Route("/{id}", name="license_delete", methods={"DELETE"})
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function delete(Request $request, License $license): Response
     {

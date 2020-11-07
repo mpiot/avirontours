@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/admin/shell-damage")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
  */
 class ShellDamageController extends AbstractController
 {

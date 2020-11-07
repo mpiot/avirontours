@@ -6,35 +6,43 @@
 {% endblock %}
 
 {% block body %}
-    <div class="app-list d-flex justify-content-around flex-wrap">
-        <a href="{{ path('shell_damage_index') }}">
-            <div class="card h-75 m-3" style="width: 15rem;">
-                <div class="card-body text-center">
-                    <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
-                    <h4 class="card-title">Avaries</h4>
-                </div>
-            </div>
-        </a>
+    {% if is_granted('ROLE_MATERIAL_ADMIN') %}
+        <h2>Gestion du matériel</h2>
 
-        <a href="{{ path('shell_damage_category_index') }}">
-            <div class="card h-75 m-3" style="width: 15rem;">
-                <div class="card-body text-center">
-                    <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
-                    <h4 class="card-title">Catégories d'avaries</h4>
+        <div class="app-list d-flex flex-wrap">
+            <a href="{{ path('shell_damage_index') }}">
+                <div class="card h-75 m-3" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
+                        <h4 class="card-title">Avaries</h4>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
 
-        <a href="{{ path('shell_index') }}">
-            <div class="card h-75 m-3" style="width: 15rem;">
-                <div class="card-body text-center">
-                    <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
-                    <h4 class="card-title">Parc</h4>
+            <a href="{{ path('shell_index') }}">
+                <div class="card h-75 m-3" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
+                        <h4 class="card-title">Parc</h4>
+                    </div>
                 </div>
-            </div>
-        </a>
+            </a>
 
-        {% if is_granted('ROLE_USER_ADMIN') %}
+            <a href="{{ path('shell_damage_category_index') }}">
+                <div class="card h-75 m-3" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
+                        <h4 class="card-title">Catégories d'avaries</h4>
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <h2>Gestion des membres et saisons</h2>
+
+        <div class="app-list d-flex flex-wrap">
             <a href="{{ path('user_index') }}">
                 <div class="card h-75 m-3" style="width: 15rem;">
                     <div class="card-body text-center">
@@ -43,15 +51,15 @@
                     </div>
                 </div>
             </a>
-        {% endif %}
 
-        <a href="{{ path('season_index') }}">
-            <div class="card h-75 m-3" style="width: 15rem;">
-                <div class="card-body text-center">
-                    <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
-                    <h4 class="card-title">Saisons</h4>
+            <a href="{{ path('season_index') }}">
+                <div class="card h-75 m-3" style="width: 15rem;">
+                    <div class="card-body text-center">
+                        <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
+                        <h4 class="card-title">Saisons</h4>
+                    </div>
                 </div>
-            </div>
-        </a>
-    </div>
+            </a>
+        </div>
+    {% endif %}
 {% endblock %}

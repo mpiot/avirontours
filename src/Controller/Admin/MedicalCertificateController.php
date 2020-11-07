@@ -27,13 +27,12 @@ use Vich\UploaderBundle\Handler\DownloadHandler;
 
 /**
  * @Route("/medical-certificate")
- * @Security("is_granted('ROLE_ADMIN')")
+ * @Security("is_granted('ROLE_USER_ADMIN')")
  */
 class MedicalCertificateController extends AbstractController
 {
     /**
      * @Route("/{id}/dowload", name="medical_certificate_download", methods="GET")
-     * @Security("is_granted('ROLE_ADMIN')")
      */
     public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {

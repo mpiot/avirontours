@@ -73,7 +73,7 @@
                                 <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
                             </a>
                         {% endif %}
-                        {% if is_granted('ROLE_ADMIN') %}
+                        {% if is_granted('ROLE_LOGBOOK_ADMIN') %}
                             <a class="btn btn-outline-warning btn-sm rounded-pill"
                                href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
                                 <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>

@@ -69,7 +69,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category');
 
         $this->assertResponseIsSuccessful();
@@ -79,7 +79,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/new');
 
         $this->assertResponseIsSuccessful();
@@ -101,7 +101,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/new');
 
         $this->assertResponseIsSuccessful();
@@ -124,7 +124,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -148,7 +148,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
         $this->assertResponseIsSuccessful();

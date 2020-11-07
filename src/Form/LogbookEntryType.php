@@ -102,7 +102,7 @@ class LogbookEntryType extends AbstractType
                         ->addOrderBy('app_user.lastName', 'ASC')
                     ;
 
-                    if (!$this->security->isGranted('ROLE_ADMIN')) {
+                    if (!$this->security->isGranted('ROLE_LOGBOOK_ADMIN')) {
                         $qb
                             ->leftJoin('app_user.licenses', 'licenses')
                             ->leftJoin('licenses.seasonCategory', 'seasonCategory')
@@ -162,7 +162,7 @@ class LogbookEntryType extends AbstractType
             ])
         ;
 
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        if ($this->security->isGranted('ROLE_LOGBOOK_ADMIN')) {
             $builder->get('crewMembers')->setRequired(false);
             $builder->add('nonUserCrewMembers', NonUserCrewMemberType::class, [
                 'label' => 'Membres d\'équipage (sans utilisateur)',

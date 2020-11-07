@@ -153,7 +153,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry');
 
         $this->assertResponseIsSuccessful();
@@ -194,7 +194,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -219,7 +219,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -248,7 +248,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -276,7 +276,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -304,7 +304,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -331,7 +331,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -357,7 +357,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -381,7 +381,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -410,7 +410,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $client->submitForm('Sauver', [
@@ -447,7 +447,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -475,7 +475,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -517,7 +517,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -545,7 +545,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entries[0]->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -571,7 +571,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -600,7 +600,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -632,7 +632,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
 
         $this->assertResponseIsSuccessful();
@@ -658,7 +658,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $crawler = $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
 
         $this->assertResponseIsSuccessful();
@@ -691,7 +691,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
 
         $this->assertResponseIsSuccessful();

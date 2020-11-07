@@ -69,7 +69,7 @@ class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell');
 
         $this->assertResponseIsSuccessful();
@@ -81,7 +81,7 @@ class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId());
 
         $this->assertResponseIsSuccessful();
@@ -91,7 +91,7 @@ class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
@@ -114,7 +114,7 @@ class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
@@ -148,7 +148,7 @@ class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -181,7 +181,7 @@ class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId());
 
         $this->assertResponseIsSuccessful();

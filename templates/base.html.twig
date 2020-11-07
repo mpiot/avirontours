@@ -26,13 +26,13 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     {% if is_granted('ROLE_USER') %}
                         <ul class="navbar-nav mr-auto">
-                            {% if is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
                                 </li>
                             {% endif %}
 
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ path('admin_homepage') }}">Administration</a>
                                 </li>
