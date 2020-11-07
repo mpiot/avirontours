@@ -91,8 +91,10 @@ class UserType extends AbstractType
                 'choices' => [
                     'Super administrateur' => 'ROLE_SUPER_ADMIN',
                     'Administrateur' => 'ROLE_ADMIN',
-                    'Administrateur (utilisateurs)' => 'ROLE_USER_ADMIN',
+                    'Administrateur (cahier de sortie)' => 'ROLE_LOGBOOK_ADMIN',
+                    'Administrateur (matériel)' => 'ROLE_MATERIAL_ADMIN',
                     'Administrateur (sport)' => 'ROLE_SPORT_ADMIN',
+                    'Administrateur (utilisateurs)' => 'ROLE_USER_ADMIN',
                     'Utilisateur' => 'ROLE_USER',
                 ],
                 'multiple' => true,
