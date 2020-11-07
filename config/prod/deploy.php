@@ -12,7 +12,7 @@ return new class extends DefaultDeployer
             ->repositoryUrl('git@github.com:mpiot/avirontours.git')
             ->repositoryBranch('develop')
             ->composerInstallFlags( '--no-dev --prefer-dist --no-interaction')
-            ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'protected_files', 'var/log'])
+            ->sharedFilesAndDirs(['config/secrets/prod/prod.decrypt.private.php', 'protected_files', 'var/log', 'var/sessions'])
             ->fixPermissionsWithAcl('www-data')
         ;
     }
