@@ -7,59 +7,79 @@
 
 {% block body %}
     {% if is_granted('ROLE_MATERIAL_ADMIN') %}
-        <h2>Gestion du matériel</h2>
-
-        <div class="app-list d-flex flex-wrap">
-            <a href="{{ path('shell_damage_index') }}">
-                <div class="card h-75 m-3" style="width: 15rem;">
-                    <div class="card-body text-center">
-                        <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
-                        <h4 class="card-title">Avaries</h4>
+        <fieldset class="border p-1 mb-3">
+            <legend class="w-auto px-2">Gestion du matériel</legend>
+            <div class="app-list d-flex flex-wrap">
+                <a href="{{ path('shell_damage_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Avaries</h4>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
 
-            <a href="{{ path('shell_index') }}">
-                <div class="card h-75 m-3" style="width: 15rem;">
-                    <div class="card-body text-center">
-                        <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
-                        <h4 class="card-title">Parc</h4>
+                <a href="{{ path('shell_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Parc</h4>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
 
-            <a href="{{ path('shell_damage_category_index') }}">
-                <div class="card h-75 m-3" style="width: 15rem;">
-                    <div class="card-body text-center">
-                        <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
-                        <h4 class="card-title">Catégories d'avaries</h4>
+                <a href="{{ path('shell_damage_category_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Catégories d'avaries</h4>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        </fieldset>
     {% endif %}
 
     {% if is_granted('ROLE_SUPER_ADMIN') %}
-        <h2>Gestion des membres et saisons</h2>
+        <fieldset class="border p-1 mb-3">
+            <legend class="w-auto px-2">Gestion sport</legend>
 
-        <div class="app-list d-flex flex-wrap">
-            <a href="{{ path('user_index') }}">
-                <div class="card h-75 m-3" style="width: 15rem;">
-                    <div class="card-body text-center">
-                        <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
-                        <h4 class="card-title">Utilisateurs</h4>
+            <div class="app-list d-flex flex-wrap">
+                <a href="{{ path('sports_profile_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Profils sportifs</h4>
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
+        </fieldset>
+    {% endif %}
 
-            <a href="{{ path('season_index') }}">
-                <div class="card h-75 m-3" style="width: 15rem;">
-                    <div class="card-body text-center">
-                        <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
-                        <h4 class="card-title">Saisons</h4>
+    {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <fieldset class="border p-1">
+            <legend class="w-auto px-2">Gestion des membres et saisons</legend>
+
+            <div class="app-list d-flex flex-wrap">
+                <a href="{{ path('user_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Utilisateurs</h4>
+                        </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+
+                <a href="{{ path('season_index') }}">
+                    <div class="card h-75 m-3" style="width: 15rem;">
+                        <div class="card-body text-center">
+                            <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
+                            <h4 class="card-title">Saisons</h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </fieldset>
     {% endif %}
 {% endblock %}

@@ -21,6 +21,7 @@ namespace App\Controller\Admin;
 use App\Entity\Physiology;
 use App\Entity\User;
 use App\Form\PhysiologyType;
+use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,13 +29,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/user/{id}")
+ * @Route("/admin/sports-profile")
  * @Security("is_granted('ROLE_SPORT_ADMIN')")
  */
 class SportsProfileController extends AbstractController
 {
     /**
-     * @Route("/physiology", name="user_physiology", methods={"GET","POST"})
+     * @Route("", name="sports_profile_index", methods="GET")
+     */
+    public function index(Request $request, UserRepository $userRepository): Response
+    {
+        return $this->render('admin/sports_profile/index.html.twig', [
+            'users' => $userRepository->findPaginated(
+                $request->query->getAlnum('q'),
+                $request->query->getInt('page', 1)
+            ),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/physiology", name="sports_profile_physiology", methods={"GET","POST"})
      */
     public function physiology(Request $request, User $user): Response
     {

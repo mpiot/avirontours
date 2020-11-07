@@ -1,0 +1,70 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des profils sportifs{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des profils sportifs</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Gestion des profils sportifs</h1>
+
+    <form method="get">
+        <div class="form-row align-items-center">
+            <div class="col-md-auto col-sm-12 ml-auto">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><span class="fa fa-search"></span></div>
+                    </div>
+                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>
+                        {{ user.fullName }}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-danger" href="{{ path('sports_profile_physiology', { 'id': user.id }) }}">
+                            <span class="fas fa-heartbeat"></span> Physiologie
+                        </a>
+
+                        <a class="btn btn-sm btn-outline-info disabled" href="#">
+                            <span class="fas fa-child"></span> Anatomie
+                        </a>
+
+                        <a class="btn btn-sm btn-outline-success disabled" href="#">
+                            <span class="fas fa-balance-scale"></span> Qualités physiques
+                        </a>
+
+                        <a class="btn btn-sm btn-outline-secondary disabled" href="#">
+                            <span class="fas fa-dumbbell"></span> 1RM
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2" class="text-center">Pas d'utilisateur</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {% if users|length < users.totalItemCount %}
+            {{ knp_pagination_render(users) }}
+        {% endif %}
+    </div>
+{% endblock %}

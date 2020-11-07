@@ -4,9 +4,8 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.fullName }}</a></li>
-    <li class="breadcrumb-item active">Physiologie</li>
+    <li class="breadcrumb-item"><a href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</a></li>
+    <li class="breadcrumb-item active">Physiologie de {{ user.fullName }}</li>
 {% endblock %}
 
 {% block body %}
