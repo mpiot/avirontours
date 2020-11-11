@@ -40,7 +40,7 @@
         </fieldset>
     {% endif %}
 
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
+    {% if is_granted('ROLE_SPORT_ADMIN') %}
         <fieldset class="border p-1 mb-3">
             <legend class="w-auto px-2">Gestion sport</legend>
 
@@ -57,7 +57,7 @@
         </fieldset>
     {% endif %}
 
-    {% if is_granted('ROLE_SUPER_ADMIN') %}
+    {% if is_granted('ROLE_USER_ADMIN') %}
         <fieldset class="border p-1">
             <legend class="w-auto px-2">Gestion des membres et saisons</legend>
 
