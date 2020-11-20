@@ -166,7 +166,7 @@ class SeasonController extends AbstractController
         $response->headers->set('Content-Type', 'text/csv');
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
-            "season_license_{$season->getName()}.csv"
+            'season_licenses_'.$season->getName().'_'.(new \DateTime())->format('YmdHis').'.csv'
         );
         $response->headers->set('Content-Disposition', $disposition);
 
