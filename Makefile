@@ -20,6 +20,7 @@ help:
 ##---------------------------------------------------------------------------
 
 start:                                                                                                 ## Start project
+	$(SYMFONY) proxy:start
 	$(DOCKER_COMPOSE) start
 	$(SYMFONY) server:start -d
 
