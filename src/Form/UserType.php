@@ -19,6 +19,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Type\AddressType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -77,11 +78,8 @@ class UserType extends AbstractType
                 'label' => 'Numéro de licence',
                 'required' => false,
             ])
-            ->add('postalCode', TextType::class, [
-                'label' => 'Code postal',
-            ])
-            ->add('city', TextType::class, [
-                'label' => 'Ville',
+            ->add('address', AddressType::class, [
+                'label' => false,
             ])
         ;
 

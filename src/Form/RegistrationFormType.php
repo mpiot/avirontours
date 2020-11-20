@@ -20,6 +20,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Form\Model\RegistrationModel;
+use App\Form\Type\AddressType;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
@@ -75,11 +76,8 @@ class RegistrationFormType extends AbstractType
                     'label' => 'Répéter le mot de passe',
                 ],
             ])
-            ->add('postalCode', TextType::class, [
-                'label' => 'Code postal',
-            ])
-            ->add('city', TextType::class, [
-                'label' => 'Ville',
+            ->add('address', AddressType::class, [
+                'label' => false,
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',

@@ -105,8 +105,11 @@ class UserControllerTest extends AppWebTestCase
             'user[email]' => 'john.doe@avirontours.fr',
             'user[phoneNumber]' => '0102030405',
             'user[birthday]' => '2010-01-01',
-            'user[postalCode]' => '01000',
-            'user[city]' => 'One City',
+            'user[address][laneNumber]' => '100',
+            'user[address][laneType]' => 'Avenue',
+            'user[address][laneName]' => 'du test',
+            'user[address][postalCode]' => '01000',
+            'user[address][city]' => 'One City',
             'user[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user[licenseNumber]' => '0123456789',
         ]);
@@ -123,6 +126,9 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertNull($user->getPassword());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
+        $this->assertSame('100', $user->getLaneNumber());
+        $this->assertSame('Avenue', $user->getLaneType());
+        $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
@@ -145,8 +151,11 @@ class UserControllerTest extends AppWebTestCase
             'user[email]' => '',
             'user[phoneNumber]' => '',
             'user[birthday]' => '',
-            'user[postalCode]' => '',
-            'user[city]' => '',
+            'user[address][laneNumber]' => '',
+            'user[address][laneType]' => '',
+            'user[address][laneName]' => '',
+            'user[address][postalCode]' => '',
+            'user[address][city]' => '',
         ]);
 
         $this->assertResponseIsSuccessful();
@@ -156,9 +165,12 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_lastName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_email"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_birthday"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_city"] .form-error-message')->text());
-        $this->assertCount(8, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_laneNumber"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="user_address_laneType"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_laneName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_postalCode"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="user_address_city"] .form-error-message')->text());
+        $this->assertCount(11, $crawler->filter('.form-error-message'));
     }
 
     public function testEditUser()
@@ -179,8 +191,11 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[email]' => 'john.doe@avirontours.fr',
             'user_edit[phoneNumber]' => '0102030405',
             'user_edit[birthday]' => '2010-01-01',
-            'user_edit[postalCode]' => '01000',
-            'user_edit[city]' => 'One City',
+            'user_edit[address][laneNumber]' => '100',
+            'user_edit[address][laneType]' => 'Avenue',
+            'user_edit[address][laneName]' => 'du test',
+            'user_edit[address][postalCode]' => '01000',
+            'user_edit[address][city]' => 'One City',
             'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user_edit[licenseNumber]' => '0123456789',
         ]);
@@ -197,6 +212,9 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
+        $this->assertSame('100', $user->getLaneNumber());
+        $this->assertSame('Avenue', $user->getLaneType());
+        $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());

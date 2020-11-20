@@ -65,8 +65,11 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[phoneNumber]' => '0123456789',
             'profile[firstName]' => 'John',
             'profile[lastName]' => 'Doe',
-            'profile[postalCode]' => '01000',
-            'profile[city]' => 'One City',
+            'profile[address][laneNumber]' => '2',
+            'profile[address][laneType]' => 'Rue',
+            'profile[address][laneName]' => 'du test',
+            'profile[address][postalCode]' => '01000',
+            'profile[address][city]' => 'One City',
             'profile[clubEmailAllowed]' => 1,
             'profile[partnersEmailAllowed]' => 1,
         ]);
@@ -80,6 +83,9 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
+        $this->assertSame('2', $user->getLaneNumber());
+        $this->assertSame('Rue', $user->getLaneType());
+        $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertTrue($user->getClubEmailAllowed());
@@ -100,16 +106,22 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[phoneNumber]' => '',
             'profile[firstName]' => '',
             'profile[lastName]' => '',
-            'profile[postalCode]' => '',
-            'profile[city]' => '',
+            'profile[address][laneNumber]' => '',
+            'profile[address][laneType]' => '',
+            'profile[address][laneName]' => '',
+            'profile[address][postalCode]' => '',
+            'profile[address][city]' => '',
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_email"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_firstName"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_lastName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_city"] .form-error-message')->text());
-        $this->assertCount(5, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneNumber"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="profile_address_laneType"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_postalCode"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_city"] .form-error-message')->text());
+        $this->assertCount(8, $crawler->filter('.form-error-message'));
     }
 
     public function testEditPassword()

@@ -19,6 +19,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Type\AddressType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -45,11 +46,8 @@ class ProfileType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('postalCode', TextType::class, [
-                'label' => 'Code postal',
-            ])
-            ->add('city', TextType::class, [
-                'label' => 'Ville',
+            ->add('address', AddressType::class, [
+                'label' => false,
             ])
             ->add('clubEmailAllowed', CheckboxType::class, [
                 'label' => 'Recevoir les emails du club',

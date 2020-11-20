@@ -117,6 +117,24 @@ class User implements UserInterface, EmailTwoFactorInterface
     private $subscriptionDate;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
+     */
+    private $laneNumber;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotNull()
+     */
+    private $laneType;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
+     */
+    private $laneName;
+
+    /**
      * @ORM\Column(type="string", length=5, nullable=true)
      * @Assert\NotBlank()
      */
@@ -417,6 +435,46 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this;
     }
 
+    public function getLaneNumber(): ?string
+    {
+        return $this->laneNumber;
+    }
+
+    public function setLaneNumber(?string $laneNumber): self
+    {
+        $this->laneNumber = $laneNumber;
+
+        return $this;
+    }
+
+    public function getLaneType(): ?string
+    {
+        return $this->laneType;
+    }
+
+    public function setLaneType(?string $laneType): self
+    {
+        $this->laneType = $laneType;
+
+        return $this;
+    }
+
+    public function getLaneName(): ?string
+    {
+        return $this->laneName;
+    }
+
+    public function setLaneName(?string $laneName): self
+    {
+        if (null !== $laneName) {
+            $laneName = u($laneName)->lower()->title(true);
+        }
+
+        $this->laneName = $laneName;
+
+        return $this;
+    }
+
     public function getPostalCode(): ?string
     {
         return $this->postalCode;
@@ -447,7 +505,10 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function getFormattedAddress(): string
     {
-        return "{$this->getPostalCode()} {$this->getCity()}";
+        $address = "{$this->getLaneNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
+        $address .= "{$this->getPostalCode()} {$this->getCity()}";
+
+        return $address;
     }
 
     /**

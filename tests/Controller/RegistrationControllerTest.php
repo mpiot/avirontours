@@ -47,8 +47,11 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => '2010-01-01',
-            'registration_form[postalCode]' => '01000',
-            'registration_form[city]' => 'One City',
+            'registration_form[address][laneNumber]' => '100',
+            'registration_form[address][laneType]' => 'Rue',
+            'registration_form[address][laneName]' => 'du test',
+            'registration_form[address][postalCode]' => '01000',
+            'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
             'registration_form[agreeSwim]' => 1,
@@ -72,6 +75,9 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertNotNull($user->getPassword());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
+        $this->assertSame('100', $user->getLaneNumber());
+        $this->assertSame('Rue', $user->getLaneType());
+        $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertTrue($user->getClubEmailAllowed());
@@ -105,8 +111,11 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => '',
             'registration_form[plainPassword][second]' => '',
             'registration_form[birthday]' => '',
-            'registration_form[postalCode]' => '',
-            'registration_form[city]' => '',
+            'registration_form[address][laneNumber]' => '',
+            'registration_form[address][laneType]' => '',
+            'registration_form[address][laneName]' => '',
+            'registration_form[address][postalCode]' => '',
+            'registration_form[address][city]' => '',
             'registration_form[medicalCertificate][date]' => '',
         ]);
 
@@ -117,13 +126,16 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_email"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_plainPassword_first"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_birthday"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_city"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_laneNumber"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="registration_form_address_laneType"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_laneName"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_postalCode"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_address_city"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->previousAll()->filter('legend')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="registration_form_medicalCertificate_date"] .form-error-message')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.form-error-message')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('label[for="registration_form_agreeSwim"] .form-error-message')->text());
-        $this->assertCount(12, $crawler->filter('.form-error-message'));
+        $this->assertCount(15, $crawler->filter('.form-error-message'));
 
         UserFactory::repository()->assertCount(0);
         LicenseFactory::repository()->assertCount(0);
@@ -149,8 +161,11 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => '2010-01-01',
-            'registration_form[postalCode]' => '01000',
-            'registration_form[city]' => 'One City',
+            'registration_form[address][laneNumber]' => '100',
+            'registration_form[address][laneType]' => 'Rue',
+            'registration_form[address][laneName]' => 'du test',
+            'registration_form[address][postalCode]' => '01000',
+            'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => '2020-01-01',
             'registration_form[agreeSwim]' => 1,

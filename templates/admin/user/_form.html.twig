@@ -36,10 +36,21 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            {{ form_row(form.postalCode) }}
+                            {{ form_row(form.address.laneNumber) }}
                         </div>
                         <div class="col">
-                            {{ form_row(form.city) }}
+                            {{ form_row(form.address.laneType) }}
+                        </div>
+                        <div class="col">
+                            {{ form_row(form.address.laneName) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {{ form_row(form.address.postalCode) }}
+                        </div>
+                        <div class="col">
+                            {{ form_row(form.address.city) }}
                         </div>
                     </div>
                 </div>

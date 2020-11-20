@@ -78,6 +78,24 @@ class RegistrationModel
      * @var int
      * @Assert\NotBlank()
      */
+    public $laneNumber;
+
+    /**
+     * @var string
+     * @Assert\NotNull()
+     */
+    public $laneType;
+
+    /**
+     * @var string
+     * @Assert\NotBlank()
+     */
+    public $laneName;
+
+    /**
+     * @var int
+     * @Assert\NotBlank()
+     */
     public $postalCode;
 
     /**
@@ -128,6 +146,9 @@ class RegistrationModel
             ->setFirstName($this->firstName)
             ->setLastName($this->lastName)
             ->setBirthday($this->birthday)
+            ->setLaneNumber($this->laneNumber)
+            ->setLaneType($this->laneType)
+            ->setLaneName($this->laneName)
             ->setPostalCode($this->postalCode)
             ->setCity($this->city)
             ->addLicense($license)

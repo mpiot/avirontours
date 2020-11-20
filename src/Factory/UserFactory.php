@@ -47,6 +47,11 @@ final class UserFactory extends ModelFactory
             'lastName' => self::faker()->lastName,
             'rowerCategory' => self::faker()->randomElement(User::getAvailableRowerCategories()),
             'birthday' => self::faker()->dateTimeThisCentury('2010-12-31'),
+            'laneNumber' => '5',
+            'laneType' => 'Avenue',
+            'laneName' => 'de Florence',
+            'postalCode' => '37000',
+            'city' => 'Tours',
         ];
     }
 
