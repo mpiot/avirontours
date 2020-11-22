@@ -10,7 +10,7 @@
 {% block body %}
     <div class="d-flex my-3">
         <div class="d-none d-sm-block mr-3">
-            <span class="user-profile-picture">{{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}</span>
+            <span class="avatar avatar-medium">{{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}</span>
         </div>
         <div>
             <h3>{{ user.fullName }} <small>{{ user.email }}</small></h3>

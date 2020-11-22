@@ -10,18 +10,7 @@
             {{ encore_entry_link_tags('app') }}
 
             <style>
-                html,
                 body {
-                    height: 100%;
-                }
-
-                body {
-                    display: -ms-flexbox;
-                    display: flex;
-                    -ms-flex-align: center;
-                    align-items: center;
-                    padding-top: 40px;
-                    padding-bottom: 40px;
                     background: url('{{ preload(asset(random([
                         'build/images/cover1.webp',
                         'build/images/cover2.webp',
@@ -37,13 +26,6 @@
                     background-size: cover;
                 }
 
-                .body-content {
-                    width: 100%;
-                    max-width: 420px;
-                    padding: 15px;
-                    margin: auto;
-                }
-
                 .form-label-group {
                     position: relative;
                     margin-bottom: 1rem;
@@ -54,7 +36,6 @@
                     height: 3.125rem;
                     padding: .75rem;
                 }
-
                 .form-label-group > label {
                     position: absolute;
                     top: 0;
@@ -70,39 +51,31 @@
                     border-radius: .25rem;
                     transition: all .1s ease-in-out;
                 }
-
                 .form-label-group input::-webkit-input-placeholder {
                     color: transparent;
                 }
-
                 .form-label-group input:-ms-input-placeholder {
                     color: transparent;
                 }
-
                 .form-label-group input::-ms-input-placeholder {
                     color: transparent;
                 }
-
                 .form-label-group input::-moz-placeholder {
                     color: transparent;
                 }
-
                 .form-label-group input::placeholder {
                     color: transparent;
                 }
-
                 .form-label-group input:not(:placeholder-shown) {
                     padding-top: 1.25rem;
                     padding-bottom: .25rem;
                 }
-
                 .form-label-group input:not(:placeholder-shown) ~ label {
                     padding-top: .25rem;
                     padding-bottom: .25rem;
                     font-size: 12px;
                     color: #777;
                 }
-
                 /* Fallback for Edge
                 -------------------------------------------------- */
                 @supports (-ms-ime-align: auto) {
@@ -113,7 +86,6 @@
                         color: #777;
                     }
                 }
-
                 /* Fallback for IE
                 -------------------------------------------------- */
                 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
@@ -125,35 +97,47 @@
                     }
                 }
             </style>
+
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
         {% endblock %}
 
-        <title>{% block title %}{% endblock %}</title>
+        <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
     </head>
 
     <body>
-        <div class="body-content bg-white p-5 rounded" >
-            <div class="text-center mb-5">
-                <a href="{{ path('homepage') }}">
-                    <img src="{{ asset('build/images/logo.png') }}"/>
-                </a>
-            </div>
+        <div class="main-container fullscreen">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-5 col-lg-6 col-md-7">
 
-            {# List flashes messages #}
-            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ label }} alert-dismissible d-print-none" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {{ message|trans }}
+                        <div class="bg-white p-5 rounded" >
+                            <div class="text-center mb-5">
+                                <a href="{{ path('homepage') }}">
+                                    <img src="{{ asset('build/images/logo_colored.svg') }}" width="200px"/>
+                                </a>
+                            </div>
+
+                            {# List flashes messages #}
+                            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ label }} alert-dismissible d-print-none" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        {{ message|trans }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+
+                            {% block body %}
+                            {% endblock %}
+                        </div>
                     </div>
-                {% endfor %}
-            {% endfor %}
-
-            {% block body %}
-            {% endblock %}
+                </div>
+            </div>
         </div>
 
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-    {% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </body>
 </html>
