@@ -1,6 +1,5 @@
 CONSOLE=$(SYMFONY) console
 DOCKER_COMPOSE?=docker-compose
-PHPCSFIXER?=php-cs-fixer
 RUN?=$(SYMFONY) run
 SYMFONY?=symfony
 
@@ -95,7 +94,7 @@ lint-container:                                                                 
 	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
-	$(PHPCSFIXER) fix --diff --dry-run --no-interaction -v
+	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check
