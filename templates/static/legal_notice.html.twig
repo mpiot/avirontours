@@ -1,15 +1,10 @@
-{% extends 'base_background.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Mentions légales{% endblock %}
 
-{% block stylesheets %}
+{% block breadcrumb %}
     {{ parent() }}
-
-    <style>
-        .body-content {
-            max-width: 980px !important;
-        }
-    </style>
+    <li class="breadcrumb-item active">Mentions légales</li>
 {% endblock %}
 
 {% block body %}
