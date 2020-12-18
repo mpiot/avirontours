@@ -2,24 +2,19 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-xl-6">
             <div class="card">
                 <div class="card-header">
                     <span class="h3">Mes sorties</span>
                 </div>
                 <div class="card-body">
-                    <canvas
-                        id="logbookChart"
-                        data-labels="{{ logbook_stats|map(value => "#{value.month}")|json_encode|e('html_attr') }}"
-                        data-distances="{{ logbook_stats|map(value => "#{value.distance}")|json_encode|e('html_attr') }}"
-                        data-sessions="{{ logbook_stats|map(value => "#{value.sessions}")|json_encode|e('html_attr') }}"
-                    ></canvas>
+                    {{ render_chart(chart) }}
                 </div>
             </div>
         </div>
 
         {% if app.user.physiology is not null %}
-            <div class="col-lg-6 mt-lg-0 mt-3">
+            <div class="col-xl-6 mt-xl-0 mt-3">
                 <div class="card">
                     <div class="card-header">
                         <span class="h3">Ma physiologie</span>
@@ -46,9 +41,4 @@
             </div>
         {% endif %}
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('homepage') }}
 {% endblock %}

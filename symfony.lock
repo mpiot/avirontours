@@ -608,6 +608,9 @@
     "symfony/twig-pack": {
         "version": "v1.0.0"
     },
+    "symfony/ux-chartjs": {
+        "version": "v1.1.0"
+    },
     "symfony/validator": {
         "version": "4.3",
         "recipe": {

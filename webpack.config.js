@@ -14,19 +14,6 @@ Encore
     // only needed for CDN's or sub-directory deploy
     //.setManifestKeyPrefix('build/')
 
-    .copyFiles({
-        from: './assets/images',
-
-        // optional target path, relative to the output dir
-        //to: 'images/[path][name].[ext]',
-
-        // if versioning is enabled, add the file hash too
-        to: 'images/[path][name].[hash:8].[ext]',
-
-        // only copy files matching this pattern
-        //pattern: /\.(png|jpg|jpeg)$/
-    })
-
     /*
      * ENTRY CONFIG
      *
@@ -34,7 +21,6 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('homepage', './assets/jquery/homepage.js')
     .addEntry('logbook_entry_form', './assets/jquery/logbook_entry_form.js')
     .addEntry('season_form', './assets/jquery/season_form.js')
 
@@ -47,6 +33,22 @@ Encore
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
+
+    /*
+     * COPY IMAGE FILES
+     */
+    .copyFiles({
+        from: './assets/images',
+
+        // optional target path, relative to the output dir
+        //to: 'images/[path][name].[ext]',
+
+        // if versioning is enabled, add the file hash too
+        to: 'images/[path][name].[hash:8].[ext]',
+
+        // only copy files matching this pattern
+        //pattern: /\.(png|jpg|jpeg)$/
+    })
 
     /*
      * FEATURE CONFIG
@@ -85,7 +87,7 @@ Encore
     //.enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+    // .autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();

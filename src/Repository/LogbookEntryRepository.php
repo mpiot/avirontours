@@ -60,12 +60,12 @@ class LogbookEntryRepository extends ServiceEntityRepository
         );
     }
 
-    public function findStatsByMonth(User $user, int $nbMonths = 6)
+    public function findStatsByMonth(User $user, int $nbMonths = 12)
     {
         $today = new \DateTime();
 
         $query = $this->createQueryBuilder('logbook_entry')
-            ->select('CONCAT(DATE_PART(\'month\', logbook_entry.date), \'-\', DATE_PART(\'year\', logbook_entry.date)) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as sessions')
+            ->select('DATE_PART(\'month\', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session')
             ->leftJoin('logbook_entry.crewMembers', 'crew_members')
             ->andWhere('crew_members = :user')
             ->andWhere('logbook_entry.date BETWEEN :lastDay AND :today')

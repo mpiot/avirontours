@@ -1,0 +1,106 @@
+<?php
+
+/*
+ * Copyright 2020 Mathieu Piot
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace App\Service;
+
+use Symfony\Component\String\Inflector\EnglishInflector;
+use function Symfony\Component\String\u;
+
+class ArrayNormalizer
+{
+    public function normalize(array $arrayToNormalize): array
+    {
+        // Identify keys
+        $keys = $this->getKeys($arrayToNormalize[0]);
+
+        // Generate the normalized array
+        $normalized = [];
+        foreach ($arrayToNormalize as $values) {
+            foreach ($keys as $key) {
+                $normalized[$key['plural']][] = $values[$key['singular']];
+            }
+        }
+
+        return $normalized;
+    }
+
+    public function group(array $arrayToGroup, string $keyName, string $valueName, array $defaultValue, string $groupBy = 'year'): array
+    {
+        // Generate the normalized array
+        $array = [];
+        foreach ($arrayToGroup as $values) {
+            if (!\array_key_exists($values[$groupBy], $array)) {
+                $array[$values[$groupBy]] = array_merge([
+                    $groupBy => $values[$groupBy],
+                ], $defaultValue);
+            }
+
+            $array[$values[$groupBy]][$values[$keyName]] = $values[$valueName];
+        }
+
+        return array_values($array);
+    }
+
+    public function fillMissing(array $data, int $first, int $last, array $defaultValue, string $field): array
+    {
+        $range = range($first, $last);
+
+        $array = [];
+        foreach ($range as $i) {
+            $subset = $defaultValue;
+            foreach ($data as $key => $value) {
+                if ($i === (int) $value[$field]) {
+                    $subset = $value;
+                }
+            }
+
+            $subset[$field] = $i;
+            $array[] = $subset;
+        }
+
+        return $array;
+    }
+
+    public function formatMonthNames(array $data, string $field = 'months'): array
+    {
+        foreach ($data[$field] as &$month) {
+            $formatter = \IntlDateFormatter::create('fr', \IntlDateFormatter::NONE, \IntlDateFormatter::NONE);
+            $formatter->setPattern('MMMM');
+            $month = $formatter->format((new \DateTime())->setDate(0, $month, 0));
+            $month = u($month)->title();
+        }
+
+        return $data;
+    }
+
+    private function getKeys(array $array): array
+    {
+        $singularKeys = array_keys($array);
+
+        $keys = [];
+        $inflector = new EnglishInflector();
+        foreach ($singularKeys as $singularKey) {
+            $keys[] = [
+                'singular' => $singularKey,
+                'plural' => $inflector->pluralize($singularKey)[0],
+            ];
+        }
+
+        return $keys;
+    }
+}
