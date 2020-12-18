@@ -59,7 +59,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.0",
-            "ref": "a9f2463b9f73efe74482f831f03a204a41328555"
+            "ref": "368794356c1fb634e58b38ad2addb36933f2e73e"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -126,6 +126,9 @@
     "erusev/parsedown": {
         "version": "1.7.4"
     },
+    "fakerphp/faker": {
+        "version": "v1.12.0"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {
@@ -137,9 +140,6 @@
         "files": [
             ".php_cs.dist"
         ]
-    },
-    "fzaninotto/faker": {
-        "version": "v1.9.1"
     },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
@@ -262,18 +262,6 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
-    "sensiolabs/security-checker": {
-        "version": "4.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.0",
-            "ref": "160c9b600564faa1224e8f387d49ef13ceb8b793"
-        },
-        "files": [
-            "config/packages/security_checker.yaml"
-        ]
-    },
     "spomky-labs/otphp": {
         "version": "v10.0.1"
     },
@@ -383,12 +371,12 @@
         "version": "v5.0.2"
     },
     "symfony/framework-bundle": {
-        "version": "5.1",
+        "version": "5.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.1",
-            "ref": "5f0d0fd82ffa3580fe0ce8e3b2d18506ebf37a0e"
+            "version": "5.2",
+            "ref": "6ec87563dcc85cd0c48856dcfbfc29610506d250"
         },
         "files": [
             "config/packages/cache.yaml",
@@ -506,6 +494,9 @@
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.13.1"
+    },
+    "symfony/polyfill-php70": {
+        "version": "v1.20.0"
     },
     "symfony/polyfill-php73": {
         "version": "v1.13.1"
@@ -703,16 +694,16 @@
         "version": "v1.1.1"
     },
     "tijsverkoyen/css-to-inline-styles": {
-        "version": "2.2.2"
+        "version": "2.2.3"
     },
     "twig/cssinliner-extra": {
-        "version": "v3.0.3"
+        "version": "v3.1.1"
     },
     "twig/extra-bundle": {
         "version": "v3.0.1"
     },
     "twig/inky-extra": {
-        "version": "v3.0.3"
+        "version": "v3.1.1"
     },
     "twig/markdown-extra": {
         "version": "v3.0.3"

@@ -23,7 +23,7 @@ use App\Entity\ShellDamageCategory;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
-use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class ShellDamageNotification extends Notification implements EmailNotificationInterface
 {
@@ -37,7 +37,7 @@ class ShellDamageNotification extends Notification implements EmailNotificationI
         parent::__construct('Nouvelle avarie');
     }
 
-    public function asEmailMessage(Recipient $recipient, string $transport = null): ?EmailMessage
+    public function asEmailMessage(RecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $message = EmailMessage::fromNotification($this, $recipient, $transport);
         $message->getMessage()

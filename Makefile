@@ -65,6 +65,7 @@ assets-dev: node_modules                                                        
 assets-build: node_modules                                                                             ## Build the production version of the assets
 	yarn build
 
+
 ##
 ## Tests
 ##---------------------------------------------------------------------------
@@ -94,7 +95,7 @@ lint-container:                                                                 
 	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
-	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --no-interaction -v
+	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --diff --diff-format=udiff --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check
