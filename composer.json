@@ -31,6 +31,7 @@
         "stof/doctrine-extensions-bundle": "^1.5",
         "symfony/asset": "5.2.*",
         "symfony/console": "5.2.*",
+        "symfony/discord-notifier": "5.2.*",
         "symfony/dotenv": "5.2.*",
         "symfony/expression-language": "5.2.*",
         "symfony/flex": "^1.3.1",

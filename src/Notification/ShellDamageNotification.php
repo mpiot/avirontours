@@ -20,12 +20,17 @@ namespace App\Notification;
 
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
+use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
+use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
+use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordFieldEmbedObject;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Notifier\Message\EmailMessage;
+use Symfony\Component\Notifier\Notification\ChatNotificationInterface;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-class ShellDamageNotification extends Notification implements EmailNotificationInterface
+class ShellDamageNotification extends Notification implements ChatNotificationInterface, EmailNotificationInterface
 {
     private $shellDamage;
 
@@ -37,13 +42,47 @@ class ShellDamageNotification extends Notification implements EmailNotificationI
         parent::__construct('Nouvelle avarie');
     }
 
+    public function asChatMessage(RecipientInterface $recipient, string $transport = null): ?ChatMessage
+    {
+        $message = new ChatMessage('');
+        $options = (new DiscordOptions())
+            ->addEmbed((new DiscordEmbed())
+                ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15489088 : 11184810)
+                ->title('Nouvelle avarie')
+                ->addField((new DiscordFieldEmbedObject())
+                    ->name('Bateau')
+                    ->value($this->shellDamage->getShell()->getName())
+                    ->inline(true)
+                )
+                ->addField((new DiscordFieldEmbedObject())
+                    ->name('Catégorie')
+                    ->value($this->shellDamage->getCategory()->getName())
+                    ->inline(true)
+                )
+                ->addField((new DiscordFieldEmbedObject())
+                    ->name('Desription')
+                    ->value($this->shellDamage->getDescription() ?? '-')
+                )
+            )
+        ;
+
+        $message->options($options);
+
+        return $message;
+    }
+
     public function asEmailMessage(RecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
-        $message = EmailMessage::fromNotification($this, $recipient, $transport);
+        $message = EmailMessage::fromNotification($this, $recipient);
         $message->getMessage()
             ->htmlTemplate('emails/shell_damage_notification.html.twig')
             ->context(['shellDamage' => $this->shellDamage]);
 
         return $message;
+    }
+
+    public function getChannels(RecipientInterface $recipient): array
+    {
+        return ['email', 'chat/discord'];
     }
 }
