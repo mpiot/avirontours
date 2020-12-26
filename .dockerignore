@@ -1,0 +1,17 @@
+/.git
+/.github
+config/secrets/prod/prod.decrypt.private.php
+/public/build
+/var
+/vendor
+.dockerignore
+.editorconfig
+.gitignore
+.php-version
+.php_cs.dist
+bump-version.sh
+docker-compose.yml
+Dockerfile
+Makefile
+phpunit.xml.dist
+README.md

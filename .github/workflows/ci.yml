@@ -1,13 +1,13 @@
 name: Continuous Integration
-
 on:
   push:
-    branches: [ master, develop ]
+    branches: [develop,master]
   pull_request:
-    branches: [ master, develop ]
+    branches: [develop,master]
 
 jobs:
   tests:
+    name: Execute tests
     runs-on: ubuntu-latest
 
     env:
@@ -23,9 +23,6 @@ jobs:
           POSTGRES_DB: postgres
         ports:
           - 5432:5432
-
-    strategy:
-      fail-fast: true
 
     steps:
       - name: Checkout
