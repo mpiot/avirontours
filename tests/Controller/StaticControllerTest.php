@@ -30,10 +30,10 @@ class StaticControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testChangelog()
+    public function testReleaseNotes()
     {
         $client = static::createClient();
-        $client->request('GET', '/changelog');
+        $client->request('GET', '/release-notes');
 
         $this->assertResponseIsSuccessful();
     }

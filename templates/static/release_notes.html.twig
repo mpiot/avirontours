@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Release notes{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .timeline-decorator:before {
+            content: "";
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.1));
+            width: 3px;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: calc((65px / 2) + 16px);
+            z-index: -1;
+        }
+    </style>
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Release notes</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Release notes</h1>
+
+    <div>
+        {% for release, data in releases.releases %}
+            <section class="position-relative py-5 px-3">
+                <header class="timeline-decorator d-flex flex-items-center mb-3">
+                    <h2>
+                        <span class="badge badge-info align-self-center mr-2">{{ release }}</span>
+                    </h2>
+                </header>
+
+                <ul class="list-unstyled">
+                    {% for description in data %}
+                        {% set type, description = description|u.after('[').before(']'), description|u.after(']')|trim %}
+                        <li class="d-flex flex-items-start mb-2">
+                            <div class="badge align-self-start text-uppercase d-inline-flex mr-2 ml-md-5 ml-3
+                                {{-
+                                    'New' == type or 'Added' == type ? ' badge-success' :
+                                    'Removed' == type ? ' badge-danger' :
+                                    ' badge-primary'
+                                -}}
+                            ">
+                                {{ type }}</div>
+                            <div>{{ description }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% endfor %}
+    </div>
+{% endblock %}

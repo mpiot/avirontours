@@ -229,7 +229,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $form = $crawler->selectButton('S\'inscrire')->form([
             'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
             'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'renew[medicalCertificate][date]' => '2020-01-01',
+            'renew[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'renew[agreeSwim]' => 1,
             'renew[federationEmailAllowed]' => 1,
         ]);
@@ -244,7 +244,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertCount(1, $user->getLicenses());
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
-        $this->assertSame('2020-01-01', $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
+        $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
     }
 

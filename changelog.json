@@ -1,0 +1,14 @@
+{
+  "releases": {
+    "1.0.0": [
+      "[New] Logbook",
+      "[New] Logbook statistics",
+      "[New] Shells management",
+      "[New] Shell damages management",
+      "[New] Season / Licenses management",
+      "[New] Members registration",
+      "[New] Members renew",
+      "[New] Sports profile"
+    ]
+  }
+}

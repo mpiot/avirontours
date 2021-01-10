@@ -33,16 +33,16 @@ class StaticController extends AbstractController
     }
 
     /**
-     * @Route("/changelog", name="changelog")
+     * @Route("/release-notes", name="release_notes")
      */
-    public function changelog(string $projectDir)
+    public function releaseNotes(string $projectDir)
     {
         $finder = new Finder();
-        $finder->in($projectDir)->files()->depth('== 0')->name('CHANGELOG.md');
-        $changelog = array_values(iterator_to_array($finder))[0]->getContents();
+        $finder->in($projectDir)->files()->depth('== 0')->name('changelog.json');
+        $releases = json_decode(array_values(iterator_to_array($finder))[0]->getContents(), true);
 
-        return $this->render('static/changelog.html.twig', [
-            'changelog' => $changelog,
+        return $this->render('static/release_notes.html.twig', [
+            'releases' => $releases,
         ]);
     }
 }
