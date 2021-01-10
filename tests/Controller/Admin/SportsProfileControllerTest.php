@@ -83,13 +83,13 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Sauver', [
-            'physiology[maximumHeartRate]' => 200,
             'physiology[maximumOxygenConsumption]' => 75.3,
-            'physiology[lightAerobicHeartRate]' => 120,
-            'physiology[heavyAerobicHeartRate]' => 150,
-            'physiology[anaerobicThresholdHeartRate]' => 170,
-            'physiology[oxygenTransportationHeartRate]' => 185,
-            'physiology[anaerobicHeartRate]' => 200,
+            'physiology[lightAerobicHeartRateMin]' => 120,
+            'physiology[heavyAerobicHeartRateMin]' => 150,
+            'physiology[anaerobicThresholdHeartRateMin]' => 170,
+            'physiology[oxygenTransportationHeartRateMin]' => 185,
+            'physiology[anaerobicHeartRateMin]' => 200,
+            'physiology[maximumHeartRate]' => 215,
         ]);
 
         $this->assertResponseRedirects();
@@ -97,13 +97,13 @@ class SportsProfileControllerTest extends AppWebTestCase
         $user->refresh();
 
         $this->assertNotNull($user->getPhysiology());
-        $this->assertSame(200, $user->getPhysiology()->getMaximumHeartRate());
         $this->assertSame(75.3, $user->getPhysiology()->getMaximumOxygenConsumption());
-        $this->assertSame(120, $user->getPhysiology()->getLightAerobicHeartRate());
-        $this->assertSame(150, $user->getPhysiology()->getHeavyAerobicHeartRate());
-        $this->assertSame(170, $user->getPhysiology()->getAnaerobicThresholdHeartRate());
-        $this->assertSame(185, $user->getPhysiology()->getOxygenTransportationHeartRate());
-        $this->assertSame(200, $user->getPhysiology()->getAnaerobicHeartRate());
+        $this->assertSame(120, $user->getPhysiology()->getLightAerobicHeartRateMin());
+        $this->assertSame(150, $user->getPhysiology()->getHeavyAerobicHeartRateMin());
+        $this->assertSame(170, $user->getPhysiology()->getAnaerobicThresholdHeartRateMin());
+        $this->assertSame(185, $user->getPhysiology()->getOxygenTransportationHeartRateMin());
+        $this->assertSame(200, $user->getPhysiology()->getAnaerobicHeartRateMin());
+        $this->assertSame(215, $user->getPhysiology()->getMaximumHeartRate());
     }
 
     public function testNewAnatomy()

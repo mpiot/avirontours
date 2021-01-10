@@ -35,41 +35,47 @@ class Physiology
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\LessThan(propertyPath="heavyAerobicHeartRate")
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Assert\LessThan(propertyPath="heavyAerobicHeartRateMin")
      */
-    private $lightAerobicHeartRate;
+    private $lightAerobicHeartRateMin;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\GreaterThan(propertyPath="lightAerobicHeartRate")
-     * @Assert\LessThan(propertyPath="anaerobicThresholdHeartRate")
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Assert\GreaterThan(propertyPath="lightAerobicHeartRateMin")
+     * @Assert\LessThan(propertyPath="anaerobicThresholdHeartRateMin")
      */
-    private $heavyAerobicHeartRate;
+    private $heavyAerobicHeartRateMin;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\GreaterThan(propertyPath="heavyAerobicHeartRate")
-     * @Assert\LessThan(propertyPath="oxygenTransportationHeartRate")
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Assert\GreaterThan(propertyPath="heavyAerobicHeartRateMin")
+     * @Assert\LessThan(propertyPath="oxygenTransportationHeartRateMin")
      */
-    private $anaerobicThresholdHeartRate;
+    private $anaerobicThresholdHeartRateMin;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\GreaterThan(propertyPath="anaerobicThresholdHeartRate")
-     * @Assert\LessThan(propertyPath="anaerobicHeartRate")
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Assert\GreaterThan(propertyPath="anaerobicThresholdHeartRateMin")
+     * @Assert\LessThan(propertyPath="anaerobicHeartRateMin")
      */
-    private $oxygenTransportationHeartRate;
+    private $oxygenTransportationHeartRateMin;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @Assert\GreaterThan(propertyPath="oxygenTransportationHeartRate")
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Assert\GreaterThan(propertyPath="oxygenTransportationHeartRateMin")
      * @Assert\LessThanOrEqual(propertyPath="maximumHeartRate")
      */
-    private $anaerobicHeartRate;
+    private $anaerobicHeartRateMin;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      * @Assert\GreaterThanOrEqual(100)
      */
     private $maximumHeartRate;
@@ -89,62 +95,62 @@ class Physiology
         return $this->id;
     }
 
-    public function getLightAerobicHeartRate(): ?int
+    public function getLightAerobicHeartRateMin(): ?int
     {
-        return $this->lightAerobicHeartRate;
+        return $this->lightAerobicHeartRateMin;
     }
 
-    public function setLightAerobicHeartRate(?int $lightAerobicHeartRate): self
+    public function setLightAerobicHeartRateMin(?int $lightAerobicHeartRateMin): self
     {
-        $this->lightAerobicHeartRate = $lightAerobicHeartRate;
+        $this->lightAerobicHeartRateMin = $lightAerobicHeartRateMin;
 
         return $this;
     }
 
-    public function getHeavyAerobicHeartRate(): ?int
+    public function getHeavyAerobicHeartRateMin(): ?int
     {
-        return $this->heavyAerobicHeartRate;
+        return $this->heavyAerobicHeartRateMin;
     }
 
-    public function setHeavyAerobicHeartRate(?int $heavyAerobicHeartRate): self
+    public function setHeavyAerobicHeartRateMin(?int $heavyAerobicHeartRateMin): self
     {
-        $this->heavyAerobicHeartRate = $heavyAerobicHeartRate;
+        $this->heavyAerobicHeartRateMin = $heavyAerobicHeartRateMin;
 
         return $this;
     }
 
-    public function getAnaerobicThresholdHeartRate(): ?int
+    public function getAnaerobicThresholdHeartRateMin(): ?int
     {
-        return $this->anaerobicThresholdHeartRate;
+        return $this->anaerobicThresholdHeartRateMin;
     }
 
-    public function setAnaerobicThresholdHeartRate(?int $anaerobicThresholdHeartRate): self
+    public function setAnaerobicThresholdHeartRateMin(?int $anaerobicThresholdHeartRateMin): self
     {
-        $this->anaerobicThresholdHeartRate = $anaerobicThresholdHeartRate;
+        $this->anaerobicThresholdHeartRateMin = $anaerobicThresholdHeartRateMin;
 
         return $this;
     }
 
-    public function getOxygenTransportationHeartRate(): ?int
+    public function getOxygenTransportationHeartRateMin(): ?int
     {
-        return $this->oxygenTransportationHeartRate;
+        return $this->oxygenTransportationHeartRateMin;
     }
 
-    public function setOxygenTransportationHeartRate(?int $oxygenTransportationHeartRate): self
+    public function setOxygenTransportationHeartRateMin(?int $oxygenTransportationHeartRateMin): self
     {
-        $this->oxygenTransportationHeartRate = $oxygenTransportationHeartRate;
+        $this->oxygenTransportationHeartRateMin = $oxygenTransportationHeartRateMin;
 
         return $this;
     }
 
-    public function getAnaerobicHeartRate(): ?int
+    public function getAnaerobicHeartRateMin(): ?int
     {
-        return $this->anaerobicHeartRate;
+        return $this->anaerobicHeartRateMin;
     }
 
-    public function setAnaerobicHeartRate(?int $anaerobicHeartRate): self
+    public function setAnaerobicHeartRateMin(?int $anaerobicHeartRateMin): self
     {
-        $this->anaerobicHeartRate = $anaerobicHeartRate;
+        $this->anaerobicHeartRateMin = $anaerobicHeartRateMin;
 
         return $this;
     }
@@ -171,5 +177,30 @@ class Physiology
         $this->maximumOxygenConsumption = $maximumOxygenConsumption;
 
         return $this;
+    }
+
+    public function getLightAerobicHeartRateRange(): ?string
+    {
+        return $this->getLightAerobicHeartRateMin().' - '.($this->getHeavyAerobicHeartRateMin() - 1);
+    }
+
+    public function getHeavyAerobicHeartRateRange(): ?string
+    {
+        return $this->getHeavyAerobicHeartRateMin().' - '.($this->getAnaerobicThresholdHeartRateMin() - 1);
+    }
+
+    public function getAnaerobicThresholdHeartRateRange(): ?string
+    {
+        return $this->getAnaerobicThresholdHeartRateMin().' - '.($this->getOxygenTransportationHeartRateMin() - 1);
+    }
+
+    public function getOxygenTransportationHeartRateRange(): ?string
+    {
+        return $this->getOxygenTransportationHeartRateMin().' - '.($this->getAnaerobicHeartRateMin() - 1);
+    }
+
+    public function getAnaerobicHeartRateRange(): ?string
+    {
+        return $this->getAnaerobicHeartRateMin().' - '.$this->getMaximumHeartRate();
     }
 }

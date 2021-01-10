@@ -16,16 +16,16 @@
     {{ form_start(form) }}
         <div class="row">
             <div class="col-sm-6">
+                {{ form_row(form.lightAerobicHeartRateMin) }}
+                {{ form_row(form.heavyAerobicHeartRateMin) }}
+                {{ form_row(form.anaerobicThresholdHeartRateMin) }}
+                {{ form_row(form.oxygenTransportationHeartRateMin) }}
+                {{ form_row(form.anaerobicHeartRateMin) }}
                 {{ form_row(form.maximumHeartRate) }}
-                {{ form_row(form.maximumOxygenConsumption) }}
             </div>
 
             <div class="col-sm-6">
-                {{ form_row(form.lightAerobicHeartRate) }}
-                {{ form_row(form.heavyAerobicHeartRate) }}
-                {{ form_row(form.anaerobicThresholdHeartRate) }}
-                {{ form_row(form.oxygenTransportationHeartRate) }}
-                {{ form_row(form.anaerobicHeartRate) }}
+                {{ form_row(form.maximumOxygenConsumption) }}
             </div>
         </div>
 

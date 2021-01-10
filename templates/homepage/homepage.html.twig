@@ -21,16 +21,24 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between">
+                            B0 - UT2
+                            <span>{{ app.user.physiology.lightAerobicHeartRateRange ?? '-' }} bpm</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
                             B1 - UT1
-                            <span>{{ app.user.physiology.heavyAerobicHeartRate ?? '-' }} bpm</span>
+                            <span>{{ app.user.physiology.heavyAerobicHeartRateRange ?? '-' }} bpm</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             B2 - AT
-                            <span>{{ app.user.physiology.anaerobicThresholdHeartRate ?? '-' }} bpm</span>
+                            <span>{{ app.user.physiology.anaerobicThresholdHeartRateRange ?? '-' }} bpm</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
-                            FCmax
-                            <span>{{ app.user.physiology.maximumHeartRate ?? '-' }} bpm</span>
+                            B3 - TR
+                            <span>{{ app.user.physiology.oxygenTransportationHeartRateRange ?? '-' }} bpm</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            B5 - AN
+                            <span>{{ app.user.physiology.anaerobicHeartRateRange ?? '-' }} bpm</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             VO2max

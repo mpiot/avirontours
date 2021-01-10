@@ -53,7 +53,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration_form[medicalCertificate][date]' => '2020-01-01',
+            'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'registration_form[agreeSwim]' => 1,
             'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
@@ -167,7 +167,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration_form[medicalCertificate][date]' => '2020-01-01',
+            'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');

@@ -30,27 +30,27 @@ class PhysiologyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('lightAerobicHeartRate', IntegerType::class, [
+            ->add('lightAerobicHeartRateMin', IntegerType::class, [
                 'label' => 'B0 - UT2',
                 'help' => '65-70% FCmax',
                 'required' => false,
             ])
-            ->add('heavyAerobicHeartRate', IntegerType::class, [
+            ->add('heavyAerobicHeartRateMin', IntegerType::class, [
                 'label' => 'B1 - UT1',
                 'help' => '70-80% FCmax',
                 'required' => false,
             ])
-            ->add('anaerobicThresholdHeartRate', IntegerType::class, [
+            ->add('anaerobicThresholdHeartRateMin', IntegerType::class, [
                 'label' => 'B2 - AT',
                 'help' => '80-85% FCmax',
                 'required' => false,
             ])
-            ->add('oxygenTransportationHeartRate', IntegerType::class, [
+            ->add('oxygenTransportationHeartRateMin', IntegerType::class, [
                 'label' => 'B3 - TR',
                 'help' => '85-95% FCmax',
                 'required' => false,
             ])
-            ->add('anaerobicHeartRate', IntegerType::class, [
+            ->add('anaerobicHeartRateMin', IntegerType::class, [
                 'label' => 'B5 - AN',
                 'help' => '95-100% FCmax',
                 'required' => false,
