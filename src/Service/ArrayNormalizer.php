@@ -56,20 +56,26 @@ class ArrayNormalizer
         return array_values($array);
     }
 
-    public function fillMissing(array $data, int $first, int $last, array $defaultValue, string $field): array
+    public function fillMissingMonths(array $data, \DateTime $start, \DateTime $end, array $defaultValue, string $fieldName = 'month'): array
     {
-        $range = range($first, $last);
+        $start->modify('first day of this month');
+        $end->modify('first day of next month');
+
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period = new \DatePeriod($start, $interval, $end);
 
         $array = [];
-        foreach ($range as $i) {
+        foreach ($period as $date) {
+            $monthNumber = (int) $date->format('n');
+
             $subset = $defaultValue;
             foreach ($data as $key => $value) {
-                if ($i === (int) $value[$field]) {
+                if ($monthNumber === (int) $value[$fieldName]) {
                     $subset = $value;
                 }
             }
 
-            $subset[$field] = $i;
+            $subset[$fieldName] = $monthNumber;
             $array[] = $subset;
         }
 

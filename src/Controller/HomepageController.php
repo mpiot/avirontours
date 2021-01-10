@@ -35,7 +35,7 @@ class HomepageController extends AbstractController
     public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
     {
         $count = $repository->findStatsByMonth($this->getUser());
-        $count = $normalizer->fillMissing($count, (new \DateTime('-11 months'))->format('m'), (new \DateTime())->format('m'), ['distance' => 0, 'session' => 0], 'month');
+        $count = $normalizer->fillMissingMonths($count, (new \DateTime('-11 months')), (new \DateTime()), ['distance' => 0, 'session' => 0]);
         $count = $normalizer->normalize($count);
         $count = $normalizer->formatMonthNames($count);
 
@@ -45,7 +45,7 @@ class HomepageController extends AbstractController
             'datasets' => [
                 [
                     'label' => 'Distances',
-                    'yAxisId' => 'distances',
+                    'yAxisID' => 'distances',
                     'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
                     'borderColor' => 'rgba(54, 162, 235, 1)',
                     'borderWidth' => 1,
@@ -53,7 +53,7 @@ class HomepageController extends AbstractController
                 ],
                 [
                     'label' => 'Sessions',
-                    'yAxisId' => 'sessions',
+                    'yAxisID' => 'sessions',
                     'backgroundColor' => 'rgb(235,54,54, 0.6)',
                     'borderColor' => 'rgb(235,54,54, 1)',
                     'borderWidth' => 1,
