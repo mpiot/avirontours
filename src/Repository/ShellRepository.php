@@ -84,7 +84,7 @@ class ShellRepository extends ServiceEntityRepository
     public function findDamagedShells(?string $priority = null, array $shells = null)
     {
         $qb = $this->createQueryBuilder('shell')
-            ->innerJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')
+            ->innerJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')
         ;
 
         if (null !== $priority) {

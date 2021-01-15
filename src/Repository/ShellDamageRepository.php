@@ -47,7 +47,7 @@ class ShellDamageRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('shell_damage')
             ->addSelect('(
-                CASE WHEN shell_damage.repairAt IS NOT NULL THEN 3
+                CASE WHEN shell_damage.repairEndAt IS NOT NULL THEN 3
                      WHEN category.priority = 1 THEN 2
                      ELSE 1
                 END) AS HIDDEN mainSort'

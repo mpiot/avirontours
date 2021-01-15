@@ -55,7 +55,7 @@ class LogbookEntryType extends AbstractType
                     return $er->createQueryBuilder('shell')
                         ->select('shell')
                         ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
-                        ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairAt is NULL')->addSelect('shell_damages')
+                        ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
                         ->leftJoin('shell_damages.category', 'category')->addSelect('category')
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
                         ;

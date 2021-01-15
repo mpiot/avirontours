@@ -63,7 +63,7 @@ class ShellDamage
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $repairAt;
+    private $repairEndAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
@@ -130,14 +130,14 @@ class ShellDamage
         return $this;
     }
 
-    public function getRepairAt(): ?\DateTimeInterface
+    public function getRepairEndAt(): ?\DateTimeInterface
     {
-        return $this->repairAt;
+        return $this->repairEndAt;
     }
 
-    public function setRepairAt(?\DateTimeInterface $repairAt): self
+    public function setRepairEndAt(?\DateTimeInterface $repairEndAt): self
     {
-        $this->repairAt = $repairAt;
+        $this->repairEndAt = $repairEndAt;
 
         return $this;
     }

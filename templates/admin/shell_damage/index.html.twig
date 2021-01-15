@@ -25,7 +25,8 @@
                 <th>Catégorie</th>
                 <th>Description</th>
                 <th>Crée le</th>
-                <th>Réparé le</th>
+                <th>Début réparation</th>
+                <th>Fin réparation</th>
                 {% if is_granted('ROLE_ADMIN') %}
                     <th></th>
                 {% endif %}
@@ -35,7 +36,7 @@
             {% for shell_damage in shell_damages %}
                 <tr>
                     <td>
-                        {% if shell_damage.repairAt %}
+                        {% if shell_damage.repairEndAt %}
                             <span class="badge badge-success">Terminé</span>
                         {% elseif constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage.category.priority  %}
                             <span class="badge badge-danger">Importante</span>
@@ -45,9 +46,10 @@
                     </td>
                     <td>{{ shell_damage.shell.fullName }}</td>
                     <td>{{ shell_damage.category.name }}</td>
-                    <td>{{ shell_damage.description|nl2br }}</td>
+                    <td title="{{ shell_damage.description }}">{{ shell_damage.description|u.truncate(30, '...') }}</td>
                     <td>{{ shell_damage.createdAt|date('d/m/Y') }}</td>
-                    <td>{{ shell_damage.repairAt ? shell_damage.repairAt|date('d/m/Y') }}</td>
+                    <td>{{ shell_damage.repairStartAt ? shell_damage.repairStartAt|date('d/m/Y') }}</td>
+                    <td>{{ shell_damage.repairEndAt ? shell_damage.repairEndAt|date('d/m/Y') }}</td>
                     {% if is_granted('ROLE_ADMIN') %}
                         <td class="text-right">
                             <a class="btn btn-outline-warning btn-sm rounded-pill"
