@@ -93,7 +93,7 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text"><span class="fa fa-search"></span></div>
                                 </div>
-                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.alnum('q') }}">
+                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
                             </div>
                         </div>
                     </div>
