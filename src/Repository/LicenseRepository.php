@@ -117,6 +117,69 @@ class LicenseRepository extends ServiceEntityRepository
         );
     }
 
+    public function findStatisticsBySeason(Season $season): array
+    {
+        $em = $this->getEntityManager();
+
+        $result = $em->createQuery(/* @lang DQL */ '
+                SELECT
+                    COUNT(license.id) as number,
+                    (CASE
+                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN \'waitPaymentValidation\'
+                        WHEN JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN \'waitMedicalCertificateValidation\'
+                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' THEN \'waitValidation\'
+                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN \'medicalCertificateRejected\'
+                        WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN \'validated\'
+                        ELSE \'waitAll\'
+                    END) AS state
+                FROM App\Entity\License license
+                INNER JOIN license.seasonCategory season_category
+                INNER JOIN season_category.season season
+                WHERE season = :season
+                GROUP BY state
+            ')
+            ->setParameters([
+                'season' => $season,
+            ])
+            ->getArrayResult()
+        ;
+
+        $statistics = [
+            'waitPaymentValidation' => 0,
+            'waitMedicalCertificateValidation' => 0,
+            'waitValidation' => 0,
+            'medicalCertificateRejected' => 0,
+            'validated' => 0,
+            'waitAll' => 0,
+            'total' => 0,
+        ];
+        foreach ($result as $value) {
+            $statistics[$value['state']] = $value['number'];
+            $statistics['total'] += $value['number'];
+        }
+
+        return $statistics;
+    }
+
+    public function countBySeason(Season $season): int
+    {
+        $em = $this->getEntityManager();
+
+        return $em->createQuery(/* @lang DQL */ '
+                SELECT
+                    COUNT(license.id) as number
+                FROM App\Entity\License license
+                INNER JOIN license.seasonCategory season_category
+                INNER JOIN season_category.season season
+                WHERE season = :season
+            ')
+            ->setParameters([
+                'season' => $season,
+            ])
+            ->getSingleScalarResult()
+        ;
+    }
+
     public function findOneForValidation(Season $season): ?License
     {
         $query = $this->createQueryBuilder('license')

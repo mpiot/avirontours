@@ -80,8 +80,9 @@ class SeasonController extends AbstractController
             'licenses' => $licenseRepository->findBySeasonPaginated(
                 $season,
                 $request->query->get('q'),
-                $request->query->getInt('page', 1)
+                $request->query->getInt('page', 1),
             ),
+            'statistics' => $licenseRepository->findStatisticsBySeason($season),
         ]);
     }
 

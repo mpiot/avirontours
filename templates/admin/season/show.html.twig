@@ -27,13 +27,13 @@
         </div>
     </div>
 
-    <div class="accordion mb-3" id="accordionExample">
+    <div class="accordion mb-3" id="categories-list">
         <div class="card">
             <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
                 <span class="h5">Catégories</span>
             </div>
 
-            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories-list">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -54,6 +54,59 @@
                                     <td></td>
                                 </tr>
                             {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion mb-3" id="statistics">
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="headingTwo">
+                <span class="h5">Statistiques</span>
+            </div>
+
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#statistics">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Nombre</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Attente de paiement et certificat médical</td>
+                                    <td>{{ statistics.waitAll }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de paiement</td>
+                                    <td>{{ statistics.waitPaymentValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de certificat médical</td>
+                                    <td>{{ statistics.waitMedicalCertificateValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de validation fédéral</td>
+                                    <td>{{ statistics.waitValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Certificat médical rejeté</td>
+                                    <td>{{ statistics.medicalCertificateRejected }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Validé</td>
+                                    <td>{{ statistics.validated }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Licences</td>
+                                    <td>{{ statistics.total }}</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
