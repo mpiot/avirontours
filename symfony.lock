@@ -8,6 +8,9 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.1"
+    },
     "composer/semver": {
         "version": "3.2.4"
     },
@@ -130,16 +133,19 @@
         "version": "v1.12.0"
     },
     "friendsofphp/php-cs-fixer": {
-        "version": "2.2",
+        "version": "2.16",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.2",
-            "ref": "cc05ab6abf6894bddb9bbd6a252459010ebe040b"
+            "version": "2.16",
+            "ref": "c1947bad147704aeaf0285745f0baae927a58959"
         },
         "files": [
             ".php_cs.dist"
         ]
+    },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
     },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.39"
@@ -197,9 +203,6 @@
     },
     "ocramius/package-versions": {
         "version": "1.5.1"
-    },
-    "ocramius/proxy-manager": {
-        "version": "2.2.3"
     },
     "paragonie/constant_time_encoding": {
         "version": "v2.3.0"
@@ -475,12 +478,12 @@
         "version": "v1.0.7"
     },
     "symfony/phpunit-bridge": {
-        "version": "4.3",
+        "version": "5.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "4.3",
-            "ref": "6d0e35f749d5f4bfe1f011762875275cd3f9874f"
+            "version": "5.1",
+            "ref": "cb82a2355ec62fef0e7028ac969fe86fa722feb8"
         },
         "files": [
             ".env.test",
@@ -657,12 +660,12 @@
         ]
     },
     "symfony/webpack-encore-bundle": {
-        "version": "1.6",
+        "version": "1.9",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "1.6",
-            "ref": "f362ed8e8aa99a8cb216e6bdb2ac833dfb7643dd"
+            "version": "1.9",
+            "ref": "579d8de06df2ceb34d39e84e84c0c051b9b5ac68"
         },
         "files": [
             "assets/app.js",
@@ -740,9 +743,6 @@
         "files": [
             "config/packages/vich_uploader.yaml"
         ]
-    },
-    "webimpress/safe-writer": {
-        "version": "2.0.1"
     },
     "webmozart/assert": {
         "version": "1.6.0"
