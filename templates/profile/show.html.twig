@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/base.html.twig' %}
 
 {% block title %}Mon profil{% endblock %}
 
@@ -7,30 +7,27 @@
     <li class="breadcrumb-item active">Mon profil</li>
 {% endblock %}
 
-{% block body %}
-    <div class="d-flex my-3">
-        <div class="d-none d-sm-block mr-3">
-            <span class="avatar avatar-medium">{{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}</span>
-        </div>
-        <div>
-            <h3>{{ user.fullName }} <small>{{ user.email }}</small></h3>
-
-            <div class="btn-group btn-group-sm" role="group">
-                <a class="btn btn-secondary" href="{{ path('profile_edit_password') }}">
-                    <span class="fas fa-key" aria-hidden="true"></span> Modifier mon mot de passe
-                </a>
-
-                <a class="btn btn-warning" href="{{ path('profile_edit') }}">
-                    <span class="fas fa-pencil-alt" aria-hidden="true"></span> Modifier mon profil
-                </a>
-            </div>
-        </div>
-    </div>
+{% block main %}
+    <h2>Mon profil</h2>
+    <ul class="list-group mb-3">
+        <li class="list-group-item">
+            Nom: {{ app.user.lastName }}
+        </li>
+        <li class="list-group-item">
+            Prénom: {{ app.user.firstName }}
+        </li>
+        <li class="list-group-item">
+            Email: {{ app.user.email ?? '-' }}
+        </li>
+        <li class="list-group-item">
+            Téléphone: {{ app.user.phoneNumber ?? '-' }}
+        </li>
+    </ul>
 
     <h2>Mes licences</h2>
-
     {% if 1 == renew_season.count %}
         {% for season in renew_season %}
+            <h3>Inscriptions pour la saison {{ season.name }}</h3>
             <div class="card-deck mb-3 text-center">
                 {% for seasonCategory in season.seasonCategories %}
                     <div class="card mb-4 shadow-sm">
@@ -47,33 +44,37 @@
                             <a class="btn btn-lg btn-block btn-outline-primary mt-auto" href="{{ path('renew', {'slug': seasonCategory.slug}) }}">S'inscrire</a>
                         </div>
                     </div>
+
+                    <div class="w-100 d-block d-md-none"><!-- wrap every 1 on xs, sm --></div>
+                    {% if 0 == loop.index % 2 %}
+                        <div class="w-100 d-none d-md-block d-xl-none"><!-- wrap every 2 on md, lg --></div>
+                    {% elseif 0 == loop.index % 3 %}
+                        <div class="w-100 d-none d-xl-block"><!-- wrap every 3 on xl--></div>
+                    {% endif %}
                 {% endfor %}
             </div>
         {% endfor %}
+        <hr>
     {% endif %}
 
-    <div class="row">
-        <div class="col-lg-6">
-            {% for license in user.licenses %}
-                <div class="card mt-3">
-                    <div class="card-header d-flex">
-                        <div class="align-self-center">
-                            Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
-                        </div>
-
-                        <div class="ml-auto align-self-center d-flex flex-column">
-                            {% for place in workflow_marked_places(license)  -%}
-                                <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
-                                    {{- workflow_metadata(license, 'title', place) -}}
-                                </span>
-                            {%- endfor %}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}
-                    </div>
+    {% for license in user.licenses %}
+        <div class="card mb-3">
+            <div class="card-header d-flex">
+                <div class="align-self-center">
+                    Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
                 </div>
-            {% endfor %}
+
+                <div class="ml-auto align-self-center d-flex flex-column">
+                    {% for place in workflow_marked_places(license)  -%}
+                        <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
+                            {{- workflow_metadata(license, 'title', place) -}}
+                        </span>
+                    {%- endfor %}
+                </div>
+            </div>
+            <div class="card-body">
+                {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}
+            </div>
         </div>
-    </div>
+    {% endfor %}
 {% endblock %}

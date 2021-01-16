@@ -71,7 +71,6 @@ class ProfileController extends AbstractController
 
     /**
      * @Route("/edit-password", name="profile_edit_password", methods="GET|POST")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function editPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {

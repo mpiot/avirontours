@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'profile/base.html.twig' %}
 
 {% block title %}Modifier mon profil{% endblock %}
 
@@ -8,7 +8,7 @@
     <li class="breadcrumb-item active">Modifier mon profil</li>
 {% endblock %}
 
-{% block body %}
+{% block main %}
     <h1>Modifier mon profil</h1>
 
     {{ include('profile/_form.html.twig', {'button_label': 'Modifier'}) }}
