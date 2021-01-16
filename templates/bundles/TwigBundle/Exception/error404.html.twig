@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Erreur 404 - Page introuvale</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="icon" type="image/png" href="{{ asset('build/images/favicon.png')}}">
+        {{ encore_entry_link_tags('app') }}
+    </head>
+
+    <body>
+        <div class="main-container fullscreen">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-5 col-lg-6 col-md-7">
+                        <div class="text-center">
+                            <h1 class="display-1 text-primary">4&#x1f635;4</h1>
+                            <p>
+                                La page que vous cherchez n'a pas été trouvé.<br>
+                                <a href="{{ path('homepage') }}">Cliquez ici pour aller sur la page d'accueil</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
