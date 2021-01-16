@@ -47,7 +47,7 @@ class SportsProfileController extends AbstractController
     {
         return $this->render('admin/sports_profile/index.html.twig', [
             'users' => $userRepository->findPaginated(
-                $request->query->getAlnum('q'),
+                $request->query->get('q'),
                 $request->query->getInt('page', 1)
             ),
         ]);
