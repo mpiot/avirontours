@@ -18,6 +18,10 @@
 
 namespace App\Tests\Controller;
 
+use App\Factory\PhysicalQualitiesFactory;
+use App\Factory\PhysiologyFactory;
+use App\Factory\UserFactory;
+use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
 
 class HomepageControllerTest extends AppWebTestCase
@@ -31,6 +35,21 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
 
         $this->logIn($client, 'ROLE_USER');
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testIndexWithStats()
+    {
+        $user = UserFactory::new()->create();
+        PhysicalQualitiesFactory::new()->create(['user' => $user]);
+        PhysiologyFactory::new()->create(['user' => $user]);
+        WorkoutMaximumLoadFactory::new()->create(['user' => $user]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user->object());
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
