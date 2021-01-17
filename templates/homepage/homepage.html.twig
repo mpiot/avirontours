@@ -2,19 +2,32 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-xl-6">
+        <div class="col-xl-6 mb-3">
             <div class="card">
                 <div class="card-header">
                     <span class="h3">Mes sorties</span>
                 </div>
                 <div class="card-body">
-                    {{ render_chart(chart) }}
+                    {{ render_chart(logbookChart) }}
                 </div>
             </div>
         </div>
 
+        {% if app.user.physicalQualities is not null %}
+            <div class="col-xl-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="h3">Mes qualités physiques</span>
+                    </div>
+                    <div class="card-body">
+                        {{ render_chart(physicalQualitiesChart) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         {% if app.user.physiology is not null %}
-            <div class="col-xl-6 mt-xl-0 mt-3">
+            <div class="col-xl-6 mb-3">
                 <div class="card">
                     <div class="card-header">
                         <span class="h3">Ma physiologie</span>
@@ -45,6 +58,66 @@
                             <span>{{ app.user.physiology.maximumOxygenConsumption ?? '-' }} ml/min/kg</span>
                         </li>
                     </ul>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if app.user.workoutMaximumLoad is not null %}
+            <div class="col-xl-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="h3">1RM</span>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Exercice</th>
+                                <th scope="col">100%</th>
+                                <th scope="col">90%</th>
+                                <th scope="col">80%</th>
+                                <th scope="col">70%</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">Développé couché</th>
+                                <td>{{ app.user.workoutMaximumLoad.benchPress }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.benchPress * 0.9 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.benchPress * 0.8 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.benchPress * 0.7 }} Kg</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tirade rowing</th>
+                                <td>{{ app.user.workoutMaximumLoad.rowingTirage }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.rowingTirage * 0.9 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.rowingTirage * 0.8 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.rowingTirage * 0.7 }} Kg</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Développé couché</th>
+                                <td>{{ app.user.workoutMaximumLoad.squat }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.squat * 0.9 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.squat * 0.8 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.squat * 0.7 }} Kg</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Développé couché</th>
+                                <td>{{ app.user.workoutMaximumLoad.legPress }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.legPress * 0.9 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.legPress * 0.8 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.legPress * 0.7 }} Kg</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Développé couché</th>
+                                <td>{{ app.user.workoutMaximumLoad.clean }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.clean * 0.9 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.clean * 0.8 }} Kg</td>
+                                <td>{{ app.user.workoutMaximumLoad.clean * 0.7 }} Kg</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         {% endif %}

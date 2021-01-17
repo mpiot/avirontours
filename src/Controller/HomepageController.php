@@ -18,6 +18,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PhysicalQualities;
 use App\Repository\LogbookEntryRepository;
 use App\Service\ArrayNormalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -34,14 +35,15 @@ class HomepageController extends AbstractController
      */
     public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
     {
-        $count = $repository->findStatsByMonth($this->getUser());
-        $count = $normalizer->fillMissingMonths($count, (new \DateTime('-11 months')), (new \DateTime()), ['distance' => 0, 'session' => 0]);
-        $count = $normalizer->normalize($count);
-        $count = $normalizer->formatMonthNames($count);
+        // Logbook chart
+        $logbookCount = $repository->findStatsByMonth($this->getUser());
+        $logbookCount = $normalizer->fillMissingMonths($logbookCount, (new \DateTime('-11 months')), (new \DateTime()), ['distance' => 0, 'session' => 0]);
+        $logbookCount = $normalizer->normalize($logbookCount);
+        $logbookCount = $normalizer->formatMonthNames($logbookCount);
 
-        $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
-        $chart->setData([
-            'labels' => $count['months'],
+        $logbookChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $logbookChart->setData([
+            'labels' => $logbookCount['months'],
             'datasets' => [
                 [
                     'label' => 'Distances',
@@ -49,7 +51,7 @@ class HomepageController extends AbstractController
                     'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
                     'borderColor' => 'rgba(54, 162, 235, 1)',
                     'borderWidth' => 1,
-                    'data' => $count['distances'],
+                    'data' => $logbookCount['distances'],
                 ],
                 [
                     'label' => 'Sessions',
@@ -57,11 +59,11 @@ class HomepageController extends AbstractController
                     'backgroundColor' => 'rgb(235,54,54, 0.6)',
                     'borderColor' => 'rgb(235,54,54, 1)',
                     'borderWidth' => 1,
-                    'data' => $count['sessions'],
+                    'data' => $logbookCount['sessions'],
                 ],
             ],
         ]);
-        $chart->setOptions([
+        $logbookChart->setOptions([
             'scales' => [
                 'yAxes' => [
                     [
@@ -86,8 +88,46 @@ class HomepageController extends AbstractController
             ],
         ]);
 
+        // Physical qualities chart
+        /** @var PhysicalQualities $physicalQualities */
+        $physicalQualities = $this->getUser()->getPhysicalQualities();
+        $physicalQualitiesChart = $chartBuilder->createChart(Chart::TYPE_RADAR);
+        $physicalQualitiesChart->setData([
+            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', 'Force d\'endurance', 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
+            'datasets' => [
+                [
+                    'label' => '',
+                    'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
+                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'data' => [
+                        $physicalQualities->getProprioception(),
+                        $physicalQualities->getWeightPowerRatio(),
+                        $physicalQualities->getExplosiveStrength(),
+                        $physicalQualities->getEnduranceStrength(),
+                        $physicalQualities->getMaximumStrength(),
+                        $physicalQualities->getStressResistance(),
+                        $physicalQualities->getCoreStrength(),
+                        $physicalQualities->getFlexibility(),
+                        $physicalQualities->getRecovery(),
+                    ],
+                ],
+            ],
+        ]);
+        $physicalQualitiesChart->setOptions([
+            'legend' => [
+                'display' => false,
+            ],
+            'scale' => [
+                'ticks' => [
+                    'suggestedMin' => 0,
+                    'suggestedMax' => 20,
+                ],
+            ],
+        ]);
+
         return $this->render('homepage/homepage.html.twig', [
-            'chart' => $chart,
+            'logbookChart' => $logbookChart,
+            'physicalQualitiesChart' => $physicalQualitiesChart,
         ]);
     }
 }
