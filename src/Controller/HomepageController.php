@@ -91,43 +91,45 @@ class HomepageController extends AbstractController
         // Physical qualities chart
         /** @var PhysicalQualities $physicalQualities */
         $physicalQualities = $this->getUser()->getPhysicalQualities();
-        $physicalQualitiesChart = $chartBuilder->createChart(Chart::TYPE_RADAR);
-        $physicalQualitiesChart->setData([
-            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', 'Force d\'endurance', 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
-            'datasets' => [
-                [
-                    'label' => '',
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
-                    'data' => [
-                        $physicalQualities->getProprioception(),
-                        $physicalQualities->getWeightPowerRatio(),
-                        $physicalQualities->getExplosiveStrength(),
-                        $physicalQualities->getEnduranceStrength(),
-                        $physicalQualities->getMaximumStrength(),
-                        $physicalQualities->getStressResistance(),
-                        $physicalQualities->getCoreStrength(),
-                        $physicalQualities->getFlexibility(),
-                        $physicalQualities->getRecovery(),
+        if (null !== $physicalQualities) {
+            $physicalQualitiesChart = $chartBuilder->createChart(Chart::TYPE_RADAR);
+            $physicalQualitiesChart->setData([
+                'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', 'Force d\'endurance', 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
+                'datasets' => [
+                    [
+                        'label' => '',
+                        'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
+                        'borderColor' => 'rgba(54, 162, 235, 1)',
+                        'data' => [
+                            $physicalQualities->getProprioception(),
+                            $physicalQualities->getWeightPowerRatio(),
+                            $physicalQualities->getExplosiveStrength(),
+                            $physicalQualities->getEnduranceStrength(),
+                            $physicalQualities->getMaximumStrength(),
+                            $physicalQualities->getStressResistance(),
+                            $physicalQualities->getCoreStrength(),
+                            $physicalQualities->getFlexibility(),
+                            $physicalQualities->getRecovery(),
+                        ],
                     ],
                 ],
-            ],
-        ]);
-        $physicalQualitiesChart->setOptions([
-            'legend' => [
-                'display' => false,
-            ],
-            'scale' => [
-                'ticks' => [
-                    'suggestedMin' => 0,
-                    'suggestedMax' => 20,
+            ]);
+            $physicalQualitiesChart->setOptions([
+                'legend' => [
+                    'display' => false,
                 ],
-            ],
-        ]);
+                'scale' => [
+                    'ticks' => [
+                        'suggestedMin' => 0,
+                        'suggestedMax' => 20,
+                    ],
+                ],
+            ]);
+        }
 
         return $this->render('homepage/homepage.html.twig', [
             'logbookChart' => $logbookChart,
-            'physicalQualitiesChart' => $physicalQualitiesChart,
+            'physicalQualitiesChart' => $physicalQualitiesChart ?? null,
         ]);
     }
 }
