@@ -58,10 +58,12 @@ class TrainingPhaseType extends AbstractType
             ])
             ->add('split', TextType::class, [
                 'label' => 'Split',
+                'help' => '0:00.0',
                 'required' => false,
             ])
             ->add('spm', IntegerType::class, [
                 'label' => 'SPM',
+                'help' => 'Cadence',
                 'required' => false,
             ])
         ;

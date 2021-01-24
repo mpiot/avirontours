@@ -295,7 +295,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Le split doit avoir le format: "m:ss.c".', $crawler->filter('label[for="training_trainingPhases_0_split"] .form-error-message')->text());
+        $this->assertStringContainsString('Le split doit avoir le format: "0:00.0".', $crawler->filter('label[for="training_trainingPhases_0_split"] .form-error-message')->text());
         $this->assertCount(1, $crawler->filter('.form-error-message'));
 
         TrainingFactory::repository()->assertCount(0);

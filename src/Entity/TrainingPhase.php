@@ -71,7 +71,7 @@ class TrainingPhase
 
     /**
      * @ORM\Column(type="string", length=6, nullable=true)
-     * @Assert\Regex(pattern="#\d\:\d{2}\.\d#", message="Le split doit avoir le format: ""m:ss.c"".")
+     * @Assert\Regex(pattern="#\d\:\d{2}\.\d#", message="Le split doit avoir le format: ""0:00.0"".")
      */
     private $split;
 
