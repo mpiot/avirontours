@@ -1,10 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('logbook_entry_form')}}
-{% endblock %}
-
 {% block title %}Ajouter une sortie{% endblock %}
 
 {% block breadcrumb %}
@@ -29,9 +24,4 @@
 
         <button class="btn btn-primary">Sauver</button>
     {{ form_end(form) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('logbook_entry_form') }}
 {% endblock %}

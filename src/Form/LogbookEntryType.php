@@ -62,35 +62,40 @@ class LogbookEntryType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (Shell $shell) {
-                    $badges = [];
+                    $suffix = '';
 
                     if ($shell->getRowerCategory() <= 2) {
-                        $badges[] = ['color' => 'primary', 'value' => 'Compétition'];
+                        $suffix .= '<span class="badge badge-primary ml-2">Compétition</span>';
                     }
 
                     if (true === $shell->getPersonalBoat()) {
-                        $badges[] = ['color' => 'info', 'value' => 'Personnel'];
+                        $suffix .= '<span class="badge badge-info ml-2">Personnel</span>';
                     }
 
                     if (null !== $shell->getWeightCategory()) {
-                        $badges[] = ['color' => 'info', 'value' => $shell->getTextWeightCategory()];
+                        $suffix .= '<span class="badge badge-info ml-2">'.$shell->getTextWeightCategory().'</span>';
                     }
 
                     if (false === $shell->getLogbookEntries()->isEmpty()) {
-                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-sign-out-alt"></span>'];
+                        $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-sign-out-alt"></span></span>';
                     }
 
                     if (false === $shell->getShellDamages()->filter(function (ShellDamage $damage) { return ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority(); })->isEmpty()) {
-                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-tools"></span>'];
+                        $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-tools"></span></span>';
                     }
 
-                    if (!empty($badges)) {
-                        return ['data-badges' => json_encode($badges)];
+                    if ('' !== empty($suffix)) {
+                        return [
+                            'data-select2-suffix' => $suffix,
+                        ];
                     }
 
                     return [];
                 },
                 'placeholder' => '--- Sélectionner un bâteau ---',
+                'attr' => [
+                    'data-controller' => 'select2',
+                ],
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
@@ -118,14 +123,10 @@ class LogbookEntryType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (User $user) {
-                    $badges = [];
-
                     if (false === $user->getLogbookEntries()->isEmpty()) {
-                        $badges[] = ['color' => 'danger', 'value' => '<span class="fas fa-sign-out-alt"></span>'];
-                    }
-
-                    if (!empty($badges)) {
-                        return ['data-badges' => json_encode($badges)];
+                        return [
+                            'data-select2-suffix' => '<span class="badge badge-danger ml-2"><span class="fas fa-sign-out-alt"></span></span>',
+                        ];
                     }
 
                     return [];
@@ -133,6 +134,9 @@ class LogbookEntryType extends AbstractType
                 'multiple' => true,
                 'help' => '<div class="text-info"><span class="fa fa-info-circle"> Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.</span></div>',
                 'help_html' => true,
+                'attr' => [
+                    'data-controller' => 'select2',
+                ],
             ])
             ->add('startAt', TimeType::class, [
                 'label' => 'Heure de départ',
@@ -159,6 +163,11 @@ class LogbookEntryType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'required' => false,
+                'attr' => [
+                    'data-controller' => 'collection-type',
+                    'data-collection-type-button-text-value' => 'Ajouter une avarie',
+                    'data-collection-type-label-value' => 'Avarie n°',
+                ],
             ])
         ;
 
