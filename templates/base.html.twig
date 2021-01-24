@@ -6,11 +6,15 @@
 
         <link rel="icon" type="image/png" href="{{ asset('build/images/favicon.png')}}">
 
+        <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
+
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
-        <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </head>
 
     <body>
@@ -141,9 +145,5 @@
                 </div>
             </div>
         </div>
-
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
     </body>
 </html>

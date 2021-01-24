@@ -27,9 +27,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ShellDamage
 {
-    const NUM_ITEMS = 20;
-
     use TimestampableEntity;
+    const NUM_ITEMS = 20;
 
     /**
      * @ORM\Id()

@@ -753,6 +753,9 @@
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
     },
+    "zenstruck/callback": {
+        "version": "v1.2.0"
+    },
     "zenstruck/foundry": {
         "version": "v1.2.0"
     }
