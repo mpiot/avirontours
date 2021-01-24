@@ -1,0 +1,34 @@
+{% block _training_distance_widget -%}
+    {%- set type = type|default('text') -%}
+    <div class="input-group">
+        {{- block('form_widget_simple') -}}
+        <div class="input-group-append">
+            <span class="input-group-text">km</span>
+        </div>
+    </div>
+{%- endblock _training_distance_widget %}
+
+{% block _training_trainingPhases_entry_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        <div class="row">
+            <div class="col">
+                {{ form_row(form.children.name) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.children.intensity) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.children.duration) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.children.distance) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.children.split) }}
+            </div>
+            <div class="col">
+                {{ form_row(form.children.spm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

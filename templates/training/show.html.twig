@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.textSport }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Carnet d'entraînements</a></li>
+    <li class="breadcrumb-item active">{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.textSport }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h3>
+            {{ training.textSport }}<br>
+            <small>{{ training.trainedAt|date('d/m/Y - H:i') }}</small>
+        </h3>
+
+        <div class="ml-auto align-self-center ">
+            {% embed 'training/_delete_form.html.twig' %}
+                {% block buttons %}
+                    <div class="btn-group-sm">
+                        <a class="btn btn-outline-warning" href="{{ path('training_edit', {'id': training.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+
+                        {{ parent() }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    <div class="d-flex h2 mt-3 bg-light p-5">
+        <div>
+            <span class="far fa-clock text-info"></span> {{ training.duration|date('H:i:s') }}
+        </div>
+
+        <div class="ml-4 pl-4 border-left">
+            <span class="fas fa-ruler text-info"></span> {{ training.distance ? training.distance|format_number : '-' }} km
+        </div>
+
+        <div class="ml-4 pl-4 border-left">
+            <span class="fas fa-spa text-info"></span> {{ training.textFeeling ?? '-'}}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <blockquote class="blockquote">
+                <p class="mb-0">Commentaire:</p>
+                <p class="mb-0">{{ training.comment ? training.comment|nl2br : '-' }}</p>
+            </blockquote>
+        </div>
+    </div>
+
+    {% if not training.trainingPhases.empty%}
+        <h4>Phases</h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Intensité</th>
+                <th scope="col">Durée</th>
+                <th scope="col">Distance</th>
+                <th scope="col">Split</th>
+                <th scope="col">SPM</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for phase in training.trainingPhases %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ phase.name }}</td>
+                <td>{{ phase.textIntensity }}</td>
+                <td>{{ phase.duration|date('H:i:s') }}</td>
+                <td>{{ phase.distance ? phase.distance|format_number ~ ' km' }}</td>
+                <td>{{ phase.split }}</td>
+                <td>{{ phase.spm }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

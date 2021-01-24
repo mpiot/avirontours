@@ -1,0 +1,10 @@
+<form method="post" action="{{ path('training_delete', {'id': training.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet éléménet ?');">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ training.id) }}">
+
+    {% block buttons %}
+        <button class="btn btn-outline-danger btn-sm">
+            <span class="fas fa-trash-alt"></span> Supprimer
+        </button>
+    {% endblock %}
+</form>

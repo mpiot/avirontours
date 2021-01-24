@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'training/_form_theme.html.twig' %}
+
+{% block title %}Ajouter un entraînement{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Carnet d'entraînements</a></li>
+    <li class="breadcrumb-item active">Ajouter un entraînement</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un entraînement</h1>
+
+    {{ include('training/_form.html.twig') }}
+{% endblock %}

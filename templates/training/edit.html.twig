@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'training/_form_theme.html.twig' %}
+
+{% block title %}Modifier une séance{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Carnet d'entraînements</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('training_show', {'id': training.id}) }}">{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.textSport }}</a></li>
+    <li class="breadcrumb-item active">Modifier</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier un entraînement</h1>
+
+        <div class="ml-auto align-self-center">
+            {{ include('training/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    {{ include('training/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% endblock %}
