@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    {{ form_row(form.trained_at) }}
+    {{ form_row(form.sport) }}
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.duration) }}
+            {{ form_row(form.feeling) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.distance) }}
+            {{ form_row(form.comment) }}
+        </div>
+    </div>
+
+    {{ form_widget(form) }}
+
+    <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
+{{ form_end(form) }}

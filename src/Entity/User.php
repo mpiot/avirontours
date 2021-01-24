@@ -197,6 +197,11 @@ class User implements UserInterface, EmailTwoFactorInterface
      */
     private $workoutMaximumLoad;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Training::class, mappedBy="user")
+     */
+    private $trainings;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -206,6 +211,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->licenses = new ArrayCollection();
         $this->clubEmailAllowed = true;
         $this->partnersEmailAllowed = false;
+        $this->trainings = new ArrayCollection();
     }
 
     public function __toString()
@@ -707,5 +713,13 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->workoutMaximumLoad = $workoutMaximumLoad;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Training[]
+     */
+    public function getTrainings(): Collection
+    {
+        return $this->trainings;
     }
 }
