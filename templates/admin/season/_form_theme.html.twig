@@ -1,0 +1,19 @@
+{% block _season_seasonCategories_entry_widget %}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.children.name) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.price) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.licenseType) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.description) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.displayed) }}
+        </div>
+    </div>
+{% endblock %}

@@ -21,8 +21,6 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('logbook_entry_form', './assets/jquery/logbook_entry_form.js')
-    .addEntry('season_form', './assets/jquery/season_form.js')
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
@@ -65,6 +63,7 @@ Encore
 
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
+        config.plugins.push('@babel/plugin-proposal-private-methods');
     })
 
     // enables @babel/preset-env polyfills
@@ -75,6 +74,12 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader()
+    // gives better module CSS naming in dev
+    .configureCssLoader((config) => {
+        if (!Encore.isProduction() && config.modules) {
+            config.modules.localIdentName = '[name]_[local]_[hash:base64:5]';
+        }
+    })
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -84,7 +89,7 @@ Encore
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
-    //.enableIntegrityHashes(Encore.isProduction())
+    .enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
     // .autoProvidejQuery()

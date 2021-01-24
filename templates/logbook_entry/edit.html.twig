@@ -1,10 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('logbook_entry_form')}}
-{% endblock %}
-
 {% block title %}Modifier une sortie{% endblock %}
 
 {% block breadcrumb %}
@@ -24,9 +19,4 @@
     </div>
 
     {{ include('logbook_entry/_form.html.twig', {'button_label': 'Modifier'}) }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('logbook_entry_form') }}
 {% endblock %}
