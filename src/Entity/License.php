@@ -30,10 +30,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class License
 {
-    const NUM_ITEMS = 20;
-
     use BlameableEntity;
     use TimestampableEntity;
+    const NUM_ITEMS = 20;
 
     /**
      * @ORM\Id()
