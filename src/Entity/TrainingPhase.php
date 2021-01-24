@@ -80,6 +80,11 @@ class TrainingPhase
      */
     private $spm;
 
+    public function __construct()
+    {
+        $this->duration = new \DateTime('01:00');
+    }
+
     public function getId(): ?int
     {
         return $this->id;

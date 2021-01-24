@@ -53,6 +53,7 @@ class TrainingPhaseType extends AbstractType
                 'attr' => [
                     'step' => 0.1,
                 ],
+                'html5' => true,
                 'required' => false,
             ])
             ->add('split', TextType::class, [

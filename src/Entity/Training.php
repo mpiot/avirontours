@@ -106,7 +106,7 @@ class Training
     {
         $this->user = $user;
         $this->trained_at = new \DateTime('-1 hour');
-        $this->duration = new \DateTime('01:00:00');
+        $this->duration = new \DateTime('01:00');
         $this->trainingPhases = new ArrayCollection();
     }
 

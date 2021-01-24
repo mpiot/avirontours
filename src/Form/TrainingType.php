@@ -56,6 +56,7 @@ class TrainingType extends AbstractType
                 'attr' => [
                     'step' => 0.1,
                 ],
+                'html5' => true,
                 'required' => false,
             ])
             ->add('feeling', ChoiceType::class, [
