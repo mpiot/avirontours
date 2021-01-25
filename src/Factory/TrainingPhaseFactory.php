@@ -42,7 +42,7 @@ final class TrainingPhaseFactory extends ModelFactory
         return [
             'name' => self::faker()->optional()->word,
             'intensity' => self::faker()->randomElement(TrainingPhase::getAvailableIntensities()),
-            'duration' => self::faker()->dateTime,
+            'duration' => new \DateInterval('PT1H10M25S'),
             'distance' => self::faker()->optional()->randomFloat(1, 2, 60),
             'split' => self::faker()->optional()->numerify('#:##.#'),
             'spm' => self::faker()->optional()->numberBetween(14, 45),

@@ -59,7 +59,7 @@ class TrainingPhase
     private $intensity;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="dateinterval")
      * @Assert\NotNull()
      */
     private $duration;
@@ -79,11 +79,6 @@ class TrainingPhase
      * @ORM\Column(type="integer", nullable=true)
      */
     private $spm;
-
-    public function __construct()
-    {
-        $this->duration = new \DateTime('01:00');
-    }
 
     public function getId(): ?int
     {
@@ -135,12 +130,12 @@ class TrainingPhase
         return $this;
     }
 
-    public function getDuration(): ?\DateTimeInterface
+    public function getDuration(): ?\DateInterval
     {
         return $this->duration;
     }
 
-    public function setDuration(?\DateTimeInterface $duration): self
+    public function setDuration(?\DateInterval $duration): self
     {
         $this->duration = $duration;
 

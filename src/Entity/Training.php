@@ -69,7 +69,7 @@ class Training
     private $trained_at;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="dateinterval")
      * @Assert\NotNull()
      */
     private $duration;
@@ -105,8 +105,7 @@ class Training
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->trained_at = new \DateTime('-1 hour');
-        $this->duration = new \DateTime('01:00');
+        $this->trained_at = new \DateTime('now');
         $this->trainingPhases = new ArrayCollection();
     }
 
@@ -139,12 +138,12 @@ class Training
         return $this;
     }
 
-    public function getDuration(): ?\DateTime
+    public function getDuration(): ?\DateInterval
     {
         return $this->duration;
     }
 
-    public function setDuration(?\DateTime $duration): self
+    public function setDuration(?\DateInterval $duration): self
     {
         $this->duration = $duration;
 

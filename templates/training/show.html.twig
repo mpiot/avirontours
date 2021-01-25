@@ -32,7 +32,7 @@
 
     <div class="d-flex h2 mt-3 bg-light p-5">
         <div>
-            <span class="far fa-clock text-info"></span> {{ training.duration|date('H:i:s') }}
+            <span class="far fa-clock text-info"></span> {{ training.duration.format('%H:%I') }}
         </div>
 
         <div class="ml-4 pl-4 border-left">
@@ -73,7 +73,7 @@
                 <th scope="row">{{ loop.index }}</th>
                 <td>{{ phase.name }}</td>
                 <td>{{ phase.textIntensity }}</td>
-                <td>{{ phase.duration|date('H:i:s') }}</td>
+                <td>{{ phase.duration.format('%H:%I:%S') }}</td>
                 <td>{{ phase.distance ? phase.distance|format_number ~ ' km' }}</td>
                 <td>{{ phase.split }}</td>
                 <td>{{ phase.spm }}</td>

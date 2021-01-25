@@ -131,7 +131,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '2020-01-15',
             'training[trained_at][time]' => '14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[duration]' => '01:30',
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
             'training[feeling]' => Training::FEELING_OK,
             'training[comment]' => 'My little comment...',
@@ -144,7 +145,7 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame('01:30', $training->getDuration()->format('H:i'));
+        $this->assertSame('01:30', $training->getDuration()->format('%H:%I'));
         $this->assertSame(16.3, $training->getDistance());
         $this->assertSame(Training::FEELING_OK, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
@@ -165,7 +166,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '2020-01-15',
             'training[trained_at][time]' => '14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[duration]' => '01:30',
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
             'training[feeling]' => Training::FEELING_OK,
             'training[comment]' => 'My little comment...',
@@ -173,7 +175,9 @@ class TrainingControllerTest extends AppWebTestCase
         $values = $form->getPhpValues();
         $values['training']['trainingPhases'][0]['name'] = 'Phase name';
         $values['training']['trainingPhases'][0]['intensity'] = TrainingPhase::INTENSITY_ANAEROBIC_THRESHOLD;
-        $values['training']['trainingPhases'][0]['duration'] = '00:07';
+        $values['training']['trainingPhases'][0]['duration']['hours'] = 0;
+        $values['training']['trainingPhases'][0]['duration']['minutes'] = 2;
+        $values['training']['trainingPhases'][0]['duration']['seconds'] = 15;
         $values['training']['trainingPhases'][0]['distance'] = 2;
         $values['training']['trainingPhases'][0]['split'] = '1:48.6';
         $values['training']['trainingPhases'][0]['spm'] = 10;
@@ -186,14 +190,14 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame('01:30', $training->getDuration()->format('H:i'));
+        $this->assertSame('01:30', $training->getDuration()->format('%H:%I'));
         $this->assertSame(16.3, $training->getDistance());
         $this->assertSame(Training::FEELING_OK, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
         $this->assertCount(1, $training->getTrainingPhases());
         $this->assertSame('Phase name', $training->getTrainingPhases()->first()->getName());
         $this->assertSame(TrainingPhase::INTENSITY_ANAEROBIC_THRESHOLD, $training->getTrainingPhases()->first()->getIntensity());
-        $this->assertSame('00:07', $training->getTrainingPhases()->first()->getDuration()->format('H:i'));
+        $this->assertSame('00:02:15', $training->getTrainingPhases()->first()->getDuration()->format('%H:%I:%S'));
         $this->assertSame(2.0, $training->getTrainingPhases()->first()->getDistance());
         $this->assertSame('1:48.6', $training->getTrainingPhases()->first()->getSplit());
         $this->assertSame(10, $training->getTrainingPhases()->first()->getSpm());
@@ -213,16 +217,17 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '',
             'training[trained_at][time]' => '',
             'training[sport]' => '',
-            'training[duration]' => '',
+            'training[duration][hours]' => '',
+            'training[duration][minutes]' => '',
             'training[distance]' => '',
             'training[feeling]' => '',
             'training[comment]' => '',
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->eq(0)->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->eq(1)->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_sport"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_duration"] .form-error-message')->text());
         $this->assertCount(3, $crawler->filter('.form-error-message'));
 
         TrainingFactory::repository()->assertCount(0);
@@ -243,7 +248,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '2020-01-15',
             'training[trained_at][time]' => '14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[duration]' => '01:30',
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
             'training[feeling]' => Training::FEELING_OK,
             'training[comment]' => 'My little comment...',
@@ -251,7 +257,9 @@ class TrainingControllerTest extends AppWebTestCase
         $values = $form->getPhpValues();
         $values['training']['trainingPhases'][0]['name'] = '';
         $values['training']['trainingPhases'][0]['intensity'] = '';
-        $values['training']['trainingPhases'][0]['duration'] = '';
+        $values['training']['trainingPhases'][0]['duration']['hours'] = '';
+        $values['training']['trainingPhases'][0]['duration']['minutes'] = '';
+        $values['training']['trainingPhases'][0]['duration']['seconds'] = '';
         $values['training']['trainingPhases'][0]['distance'] = '';
         $values['training']['trainingPhases'][0]['split'] = '';
         $values['training']['trainingPhases'][0]['spm'] = '';
@@ -259,7 +267,7 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_trainingPhases_0_intensity"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_trainingPhases_0_duration"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->eq(0)->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
 
         TrainingFactory::repository()->assertCount(0);
@@ -280,7 +288,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '2020-01-15',
             'training[trained_at][time]' => '14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[duration]' => '01:30',
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
             'training[feeling]' => Training::FEELING_OK,
             'training[comment]' => 'My little comment...',
@@ -288,7 +297,9 @@ class TrainingControllerTest extends AppWebTestCase
         $values = $form->getPhpValues();
         $values['training']['trainingPhases'][0]['name'] = '';
         $values['training']['trainingPhases'][0]['intensity'] = TrainingPhase::INTENSITY_ANAEROBIC_THRESHOLD;
-        $values['training']['trainingPhases'][0]['duration'] = '01:00';
+        $values['training']['trainingPhases'][0]['duration']['hours'] = 0;
+        $values['training']['trainingPhases'][0]['duration']['minutes'] = 2;
+        $values['training']['trainingPhases'][0]['duration']['seconds'] = 15;
         $values['training']['trainingPhases'][0]['distance'] = '';
         $values['training']['trainingPhases'][0]['split'] = '2';
         $values['training']['trainingPhases'][0]['spm'] = '';
@@ -317,7 +328,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[trained_at][date]' => '2020-01-15',
             'training[trained_at][time]' => '14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[duration]' => '01:30',
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
             'training[feeling]' => Training::FEELING_OK,
             'training[comment]' => 'My little comment...',
@@ -329,7 +341,7 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame('01:30', $training->getDuration()->format('H:i'));
+        $this->assertSame('01:30', $training->getDuration()->format('%H:%I'));
         $this->assertSame(16.3, $training->getDistance());
         $this->assertSame(Training::FEELING_OK, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());

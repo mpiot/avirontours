@@ -35,7 +35,7 @@
                     <td>
                         <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.textSport }}</a>
                     </td>
-                    <td>{{ training.duration|date('H:i:s') }}</td>
+                    <td>{{ training.duration.format('%H:%I') }}</td>
                     <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
                     <td>{{ training.comment|u.truncate(25, '...') }}</td>
                     <td class="text-right">

@@ -57,7 +57,9 @@ class TrainingController extends AbstractController
             $entityManager->persist($training);
             $entityManager->flush();
 
-            return $this->redirectToRoute('training_index');
+            return $this->redirectToRoute('training_show', [
+                'id' => $training->getId(),
+            ]);
         }
 
         return $this->render('training/new.html.twig', [

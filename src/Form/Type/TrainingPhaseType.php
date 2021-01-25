@@ -21,10 +21,10 @@ namespace App\Form\Type;
 use App\Entity\TrainingPhase;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -42,10 +42,20 @@ class TrainingPhaseType extends AbstractType
                 'choices' => TrainingPhase::getAvailableIntensities(),
                 'placeholder' => '-- Sélectionner une intensité --',
             ])
-            ->add('duration', TimeType::class, [
+            ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée',
-                'widget' => 'single_text',
-                'help' => 'hh:mm',
+                'labels' => [
+                    'minutes' => 'Minutes',
+                    'seconds' => 'Secondes',
+                ],
+                'widget' => 'text',
+                'with_years' => false,
+                'with_months' => false,
+                'with_days' => false,
+                'with_weeks' => false,
+                'with_hours' => true,
+                'with_minutes' => true,
+                'with_seconds' => true,
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
@@ -53,6 +63,7 @@ class TrainingPhaseType extends AbstractType
                 'attr' => [
                     'step' => 0.1,
                 ],
+                'help' => 'En km',
                 'html5' => true,
                 'required' => false,
             ])
