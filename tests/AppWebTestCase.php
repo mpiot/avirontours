@@ -36,7 +36,7 @@ abstract class AppWebTestCase extends WebTestCase
     protected function logIn(AbstractBrowser $client, string $role): Proxy
     {
         /** @var User|Proxy $user */
-        $user = UserFactory::new()->create(['roles' => [$role]]);
+        $user = UserFactory::createOne(['roles' => [$role]]);
 
         $client->loginUser($user->object());
 

@@ -26,32 +26,34 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                 LogbookEntry|Proxy findOrCreate(array $attributes)
- * @method static                 LogbookEntry|Proxy random()
- * @method static                 LogbookEntry[]|Proxy[] randomSet(int $number)
- * @method static                 LogbookEntry[]|Proxy[] randomRange(int $min, int $max)
- * @method static                 LogbookEntryRepository|RepositoryProxy repository()
- * @method LogbookEntry|Proxy     create($attributes = [])
- * @method LogbookEntry[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static             LogbookEntry|Proxy createOne(array $attributes = [])
+ * @method static             LogbookEntry[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static             LogbookEntry|Proxy findOrCreate(array $attributes)
+ * @method static             LogbookEntry|Proxy random(array $attributes = [])
+ * @method static             LogbookEntry|Proxy randomOrCreate(array $attributes = [])
+ * @method static             LogbookEntry[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static             LogbookEntry[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static             LogbookEntryRepository|RepositoryProxy repository()
+ * @method LogbookEntry|Proxy create($attributes = [])
  */
 final class LogbookEntryFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
-        $shell = ShellFactory::new()->create();
+        $shell = ShellFactory::new();
         $finished = self::faker()->boolean;
 
         return [
             'shell' => $shell,
             'endAt' => $finished ? new \DateTime('+1 hour') : null,
             'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
-            'shellDamages' => ShellDamageFactory::new()->createMany(self::faker()->numberBetween(0, 3)),
+            'shellDamages' => ShellDamageFactory::new()->many(0, 3),
         ];
     }
 
     public function withActiveCrew(int $number): self
     {
-        $licences = LicenseFactory::new()->annualActive()->createMany($number);
+        $licences = LicenseFactory::new()->annualActive()->many($number);
         $crew = [];
         foreach ($licences as $license) {
             $crew[] = $license->getUser();
@@ -64,7 +66,7 @@ final class LogbookEntryFactory extends ModelFactory
 
     public function withInactiveCrew(int $number): self
     {
-        $licences = LicenseFactory::new()->annualInactive()->createMany($number);
+        $licences = LicenseFactory::new()->annualInactive()->many($number);
         $crew = [];
         foreach ($licences as $license) {
             $crew[] = $license->getUser();
@@ -94,7 +96,7 @@ final class LogbookEntryFactory extends ModelFactory
     public function withDamages(): self
     {
         return $this->addState([
-            'shellDamages' => ShellDamageFactory::new()->createMany(self::faker()->numberBetween(1, 3)),
+            'shellDamages' => ShellDamageFactory::new()->many(1, 3),
         ]);
     }
 

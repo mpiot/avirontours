@@ -43,7 +43,7 @@ class UserControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $user = UserFactory::new()->create();
+            $user = UserFactory::createOne();
             $url = str_replace('{id}', $user->getId(), $url);
         }
 
@@ -78,7 +78,7 @@ class UserControllerTest extends AppWebTestCase
 
     public function testShowUser()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -175,7 +175,7 @@ class UserControllerTest extends AppWebTestCase
 
     public function testEditUser()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -224,7 +224,7 @@ class UserControllerTest extends AppWebTestCase
 
     public function testDeleteUser()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

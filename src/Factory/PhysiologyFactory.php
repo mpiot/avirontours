@@ -25,13 +25,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static               Physiology|Proxy findOrCreate(array $attributes)
- * @method static               Physiology|Proxy random()
- * @method static               Physiology[]|Proxy[] randomSet(int $number)
- * @method static               Physiology[]|Proxy[] randomRange(int $min, int $max)
- * @method static               PhysiologyRepository|RepositoryProxy repository()
- * @method Physiology|Proxy     create($attributes = [])
- * @method Physiology[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static           Physiology|Proxy createOne(array $attributes = [])
+ * @method static           Physiology[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static           Physiology|Proxy findOrCreate(array $attributes)
+ * @method static           Physiology|Proxy random(array $attributes = [])
+ * @method static           Physiology|Proxy randomOrCreate(array $attributes = [])
+ * @method static           Physiology[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static           Physiology[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static           PhysiologyRepository|RepositoryProxy repository()
+ * @method Physiology|Proxy create($attributes = [])
  */
 final class PhysiologyFactory extends ModelFactory
 {
@@ -40,7 +42,7 @@ final class PhysiologyFactory extends ModelFactory
         $max = self::faker()->numberBetween(180, 2150);
 
         return [
-            'user' => UserFactory::new()->create(),
+            'user' => UserFactory::new(),
             'lightAerobicHeartRateMin' => (int) $max * 0.65,
             'heavyAerobicHeartRateMin' => (int) $max * 0.70,
             'anaerobicThresholdHeartRateMin' => (int) $max * 0.80,

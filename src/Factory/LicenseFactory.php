@@ -26,22 +26,24 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static            License|Proxy findOrCreate(array $attributes)
- * @method static            License|Proxy random()
- * @method static            License[]|Proxy[] randomSet(int $number)
- * @method static            License[]|Proxy[] randomRange(int $min, int $max)
- * @method static            LicenseRepository|RepositoryProxy repository()
- * @method License|Proxy     create($attributes = [])
- * @method License[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static        License|Proxy createOne(array $attributes = [])
+ * @method static        License[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static        License|Proxy findOrCreate(array $attributes)
+ * @method static        License|Proxy random(array $attributes = [])
+ * @method static        License|Proxy randomOrCreate(array $attributes = [])
+ * @method static        License[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static        License[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static        LicenseRepository|RepositoryProxy repository()
+ * @method License|Proxy create($attributes = [])
  */
 final class LicenseFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
         return [
-            'seasonCategory' => SeasonCategoryFactory::new()->create(['season' => SeasonFactory::new()->create()]),
-            'user' => UserFactory::new()->create(),
-            'medicalCertificate' => MedicalCertificateFactory::new()->create(),
+            'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
+            'user' => UserFactory::new(),
+            'medicalCertificate' => MedicalCertificateFactory::new(),
             'marking' => self::faker()->randomElement([
                 null,
                 ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
@@ -58,9 +60,9 @@ final class LicenseFactory extends ModelFactory
     public function annualActive(): self
     {
         return $this->addState([
-            'seasonCategory' => SeasonCategoryFactory::new()->create([
+            'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
-                'season' => SeasonFactory::new()->active()->create(),
+                'season' => SeasonFactory::new()->active(),
             ]),
         ]);
     }
@@ -68,9 +70,9 @@ final class LicenseFactory extends ModelFactory
     public function indoorActive(): self
     {
         return $this->addState([
-            'seasonCategory' => SeasonCategoryFactory::new()->create([
+            'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
-                'season' => SeasonFactory::new()->active()->create(),
+                'season' => SeasonFactory::new()->active(),
             ]),
         ]);
     }
@@ -78,9 +80,9 @@ final class LicenseFactory extends ModelFactory
     public function annualInactive(): self
     {
         return $this->addState([
-            'seasonCategory' => SeasonCategoryFactory::new()->create([
+            'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
-                'season' => SeasonFactory::new()->inactive()->create(),
+                'season' => SeasonFactory::new()->inactive(),
             ]),
         ]);
     }
@@ -88,9 +90,9 @@ final class LicenseFactory extends ModelFactory
     public function indoorInactive(): self
     {
         return $this->addState([
-            'seasonCategory' => SeasonCategoryFactory::new()->create([
+            'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
-                'season' => SeasonFactory::new()->inactive()->create(),
+                'season' => SeasonFactory::new()->inactive(),
             ]),
         ]);
     }

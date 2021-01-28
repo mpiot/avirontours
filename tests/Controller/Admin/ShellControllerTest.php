@@ -42,7 +42,7 @@ class ShellControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $shell = ShellFactory::new()->create();
+            $shell = ShellFactory::createOne();
             $url = str_replace('{id}', $shell->getId(), $url);
         }
 
@@ -77,7 +77,7 @@ class ShellControllerTest extends AppWebTestCase
 
     public function testShowShell()
     {
-        $shell = ShellFactory::new()->create();
+        $shell = ShellFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -140,7 +140,7 @@ class ShellControllerTest extends AppWebTestCase
 
     public function testEditShell()
     {
-        $shell = ShellFactory::new()->create([
+        $shell = ShellFactory::createOne([
             'numberRowers' => 2,
             'coxed' => false,
             'yolette' => false,
@@ -177,7 +177,7 @@ class ShellControllerTest extends AppWebTestCase
 
     public function testDeleteShell()
     {
-        $shell = ShellFactory::new()->create();
+        $shell = ShellFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

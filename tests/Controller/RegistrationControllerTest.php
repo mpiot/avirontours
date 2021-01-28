@@ -144,7 +144,7 @@ class RegistrationControllerTest extends AppWebTestCase
     public function testRegistrationTwice()
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
-        $license = LicenseFactory::new()->create(['seasonCategory' => $season->getSeasonCategories()->first()]);
+        $license = LicenseFactory::createOne(['seasonCategory' => $season->getSeasonCategories()->first()]);
 
         self::ensureKernelShutdown();
         $client = static::createClient();

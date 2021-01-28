@@ -26,21 +26,23 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                ShellDamage|Proxy findOrCreate(array $attributes)
- * @method static                ShellDamage|Proxy random()
- * @method static                ShellDamage[]|Proxy[] randomSet(int $number)
- * @method static                ShellDamage[]|Proxy[] randomRange(int $min, int $max)
- * @method static                ShellDamageRepository|RepositoryProxy repository()
- * @method ShellDamage|Proxy     create($attributes = [])
- * @method ShellDamage[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static            ShellDamage|Proxy createOne(array $attributes = [])
+ * @method static            ShellDamage[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static            ShellDamage|Proxy findOrCreate(array $attributes)
+ * @method static            ShellDamage|Proxy random(array $attributes = [])
+ * @method static            ShellDamage|Proxy randomOrCreate(array $attributes = [])
+ * @method static            ShellDamage[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static            ShellDamage[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static            ShellDamageRepository|RepositoryProxy repository()
+ * @method ShellDamage|Proxy create($attributes = [])
  */
 final class ShellDamageFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
         return [
-            'category' => ShellDamageCategoryFactory::new()->create(),
-            'shell' => ShellFactory::new()->create(),
+            'category' => ShellDamageCategoryFactory::new(),
+            'shell' => ShellFactory::new(),
             'description' => self::faker()->text,
             'note' => self::faker()->text,
             'repairStartAt' => self::faker()->optional()->dateTimeThisYear,
@@ -51,14 +53,14 @@ final class ShellDamageFactory extends ModelFactory
     public function highlyDamaged(): self
     {
         return $this->addState([
-            'category' => ShellDamageCategoryFactory::new()->create(['priority' => ShellDamageCategory::PRIORITY_HIGH]),
+            'category' => ShellDamageCategoryFactory::new(['priority' => ShellDamageCategory::PRIORITY_HIGH]),
         ]);
     }
 
     public function mediumDamaged(): self
     {
         return $this->addState([
-            'category' => ShellDamageCategoryFactory::new()->create(['priority' => ShellDamageCategory::PRIORITY_MEDIUM]),
+            'category' => ShellDamageCategoryFactory::new(['priority' => ShellDamageCategory::PRIORITY_MEDIUM]),
         ]);
     }
 

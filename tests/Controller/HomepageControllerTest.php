@@ -42,10 +42,10 @@ class HomepageControllerTest extends AppWebTestCase
 
     public function testIndexWithStats()
     {
-        $user = UserFactory::new()->create();
-        PhysicalQualitiesFactory::new()->create(['user' => $user]);
-        PhysiologyFactory::new()->create(['user' => $user]);
-        WorkoutMaximumLoadFactory::new()->create(['user' => $user]);
+        $user = UserFactory::createOne();
+        PhysicalQualitiesFactory::createOne(['user' => $user]);
+        PhysiologyFactory::createOne(['user' => $user]);
+        WorkoutMaximumLoadFactory::createOne(['user' => $user]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();

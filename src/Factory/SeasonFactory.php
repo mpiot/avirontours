@@ -25,13 +25,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static           Season|Proxy findOrCreate(array $attributes)
- * @method static           Season|Proxy random()
- * @method static           Season[]|Proxy[] randomSet(int $number)
- * @method static           Season[]|Proxy[] randomRange(int $min, int $max)
- * @method static           SeasonRepository|RepositoryProxy repository()
- * @method Season|Proxy     create($attributes = [])
- * @method Season[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static       Season|Proxy createOne(array $attributes = [])
+ * @method static       Season[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static       Season|Proxy findOrCreate(array $attributes)
+ * @method static       Season|Proxy random(array $attributes = [])
+ * @method static       Season|Proxy randomOrCreate(array $attributes = [])
+ * @method static       Season[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static       Season[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static       SeasonRepository|RepositoryProxy repository()
+ * @method Season|Proxy create($attributes = [])
  */
 final class SeasonFactory extends ModelFactory
 {
@@ -41,7 +43,7 @@ final class SeasonFactory extends ModelFactory
             'name' => self::faker()->year,
             'active' => self::faker()->boolean,
             'subscriptionEnabled' => self::faker()->boolean,
-            'seasonCategories' => SeasonCategoryFactory::new()->withoutPersisting()->createMany(self::faker()->numberBetween(2, 5)),
+            'seasonCategories' => SeasonCategoryFactory::new()->many(2, 5),
         ];
     }
 
@@ -67,12 +69,12 @@ final class SeasonFactory extends ModelFactory
 
     public function seasonCategoriesDisplayed(): self
     {
-        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->withoutPersisting()->displayed()->createMany(self::faker()->numberBetween(2, 5))]);
+        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->displayed()->many(2, 5)]);
     }
 
     public function seasonCategoriesNotDisplayed(): self
     {
-        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->withoutPersisting()->notDisplayed()->createMany(self::faker()->numberBetween(2, 5))]);
+        return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->notDisplayed()->many(2, 5)]);
     }
 
     protected function initialize(): self
