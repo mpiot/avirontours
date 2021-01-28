@@ -45,10 +45,10 @@ class TrainingPhaseType extends AbstractType
             ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée',
                 'labels' => [
+                    'hours' => 'Heures',
                     'minutes' => 'Minutes',
                     'seconds' => 'Secondes',
                 ],
-                'widget' => 'text',
                 'with_years' => false,
                 'with_months' => false,
                 'with_days' => false,

@@ -51,7 +51,6 @@ class TrainingType extends AbstractType
                     'hours' => 'Heures',
                     'minutes' => 'Minutes',
                 ],
-                'widget' => 'text',
                 'with_years' => false,
                 'with_months' => false,
                 'with_days' => false,

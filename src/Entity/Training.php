@@ -23,6 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass=TrainingRepository::class)
@@ -249,6 +250,23 @@ class Training
         }
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateDuration(ExecutionContextInterface $context)
+    {
+        if (null === $this->duration) {
+            return;
+        }
+
+        $date = new \DateTimeImmutable();
+        if ($date->add($this->duration) < $date->add(new \DateInterval('PT5M'))) {
+            $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
+                ->atPath('duration')
+                ->addViolation();
+        }
     }
 
     public static function getAvailableSports(): array

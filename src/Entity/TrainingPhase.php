@@ -21,6 +21,7 @@ namespace App\Entity;
 use App\Repository\TrainingPhaseRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass=TrainingPhaseRepository::class)
@@ -176,6 +177,23 @@ class TrainingPhase
         $this->spm = $spm;
 
         return $this;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validateDuration(ExecutionContextInterface $context)
+    {
+        if (null === $this->duration) {
+            return;
+        }
+
+        $date = new \DateTimeImmutable();
+        if ($date->add($this->duration) < $date->add(new \DateInterval('PT10S'))) {
+            $context->buildViolation('Une phase doit durer au moins 10 secondes.')
+                ->atPath('duration')
+                ->addViolation();
+        }
     }
 
     public static function getAvailableIntensities(): array
