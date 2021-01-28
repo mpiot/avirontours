@@ -25,20 +25,22 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                       WorkoutMaximumLoad|Proxy findOrCreate(array $attributes)
- * @method static                       WorkoutMaximumLoad|Proxy random()
- * @method static                       WorkoutMaximumLoad[]|Proxy[] randomSet(int $number)
- * @method static                       WorkoutMaximumLoad[]|Proxy[] randomRange(int $min, int $max)
- * @method static                       WorkoutMaximumLoadRepository|RepositoryProxy repository()
- * @method WorkoutMaximumLoad|Proxy     create($attributes = [])
- * @method WorkoutMaximumLoad[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static                   WorkoutMaximumLoad|Proxy createOne(array $attributes = [])
+ * @method static                   WorkoutMaximumLoad[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static                   WorkoutMaximumLoad|Proxy findOrCreate(array $attributes)
+ * @method static                   WorkoutMaximumLoad|Proxy random(array $attributes = [])
+ * @method static                   WorkoutMaximumLoad|Proxy randomOrCreate(array $attributes = [])
+ * @method static                   WorkoutMaximumLoad[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static                   WorkoutMaximumLoad[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static                   WorkoutMaximumLoadRepository|RepositoryProxy repository()
+ * @method WorkoutMaximumLoad|Proxy create($attributes = [])
  */
 final class WorkoutMaximumLoadFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
         return [
-            'user' => UserFactory::new()->create(),
+            'user' => UserFactory::new(),
             'rowingTirage' => self::faker()->numberBetween(20, 200),
             'benchPress' => self::faker()->numberBetween(20, 200),
             'squat' => self::faker()->numberBetween(20, 200),

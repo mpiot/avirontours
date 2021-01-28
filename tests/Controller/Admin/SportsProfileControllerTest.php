@@ -42,7 +42,7 @@ class SportsProfileControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $user = UserFactory::new()->create();
+            $user = UserFactory::createOne();
             $url = str_replace('{id}', $user->getId(), $url);
         }
 
@@ -73,7 +73,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
     public function testNewPhysiology()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -108,7 +108,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
     public function testNewAnatomy()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -139,7 +139,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
     public function testNewPhysicalQualities()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -178,7 +178,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
     public function testNewWorkoutMaximumLoad()
     {
-        $user = UserFactory::new()->create();
+        $user = UserFactory::createOne();
 
         self::ensureKernelShutdown();
         $client = static::createClient();

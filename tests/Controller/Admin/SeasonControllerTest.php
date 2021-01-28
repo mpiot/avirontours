@@ -43,7 +43,7 @@ class SeasonControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $season = SeasonFactory::new()->create();
+            $season = SeasonFactory::createOne();
             $url = str_replace('{id}', $season->getId(), $url);
         }
 
@@ -78,7 +78,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     public function testShowSeason()
     {
-        $season = SeasonFactory::new()->create();
+        $season = SeasonFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -146,7 +146,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     public function testEditSeason()
     {
-        $season = SeasonFactory::new()->create();
+        $season = SeasonFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -168,7 +168,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     public function testDeleteSeason()
     {
-        $season = SeasonFactory::new()->create();
+        $season = SeasonFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

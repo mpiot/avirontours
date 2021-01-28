@@ -44,7 +44,7 @@ class ShellDamageControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $damage = ShellDamageFactory::new()->create();
+            $damage = ShellDamageFactory::createOne();
             $url = str_replace('{id}', $damage->getId(), $url);
         }
 
@@ -78,8 +78,8 @@ class ShellDamageControllerTest extends AppWebTestCase
 
     public function testNewShellDamage()
     {
-        $shell = ShellFactory::new()->create();
-        $category = ShellDamageCategoryFactory::new()->create();
+        $shell = ShellFactory::createOne();
+        $category = ShellDamageCategoryFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -138,9 +138,9 @@ class ShellDamageControllerTest extends AppWebTestCase
 
     public function testEditShellDamage()
     {
-        $damage = ShellDamageFactory::new()->create();
-        $shell = ShellFactory::new()->create();
-        $category = ShellDamageCategoryFactory::new()->create();
+        $damage = ShellDamageFactory::createOne();
+        $shell = ShellFactory::createOne();
+        $category = ShellDamageCategoryFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -172,7 +172,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamage()
     {
-        $damage = ShellDamageFactory::new()->create();
+        $damage = ShellDamageFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

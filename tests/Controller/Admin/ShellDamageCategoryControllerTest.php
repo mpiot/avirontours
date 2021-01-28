@@ -43,7 +43,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     public function testAccessDeniedForRegularUser($method, $url)
     {
         if (mb_strpos($url, '{id}')) {
-            $category = ShellDamageCategoryFactory::new()->create();
+            $category = ShellDamageCategoryFactory::createOne();
             $url = str_replace('{id}', $category->getId(), $url);
         }
 
@@ -120,7 +120,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
     public function testEditShellDamageCategory()
     {
-        $category = ShellDamageCategoryFactory::new()->create();
+        $category = ShellDamageCategoryFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -144,7 +144,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamageCategory()
     {
-        $category = ShellDamageCategoryFactory::new()->create();
+        $category = ShellDamageCategoryFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

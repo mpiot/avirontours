@@ -25,20 +25,22 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                      PhysicalQualities|Proxy findOrCreate(array $attributes)
- * @method static                      PhysicalQualities|Proxy random()
- * @method static                      PhysicalQualities[]|Proxy[] randomSet(int $number)
- * @method static                      PhysicalQualities[]|Proxy[] randomRange(int $min, int $max)
- * @method static                      PhysicalQualitiesRepository|RepositoryProxy repository()
- * @method PhysicalQualities|Proxy     create($attributes = [])
- * @method PhysicalQualities[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static                  PhysicalQualities|Proxy createOne(array $attributes = [])
+ * @method static                  PhysicalQualities[]|Proxy[] createMany(int $number, $attributes = [])
+ * @method static                  PhysicalQualities|Proxy findOrCreate(array $attributes)
+ * @method static                  PhysicalQualities|Proxy random(array $attributes = [])
+ * @method static                  PhysicalQualities|Proxy randomOrCreate(array $attributes = [])
+ * @method static                  PhysicalQualities[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static                  PhysicalQualities[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static                  PhysicalQualitiesRepository|RepositoryProxy repository()
+ * @method PhysicalQualities|Proxy create($attributes = [])
  */
 final class PhysicalQualitiesFactory extends ModelFactory
 {
     protected function getDefaults(): array
     {
         return [
-            'user' => UserFactory::new()->create(),
+            'user' => UserFactory::new(),
             'proprioception' => self::faker()->numberBetween(0, 20),
             'weightPowerRatio' => self::faker()->numberBetween(0, 20),
             'explosiveStrength' => self::faker()->numberBetween(0, 20),
