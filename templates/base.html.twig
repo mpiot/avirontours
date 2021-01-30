@@ -72,6 +72,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge badge-success">New</span></a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge badge-success">New</span></a>
+                            </li>
                         {% endif %}
 
                         {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
