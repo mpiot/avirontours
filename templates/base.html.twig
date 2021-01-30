@@ -70,10 +70,18 @@
 
                         {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge badge-success">New</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge badge-success">New</span></a>
+                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-training" aria-controls="submenu-training">Entraînements</a>
+                                <div id="submenu-training" class="collapse">
+                                    <ul class="nav nav-small flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge badge-success">New</span></a>
+                                        </li>
+
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge badge-success">New</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         {% endif %}
 
