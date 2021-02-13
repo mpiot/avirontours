@@ -4,12 +4,21 @@
 
     <div class="row">
         <div class="col">
-            {{ form_row(form.duration) }}
-            {{ form_row(form.feeling) }}
+            <div class="form-row">
+                {{ form_errors(form.duration) }}
+                <div class="col">
+                    {{ form_row(form.duration.hours) }}
+                </div>
+                <span style="padding-top: 2.5em;">:</span>
+                <div class="col">
+                    {{ form_row(form.duration.minutes) }}
+                </div>
+            </div>
+            {{ form_row(form.comment) }}
         </div>
         <div class="col">
             {{ form_row(form.distance) }}
-            {{ form_row(form.comment) }}
+            {{ form_row(form.feeling) }}
         </div>
     </div>
 

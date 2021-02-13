@@ -225,9 +225,9 @@ class TrainingControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->eq(0)->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('legend .form-error-message')->eq(1)->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_sport"] .form-error-message')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.form-error-message')->eq(1)->text());
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.form-error-message')->eq(2)->text());
         $this->assertCount(3, $crawler->filter('.form-error-message'));
 
         TrainingFactory::repository()->assertCount(0);
@@ -267,7 +267,7 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="training_trainingPhases_0_intensity"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('legend .form-error-message')->eq(0)->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.form-error-message')->eq(1)->text());
         $this->assertCount(2, $crawler->filter('.form-error-message'));
 
         TrainingFactory::repository()->assertCount(0);

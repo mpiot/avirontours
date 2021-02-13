@@ -56,25 +56,29 @@ class TrainingPhaseType extends AbstractType
                 'with_hours' => true,
                 'with_minutes' => true,
                 'with_seconds' => true,
+                'attr' => [
+                    'data-controller' => 'select2',
+                ],
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
                 'scale' => 1,
                 'attr' => [
                     'step' => 0.1,
+                    'placeholder' => 'En Km',
                 ],
-                'help' => 'En km',
                 'html5' => true,
                 'required' => false,
             ])
             ->add('split', TextType::class, [
                 'label' => 'Split',
-                'help' => '0:00.0',
                 'required' => false,
+                'attr' => [
+                    'placeholder' => '0:00.0',
+                ],
             ])
             ->add('spm', IntegerType::class, [
-                'label' => 'SPM',
-                'help' => 'Cadence',
+                'label' => 'Cadence',
                 'required' => false,
             ])
         ;

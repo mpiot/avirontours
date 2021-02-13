@@ -44,6 +44,9 @@ class TrainingType extends AbstractType
                 'label' => 'Sport',
                 'choices' => Training::getAvailableSports(),
                 'placeholder' => '-- Sélectionner un sport --',
+                'attr' => [
+                    'data-controller' => 'select2',
+                ],
             ])
             ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée',
@@ -64,8 +67,8 @@ class TrainingType extends AbstractType
                 'scale' => 1,
                 'attr' => [
                     'step' => 0.1,
+                    'placeholder' => 'En km',
                 ],
-                'help' => 'En km',
                 'html5' => true,
                 'required' => false,
             ])
@@ -78,6 +81,9 @@ class TrainingType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Commentaire',
                 'required' => false,
+                'attr' => [
+                    'rows' => 1,
+                ],
             ])
             ->add('trainingPhases', CollectionType::class, [
                 'label' => 'Phases',
