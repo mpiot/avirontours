@@ -40,7 +40,7 @@ return new class extends DefaultDeployer
     public function beforeFinishingDeploy()
     {
         $this->log('<h3>Restart PHP FPM for Preloading</>');
-        $this->runRemote('sudo systemctl restart php7.4-fpm');
+        $this->runRemote('sudo systemctl restart php8.0-fpm');
         $this->log('<h3>Migrate the database</>');
         $this->runRemote('{{ console_bin }} doctrine:migration:migrate');
     }
