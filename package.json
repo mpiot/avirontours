@@ -20,7 +20,7 @@
     "license": "UNLICENSED",
     "private": true,
     "scripts": {
-        "dev-server": "encore dev-server --hot --https --disable-host-check --pfx=$HOME/.symfony/certs/default.p12",
+        "dev-server": "encore dev-server --hot --https --pfx=$HOME/.symfony/certs/default.p12",
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
