@@ -9,13 +9,12 @@
 {% block body %}
     <div class="row">
         <div class="col-lg mb-3 mb-lg-0">
-            <div class="card">
-                <h5 class="card-header">
-                    Top distances
-                </h5>
-                <ul class="list-group list-group-flush">
-                    {% for top in topDistances %}
-                        <li class="list-group-item d-flex justify-content-between">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <span class="h4">Top distances</span>
+                    <ul class="list-group list-group-flush">
+                        {% for top in topDistances %}
+                            <li class="list-group-item d-flex justify-content-between">
                             <span>
                                 {% if 1 == loop.index %}
                                     <span class="fas fa-medal" style="color: #FFD700;"></span>
@@ -28,51 +27,51 @@
                                 {{ top.0.fullName }}
                             </span>
 
-                            <span>{{ top.totalDistance }} km</span>
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">Pas d'entrée</li>
-                    {% endfor %}
-                </ul>
+                                <span>{{ top.totalDistance }} km</span>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">Pas d'entrée</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div class="col-lg mb-3 mb-lg-0">
-            <div class="card">
-                <h5 class="card-header">
-                    Top sorties
-                </h5>
-                <ul class="list-group list-group-flush">
-                    {% for top in topSessions %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            <span>
-                                {% if 1 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
-                                {% elseif 2 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
-                                {% elseif 3 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
-                                {% endif %}
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <span class="h4">Top sorties</span>
+                    <ul class="list-group list-group-flush">
+                        {% for top in topSessions %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>
+                                    {% if 1 == loop.index %}
+                                        <span class="fas fa-medal" style="color: #FFD700;"></span>
+                                    {% elseif 2 == loop.index %}
+                                        <span class="fas fa-medal" style="color: #C0C0C0;"></span>
+                                    {% elseif 3 == loop.index %}
+                                        <span class="fas fa-medal" style="color: #CD7F32;"></span>
+                                    {% endif %}
 
-                                {{ top.0.fullName }}
-                            </span>
-                            <span>{{ top.totalSessions }}</span>
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">Pas d'entrée</li>
-                    {% endfor %}
-                </ul>
+                                    {{ top.0.fullName }}
+                                </span>
+                                <span>{{ top.totalSessions }}</span>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">Pas d'entrée</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div class="col-lg">
-            <div class="card">
-                <h5 class="card-header">
-                    Top bâteaux
-                </h5>
-                <ul class="list-group list-group-flush">
-                    {% for top in topShells %}
-                        <li class="list-group-item d-flex justify-content-between">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <span class="h4">Top bâteaux</span>
+                    <ul class="list-group list-group-flush">
+                        {% for top in topShells %}
+                            <li class="list-group-item d-flex justify-content-between">
                             <span>
                                 {% if 1 == loop.index %}
                                     <span class="fas fa-medal" style="color: #FFD700;"></span>
@@ -84,12 +83,13 @@
 
                                 {{ top.0.name }}
                             </span>
-                            <span>{{ top.totalSessions }}</span>
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">Pas d'entrée</li>
-                    {% endfor %}
-                </ul>
+                                <span>{{ top.totalSessions }}</span>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item">Pas d'entrée</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

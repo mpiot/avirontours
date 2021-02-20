@@ -27,95 +27,97 @@
         </div>
     </div>
 
-    <div>
-        <div>Date d'inscription: {{ user.subscriptionDate|date('d/m/Y') }}</div>
-        <div class="mb-3">Nom d'utilisateur: {{ user.username }}</div>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div>Date d'inscription: {{ user.subscriptionDate|date('d/m/Y') }}</div>
+            <div class="mb-3">Nom d'utilisateur: {{ user.username }}</div>
 
-        <div class="row">
-            <div class="col-xl">
-                <div class="card">
-                    <div class="card-header">
-                        Membre
+            <div class="row">
+                <div class="col-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            Membre
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Genre
+                                <span>{{ user.textGender }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Nom
+                                <span>{{ user.fullName }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Date de naissance
+                                <span>{{ user.birthday|date('d/m/Y') }} ({{ user.age }} ans)</span>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            Genre
-                            <span>{{ user.textGender }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Nom
-                            <span>{{ user.fullName }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Date de naissance
-                            <span>{{ user.birthday|date('d/m/Y') }} ({{ user.age }} ans)</span>
-                        </li>
-                    </ul>
+                </div>
+
+                <div class="col-xl mt-3 mt-xl-0">
+                    <div class="card">
+                        <div class="card-header">
+                            Contact
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Email
+                                <span>{{ user.email }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Numéro de téléphone
+                                <span>{{ user.phoneNumber }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Adresse
+                                <span>{{ user.formattedAddress|nl2br }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-xl mt-3 mt-xl-0">
-                <div class="card">
-                    <div class="card-header">
-                        Contact
+            <div class="row mt-3">
+                <div class="col-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            Licence
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Catégorie rameur
+                                <span>{{ user.textRowerCategory }}</span>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            Email
-                            <span>{{ user.email }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Numéro de téléphone
-                            <span>{{ user.phoneNumber }}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between">
-                            Adresse
-                            <span>{{ user.formattedAddress|nl2br }}</span>
-                        </li>
-                    </ul>
                 </div>
-            </div>
-        </div>
 
-        <div class="row mt-3">
-            <div class="col-xl">
-                <div class="card">
-                    <div class="card-header">
-                        Licence
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            Catégorie rameur
-                            <span>{{ user.textRowerCategory }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="col-xl mt-3 mt-xl-0">
-                <div class="card">
-                    <div class="card-header">
-                        Saisons
-                    </div>
-                    <div class="card-body p-0">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Saison</th>
-                                <th>Type certificat</th>
-                                <th>Niveau certificat</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for license in user.licenses %}
+                <div class="col-xl mt-3 mt-xl-0">
+                    <div class="card">
+                        <div class="card-header">
+                            Saisons
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-striped">
+                                <thead>
                                 <tr>
-                                    <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
-                                    <td>{{ license.medicalCertificate.textType }}</td>
-                                    <td>{{ license.medicalCertificate.textLevel }}</td>
+                                    <th>Saison</th>
+                                    <th>Type certificat</th>
+                                    <th>Niveau certificat</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {% for license in user.licenses %}
+                                    <tr>
+                                        <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
+                                        <td>{{ license.medicalCertificate.textType }}</td>
+                                        <td>{{ license.medicalCertificate.textLevel }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

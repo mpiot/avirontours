@@ -11,5 +11,9 @@
 {% block body %}
     <h1>Ajouter un utilisateur</h1>
 
-    {{ include('admin/user/_form.html.twig') }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ include('admin/user/_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

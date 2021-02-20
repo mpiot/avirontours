@@ -22,3 +22,7 @@ $('.custom-file-input').on('change', function(event) {
         .find('.custom-file-label')
         .html(inputFile.files[0].name);
 });
+
+$(document).ready(() => {
+    $('.toast').toast('show');
+});

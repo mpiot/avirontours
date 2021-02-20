@@ -10,86 +10,90 @@
 {% block body %}
     <h1>Inscription à Aviron Tours</h1>
 
-    {{ form_start(form) }}
-        <div class="row">
-            <div class="col-xl">
-                <div class="card">
-                    <div class="card-header">
-                        Membre
-                    </div>
-                    <div class="card-body">
-                        {{ form_row(form.gender) }}
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.firstName) }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            Membre
+                        </div>
+                        <div class="card-body">
+                            {{ form_row(form.gender) }}
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_row(form.firstName) }}
+                                </div>
+                                <div class="col">
+                                    {{ form_row(form.lastName) }}
+                                </div>
                             </div>
-                            <div class="col">
-                                {{ form_row(form.lastName) }}
+                            {{ form_row(form.email) }}
+                            {{ form_row(form.phoneNumber) }}
+                            {{ form_row(form.plainPassword) }}
+                            {{ form_row(form.birthday) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl mt-3 mt-xl-0">
+                    <div class="card">
+                        <div class="card-header">
+                            Adresse
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_row(form.address.laneNumber) }}
+                                </div>
+                                <div class="col">
+                                    {{ form_row(form.address.laneType) }}
+                                </div>
+                                <div class="col">
+                                    {{ form_row(form.address.laneName) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    {{ form_row(form.address.postalCode) }}
+                                </div>
+                                <div class="col">
+                                    {{ form_row(form.address.city) }}
+                                </div>
                             </div>
                         </div>
-                        {{ form_row(form.email) }}
-                        {{ form_row(form.phoneNumber) }}
-                        {{ form_row(form.plainPassword) }}
-                        {{ form_row(form.birthday) }}
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            Certificat médical
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info" role="alert">
+                                <span class="fas fa-info-circle"></span> Le document à fournir lors de l'inscription doit
+                                être un <b>certificat médical</b> de moins d'un an. Les questionnaires santés ne sont
+                                valables que lors du renouvellement de licence au sein du club.
+                            </div>
+
+                            {{ form_row(form.medicalCertificate) }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl mt-3 mt-xl-0">
-                <div class="card">
-                    <div class="card-header">
-                        Adresse
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.address.laneNumber) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.address.laneType) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.address.laneName) }}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.address.postalCode) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.address.city) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-header">
-                        Certificat médical
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-info" role="alert">
-                            <span class="fas fa-info-circle"></span> Le document à fournir lors de l'inscription doit
-                            être un <b>certificat médical</b> de moins d'un an. Les questionnaires santés ne sont
-                            valables que lors du renouvellement de licence au sein du club.
-                        </div>
-
-                        {{ form_row(form.medicalCertificate) }}
-                    </div>
-                </div>
+            <div class="mt-3">
+                {{ form_row(form.federationEmailAllowed) }}
+                {{ form_row(form.clubEmailAllowed) }}
+                {{ form_row(form.partnersEmailAllowed) }}
             </div>
-        </div>
 
-        <div class="mt-3">
-            {{ form_row(form.federationEmailAllowed) }}
-            {{ form_row(form.clubEmailAllowed) }}
-            {{ form_row(form.partnersEmailAllowed) }}
-        </div>
+            <div class="mt-3">
+                {{ form_row(form.agreeSwim) }}
+            </div>
 
-        <div class="mt-3">
-            {{ form_row(form.agreeSwim) }}
+            <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
+            {{ form_end(form) }}
         </div>
-
-        <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}

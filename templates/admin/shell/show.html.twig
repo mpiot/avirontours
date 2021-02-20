@@ -27,32 +27,36 @@
         </div>
     </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ shell.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ shell.name }}</td>
-            </tr>
-            <tr>
-                <th>NumberRowers</th>
-                <td>{{ shell.numberRowers }}</td>
-            </tr>
-            <tr>
-                <th>Coxed</th>
-                <td>{{ shell.coxed ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>RowingType</th>
-                <td>{{ shell.rowingType }}</td>
-            </tr>
-            <tr>
-                <th>Yolette</th>
-                <td>{{ shell.yolette ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ shell.id }}</td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ shell.name }}</td>
+                </tr>
+                <tr>
+                    <th>NumberRowers</th>
+                    <td>{{ shell.numberRowers }}</td>
+                </tr>
+                <tr>
+                    <th>Coxed</th>
+                    <td>{{ shell.coxed ? 'Yes' : 'No' }}</td>
+                </tr>
+                <tr>
+                    <th>RowingType</th>
+                    <td>{{ shell.rowingType }}</td>
+                </tr>
+                <tr>
+                    <th>Yolette</th>
+                    <td>{{ shell.yolette ? 'Yes' : 'No' }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

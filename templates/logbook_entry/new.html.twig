@@ -11,17 +11,21 @@
 {% block body %}
     <h1>Ajouter une sortie</h1>
 
-    {{ form_start(form) }}
-        {{ form_row(form.shell) }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_row(form.shell) }}
 
-        {{ form_row(form.crewMembers) }}
+                {{ form_row(form.crewMembers) }}
 
-        {% if form.nonUserCrewMembers is defined %}
-            {{ form_row(form.nonUserCrewMembers) }}
-        {% endif %}
+                {% if form.nonUserCrewMembers is defined %}
+                    {{ form_row(form.nonUserCrewMembers) }}
+                {% endif %}
 
-        {{ form_row(form.startAt) }}
+                {{ form_row(form.startAt) }}
 
-        <button class="btn btn-primary">Sauver</button>
-    {{ form_end(form) }}
+                <button class="btn btn-primary">Sauver</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

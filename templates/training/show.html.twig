@@ -30,56 +30,66 @@
         </div>
     </div>
 
-    <div class="d-flex h2 mt-3 bg-light p-5">
-        <div>
-            <span class="far fa-clock text-info"></span> {{ training.duration.format('%H:%I') }}
-        </div>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="d-flex h2 mt-3 bg-light p-5">
+                <div>
+                    <span class="far fa-clock text-info"></span> {{ training.duration.format('%H:%I') }}
+                </div>
 
-        <div class="ml-4 pl-4 border-left">
-            <span class="fas fa-ruler text-info"></span> {{ training.distance ? training.distance|format_number : '-' }} km
-        </div>
+                <div class="ml-4 pl-4 border-left">
+                    <span class="fas fa-ruler text-info"></span> {{ training.distance ? training.distance|format_number : '-' }} km
+                </div>
 
-        <div class="ml-4 pl-4 border-left">
-            <span class="fas fa-spa text-info"></span> {{ training.textFeeling ?? '-'}}
+                <div class="ml-4 pl-4 border-left">
+                    <span class="fas fa-spa text-info"></span> {{ training.textFeeling ?? '-'}}
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-6">
-            <blockquote class="blockquote">
-                <p class="mb-0">Commentaire:</p>
-                <p class="mb-0">{{ training.comment ? training.comment|nl2br : '-' }}</p>
-            </blockquote>
+    {% if training.comment is not null %}
+        <div class="card border-0 shadow mt-3">
+            <div class="card-body">
+                <span class="h4">Commentaire</span>
+                <blockquote class="blockquote">
+                    <p class="mb-0">{{ training.comment|nl2br }}</p>
+                </blockquote>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if not training.trainingPhases.empty%}
-        <h4>Phases</h4>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nom</th>
-                <th scope="col">Intensité</th>
-                <th scope="col">Durée</th>
-                <th scope="col">Distance</th>
-                <th scope="col">Split</th>
-                <th scope="col">SPM</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for phase in training.trainingPhases %}
-            <tr>
-                <th scope="row">{{ loop.index }}</th>
-                <td>{{ phase.name }}</td>
-                <td>{{ phase.textIntensity }}</td>
-                <td>{{ phase.duration.format('%H:%I:%S') }}</td>
-                <td>{{ phase.distance ? phase.distance|format_number ~ ' km' }}</td>
-                <td>{{ phase.split }}</td>
-                <td>{{ phase.spm }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <div class="card border-0 shadow mt-3">
+            <div class="card-body">
+                <span class="h4">Phases</span>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Intensité</th>
+                        <th scope="col">Durée</th>
+                        <th scope="col">Distance</th>
+                        <th scope="col">Split</th>
+                        <th scope="col">SPM</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for phase in training.trainingPhases %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ phase.name }}</td>
+                            <td>{{ phase.textIntensity }}</td>
+                            <td>{{ phase.duration.format('%H:%I:%S') }}</td>
+                            <td>{{ phase.distance ? phase.distance|format_number ~ ' km' }}</td>
+                            <td>{{ phase.split }}</td>
+                            <td>{{ phase.spm }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

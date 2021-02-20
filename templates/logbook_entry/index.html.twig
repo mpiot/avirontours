@@ -22,75 +22,79 @@
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Bâteau</th>
-                <th>Equipage</th>
-                <th>Date</th>
-                <th>Départ</th>
-                <th>Retour</th>
-                <th>Distance</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for logbook_entry in logbook_entries %}
-                <tr>
-                    <td>{{ logbook_entry.shell.fullName }}</td>
-                    <td>
-                        {% if logbook_entry.nonUserCrewMembers is empty %}
-                            {{ logbook_entry.crewMembers|join(', ', ' et ') }}
-                        {% elseif logbook_entry.crewMembers is empty %}
-                            {%- for member in logbook_entry.nonUserCrewMembers -%}
-                                {% if not loop.first and logbook_entry.crewMembers is empty %}
-                                    {%- if loop.last %} et {% else %}, {% endif -%}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Bâteau</th>
+                        <th>Equipage</th>
+                        <th>Date</th>
+                        <th>Départ</th>
+                        <th>Retour</th>
+                        <th>Distance</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for logbook_entry in logbook_entries %}
+                        <tr>
+                            <td>{{ logbook_entry.shell.fullName }}</td>
+                            <td>
+                                {% if logbook_entry.nonUserCrewMembers is empty %}
+                                    {{ logbook_entry.crewMembers|join(', ', ' et ') }}
+                                {% elseif logbook_entry.crewMembers is empty %}
+                                    {%- for member in logbook_entry.nonUserCrewMembers -%}
+                                        {% if not loop.first and logbook_entry.crewMembers is empty %}
+                                            {%- if loop.last %} et {% else %}, {% endif -%}
+                                        {% endif %}
+                                        <b title="Non utilisateur">{{- member -}}</b>
+                                    {%- endfor -%}
+                                {% else %}
+                                    {{- logbook_entry.crewMembers|join(', ') -}}
+
+                                    {%- for member in logbook_entry.nonUserCrewMembers -%}
+                                        {%- if loop.last %} et {% else %}, {% endif -%}
+                                        <b title="Non utilisateur">{{- member -}}</b>
+                                    {%- endfor -%}
                                 {% endif %}
-                                <b title="Non utilisateur">{{- member -}}</b>
-                            {%- endfor -%}
-                        {% else %}
-                            {{- logbook_entry.crewMembers|join(', ') -}}
+                            </td>
+                            <td>{{ logbook_entry.date|date('d/m/Y') }}</td>
+                            <td>{{ logbook_entry.startAt|date('H:i') }}</td>
+                            <td>{{ logbook_entry.endAt ? logbook_entry.endAt|date('H:i') }}</td>
+                            <td>
+                                {% if logbook_entry.coveredDistance %}
+                                    {{ logbook_entry.coveredDistance }} km
+                                {% endif %}
+                            </td>
+                            <td class="text-right">
+                                {% if logbook_entry.endAt is null %}
+                                    <a class="btn btn-success btn-sm rounded-pill"
+                                       href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
+                                        <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
+                                    </a>
+                                {% endif %}
+                                {% if is_granted('ROLE_LOGBOOK_ADMIN') %}
+                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                       href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
+                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Pas de sortie</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-                            {%- for member in logbook_entry.nonUserCrewMembers -%}
-                                {%- if loop.last %} et {% else %}, {% endif -%}
-                                <b title="Non utilisateur">{{- member -}}</b>
-                            {%- endfor -%}
-                        {% endif %}
-                    </td>
-                    <td>{{ logbook_entry.date|date('d/m/Y') }}</td>
-                    <td>{{ logbook_entry.startAt|date('H:i') }}</td>
-                    <td>{{ logbook_entry.endAt ? logbook_entry.endAt|date('H:i') }}</td>
-                    <td>
-                        {% if logbook_entry.coveredDistance %}
-                            {{ logbook_entry.coveredDistance }} km
-                        {% endif %}
-                    </td>
-                    <td class="text-right">
-                        {% if logbook_entry.endAt is null %}
-                            <a class="btn btn-success btn-sm rounded-pill"
-                               href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
-                                <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
-                            </a>
-                        {% endif %}
-                        {% if is_granted('ROLE_LOGBOOK_ADMIN') %}
-                            <a class="btn btn-outline-warning btn-sm rounded-pill"
-                               href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
-                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7" class="text-center">Pas de sortie</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        {% if logbook_entries|length < logbook_entries.totalItemCount %}
-            {{ knp_pagination_render(logbook_entries) }}
-        {% endif %}
+                {% if logbook_entries|length < logbook_entries.totalItemCount %}
+                    {{ knp_pagination_render(logbook_entries) }}
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}

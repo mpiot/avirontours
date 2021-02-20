@@ -12,5 +12,9 @@
 {% block body %}
     <h1>Ajouter un entraînement</h1>
 
-    {{ include('training/_form.html.twig') }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ include('training/_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

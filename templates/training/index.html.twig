@@ -16,41 +16,45 @@
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Sport</th>
-                <th>Durée</th>
-                <th>Distance</th>
-                <th>Commentaire</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for training in trainings %}
-                <tr>
-                    <td>{{ training.trainedAt|date('d/m/Y - H:i') }}</td>
-                    <td>
-                        <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.textSport }}</a>
-                    </td>
-                    <td>{{ training.duration.format('%H:%I') }}</td>
-                    <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
-                    <td>{{ training.comment|u.truncate(25, '...') }}</td>
-                    <td class="text-right">
-                        <a class="btn btn-outline-warning btn-sm rounded-pill"
-                           href="{{ path('training_edit', {'id': training.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center">Pas d'entraînements</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Sport</th>
+                        <th>Durée</th>
+                        <th>Distance</th>
+                        <th>Commentaire</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for training in trainings %}
+                        <tr>
+                            <td>{{ training.trainedAt|date('d/m/Y - H:i') }}</td>
+                            <td>
+                                <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.textSport }}</a>
+                            </td>
+                            <td>{{ training.duration.format('%H:%I') }}</td>
+                            <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
+                            <td>{{ training.comment|u.truncate(25, '...') }}</td>
+                            <td class="text-right">
+                                <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                   href="{{ path('training_edit', {'id': training.id}) }}">
+                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Pas d'entraînements</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}

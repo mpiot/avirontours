@@ -12,5 +12,9 @@
 {% block body %}
     <h1>Ajouter une saison</h1>
 
-    {{ include('admin/season/_form.html.twig') }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ include('admin/season/_form.html.twig') }}
+        </div>
+    </div>
 {% endblock %}

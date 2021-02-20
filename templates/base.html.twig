@@ -74,11 +74,11 @@
                                 <div id="submenu-training" class="collapse">
                                     <ul class="nav nav-small flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge badge-success">New</span></a>
+                                            <a class="nav-link d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge badge-success ml-auto">New</span></a>
                                         </li>
 
                                         <li class="nav-item">
-                                            <a class="nav-link" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge badge-success">New</span></a>
+                                            <a class="nav-link d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge badge-success">New</span></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -148,15 +148,38 @@
                 {% endif %}
 
                 <div class="container-fluid my-3">
-                    {# List flashes messages#}
-                    {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ label }} alert-dismissible d-print-none" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                {{ message|trans }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
+                    {# List flashes messages #}
+                    <div aria-live="polite" aria-atomic="true" class="toast-container">
+                        <div class="toast-wrapper">
+                            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
+                                {% for message in messages %}
+                                    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast border-{{ label }}" data-delay="{{ 'danger' == label ? '10000' : '5000' }}">
+                                        <div class="toast-body d-flex align-items-start">
+                                            <div class="text-{{ label }} align-self-center">
+                                                {% if 'success' == label %}
+                                                    <span class="fas fa-check-circle"></span>
+                                                {% elseif 'info' == label %}
+                                                    <span class="fas fa-question-circle"></span>
+                                                {% elseif 'warning' == label %}
+                                                    <span class="fas fa-exclamation-circle"></span>
+                                                {% elseif 'danger' == label %}
+                                                    <span class="fas fa-times-circle"></span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="ml-3">
+                                                {{ message|trans }}
+                                            </div>
+                                            <div class="ml-auto">
+                                                <button type="button" class="ml-auto mb-1 close" data-dismiss="toast" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
 
                     {% block body %}{% endblock %}
                 </div>

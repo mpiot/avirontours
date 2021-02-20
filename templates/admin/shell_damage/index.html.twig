@@ -16,59 +16,63 @@
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Priorité</th>
-                <th>Bâteau</th>
-                <th>Catégorie</th>
-                <th>Description</th>
-                <th>Crée le</th>
-                <th>Début réparation</th>
-                <th>Fin réparation</th>
-                {% if is_granted('ROLE_MATERIAL_ADMIN') %}
-                    <th></th>
-                {% endif %}
-            </tr>
-            </thead>
-            <tbody>
-            {% for shell_damage in shell_damages %}
-                <tr>
-                    <td>
-                        {% if shell_damage.repairEndAt %}
-                            <span class="badge badge-success">Terminé</span>
-                        {% elseif constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage.category.priority  %}
-                            <span class="badge badge-danger">Importante</span>
-                        {% else %}
-                            <span class="badge badge-warning">Intermédiaire</span>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Priorité</th>
+                        <th>Bâteau</th>
+                        <th>Catégorie</th>
+                        <th>Description</th>
+                        <th>Crée le</th>
+                        <th>Début réparation</th>
+                        <th>Fin réparation</th>
+                        {% if is_granted('ROLE_MATERIAL_ADMIN') %}
+                            <th></th>
                         {% endif %}
-                    </td>
-                    <td>{{ shell_damage.shell.fullName }}</td>
-                    <td>{{ shell_damage.category.name }}</td>
-                    <td title="{{ shell_damage.description }}">{{ shell_damage.description|u.truncate(30, '...') }}</td>
-                    <td>{{ shell_damage.createdAt|date('d/m/Y') }}</td>
-                    <td>{{ shell_damage.repairStartAt ? shell_damage.repairStartAt|date('d/m/Y') }}</td>
-                    <td>{{ shell_damage.repairEndAt ? shell_damage.repairEndAt|date('d/m/Y') }}</td>
-                    {% if is_granted('ROLE_MATERIAL_ADMIN') %}
-                        <td class="text-right">
-                            <a class="btn btn-outline-warning btn-sm rounded-pill"
-                               href="{{ path('shell_damage_edit', {'id': shell_damage.id}) }}">
-                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                            </a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="8" class="text-center">Pas d'avarie</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for shell_damage in shell_damages %}
+                        <tr>
+                            <td>
+                                {% if shell_damage.repairEndAt %}
+                                    <span class="badge badge-success">Terminé</span>
+                                {% elseif constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage.category.priority  %}
+                                    <span class="badge badge-danger">Importante</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Intermédiaire</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ shell_damage.shell.fullName }}</td>
+                            <td>{{ shell_damage.category.name }}</td>
+                            <td title="{{ shell_damage.description }}">{{ shell_damage.description|u.truncate(30, '...') }}</td>
+                            <td>{{ shell_damage.createdAt|date('d/m/Y') }}</td>
+                            <td>{{ shell_damage.repairStartAt ? shell_damage.repairStartAt|date('d/m/Y') }}</td>
+                            <td>{{ shell_damage.repairEndAt ? shell_damage.repairEndAt|date('d/m/Y') }}</td>
+                            {% if is_granted('ROLE_MATERIAL_ADMIN') %}
+                                <td class="text-right">
+                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                       href="{{ path('shell_damage_edit', {'id': shell_damage.id}) }}">
+                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    </a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">Pas d'avarie</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
 
-        {% if shell_damages|length < shell_damages.totalItemCount %}
-            {{ knp_pagination_render(shell_damages) }}
-        {% endif %}
+                {% if shell_damages|length < shell_damages.totalItemCount %}
+                    {{ knp_pagination_render(shell_damages) }}
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}

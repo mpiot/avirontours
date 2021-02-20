@@ -13,13 +13,17 @@
         <h1>1RM de {{ user.fullname }}</h1>
     </div>
 
-    {{ form_start(form) }}
-        {{ form_row(form.rowingTirage) }}
-        {{ form_row(form.benchPress) }}
-        {{ form_row(form.squat) }}
-        {{ form_row(form.legPress) }}
-        {{ form_row(form.clean) }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ form_start(form) }}
+            {{ form_row(form.rowingTirage) }}
+            {{ form_row(form.benchPress) }}
+            {{ form_row(form.squat) }}
+            {{ form_row(form.legPress) }}
+            {{ form_row(form.clean) }}
 
-        <button class="btn btn-primary mt-3">Sauver</button>
-    {{ form_end(form) }}
+            <button class="btn btn-primary mt-3">Sauver</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

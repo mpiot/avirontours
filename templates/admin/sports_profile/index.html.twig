@@ -10,61 +10,65 @@
 {% block body %}
     <h1>Gestion des profils sportifs</h1>
 
-    <form method="get">
-        <div class="form-row align-items-center">
-            <div class="col-md-auto col-sm-12 ml-auto">
-                <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text"><span class="fa fa-search"></span></div>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <form method="get">
+                <div class="form-row align-items-center">
+                    <div class="col-md-auto col-sm-12 ml-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><span class="fa fa-search"></span></div>
+                            </div>
+                            <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
+                        </div>
                     </div>
-                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
                 </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>
+                                {{ user.fullName }}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-danger" href="{{ path('sports_profile_physiology', { 'id': user.id }) }}">
+                                    <span class="fas fa-heartbeat"></span> Physiologie
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-info" href="{{ path('sports_profile_anatomy', { 'id': user.id }) }}">
+                                    <span class="fas fa-child"></span> Anatomie
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-success" href="{{ path('sports_profile_physical_qualities', { 'id': user.id }) }}">
+                                    <span class="fas fa-balance-scale"></span> Qualités physiques
+                                </a>
+
+                                <a class="btn btn-sm btn-outline-secondary" href="{{ path('sports_profile_workout_maximum_load', { 'id': user.id }) }}">
+                                    <span class="fas fa-dumbbell"></span> 1RM
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center">Pas d'utilisateur</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if users|length < users.totalItemCount %}
+                    {{ knp_pagination_render(users) }}
+                {% endif %}
             </div>
         </div>
-    </form>
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>
-                        {{ user.fullName }}
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-outline-danger" href="{{ path('sports_profile_physiology', { 'id': user.id }) }}">
-                            <span class="fas fa-heartbeat"></span> Physiologie
-                        </a>
-
-                        <a class="btn btn-sm btn-outline-info" href="{{ path('sports_profile_anatomy', { 'id': user.id }) }}">
-                            <span class="fas fa-child"></span> Anatomie
-                        </a>
-
-                        <a class="btn btn-sm btn-outline-success" href="{{ path('sports_profile_physical_qualities', { 'id': user.id }) }}">
-                            <span class="fas fa-balance-scale"></span> Qualités physiques
-                        </a>
-
-                        <a class="btn btn-sm btn-outline-secondary" href="{{ path('sports_profile_workout_maximum_load', { 'id': user.id }) }}">
-                            <span class="fas fa-dumbbell"></span> 1RM
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="2" class="text-center">Pas d'utilisateur</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        {% if users|length < users.totalItemCount %}
-            {{ knp_pagination_render(users) }}
-        {% endif %}
     </div>
 {% endblock %}

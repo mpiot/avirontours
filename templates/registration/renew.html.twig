@@ -23,48 +23,52 @@
         </a>
     </div>
 
-    {{ form_start(form) }}
-        <div class="card mt-3">
-            <div class="card-header">
-                Certificat médical ou attestation
-            </div>
-            <div class="card-body">
-                {{ form_row(form.medicalCertificate.type) }}
-                {{ form_row(form.medicalCertificate.level) }}
-                {{ form_row(form.medicalCertificate.date) }}
+    <div class="card border-0 shadow mt-3">
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="card mt-3">
+                <div class="card-header">
+                    Certificat médical ou attestation
+                </div>
+                <div class="card-body">
+                    {{ form_row(form.medicalCertificate.type) }}
+                    {{ form_row(form.medicalCertificate.level) }}
+                    {{ form_row(form.medicalCertificate.date) }}
 
-                {{ form_row(form.medicalCertificate.file) }}
+                    {{ form_row(form.medicalCertificate.file) }}
 
-                <div>
-                    <ul>
-                        <li>
-                            <a href="{{ asset('files/cerfa-15699-01-1-questionnaire-de-sante-qs-sport.pdf') }}">
-                                <span class="far fa-file-pdf"></span> Questionnaire santé
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport-pdf.pdf') }}">
-                                <span class="far fa-file-pdf"></span> Attestation questionnaire santé
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport.docx') }}">
-                                <span class="far fa-file-word"></span> Attestation questionnaire santé (Word)
-                            </a>
-                        </li>
-                    </ul>
+                    <div>
+                        <ul>
+                            <li>
+                                <a href="{{ asset('files/cerfa-15699-01-1-questionnaire-de-sante-qs-sport.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport-pdf.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport.docx') }}">
+                                    <span class="far fa-file-word"></span> Attestation questionnaire santé (Word)
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="mt-3">
-            {{ form_row(form.federationEmailAllowed) }}
-        </div>
+            <div class="mt-3">
+                {{ form_row(form.federationEmailAllowed) }}
+            </div>
 
-        <div class="mt-3">
-            {{ form_row(form.agreeSwim) }}
-        </div>
+            <div class="mt-3">
+                {{ form_row(form.agreeSwim) }}
+            </div>
 
-        <button class="btn btn-primary mt-3">S'inscrire</button>
-    {{ form_end(form) }}
+            <button class="btn btn-primary mt-3">S'inscrire</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

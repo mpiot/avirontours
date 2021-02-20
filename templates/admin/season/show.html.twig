@@ -27,194 +27,206 @@
         </div>
     </div>
 
-    <div class="accordion mb-3" id="categories-list">
-        <div class="card">
-            <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
-                <span class="h5">Catégories</span>
-            </div>
+    <div class="card border-0 shadow mb-3">
+        <div class="card-body">
+            <div class="accordion" id="categories-list">
+                <div class="card">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
+                        <span class="h5">Catégories</span>
+                    </div>
 
-            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories-list">
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories-list">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Prix</th>
+                                        <th>Type de licence</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for category in season.seasonCategories %}
+                                        <tr>
+                                            <td>{{ category.name }}</td>
+                                            <td>{{ category.price }} €</td>
+                                            <td>{{ category.textLicenseType }}</td>
+                                            <td></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow mb-3">
+        <div class="card-body">
+            <div class="accordion" id="statistics">
+                <div class="card">
+                    <div class="card-header" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="headingTwo">
+                        <span class="h5">Statistiques</span>
+                    </div>
+
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#statistics">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Nombre</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Attente de paiement et certificat médical</td>
+                                            <td>{{ statistics.waitAll }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Attente de paiement</td>
+                                            <td>{{ statistics.waitPaymentValidation }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Attente de certificat médical</td>
+                                            <td>{{ statistics.waitMedicalCertificateValidation }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Attente de validation fédéral</td>
+                                            <td>{{ statistics.waitValidation }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Certificat médical rejeté</td>
+                                            <td>{{ statistics.medicalCertificateRejected }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Validé</td>
+                                            <td>{{ statistics.validated }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Licences</td>
+                                            <td>{{ statistics.total }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow mb-3">
+        <div class="card-body">
+            <div class="card mt-3">
+                <div class="card-header d-flex">
+                    <span class="h5 align-self-center">Licences</span>
+
+                    <a href="{{ path('license_new', { 'season_id': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+                        <span class="fas fa-plus"></span> Ajouter une licence
+                    </a>
+                </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="d-flex">
+                        <div class="align-self-center">
+                            <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-success">
+                                <span class="fas fa-file-medical-alt"></span> Valider les certificats
+                            </a>
+
+                            <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                                <span class="fas fa-file-export"></span> Exporter les contacts
+                            </a>
+
+                            <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                                <span class="fas fa-file-export"></span> Exporter les licences
+                            </a>
+                        </div>
+
+                        <form method="get" class="ml-auto">
+                            <div class="form-row">
+                                <div class="col-md-auto col-sm-12 ml-auto align-self-center">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><span class="fa fa-search"></span></div>
+                                        </div>
+                                        <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive mt-3">
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th>Nom</th>
-                                <th>Prix</th>
-                                <th>Type de licence</th>
+                                <th>Type</th>
+                                <th>Level</th>
+                                <th>Status de la licence</th>
+                                <th>Certificat</th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for category in season.seasonCategories %}
+                            {% for license in licenses %}
                                 <tr>
-                                    <td>{{ category.name }}</td>
-                                    <td>{{ category.price }} €</td>
-                                    <td>{{ category.textLicenseType }}</td>
-                                    <td></td>
+                                    <td>
+                                        <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
+                                    </td>
+                                    <td>{{ license.medicalCertificate.textType }}</td>
+                                    <td>{{ license.medicalCertificate.textLevel }}</td>
+                                    <td>
+                                        {% for place in workflow_marked_places(license)  %}
+                                            <div>
+                                                <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }}">
+                                                    {{ workflow_metadata(license, 'title', place) }}
+                                                </span>
+                                            </div>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}">
+                                            <span class="far fa-file-pdf"></span> Certificat
+                                        </a>
+                                    </td>
+                                    <td class="d-flex justify-content-end align-items-center">
+                                        <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
+                                            <div class="btn-group-vertical btn-group-sm mr-3" role="group">
+                                                {% for transition in workflow_transitions(license) %}
+                                                    <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
+                                                        {{ workflow_metadata(license, 'title', transition) }}
+                                                    </button>
+                                                {% endfor %}
+                                            </div>
+                                        </form>
+
+                                        <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                           href="{{ path('license_edit', {'season_id': license.seasonCategory.season.id, 'id': license.id}) }}">
+                                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">Pas de licence</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
+
+                        {% if licenses|length < licenses.totalItemCount %}
+                            {{ knp_pagination_render(licenses) }}
+                        {% endif %}
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="accordion mb-3" id="statistics">
-        <div class="card">
-            <div class="card-header" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="headingTwo">
-                <span class="h5">Statistiques</span>
-            </div>
-
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#statistics">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Status</th>
-                                <th>Nombre</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Attente de paiement et certificat médical</td>
-                                    <td>{{ statistics.waitAll }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de paiement</td>
-                                    <td>{{ statistics.waitPaymentValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de certificat médical</td>
-                                    <td>{{ statistics.waitMedicalCertificateValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de validation fédéral</td>
-                                    <td>{{ statistics.waitValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Certificat médical rejeté</td>
-                                    <td>{{ statistics.medicalCertificateRejected }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Validé</td>
-                                    <td>{{ statistics.validated }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Total Licences</td>
-                                    <td>{{ statistics.total }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-header d-flex">
-            <span class="h5 align-self-center">Licences</span>
-
-            <a href="{{ path('license_new', { 'season_id': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
-                <span class="fas fa-plus"></span> Ajouter une licence
-            </a>
-        </div>
-        <div class="card-body">
-            <div class="d-flex">
-                <div class="align-self-center">
-                    <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-success">
-                        <span class="fas fa-file-medical-alt"></span> Valider les certificats
-                    </a>
-
-                    <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                        <span class="fas fa-file-export"></span> Exporter les contacts
-                    </a>
-
-                    <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                        <span class="fas fa-file-export"></span> Exporter les licences
-                    </a>
-                </div>
-
-                <form method="get" class="ml-auto">
-                    <div class="form-row">
-                        <div class="col-md-auto col-sm-12 ml-auto align-self-center">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><span class="fa fa-search"></span></div>
-                                </div>
-                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="table-responsive mt-3">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Level</th>
-                        <th>Status de la licence</th>
-                        <th>Certificat</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for license in licenses %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
-                            </td>
-                            <td>{{ license.medicalCertificate.textType }}</td>
-                            <td>{{ license.medicalCertificate.textLevel }}</td>
-                            <td>
-                                {% for place in workflow_marked_places(license)  %}
-                                    <div>
-                                        <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }}">
-                                            {{ workflow_metadata(license, 'title', place) }}
-                                        </span>
-                                    </div>
-                                {% endfor %}
-                            </td>
-                            <td>
-                                <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}">
-                                    <span class="far fa-file-pdf"></span> Certificat
-                                </a>
-                            </td>
-                            <td class="d-flex justify-content-end align-items-center">
-                                <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
-                                    <div class="btn-group-vertical btn-group-sm mr-3" role="group">
-                                        {% for transition in workflow_transitions(license) %}
-                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
-                                                {{ workflow_metadata(license, 'title', transition) }}
-                                            </button>
-                                        {% endfor %}
-                                    </div>
-                                </form>
-
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('license_edit', {'season_id': license.seasonCategory.season.id, 'id': license.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Pas de licence</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-
-                {% if licenses|length < licenses.totalItemCount %}
-                    {{ knp_pagination_render(licenses) }}
-                {% endif %}
             </div>
         </div>
     </div>

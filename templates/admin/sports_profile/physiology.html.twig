@@ -13,22 +13,26 @@
         <h1>Physiologie de {{ user.fullname }}</h1>
     </div>
 
-    {{ form_start(form) }}
-        <div class="row">
-            <div class="col-sm-6">
-                {{ form_row(form.lightAerobicHeartRateMin) }}
-                {{ form_row(form.heavyAerobicHeartRateMin) }}
-                {{ form_row(form.anaerobicThresholdHeartRateMin) }}
-                {{ form_row(form.oxygenTransportationHeartRateMin) }}
-                {{ form_row(form.anaerobicHeartRateMin) }}
-                {{ form_row(form.maximumHeartRate) }}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-sm-6">
+                    {{ form_row(form.lightAerobicHeartRateMin) }}
+                    {{ form_row(form.heavyAerobicHeartRateMin) }}
+                    {{ form_row(form.anaerobicThresholdHeartRateMin) }}
+                    {{ form_row(form.oxygenTransportationHeartRateMin) }}
+                    {{ form_row(form.anaerobicHeartRateMin) }}
+                    {{ form_row(form.maximumHeartRate) }}
+                </div>
+
+                <div class="col-sm-6">
+                    {{ form_row(form.maximumOxygenConsumption) }}
+                </div>
             </div>
 
-            <div class="col-sm-6">
-                {{ form_row(form.maximumOxygenConsumption) }}
-            </div>
+            <button class="btn btn-primary mt-3">Sauver</button>
+            {{ form_end(form) }}
         </div>
-
-        <button class="btn btn-primary mt-3">Sauver</button>
-    {{ form_end(form) }}
+    </div>
 {% endblock %}

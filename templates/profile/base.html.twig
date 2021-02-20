@@ -1,21 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <nav class="nav nav-pills nav-justified mb-3 d-xl-none">
-        <a class="nav-link{{ 'profile_show' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_show') }}">
-            <span class="fas fa-user" aria-hidden="true"></span> Mon profil
-        </a>
-        <a class="nav-link{{ 'profile_edit_password' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_edit_password') }}">
-            <span class="fas fa-key" aria-hidden="true"></span> Modifier mon mot de passe
-        </a>
-        <a class="nav-link{{ 'profile_edit' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_edit') }}">
-            <span class="fas fa-pencil-alt" aria-hidden="true"></span> Modifier mon profil
-        </a>
-    </nav>
-
-    <div class="row">
-        <div class="col-3 d-none d-xl-block">
-            <div class="nav flex-column nav-pills" role="tablist">
+    <div class="card border-0 shadow mb-3 d-xl-none">
+        <div class="card-body">
+            <nav class="nav nav-pills nav-justified">
                 <a class="nav-link{{ 'profile_show' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_show') }}">
                     <span class="fas fa-user" aria-hidden="true"></span> Mon profil
                 </a>
@@ -25,12 +13,35 @@
                 <a class="nav-link{{ 'profile_edit' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_edit') }}">
                     <span class="fas fa-pencil-alt" aria-hidden="true"></span> Modifier mon profil
                 </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 d-none d-xl-block">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="nav flex-column nav-pills" role="tablist">
+                        <a class="nav-link{{ 'profile_show' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_show') }}">
+                            <span class="fas fa-user" aria-hidden="true"></span> Mon profil
+                        </a>
+                        <a class="nav-link{{ 'profile_edit_password' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_edit_password') }}">
+                            <span class="fas fa-key" aria-hidden="true"></span> Modifier mon mot de passe
+                        </a>
+                        <a class="nav-link{{ 'profile_edit' == app.request.get('_route') ? ' active' }}" href="{{ path('profile_edit') }}">
+                            <span class="fas fa-pencil-alt" aria-hidden="true"></span> Modifier mon profil
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="col-12 col-xl-9">
-            {% block main %}
-            {% endblock %}
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    {% block main %}{% endblock %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

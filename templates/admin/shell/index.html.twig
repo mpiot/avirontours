@@ -16,45 +16,49 @@
         </a>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Type</th>
-                <th>Porteur</th>
-                <th>Kilométrage</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for shell in shells %}
-                <tr>
-                    <td>
-                        <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
-                    </td>
-                    <td>{{ shell.abbreviation }}</td>
-                    <td>
-                        {% if shell.weightCategory is not null %}
-                            {{ shell.textWeightCategory }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ shell.mileage }} km</td>
-                    <td class="text-right">
-                        <a class="btn btn-outline-warning btn-sm rounded-pill"
-                           href="{{ path('shell_edit', {'id': shell.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="8" class="text-center">Pas de bâteau</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Type</th>
+                        <th>Porteur</th>
+                        <th>Kilométrage</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for shell in shells %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
+                            </td>
+                            <td>{{ shell.abbreviation }}</td>
+                            <td>
+                                {% if shell.weightCategory is not null %}
+                                    {{ shell.textWeightCategory }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>{{ shell.mileage }} km</td>
+                            <td class="text-right">
+                                <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                   href="{{ path('shell_edit', {'id': shell.id}) }}">
+                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">Pas de bâteau</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}

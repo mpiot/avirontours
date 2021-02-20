@@ -20,209 +20,213 @@
         </div>
     </div>
 
-    {% if app.user.workoutMaximumLoad is not null %}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Exercice</th>
-                    <th scope="col">100%</th>
-                    <th scope="col">90%</th>
-                    <th scope="col">80%</th>
-                    <th scope="col">70%</th>
-                    <th scope="col">60%</th>
-                    <th scope="col">50%</th>
-                    <th scope="col">45%</th>
-                    <th scope="col">40%</th>
-                    <th scope="col">30%</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th scope="row">
-                        Tirade rowing<br>
-                        <span class="font-weight-normal">Barre de 10Kg</span>
-                    </th>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.9 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.9 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.8 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.8 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.7 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.7 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.6 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.6 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.5 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.5 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.45 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.45 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.4 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.4 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.rowingTirage * 0.3 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.3 - 10) / 2 }}</small>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        Développé couché<br>
-                        <span class="font-weight-normal">Barre de 10Kg</span>
-                    </th>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.9 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.9 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.8 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.8 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.7 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.7 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.6 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.6 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.5 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.5 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.45 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.45 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.4 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.4 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.benchPress * 0.3 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.3 - 10) / 2 }}</small>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        Squat<br>
-                        <span class="font-weight-normal">Barre de 20Kg</span>
-                    </th>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.9 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.9 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.8 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.8 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.7 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.7 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.6 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.6 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.5 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.5 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.45 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.45 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.4 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.4 - 20) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.3 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.3 - 20) / 2 }}</small>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">Presse</th>
-                    <td>{{ app.user.workoutMaximumLoad.legPress }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.9 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.8 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.7 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.6 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.5 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.45 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.4 }}</td>
-                    <td>{{ app.user.workoutMaximumLoad.legPress * 0.3 }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        Epaulé<br>
-                        <span class="font-weight-normal">Barre de 10Kg</span>
-                    </th>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.9 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.9 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.8 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.8 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.7 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.7 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.6 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.6 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.5 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.5 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.45 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.45 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.4 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.4 - 10) / 2 }}</small>
-                    </td>
-                    <td>
-                        {{ app.user.workoutMaximumLoad.clean * 0.3 }}<br>
-                        <small>{{ (app.user.workoutMaximumLoad.clean * 0.3 - 10) / 2 }}</small></small>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {% if app.user.workoutMaximumLoad is not null %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Exercice</th>
+                            <th scope="col">100%</th>
+                            <th scope="col">90%</th>
+                            <th scope="col">80%</th>
+                            <th scope="col">70%</th>
+                            <th scope="col">60%</th>
+                            <th scope="col">50%</th>
+                            <th scope="col">45%</th>
+                            <th scope="col">40%</th>
+                            <th scope="col">30%</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">
+                                Tirade rowing<br>
+                                <span class="font-weight-normal">Barre de 10Kg</span>
+                            </th>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.9 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.9 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.8 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.8 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.7 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.7 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.6 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.6 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.5 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.5 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.45 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.45 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.4 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.4 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.3 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.3 - 10) / 2 }}</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Développé couché<br>
+                                <span class="font-weight-normal">Barre de 10Kg</span>
+                            </th>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.9 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.9 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.8 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.8 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.7 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.7 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.6 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.6 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.5 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.5 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.45 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.45 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.4 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.4 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.benchPress * 0.3 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.3 - 10) / 2 }}</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Squat<br>
+                                <span class="font-weight-normal">Barre de 20Kg</span>
+                            </th>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.9 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.9 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.8 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.8 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.7 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.7 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.6 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.6 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.5 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.5 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.45 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.45 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.4 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.4 - 20) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.3 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.3 - 20) / 2 }}</small>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Presse</th>
+                            <td>{{ app.user.workoutMaximumLoad.legPress }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.9 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.8 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.7 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.6 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.5 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.45 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.4 }}</td>
+                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.3 }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Epaulé<br>
+                                <span class="font-weight-normal">Barre de 10Kg</span>
+                            </th>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.9 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.9 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.8 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.8 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.7 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.7 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.6 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.6 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.5 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.5 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.45 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.45 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.4 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.4 - 10) / 2 }}</small>
+                            </td>
+                            <td>
+                                {{ app.user.workoutMaximumLoad.clean * 0.3 }}<br>
+                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.3 - 10) / 2 }}</small></small>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <h5>Pas de données.</h5>
+                <p><a href="{{ path('workout_maximum_load_edit') }}">Saisir mes infos</a></p>
+            {% endif %}
         </div>
-    {% else %}
-        <h5>Pas de données.</h5>
-        <p><a href="{{ path('workout_maximum_load_edit') }}">Saisir mes infos</a></p>
-    {% endif %}
+    </div>
 {% endblock %}

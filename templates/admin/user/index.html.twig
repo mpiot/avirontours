@@ -16,58 +16,62 @@
         </a>
     </div>
 
-    <form method="get">
-        <div class="form-row align-items-center">
-            <div class="col-md-auto col-sm-12 ml-auto">
-                <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text"><span class="fa fa-search"></span></div>
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <form method="get">
+                <div class="form-row align-items-center">
+                    <div class="col-md-auto col-sm-12 ml-auto">
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><span class="fa fa-search"></span></div>
+                            </div>
+                            <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
+                        </div>
                     </div>
-                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
                 </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
+                            </td>
+                            <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                            <td class="text-right">
+                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <a class="btn btn-outline-info btn-sm rounded-pill"
+                                       href="{{ path('homepage', {'_switch_user': user.username}) }}">
+                                        <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
+                                    </a>
+                                {% endif %}
+                                <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                   href="{{ path('user_edit', {'id': user.id}) }}">
+                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Pas d'utilisateur</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if users|length < users.totalItemCount %}
+                    {{ knp_pagination_render(users) }}
+                {% endif %}
             </div>
         </div>
-    </form>
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <td>
-                        <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
-                    </td>
-                    <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                    <td class="text-right">
-                        {% if is_granted('ROLE_SUPER_ADMIN') %}
-                            <a class="btn btn-outline-info btn-sm rounded-pill"
-                               href="{{ path('homepage', {'_switch_user': user.username}) }}">
-                                <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
-                            </a>
-                        {% endif %}
-                        <a class="btn btn-outline-warning btn-sm rounded-pill"
-                           href="{{ path('user_edit', {'id': user.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                        </a>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7" class="text-center">Pas d'utilisateur</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-        {% if users|length < users.totalItemCount %}
-            {{ knp_pagination_render(users) }}
-        {% endif %}
     </div>
 {% endblock %}

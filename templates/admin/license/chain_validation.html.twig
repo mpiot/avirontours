@@ -12,77 +12,81 @@
 {% block body %}
     <h1>Validation des certificats médicaux de la saison {{ season.name }}</h1>
 
-    {% if license is not null %}
-         <div class="row">
-            <div class="col-lg-8">
-                {% if license.medicalCertificate.fileMimeType|u.containsAny('image/') %}
-                    <img src="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" alt="Certificat médical" class="w-100">
-                {% else %}
-                    <object data="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" type="application/pdf" class="w-100 h-100"></object>
-                {% endif %}
-            </div>
-
-            <div class="col-lg-4 mt-3 mt-lg-0">
-                <div class="card">
-                    <div class="card-header">
-                        Informations membre
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {% if license is not null %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% if license.medicalCertificate.fileMimeType|u.containsAny('image/') %}
+                            <img src="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" alt="Certificat médical" class="w-100">
+                        {% else %}
+                            <object data="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" type="application/pdf" class="w-100 h-100"></object>
+                        {% endif %}
                     </div>
 
-                    <div class="card-body">
-                        Nom Prénom : {{ license.user.fullName }}<br>
-                        Date de naissance: {{ license.user.birthday|date('d/m/Y') }} ({{ license.user.age }} ans)
-                    </div>
-                </div>
+                    <div class="col-lg-4 mt-3 mt-lg-0">
+                        <div class="card">
+                            <div class="card-header">
+                                Informations membre
+                            </div>
 
-                {% for previous_licence in previous_licences %}
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            Saison {{ previous_licence.seasonCategory.season.name }}
+                            <div class="card-body">
+                                Nom Prénom : {{ license.user.fullName }}<br>
+                                Date de naissance: {{ license.user.birthday|date('d/m/Y') }} ({{ license.user.age }} ans)
+                            </div>
                         </div>
 
-                        <div class="card-body">
-                            Type de certificat : {{ previous_licence.medicalCertificate.textType }}<br>
-                            Niveau de certificat: {{ previous_licence.medicalCertificate.textLevel }}
+                        {% for previous_licence in previous_licences %}
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    Saison {{ previous_licence.seasonCategory.season.name }}
+                                </div>
+
+                                <div class="card-body">
+                                    Type de certificat : {{ previous_licence.medicalCertificate.textType }}<br>
+                                    Niveau de certificat: {{ previous_licence.medicalCertificate.textLevel }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="card border-primary mt-3">
+                            <div class="card-header bg-primary text-white d-flex">
+                                Saison {{ license.seasonCategory.season.name }}
+
+                                <a href="{{ path('license_edit', { 'season_id': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ml-auto align-self-center">
+                                    <span class="fas fa-pencil-alt"></span>
+                                </a>
+                            </div>
+
+                            <div class="card-body">
+                                Date du certificat: {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
+                                Type de certificat : {{ license.medicalCertificate.textType }}<br>
+                                Niveau de certificat: {{ license.medicalCertificate.textLevel }}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
+                                <input type="hidden" name="redirectUrl" value="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}">
+
+                                <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                                    {% for transition in workflow_transitions(license) %}
+                                        {% if transition.name|u.containsAny('_medical_certificate') %}
+                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
+                                                {{ workflow_metadata(license, 'title', transition) }}
+                                            </button>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </form>
                         </div>
                     </div>
-                {% endfor %}
-
-                <div class="card border-primary mt-3">
-                    <div class="card-header bg-primary text-white d-flex">
-                        Saison {{ license.seasonCategory.season.name }}
-
-                        <a href="{{ path('license_edit', { 'season_id': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ml-auto align-self-center">
-                            <span class="fas fa-pencil-alt"></span>
-                        </a>
-                    </div>
-
-                    <div class="card-body">
-                        Date du certificat: {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
-                        Type de certificat : {{ license.medicalCertificate.textType }}<br>
-                        Niveau de certificat: {{ license.medicalCertificate.textLevel }}
-                    </div>
                 </div>
-
-                <div class="mt-3">
-                    <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
-                        <input type="hidden" name="redirectUrl" value="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}">
-
-                        <div class="btn-group-vertical btn-group-sm w-100" role="group">
-                            {% for transition in workflow_transitions(license) %}
-                                {% if transition.name|u.containsAny('_medical_certificate') %}
-                                    <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
-                                        {{ workflow_metadata(license, 'title', transition) }}
-                                    </button>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </form>
+            {% else %}
+                <div class="alert alert-info" role="alert">
+                    <span class="fas fa-info-circle"></span> Il n'y a pas de license à valider.
                 </div>
-            </div>
-         </div>
-    {% else %}
-        <div class="alert alert-info" role="alert">
-            <span class="fas fa-info-circle"></span> Il n'y a pas de license à valider.
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
 {% endblock %}
