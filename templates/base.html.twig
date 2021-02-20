@@ -18,12 +18,6 @@
     </head>
 
     <body>
-    {% if is_granted('ROLE_LOGBOOK_USER') %}
-        <div class="mt-3 ml-3">
-            <img src="{{ asset('build/images/logo_colored.svg') }}" height="50px" alt="Aviron Tours Métropole">
-        </div>
-        <div class="layout">
-    {% else %}
         <div class="layout layout-nav-side">
             <div class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
                 <a class="navbar-brand" href="{{ path('homepage') }}">
@@ -62,7 +56,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('homepage') }}">Accueil</a>
                         </li>
-                        {% if is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
+                        {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
                             </li>
@@ -132,55 +126,20 @@
                     </div>
                 </div>
             </div>
-    {% endif %}
 
             <div class="main-container">
-                {% if false == is_granted('ROLE_LOGBOOK_USER') %}
-                    <div class="breadcrumb-bar navbar bg-white sticky-top">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                {% block breadcrumb %}
-                                    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-                                {% endblock %}
-                            </ol>
-                        </nav>
-                    </div>
-                {% endif %}
+                <div class="breadcrumb-bar navbar bg-white sticky-top">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            {% block breadcrumb %}
+                                <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                            {% endblock %}
+                        </ol>
+                    </nav>
+                </div>
 
                 <div class="container-fluid my-3">
-                    {# List flashes messages #}
-                    <div aria-live="polite" aria-atomic="true" class="toast-container">
-                        <div class="toast-wrapper">
-                            {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
-                                {% for message in messages %}
-                                    <div role="alert" aria-live="assertive" aria-atomic="true" class="toast border-{{ label }}" data-delay="{{ 'danger' == label ? '10000' : '5000' }}">
-                                        <div class="toast-body d-flex align-items-start">
-                                            <div class="text-{{ label }} align-self-center">
-                                                {% if 'success' == label %}
-                                                    <span class="fas fa-check-circle"></span>
-                                                {% elseif 'info' == label %}
-                                                    <span class="fas fa-question-circle"></span>
-                                                {% elseif 'warning' == label %}
-                                                    <span class="fas fa-exclamation-circle"></span>
-                                                {% elseif 'danger' == label %}
-                                                    <span class="fas fa-times-circle"></span>
-                                                {% endif %}
-                                            </div>
-                                            <div class="ml-3">
-                                                {{ message|trans }}
-                                            </div>
-                                            <div class="ml-auto">
-                                                <button type="button" class="ml-auto mb-1 close" data-dismiss="toast" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </div>
-                    </div>
-
+                    {{ include('_flash_messages.html.twig') }}
                     {% block body %}{% endblock %}
                 </div>
             </div>

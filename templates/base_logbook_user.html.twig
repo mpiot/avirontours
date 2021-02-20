@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="icon" type="image/png" href="{{ asset('build/images/favicon.png')}}">
+
+        <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="my-3 ml-3">
+            <img src="{{ asset('build/images/logo_colored.svg') }}" height="50px" alt="Aviron Tours Métropole">
+        </div>
+
+        <div class="layout">
+            <div class="main-container">
+                <div class="breadcrumb-bar navbar bg-white mx-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            {% block breadcrumb %}
+                                <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                            {% endblock %}
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="alert alert-info m-3">
+                    <span class="fas fa-medkit"></span> Compte tenu du contexte sanitaire actuel, nous vous encourageons
+                    à renseigner vos sorties en utilisant votre compte personnel depuis votre smartphone.
+                </div>
+
+                <div class="container-fluid my-3">
+                    {{ include('_flash_messages.html.twig') }}
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
