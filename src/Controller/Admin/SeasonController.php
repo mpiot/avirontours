@@ -61,6 +61,8 @@ class SeasonController extends AbstractController
             $entityManager->persist($season);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La saison a été créée avec succès.');
+
             return $this->redirectToRoute('season_index');
         }
 
@@ -97,6 +99,8 @@ class SeasonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'La saison a été modifiée avec succès.');
+
             return $this->redirectToRoute('season_index');
         }
 
@@ -115,6 +119,8 @@ class SeasonController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($season);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La saison a été supprimée avec succès.');
         }
 
         return $this->redirectToRoute('season_index');
@@ -128,7 +134,7 @@ class SeasonController extends AbstractController
         $csv = $csvGenerator->exportContacts($season);
 
         if (null === $csv) {
-            $this->addFlash('danger', 'Aucun contacts à exporter.');
+            $this->addFlash('notice', 'Aucun contacts à exporter.');
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
@@ -155,7 +161,7 @@ class SeasonController extends AbstractController
         $csv = $csvGenerator->exportLicenses($season);
 
         if (null === $csv) {
-            $this->addFlash('danger', 'Aucune licences à exporter.');
+            $this->addFlash('notice', 'Aucune licences à exporter.');
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }

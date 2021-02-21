@@ -53,6 +53,8 @@ class WorkoutMaximumLoadController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'Vos 1RM été modifié avec succès.');
+
             return $this->redirectToRoute('workout_maximum_load_show');
         }
 

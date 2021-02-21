@@ -58,6 +58,8 @@ class ShellController extends AbstractController
             $entityManager->persist($shell);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le bâteau a été créé avec succès.');
+
             return $this->redirectToRoute('shell_index');
         }
 
@@ -88,6 +90,8 @@ class ShellController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'Le bâteau a été modifié avec succès.');
+
             return $this->redirectToRoute('shell_index');
         }
 
@@ -106,6 +110,8 @@ class ShellController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($shell);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Le bâteau a été supprimé avec succès.');
         }
 
         return $this->redirectToRoute('shell_index');

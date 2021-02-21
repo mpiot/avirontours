@@ -65,6 +65,8 @@ class SportsProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'La physiologie a été modifiée avec succès.');
+
             return $this->redirectToRoute('sports_profile_index');
         }
 
@@ -85,6 +87,8 @@ class SportsProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'L\'anatomie a été modifiée avec succès.');
 
             return $this->redirectToRoute('sports_profile_index');
         }
@@ -107,6 +111,8 @@ class SportsProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'Les qualités physiques ont été modifiées avec succès.');
+
             return $this->redirectToRoute('sports_profile_index');
         }
 
@@ -127,6 +133,8 @@ class SportsProfileController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Les 1RM on été modifiées avec succès.');
 
             return $this->redirectToRoute('sports_profile_index');
         }

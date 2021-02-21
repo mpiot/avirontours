@@ -57,6 +57,8 @@ class ShellDamageCategoryController extends AbstractController
             $entityManager->persist($shellDamage);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La catégorie d\'avarie  a été créée avec succès.');
+
             return $this->redirectToRoute('shell_damage_category_index');
         }
 
@@ -77,6 +79,8 @@ class ShellDamageCategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'La catégorie d\'avarie  a été modifiée avec succès.');
+
             return $this->redirectToRoute('shell_damage_category_index');
         }
 
@@ -95,6 +99,8 @@ class ShellDamageCategoryController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($shellDamage);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La catégorie d\'avarie  a été supprimée avec succès.');
         }
 
         return $this->redirectToRoute('shell_damage_category_index');

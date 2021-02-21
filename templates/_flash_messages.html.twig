@@ -1,18 +1,19 @@
 {# List flashes messages #}
 <div aria-live="polite" aria-atomic="true" class="toast-container">
     <div class="toast-wrapper">
-        {% for label, messages in app.flashes(['success', 'info', 'warning', 'danger']) %}
+        {% for label, messages in app.flashes(['success', 'notice', 'warning', 'error']) %}
+            {% set color = 'notice' == label ? 'info' : 'error' == label ? 'danger' : label %}
             {% for message in messages %}
-                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast border-{{ label }}" data-delay="{{ 'danger' == label ? '10000' : '5000' }}">
+                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast border-{{ color }}" data-delay="{{ 'error' == label ? '10000' : '5000' }}">
                     <div class="toast-body d-flex align-items-start">
-                        <div class="text-{{ label }} align-self-center">
+                        <div class="text-{{ color }} align-self-center">
                             {% if 'success' == label %}
                                 <span class="fas fa-check-circle"></span>
-                            {% elseif 'info' == label %}
+                            {% elseif 'notice' == label %}
                                 <span class="fas fa-question-circle"></span>
                             {% elseif 'warning' == label %}
                                 <span class="fas fa-exclamation-circle"></span>
-                            {% elseif 'danger' == label %}
+                            {% elseif 'error' == label %}
                                 <span class="fas fa-times-circle"></span>
                             {% endif %}
                         </div>

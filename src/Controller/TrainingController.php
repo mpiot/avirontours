@@ -57,6 +57,8 @@ class TrainingController extends AbstractController
             $entityManager->persist($training);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Votre entraînement a été créé avec succès.');
+
             return $this->redirectToRoute('training_show', [
                 'id' => $training->getId(),
             ]);
@@ -90,6 +92,8 @@ class TrainingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
+
             return $this->redirectToRoute('training_index');
         }
 
@@ -109,6 +113,8 @@ class TrainingController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($training);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Votre entraînement a été supprimé avec succès.');
         }
 
         return $this->redirectToRoute('training_index');

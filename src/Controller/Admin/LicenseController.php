@@ -54,6 +54,8 @@ class LicenseController extends AbstractController
             $entityManager->persist($license);
             $entityManager->flush();
 
+            $this->addFlash('success', 'La licence a été créée avec succès.');
+
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
 
@@ -73,6 +75,8 @@ class LicenseController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
             return $this->redirectToRoute('season_show', [
                 'id' => $license->getSeasonCategory()->getSeason()->getId(),
@@ -94,6 +98,8 @@ class LicenseController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($license);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La licence a été supprimée avec succès.');
         }
 
         return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
@@ -110,8 +116,10 @@ class LicenseController extends AbstractController
                     'time' => date('y-m-d H:i:s'),
                 ]);
             $this->getDoctrine()->getManager()->flush();
-        } catch (ExceptionInterface $e) {
-            $this->addFlash('danger', $e->getMessage());
+
+            $this->addFlash('success', 'La licence a été modifiée avec succès.');
+        } catch (ExceptionInterface $error) {
+            $this->addFlash('error', $error->getMessage());
         }
 
         if ($request->request->has('redirectUrl')) {

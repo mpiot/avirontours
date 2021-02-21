@@ -63,6 +63,8 @@ class LogbookEntryController extends AbstractController
             $entityManager->persist($logbookEntry);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Votre sortie a été créée avec succès.');
+
             return $this->redirectToRoute('logbook_entry_index');
         }
 
@@ -92,6 +94,8 @@ class LogbookEntryController extends AbstractController
                 $notifier->send(new ShellDamageNotification($shellDamage), ...$notifier->getAdminRecipients());
             }
 
+            $this->addFlash('success', 'Votre sortie a été terminée avec succès.');
+
             return $this->redirectToRoute('logbook_entry_index');
         }
 
@@ -113,6 +117,8 @@ class LogbookEntryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('success', 'La sortie a été modifiée avec succès.');
+
             return $this->redirectToRoute('logbook_entry_index');
         }
 
@@ -130,9 +136,10 @@ class LogbookEntryController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
-
             $entityManager->remove($logbookEntry);
             $entityManager->flush();
+
+            $this->addFlash('success', 'La sortie a été modifiée avec succès.');
         }
 
         return $this->redirectToRoute('logbook_entry_index');
