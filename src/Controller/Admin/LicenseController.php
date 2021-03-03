@@ -34,14 +34,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
- * @Route("/admin/season/{season_id}/license")
+ * @Route("/admin/season/{seasonId}/license")
  * @Security("is_granted('ROLE_USER_ADMIN')")
  */
 class LicenseController extends AbstractController
 {
     /**
      * @Route("/new", name="license_new", methods={"GET","POST"})
-     * @Entity("season", expr="repository.find(season_id)")
+     * @Entity("season", expr="repository.find(seasonId)")
      */
     public function new(Request $request, Season $season): Response
     {
@@ -107,8 +107,9 @@ class LicenseController extends AbstractController
 
     /**
      * @Route("/{id}/apply-transition", name="license_apply_transition", methods={"POST"})
+     * @Route("/{id}/chain-validation-apply-transition", name="license_chain_validation_apply_transition", methods={"POST"})
      */
-    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license)
+    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId)
     {
         try {
             $licenseWorkflow
@@ -122,8 +123,8 @@ class LicenseController extends AbstractController
             $this->addFlash('error', $error->getMessage());
         }
 
-        if ($request->request->has('redirectUrl')) {
-            return $this->redirect($request->request->get('redirectUrl'));
+        if ('license_chain_validation_apply_transition' === $request->get('_route')) {
+            return $this->redirectToRoute('license_validate_medical_certificate', ['seasonId' => $seasonId]);
         }
 
         return $this->redirectToRoute('season_show', [
@@ -133,7 +134,7 @@ class LicenseController extends AbstractController
 
     /**
      * @Route("/chain-medical-certificate-validation", name="license_validate_medical_certificate", methods={"GET"})
-     * @Entity("season", expr="repository.find(season_id)")
+     * @Entity("season", expr="repository.find(seasonId)")
      * @Entity("license", expr="repository.findOneForValidation(season)")
      */
     public function chainValidation(Season $season, LicenseRepository $repository): Response

@@ -53,7 +53,7 @@
                             <div class="card-header bg-primary text-white d-flex">
                                 Saison {{ license.seasonCategory.season.name }}
 
-                                <a href="{{ path('license_edit', { 'season_id': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ml-auto align-self-center">
+                                <a href="{{ path('license_edit', { 'seasonId': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ml-auto align-self-center">
                                     <span class="fas fa-pencil-alt"></span>
                                 </a>
                             </div>
@@ -66,9 +66,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
-                                <input type="hidden" name="redirectUrl" value="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}">
-
+                            <form action="{{ path('license_chain_validation_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
                                 <div class="btn-group-vertical btn-group-sm w-100" role="group">
                                     {% for transition in workflow_transitions(license) %}
                                         {% if transition.name|u.containsAny('_medical_certificate') %}

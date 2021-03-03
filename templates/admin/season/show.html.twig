@@ -129,14 +129,14 @@
                 <div class="card-header d-flex">
                     <span class="h5 align-self-center">Licences</span>
 
-                    <a href="{{ path('license_new', { 'season_id': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+                    <a href="{{ path('license_new', { 'seasonId': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
                         <span class="fas fa-plus"></span> Ajouter une licence
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="align-self-center">
-                            <a href="{{ path('license_validate_medical_certificate', { 'season_id': season.id }) }}" class="btn btn-sm btn-outline-success">
+                            <a href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}" class="btn btn-sm btn-outline-success">
                                 <span class="fas fa-file-medical-alt"></span> Valider les certificats
                             </a>
 
@@ -198,7 +198,7 @@
                                         </a>
                                     </td>
                                     <td class="d-flex justify-content-end align-items-center">
-                                        <form action="{{ path('license_apply_transition', {'season_id': season.id, 'id': license.id}) }}" method="post">
+                                        <form action="{{ path('license_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
                                             <div class="btn-group-vertical btn-group-sm mr-3" role="group">
                                                 {% for transition in workflow_transitions(license) %}
                                                     <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
@@ -209,7 +209,7 @@
                                         </form>
 
                                         <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                           href="{{ path('license_edit', {'season_id': license.seasonCategory.season.id, 'id': license.id}) }}">
+                                           href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
                                             <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
                                         </a>
                                     </td>
