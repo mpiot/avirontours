@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -10,26 +10,9 @@ on:
       - reopened
 
 jobs:
-  tests:
-    name: Tests
+  prepare:
+    name: Prepare
     runs-on: ubuntu-latest
-
-    env:
-      APP_ENV: "test"
-      DATABASE_URL: "pgsql://postgres:postgres@localhost:5432/postgres"
-
-    services:
-      postgres:
-        image: postgres:11.10
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-
-    strategy:
-      fail-fast: true
 
     steps:
       - name: Checkout
@@ -63,15 +46,39 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - name: Upload vendor
+        uses: actions/upload-artifact@v2
+        with:
+          name: vendor
+          path: vendor/
+          if-no-files-found: error
+          retention-days: 1
+
+  lint:
+    name: Lint
+    needs: prepare
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download vendor
+        uses: actions/download-artifact@v2
+        with:
+          name: vendor
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          ini-values: date.timezone = Europe/Paris
+
       - name: Install PHP CS fixer
         run: |
           wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
           sudo chmod a+x php-cs-fixer
           sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
-
-      - name: Install node modules
-        run: |
-          yarn install
 
       - name: Lint
         run: |
@@ -90,6 +97,44 @@ jobs:
           key: security-checker-vulns-db
 
       - uses: symfonycorp/security-checker-action@v1
+
+  tests:
+    name: Tests
+    needs: prepare
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: "test"
+      DATABASE_URL: "pgsql://postgres:postgres@localhost:5432/postgres"
+
+    services:
+      postgres:
+        image: postgres:11.10
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download vendor
+        uses: actions/download-artifact@v2
+        with:
+          name: vendor
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          ini-values: date.timezone = Europe/Paris
+
+      - name: Install node modules
+        run: |
+          yarn install
 
       - name: Build assets
         run: |
@@ -118,9 +163,7 @@ jobs:
 
   sonarcloud:
     name: SonarCloud
-
     needs: tests
-
     runs-on: ubuntu-latest
 
     steps:
