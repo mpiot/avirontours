@@ -105,15 +105,15 @@ jobs:
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit --coverage-clover coverage-report.clover --log-junit test-report.xml
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
       - name: Upload Coverage & Test Report
         uses: actions/upload-artifact@v2
         with:
           name: phpunit-report
           path: |
-            coverage-report.clover
-            test-report.xml
+            coverage-report.xml
+            tests-report.xml
           retention-days: 1
 
   sonarcloud:
