@@ -4,7 +4,10 @@ on:
   push:
     branches: [ master, develop ]
   pull_request:
-    branches: [ master, develop ]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   tests:
@@ -102,15 +105,36 @@ jobs:
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+
+      - name: Upload PHPUnit Reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: phpunit-reports
+          path: |
+            coverage-report.xml
+            tests-report.xml
+          retention-days: 1
 
   sonarcloud:
     name: SonarCloud
+
+    needs: tests
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Download PHPUnit Reports
+        uses: actions/download-artifact@v2
+        with:
+          name: phpunit-reports
+
+      - name: Change Paths from PHPUnit reports
+        run: sed -i 's/\/home\/runner\/work\/avirontours\/avirontours/\/github\/workspace/g' coverage-report.xml
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
