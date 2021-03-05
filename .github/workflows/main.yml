@@ -4,7 +4,10 @@ on:
   push:
     branches: [ master, develop ]
   pull_request:
-    branches: [ master, develop ]
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   tests:
@@ -102,15 +105,33 @@ jobs:
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit --coverage-clover coverage-report.clover --log-junit test-report.xml
+
+      - name: Upload Coverage & Test Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: phpunit-report
+          path: |
+            coverage-report.clover
+            test-report.xml
+          retention-days: 1
 
   sonarcloud:
     name: SonarCloud
+
+    needs: tests
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Download Coverage Report
+        uses: actions/download-artifact@v2
+        with:
+          name: phpunit-report
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
