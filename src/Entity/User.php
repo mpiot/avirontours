@@ -418,15 +418,11 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function getAge(): int
     {
-        $birthday = $this->birthday;
-
-        if (null === $birthday) {
+        if (null === $this->birthday) {
             return 0;
         }
 
-        $interval = $birthday->diff(new \DateTime());
-
-        return $interval->y;
+        return $this->birthday->diff(new \DateTime())->y;
     }
 
     public function getSubscriptionDate(): ?\DateTimeInterface
@@ -580,7 +576,7 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     public function getEmailAuthRecipient(): string
     {
-        return $this->email;
+        return $this->getEmail();
     }
 
     public function getEmailAuthCode(): string

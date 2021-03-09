@@ -239,7 +239,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewLength(ExecutionContextInterface $context, $payload)
+    public function validateCrewLength(ExecutionContextInterface $context)
     {
         if (null === $this->getShell()) {
             return;
@@ -257,7 +257,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewRowerCategory(ExecutionContextInterface $context, $payload)
+    public function validateCrewRowerCategory(ExecutionContextInterface $context)
     {
         if (null === $this->getShell()) {
             return;

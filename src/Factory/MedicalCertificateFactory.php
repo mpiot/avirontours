@@ -56,15 +56,13 @@ final class MedicalCertificateFactory extends ModelFactory
         $targetPath = sys_get_temp_dir().'/'.$file;
         $fs->copy(__DIR__.'/Files/'.$file, $targetPath, true);
 
-        $file = new UploadedFile(
+        return new UploadedFile(
             $targetPath,
             'my-certificate.pdf',
             'application/pdf',
             null,
             true
         );
-
-        return $file;
     }
 
     protected function initialize(): self

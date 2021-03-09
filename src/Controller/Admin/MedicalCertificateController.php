@@ -36,6 +36,6 @@ class MedicalCertificateController extends AbstractController
      */
     public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {
-        return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file', null, null, false);
+        return $downloadHandler->downloadObject($medicalCertificate, 'file', null, null, false);
     }
 }
