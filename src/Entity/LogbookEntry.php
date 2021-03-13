@@ -257,7 +257,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewRowerCategory(ExecutionContextInterface $context, $payload)
+    public function validateCrewRowerCategory(ExecutionContextInterface $context)
     {
         if (null === $this->getShell()) {
             return;
@@ -278,6 +278,35 @@ class LogbookEntry
 
         if (!empty($invalidCrewMembers)) {
             $context->buildViolation('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau: {{ invalidMembers }}.')
+                ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
+                ->atPath('crewMembers')
+                ->addViolation();
+        }
+    }
+
+    /**
+     * @Assert\Callback(groups={"start"})
+     */
+    public function validateCrewRowerLogbookEntry(ExecutionContextInterface $context)
+    {
+        if ($this->getCrewMembers()->isEmpty()) {
+            return;
+        }
+
+        $invalidCrewMembers = [];
+        foreach ($this->getCrewMembers() as $crewMember) {
+            if ($crewMember->getLicenses()->isEmpty()) {
+                continue;
+            }
+
+            $logbookEntryLimit = $crewMember->getLicenses()->last()->getLogbookEntryLimit();
+            if (null !== $logbookEntryLimit && $crewMember->getLogbookEntries()->count() >= $logbookEntryLimit) {
+                $invalidCrewMembers[] = $crewMember->getFullName();
+            }
+        }
+
+        if (!empty($invalidCrewMembers)) {
+            $context->buildViolation('Certains membres d\'équipage ont atteint leur limite de nombre de sorties: {{ invalidMembers }}.')
                 ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
                 ->atPath('crewMembers')
                 ->addViolation();

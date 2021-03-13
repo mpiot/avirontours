@@ -92,6 +92,7 @@ class LicenseControllerTest extends AppWebTestCase
         $form = $crawler->selectButton('Sauver')->form([
             'license[user]' => $user->getId(),
             'license[seasonCategory]' => $season->getSeasonCategories()->first()->getId(),
+            'license[logbookEntryLimit]' => 4,
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'license[medicalCertificate][date]' => '2020-05-01',
@@ -105,6 +106,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertSame($user->getId(), $license->getUser()->getId());
         $this->assertSame($season->getSeasonCategories()->first()->getId(), $license->getSeasonCategory()->getId());
+        $this->assertSame(4, $license->getLogbookEntryLimit());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
         $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));

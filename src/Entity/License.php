@@ -78,6 +78,12 @@ class License
      */
     private $federationEmailAllowed;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Positive()
+     */
+    private $logbookEntryLimit;
+
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
     {
         $this->seasonCategory = $seasonCategory;
@@ -171,6 +177,18 @@ class License
     public function setFederationEmailAllowed(bool $federationEmailAllowed): self
     {
         $this->federationEmailAllowed = $federationEmailAllowed;
+
+        return $this;
+    }
+
+    public function getLogbookEntryLimit(): ?int
+    {
+        return $this->logbookEntryLimit;
+    }
+
+    public function setLogbookEntryLimit(?int $logbookEntryLimit): self
+    {
+        $this->logbookEntryLimit = $logbookEntryLimit;
 
         return $this;
     }

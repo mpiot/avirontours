@@ -129,6 +129,12 @@ class LogbookEntryType extends AbstractType
                         ];
                     }
 
+                    if (false === $user->getLicenses()->isEmpty() && null !== $user->getLicenses()->last()->getLogbookEntryLimit()) {
+                        return [
+                            'data-select2-suffix' => '<span class="badge badge-info ml-2">Découverte</span>',
+                        ];
+                    }
+
                     return [];
                 },
                 'multiple' => true,
