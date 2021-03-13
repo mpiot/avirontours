@@ -30,7 +30,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SeasonCategory
 {
     const LICENSE_TYPE_ANNUAL = 'A';
+    const LICENSE_TYPE_UNIVERSITY = 'U';
     const LICENSE_TYPE_INDOOR = 'I';
+    const LICENSE_TYPE_DISCOVERY_7D = 'D_7D';
+    const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
+    const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
 
     /**
      * @ORM\Id()
@@ -58,7 +62,7 @@ class SeasonCategory
     private $price;
 
     /**
-     * @ORM\Column(type="string", length=1)
+     * @ORM\Column(type="string", length=5)
      * @Assert\NotBlank()
      */
     private $licenseType;
@@ -203,14 +207,6 @@ class SeasonCategory
         return $this->slug;
     }
 
-    public static function getAvailableLicenseTypes(): array
-    {
-        return [
-            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
-            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
-        ];
-    }
-
     public function getDisplayed(): ?bool
     {
         return $this->displayed;
@@ -221,5 +217,17 @@ class SeasonCategory
         $this->displayed = $displayed;
 
         return $this;
+    }
+
+    public static function getAvailableLicenseTypes(): array
+    {
+        return [
+            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
+            'Licence Universitaire' => self::LICENSE_TYPE_UNIVERSITY,
+            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
+            'Licence Découverte - 7 jours' => self::LICENSE_TYPE_DISCOVERY_7D,
+            'Licence Découverte - 30 jours' => self::LICENSE_TYPE_DISCOVERY_30D,
+            'Licence Découverte - 90 jours' => self::LICENSE_TYPE_DISCOVERY_90D,
+        ];
     }
 }

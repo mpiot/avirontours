@@ -26,6 +26,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -66,6 +67,10 @@ class LicenseType extends AbstractType
                     return $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName();
                 },
                 'placeholder' => '--- Choisissez une catégorie ---',
+            ])
+            ->add('logbookEntryLimit', IntegerType::class, [
+                'label' => 'Limite cahier de sortie',
+                'required' => false,
             ])
             ->add('medicalCertificate', MedicalCertificateType::class, [
                 'label' => false,

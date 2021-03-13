@@ -295,6 +295,31 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
+    public function testNewLogbookEntryWithInvalidLogbookEntryLimit()
+    {
+        $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
+        $licences = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create(['logbookEntryLimit' => 0]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '9:00',
+        ]);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Certains membres d\'équipage ont atteint leur limite de nombre de sorties:', $crawler->filter('label[for="logbook_entry_start_crewMembers"] .form-error-message')->text());
+        $this->assertCount(1, $crawler->filter('.form-error-message'));
+
+        LogbookEntryFactory::repository()->assertCount(0);
+    }
+
     public function testNewLogbookEntryWithShellOnWater()
     {
         $shell = ShellFactory::createOne(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
