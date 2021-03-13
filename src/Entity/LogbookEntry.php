@@ -156,6 +156,15 @@ class LogbookEntry
         return $this;
     }
 
+    public function getFullCrew(): array
+    {
+        $crewMembers = $this->crewMembers->map(function (User $user) {
+            return $user->getFullName();
+        })->toArray();
+
+        return array_merge($crewMembers, $this->nonUserCrewMembers);
+    }
+
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
