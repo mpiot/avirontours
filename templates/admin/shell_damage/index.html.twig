@@ -46,7 +46,14 @@
                                     <span class="badge badge-warning">Intermédiaire</span>
                                 {% endif %}
                             </td>
-                            <td>{{ shell_damage.shell.fullName }}</td>
+                            <td>
+                                {{ shell_damage.shell.fullName }}
+                                {% if shell_damage.logbookEntry %}
+                                    <span data-toggle="tooltip" data-placement="top" title="{{ shell_damage.logbookEntry.fullCrew|join(', ') }} ">
+                                        <span class="fas fa-users"></span>
+                                    </span>
+                                {% endif %}
+                            </td>
                             <td>{{ shell_damage.category.name }}</td>
                             <td title="{{ shell_damage.description }}">{{ shell_damage.description|u.truncate(30, '...') }}</td>
                             <td>{{ shell_damage.createdAt|date('d/m/Y') }}</td>
