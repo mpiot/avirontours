@@ -713,7 +713,12 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testDeleteLogbookEntry()
     {
-        $entry = LogbookEntryFactory::createOne();
+        $shell = ShellFactory::createOne();
+        $entry = LogbookEntryFactory::createOne([
+            'shell' => $shell,
+        ]);
+        $shell->save();
+        $entryId = $entry->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -726,10 +731,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/logbook-entry');
 
-        LogbookEntryFactory::repository()->assertNotExists(['id' => $entry->getId()]);
-
-        $shell = ShellFactory::repository()->find($entry->getShell()->getId());
-
+        LogbookEntryFactory::repository()->assert()->notExists(['id' => $entryId]);
         $this->assertSame(0.0, $shell->getMileage());
     }
 }

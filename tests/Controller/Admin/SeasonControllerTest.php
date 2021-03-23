@@ -169,6 +169,7 @@ class SeasonControllerTest extends AppWebTestCase
     public function testDeleteSeason()
     {
         $season = SeasonFactory::createOne();
+        $seasonId = $season->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -181,6 +182,6 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season');
 
-        SeasonFactory::repository()->assertNotExists($season);
+        SeasonFactory::repository()->assert()->notExists(['id' => $seasonId]);
     }
 }

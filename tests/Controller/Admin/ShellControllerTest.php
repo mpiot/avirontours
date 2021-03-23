@@ -178,6 +178,7 @@ class ShellControllerTest extends AppWebTestCase
     public function testDeleteShell()
     {
         $shell = ShellFactory::createOne();
+        $shellId = $shell->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -190,6 +191,6 @@ class ShellControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell');
 
-        ShellFactory::repository()->assertNotExists($shell);
+        ShellFactory::repository()->assert()->notExists(['id' => $shellId]);
     }
 }

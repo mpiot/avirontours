@@ -145,6 +145,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     public function testDeleteShellDamageCategory()
     {
         $category = ShellDamageCategoryFactory::createOne();
+        $categoryId = $category->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -157,6 +158,6 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell-damage-category');
 
-        ShellDamageCategoryFactory::repository()->assertNotExists($category);
+        ShellDamageCategoryFactory::repository()->assert()->notExists(['id' => $categoryId]);
     }
 }

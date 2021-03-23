@@ -225,6 +225,7 @@ class UserControllerTest extends AppWebTestCase
     public function testDeleteUser()
     {
         $user = UserFactory::createOne();
+        $userId = $user->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -236,6 +237,6 @@ class UserControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/user');
-        UserFactory::repository()->assertNotExists($user);
+        UserFactory::repository()->assert()->notExists(['id' => $userId]);
     }
 }
