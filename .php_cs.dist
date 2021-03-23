@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 COMMENT;
 
-$finder = PhpCsFixer\Finder::create()
+$finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
     ->exclude('bin')
     ->exclude('config')
@@ -27,8 +27,7 @@ $finder = PhpCsFixer\Finder::create()
     ->exclude('vendor')
 ;
 
-return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
+$finder = (new PhpCsFixer\Finder())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
@@ -52,4 +51,4 @@ return PhpCsFixer\Config::create()
     ])
     ->setFinder($finder)
     ->setCacheFile(__DIR__.'/var/.php_cs.cache')
-    ;
+;
