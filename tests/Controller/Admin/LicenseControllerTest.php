@@ -197,19 +197,21 @@ class LicenseControllerTest extends AppWebTestCase
     public function testDeleteLicense()
     {
         $license = LicenseFactory::createOne();
+        $seasonId = $license->getSeasonCategory()->getSeason()->getId();
+        $licenseId = $license->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_USER_ADMIN');
-        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
+        $client->request('GET', '/admin/season/'.$seasonId.'/license/'.$licenseId.'/edit');
 
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects('/admin/season/'.$seasonId);
 
-        LicenseFactory::repository()->assertNotExists($license);
+        LicenseFactory::repository()->assert()->notExists(['id' => $licenseId]);
     }
 
     public function testChainMedicalCertificateValidation()

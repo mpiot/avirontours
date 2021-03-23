@@ -364,6 +364,7 @@ class TrainingControllerTest extends AppWebTestCase
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $training = TrainingFactory::createOne(['user' => $user]);
+        $trainingId = $training->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -376,6 +377,6 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/training');
 
-        TrainingFactory::repository()->assertNotExists($training);
+        TrainingFactory::repository()->assert()->notExists(['id' => $trainingId]);
     }
 }

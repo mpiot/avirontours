@@ -173,6 +173,7 @@ class ShellDamageControllerTest extends AppWebTestCase
     public function testDeleteShellDamage()
     {
         $damage = ShellDamageFactory::createOne();
+        $damageId = $damage->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -185,6 +186,6 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell-damage');
 
-        ShellDamageFactory::repository()->assertNotExists($damage);
+        ShellDamageFactory::repository()->assert()->notExists(['id' => $damageId]);
     }
 }
