@@ -75,9 +75,6 @@ class ProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame('0123456789', $user->getPhoneNumber());
         $this->assertSame('John', $user->getFirstName());
@@ -141,9 +138,6 @@ class ProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertNotSame($oldPassword, $user->getPassword());
     }
 

@@ -159,9 +159,6 @@ class ShellDamageControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $damage->refresh();
-
         $this->assertSame($shell->getId(), $damage->getshell()->getId());
         $this->assertSame($category->getId(), $damage->getCategory()->getId());
         $this->assertSame('A modified description', $damage->getDescription());
@@ -172,8 +169,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamage()
     {
-        $damage = ShellDamageFactory::createOne();
-        $damageId = $damage->getId();
+        $damage = ShellDamageFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -186,6 +182,6 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell-damage');
 
-        ShellDamageFactory::repository()->assert()->notExists(['id' => $damageId]);
+        ShellDamageFactory::repository()->assert()->notExists($damage);
     }
 }

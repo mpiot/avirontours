@@ -185,9 +185,6 @@ class LicenseControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $license->refresh();
-
         $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
@@ -196,22 +193,20 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testDeleteLicense()
     {
-        $license = LicenseFactory::createOne();
-        $seasonId = $license->getSeasonCategory()->getSeason()->getId();
-        $licenseId = $license->getId();
+        $license = LicenseFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_USER_ADMIN');
-        $client->request('GET', '/admin/season/'.$seasonId.'/license/'.$licenseId.'/edit');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Supprimer');
 
-        $this->assertResponseRedirects('/admin/season/'.$seasonId);
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
 
-        LicenseFactory::repository()->assert()->notExists(['id' => $licenseId]);
+        LicenseFactory::repository()->assert()->notExists($license);
     }
 
     public function testChainMedicalCertificateValidation()
@@ -228,9 +223,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Valider le certificat médical');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
-
-        $license->refresh();
-
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
@@ -251,9 +243,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Valider le certificat médical');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $license->refresh();
-
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
@@ -274,9 +263,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Rejeter le certificat médical');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $license->refresh();
-
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_rejected' => 1,
@@ -297,9 +283,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Passer le certificat en attente de validation');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $license->refresh();
-
         $this->assertSame([
             'wait_payment_validation' => 1,
             'wait_medical_certificate_validation' => 1,
@@ -320,9 +303,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Valider le paiement');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $license->refresh();
-
         $this->assertSame([
             'wait_medical_certificate_validation' => 1,
             'payment_validated' => 1,
@@ -343,9 +323,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Valider la licence');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $license->refresh();
-
         $this->assertSame([
             'validated' => 1,
         ], $license->getMarking());

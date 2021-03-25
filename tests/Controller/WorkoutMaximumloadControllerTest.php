@@ -92,9 +92,6 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $workoutMaximumLoad->refresh();
-
         $this->assertSame(1, $workoutMaximumLoad->getRowingTirage());
         $this->assertSame(2, $workoutMaximumLoad->getBenchPress());
         $this->assertSame(3, $workoutMaximumLoad->getSquat());

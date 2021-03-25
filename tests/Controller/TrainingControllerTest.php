@@ -336,9 +336,6 @@ class TrainingControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $training->refresh();
-
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
         $this->assertSame('01:30', $training->getDuration()->format('%H:%I'));
@@ -362,9 +359,9 @@ class TrainingControllerTest extends AppWebTestCase
 
     public function testDeleteTraining()
     {
-        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
-        $trainingId = $training->getId();
+        $training = TrainingFactory::createOne([
+            'user' => $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser(),
+        ])->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -377,6 +374,6 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/training');
 
-        TrainingFactory::repository()->assert()->notExists(['id' => $trainingId]);
+        TrainingFactory::repository()->assert()->notExists($training);
     }
 }

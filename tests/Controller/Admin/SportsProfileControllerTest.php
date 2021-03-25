@@ -93,9 +93,6 @@ class SportsProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertNotNull($user->getPhysiology());
         $this->assertSame(75.3, $user->getPhysiology()->getMaximumOxygenConsumption());
         $this->assertSame(120, $user->getPhysiology()->getLightAerobicHeartRateMin());
@@ -126,9 +123,6 @@ class SportsProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertNotNull($user->getAnatomy());
         $this->assertSame(175, $user->getAnatomy()->getHeight());
         $this->assertSame(69.1, $user->getAnatomy()->getWeight());
@@ -161,9 +155,6 @@ class SportsProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertNotNull($user->getPhysicalQualities());
         $this->assertSame(1, $user->getPhysicalQualities()->getProprioception());
         $this->assertSame(2, $user->getPhysicalQualities()->getWeightPowerRatio());
@@ -196,9 +187,6 @@ class SportsProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertNotNull($user->getWorkoutMaximumLoad());
         $this->assertSame(1, $user->getWorkoutMaximumLoad()->getRowingTirage());
         $this->assertSame(2, $user->getWorkoutMaximumLoad()->getBenchPress());

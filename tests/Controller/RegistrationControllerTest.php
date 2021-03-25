@@ -238,9 +238,6 @@ class RegistrationControllerTest extends AppWebTestCase
         $client->submit($form);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertCount(1, $user->getLicenses());
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
