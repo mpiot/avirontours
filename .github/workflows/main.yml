@@ -28,9 +28,6 @@ jobs:
         ports:
           - 5432:5432
 
-    strategy:
-      fail-fast: true
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
