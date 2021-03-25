@@ -515,9 +515,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertSame($shell->getId(), $entry->getShell()->getId());
         $this->assertCount(2, $entry->getCrewMembers());
         $this->assertSame((new \DateTime())->format('d/m/Y'), $entry->getDate()->format('d/m/Y'));
@@ -525,7 +522,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame('16:00', $entry->getEndAt()->format('H:i'));
         $this->assertSame(12.2, $entry->getCoveredDistance());
         $this->assertEmpty($entry->getShellDamages());
-        $this->getEntityManager()->refresh($entry->getShell());
         $this->assertSame(12.2, $entry->getShell()->getMileage());
     }
 
@@ -554,9 +550,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertCount(1, $entry->getCrewMembers());
         $this->assertSame($license->getUser()->getId(), $entry->getCrewMembers()->first()->getId());
         $this->assertCount(0, $entry->getNonUserCrewMembers());
@@ -581,9 +574,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entries[0]->refresh();
-
         $this->assertSame($entries[1]->getShell()->getId(), $entries[0]->getShell()->getId());
     }
 
@@ -607,9 +597,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertSame($shellDamage->getShell()->getId(), $entry->getShell()->getId());
     }
 
@@ -622,7 +609,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
             'shell' => $entryShell,
             'crewMembers' => UserFactory::new()->many($entryShell->getCrewSize()),
         ]);
-        $previousShell = $entry->getShell();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -640,16 +626,9 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertSame($shell->getId(), $entry->getShell()->getId());
         $this->assertSame(10.0, $entry->getShell()->getMileage());
-
-        $previousShell = ShellFactory::repository()->find($previousShell->getId());
-        $previousShell->refresh();
-
-        $this->assertSame(0.0, $previousShell->getMileage());
+        $this->assertSame(0.0, $entryShell->getMileage());
     }
 
     public function testFinishLogbookEntry()
@@ -669,9 +648,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertSame('16:00', $entry->getEndAt()->format('H:i'));
         $this->assertSame(12.2, $entry->getCoveredDistance());
         $this->assertSame(12.2, $entry->getShell()->getMileage());
@@ -701,9 +677,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
         $this->assertResponseRedirects();
-
-        $entry->refresh();
-
         $this->assertCount(2, $entry->getShellDamages());
         $this->assertSame($categories[0]->getId(), $entry->getShellDamages()->first()->getCategory()->getId());
         $this->assertNull($entry->getShellDamages()->first()->getDescription());
@@ -716,9 +689,8 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $shell = ShellFactory::createOne();
         $entry = LogbookEntryFactory::createOne([
             'shell' => $shell,
-        ]);
+        ])->disableAutoRefresh();
         $shell->save();
-        $entryId = $entry->getId();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -731,7 +703,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/logbook-entry');
 
-        LogbookEntryFactory::repository()->assert()->notExists(['id' => $entryId]);
+        LogbookEntryFactory::repository()->assert()->notExists($entry);
         $this->assertSame(0.0, $shell->getMileage());
     }
 }

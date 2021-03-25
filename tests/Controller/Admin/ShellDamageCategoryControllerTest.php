@@ -135,17 +135,13 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $category->refresh();
-
         $this->assertSame('A modified shell damage category', $category->getName());
         $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
     }
 
     public function testDeleteShellDamageCategory()
     {
-        $category = ShellDamageCategoryFactory::createOne();
-        $categoryId = $category->getId();
+        $category = ShellDamageCategoryFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -158,6 +154,6 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell-damage-category');
 
-        ShellDamageCategoryFactory::repository()->assert()->notExists(['id' => $categoryId]);
+        ShellDamageCategoryFactory::repository()->assert()->notExists($category);
     }
 }

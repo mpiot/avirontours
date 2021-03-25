@@ -163,9 +163,6 @@ class ShellControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $shell->refresh();
-
         $this->assertSame('A modified shell', $shell->getName());
         $this->assertSame(2, $shell->getNumberRowers());
         $this->assertSame('sweep', $shell->getRowingType());
@@ -177,8 +174,7 @@ class ShellControllerTest extends AppWebTestCase
 
     public function testDeleteShell()
     {
-        $shell = ShellFactory::createOne();
-        $shellId = $shell->getId();
+        $shell = ShellFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -191,6 +187,6 @@ class ShellControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell');
 
-        ShellFactory::repository()->assert()->notExists(['id' => $shellId]);
+        ShellFactory::repository()->assert()->notExists($shell);
     }
 }

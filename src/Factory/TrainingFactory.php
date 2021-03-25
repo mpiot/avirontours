@@ -40,7 +40,7 @@ final class TrainingFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'user' => UserFactory::createOne(),
+            'user' => UserFactory::new(),
             'trainedAt' => self::faker()->dateTime,
             'duration' => new \DateInterval('PT1H10M25S'),
             'distance' => self::faker()->randomFloat(1, 2, 20),

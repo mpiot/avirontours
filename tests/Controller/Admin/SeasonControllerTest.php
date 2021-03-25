@@ -160,16 +160,12 @@ class SeasonControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $season->refresh();
-
         $this->assertSame(2030, $season->getName());
     }
 
     public function testDeleteSeason()
     {
-        $season = SeasonFactory::createOne();
-        $seasonId = $season->getId();
+        $season = SeasonFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -182,6 +178,6 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season');
 
-        SeasonFactory::repository()->assert()->notExists(['id' => $seasonId]);
+        SeasonFactory::repository()->assert()->notExists($season);
     }
 }

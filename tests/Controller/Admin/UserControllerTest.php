@@ -201,9 +201,6 @@ class UserControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        $user->refresh();
-
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));
         $this->assertSame('m', $user->getGender());
         $this->assertSame('John', $user->getFirstName());
@@ -224,8 +221,7 @@ class UserControllerTest extends AppWebTestCase
 
     public function testDeleteUser()
     {
-        $user = UserFactory::createOne();
-        $userId = $user->getId();
+        $user = UserFactory::createOne()->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -237,6 +233,6 @@ class UserControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/user');
-        UserFactory::repository()->assert()->notExists(['id' => $userId]);
+        UserFactory::repository()->assert()->notExists($user);
     }
 }
