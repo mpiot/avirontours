@@ -36,12 +36,9 @@ class AddUserCommand extends Command
     // so it will be instantiated only when the command is actually called.
     protected static $defaultName = 'app:user:add';
 
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
-    private $passwordEncoder;
-    private $entityManager;
+    private ?\Symfony\Component\Console\Style\SymfonyStyle $io = null;
+    private \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder;
+    private \Doctrine\ORM\EntityManagerInterface $entityManager;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {

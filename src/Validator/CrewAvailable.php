@@ -31,5 +31,5 @@ class CrewAvailable extends Constraint
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
      */
-    public $message = 'Certains membres d\'équipage sont déjà sortis: {{ value }}.';
+    public string $message = 'Certains membres d\'équipage sont déjà sortis: {{ value }}.';
 }

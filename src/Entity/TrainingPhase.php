@@ -42,46 +42,46 @@ class TrainingPhase
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Training::class, inversedBy="trainingPhases")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $training;
+    private ?Training $training = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull
      */
-    private $intensity;
+    private ?int $intensity = null;
 
     /**
      * @ORM\Column(type="dateinterval")
      * @Assert\NotNull
      */
-    private $duration;
+    private ?\DateInterval $duration = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $distance;
+    private ?float $distance = null;
 
     /**
      * @ORM\Column(type="string", length=6, nullable=true)
      * @Assert\Regex(pattern="#\d\:\d{2}\.\d#", message="Le split doit avoir le format: ""0:00.0"".")
      */
-    private $split;
+    private ?string $split = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $spm;
+    private ?int $spm = null;
 
     public function getId(): ?int
     {

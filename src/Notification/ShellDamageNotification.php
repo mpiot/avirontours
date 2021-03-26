@@ -34,7 +34,7 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class ShellDamageNotification extends Notification implements ChatNotificationInterface, EmailNotificationInterface
 {
-    private $shellDamage;
+    private ShellDamage $shellDamage;
 
     public function __construct(ShellDamage $shellDamage)
     {
@@ -49,7 +49,7 @@ class ShellDamageNotification extends Notification implements ChatNotificationIn
         $message = new ChatMessage('');
         $options = (new DiscordOptions())
             ->addEmbed((new DiscordEmbed())
-                ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15489088 : 11184810)
+                ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15_489_088 : 11_184_810)
                 ->title('Nouvelle avarie')
                 ->addField((new DiscordFieldEmbedObject())
                     ->name('Bateau')

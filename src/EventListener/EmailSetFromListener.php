@@ -27,7 +27,7 @@ use Symfony\Component\Mime\Email;
 
 class EmailSetFromListener implements EventSubscriberInterface
 {
-    private $senderEmail;
+    private string $senderEmail;
 
     public function __construct(string $senderEmail)
     {

@@ -31,12 +31,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 abstract class RoleCommand extends Command
 {
-    /**
-     * @var SymfonyStyle
-     */
-    private $io;
+    private ?\Symfony\Component\Console\Style\SymfonyStyle $io = null;
 
-    private $entityManager;
+    private \Doctrine\ORM\EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {

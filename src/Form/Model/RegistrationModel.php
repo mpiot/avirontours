@@ -34,98 +34,74 @@ use Symfony\Component\Validator\Constraints as Assert;
 class RegistrationModel
 {
     /**
-     * @var string
      * @Assert\NotBlank
      * @Assert\Email
      */
-    public $email;
+    public ?string $email = null;
+
+    public ?string $phoneNumber = null;
 
     /**
-     * @var string
-     */
-    public $phoneNumber;
-
-    /**
-     * @var string
      * @Assert\NotBlank
      * @Assert\Length(min="6", max="4096")
      */
-    public $plainPassword;
+    public ?string $plainPassword = null;
 
     /**
-     * @var string
      * @Assert\NotBlank
      */
-    public $gender;
+    public ?string $gender = null;
 
     /**
-     * @var string
      * @Assert\NotBlank
      */
-    public $firstName;
+    public ?string $firstName = null;
 
     /**
-     * @var string
      * @Assert\NotBlank
      */
-    public $lastName;
+    public ?string $lastName = null;
 
     /**
-     * @var \DateTime
      * @Assert\NotBlank
      */
-    public $birthday;
+    public ?\DateTime $birthday = null;
 
     /**
-     * @var int
      * @Assert\NotBlank
      */
-    public $laneNumber;
+    public ?string $laneNumber = null;
 
     /**
-     * @var string
      * @Assert\NotNull
      */
-    public $laneType;
+    public ?string $laneType = null;
 
     /**
-     * @var string
      * @Assert\NotBlank
      */
-    public $laneName;
+    public ?string $laneName = null;
 
     /**
-     * @var int
      * @Assert\NotBlank
      */
-    public $postalCode;
+    public ?string $postalCode = null;
 
     /**
-     * @var string
      * @Assert\NotBlank
      */
-    public $city;
+    public ?string $city = null;
 
     /**
-     * @var MedicalCertificate
      * @Assert\Valid
      */
-    public $medicalCertificate;
+    public ?MedicalCertificate $medicalCertificate = null;
 
-    /**
-     * @var bool
-     */
-    public $federationEmailAllowed = false;
+    public ?bool $federationEmailAllowed = false;
 
-    /**
-     * @var bool
-     */
-    public $clubEmailAllowed = true;
+    public ?bool $clubEmailAllowed = true;
 
-    /**
-     * @var bool
-     */
-    public $partnersEmailAllowed = false;
+    public ?bool $partnersEmailAllowed = false;
 
     public function generateUser(SeasonCategory $seasonCategory, UserPasswordEncoderInterface $passwordEncoder)
     {

@@ -31,7 +31,7 @@ use Symfony\Component\Security\Core\Security;
 
 class LogbookEntryStartType extends AbstractType
 {
-    private $security;
+    private \Symfony\Component\Security\Core\Security $security;
 
     public function __construct(Security $security)
     {

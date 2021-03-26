@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class SeasonCsvGenerator
 {
-    private $licenseRepository;
+    private LicenseRepository $licenseRepository;
 
     public function __construct(LicenseRepository $licenseRepository)
     {

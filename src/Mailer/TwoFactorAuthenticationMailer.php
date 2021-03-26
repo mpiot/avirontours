@@ -27,7 +27,7 @@ use Symfony\Component\Mime\Email;
 
 class TwoFactorAuthenticationMailer implements AuthCodeMailerInterface
 {
-    private $mailer;
+    private \Symfony\Component\Mailer\MailerInterface $mailer;
 
     public function __construct(MailerInterface $mailer)
     {

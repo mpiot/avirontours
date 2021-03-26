@@ -28,7 +28,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ShellNotDamagedValidator extends ConstraintValidator
 {
-    private $shellRepository;
+    private ShellRepository $shellRepository;
 
     public function __construct(ShellRepository $shellRepository)
     {
@@ -37,7 +37,7 @@ class ShellNotDamagedValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint): void
     {
-        /* @var $constraint \App\Validator\ShellAvailable */
+        /* @var $constraint ShellAvailable */
 
         if (null === $value || '' === $value) {
             return;

@@ -37,46 +37,46 @@ class ShellDamage
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ShellDamageCategory")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull
      */
-    private $category;
+    private ?ShellDamageCategory $category = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $note;
+    private ?string $note = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $repairStartAt;
+    private ?\DateTimeInterface $repairStartAt = null;
 
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $repairEndAt;
+    private ?\DateTimeInterface $repairEndAt = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull
      */
-    private $shell;
+    private ?Shell $shell = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\LogbookEntry", inversedBy="shellDamages")
      */
-    private $logbookEntry;
+    private ?LogbookEntry $logbookEntry = null;
 
     public function getId(): ?int
     {

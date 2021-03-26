@@ -38,11 +38,9 @@ class ShellDamageType extends AbstractType
                 'label' => 'Catégorie',
                 'class' => ShellDamageCategory::class,
                 'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('category')
-                        ->orderBy('category.priority', 'DESC')
-                        ->orderBy('category.name', 'ASC');
-                },
+                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('category')
+                    ->orderBy('category.priority', 'DESC')
+                    ->orderBy('category.name', 'ASC'),
                 'group_by' => function (ShellDamageCategory $choice, $key, $value) {
                     if (ShellDamageCategory::PRIORITY_HIGH === $choice->getPriority()) {
                         return 'Importante';

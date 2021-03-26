@@ -55,53 +55,53 @@ class Shell
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex("/1|2|4|8/", message="Le nombre de rameur doit être: 1, 2, 4 ou 8.")
      * @Assert\NotBlank
      */
-    private $numberRowers;
+    private ?int $numberRowers = null;
 
     /**
      * @ORM\Column(type="boolean")
      * @Assert\NotNull
      */
-    private $coxed;
+    private ?bool $coxed = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull
      */
-    private $rowingType;
+    private ?string $rowingType = null;
 
     /**
      * @ORM\Column(type="boolean")
      * @Assert\NotNull
      */
-    private $yolette;
+    private ?bool $yolette = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $abbreviation;
+    private ?string $abbreviation = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="shell")
      */
-    private $logbookEntries;
+    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $logbookEntries;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $productionYear;
+    private ?int $productionYear = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -111,7 +111,7 @@ class Shell
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $newPrice;
+    private ?float $newPrice = null;
 
     /**
      * @ORM\Column(type="float")
@@ -123,32 +123,32 @@ class Shell
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $riggerMaterial;
+    private ?string $riggerMaterial = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $riggerPosition;
+    private ?string $riggerPosition = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $usageFrequency;
+    private ?int $usageFrequency = null;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $rowerCategory;
+    private ?int $rowerCategory = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $personalBoat;
+    private ?bool $personalBoat = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="shell")
      */
-    private $shellDamages;
+    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $shellDamages;
 
     public function __construct()
     {

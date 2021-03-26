@@ -41,21 +41,21 @@ class License
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SeasonCategory", inversedBy="licenses")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull
      */
-    private $seasonCategory;
+    private ?SeasonCategory $seasonCategory = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
      * @ORM\JoinColumn(name="app_user", nullable=false)
      * @Assert\NotNull
      */
-    private $user;
+    private ?User $user = null;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\MedicalCertificate", cascade={"persist", "remove"})
@@ -63,7 +63,7 @@ class License
      * @Assert\NotNull
      * @Assert\Valid
      */
-    private $medicalCertificate;
+    private ?MedicalCertificate $medicalCertificate = null;
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -73,18 +73,18 @@ class License
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $transitionContexts;
+    private array $transitionContexts;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $federationEmailAllowed;
+    private ?bool $federationEmailAllowed = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Assert\Positive
      */
-    private $logbookEntryLimit;
+    private ?int $logbookEntryLimit = null;
 
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
     {

@@ -26,7 +26,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class UniqueUserValidator extends ConstraintValidator
 {
-    private $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct(UserRepository $userRepository)
     {

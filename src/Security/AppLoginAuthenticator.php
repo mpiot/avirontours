@@ -43,10 +43,10 @@ class AppLoginAuthenticator extends AbstractFormLoginAuthenticator implements Pa
 {
     use TargetPathTrait;
 
-    private $entityManager;
-    private $urlGenerator;
-    private $csrfTokenManager;
-    private $passwordEncoder;
+    private \Doctrine\ORM\EntityManagerInterface $entityManager;
+    private \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator;
+    private \Symfony\Component\Security\Csrf\CsrfTokenManagerInterface $csrfTokenManager;
+    private \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder;
 
     public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
     {

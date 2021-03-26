@@ -52,65 +52,65 @@ class User implements UserInterface, EmailTwoFactorInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $username;
+    private ?string $username = null;
 
     /**
      * @ORM\Column(type="string", length=180)
      * @Assert\NotBlank
      * @Assert\Email
      */
-    private $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $phoneNumber;
+    private ?string $phoneNumber = null;
 
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string", nullable=true)
      */
-    private $password;
+    private ?string $password = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $gender;
+    private ?string $gender = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $firstName;
+    private ?string $firstName = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $lastName;
+    private ?string $lastName = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      */
-    private $rowerCategory;
+    private ?int $rowerCategory = null;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank
      */
-    private $birthday;
+    private ?\DateTimeInterface $birthday = null;
 
     /**
      * @ORM\Column(type="date")
@@ -122,13 +122,13 @@ class User implements UserInterface, EmailTwoFactorInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotBlank
      */
-    private $laneNumber;
+    private ?string $laneNumber = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotNull
      */
-    private $laneType;
+    private ?string $laneType = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -140,7 +140,7 @@ class User implements UserInterface, EmailTwoFactorInterface
      * @ORM\Column(type="string", length=5, nullable=true)
      * @Assert\NotBlank
      */
-    private $postalCode;
+    private ?string $postalCode = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -151,13 +151,13 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="crewMembers")
      */
-    private $logbookEntries;
+    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $logbookEntries;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="user", cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
      */
-    private $licenses;
+    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $licenses;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -167,42 +167,42 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @ORM\Column(type="boolean")
      */
-    private $clubEmailAllowed;
+    private ?bool $clubEmailAllowed = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $partnersEmailAllowed;
+    private ?bool $partnersEmailAllowed = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $licenseNumber;
+    private ?string $licenseNumber = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Physiology::class, cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $physiology;
+    private ?Physiology $physiology = null;
 
     /**
      * @ORM\OneToOne(targetEntity=Anatomy::class, cascade={"persist", "remove"})
      */
-    private $anatomy;
+    private ?Anatomy $anatomy = null;
 
     /**
      * @ORM\OneToOne(targetEntity=PhysicalQualities::class, cascade={"persist", "remove"})
      */
-    private $physicalQualities;
+    private ?PhysicalQualities $physicalQualities = null;
 
     /**
      * @ORM\OneToOne(targetEntity=WorkoutMaximumLoad::class, cascade={"persist", "remove"})
      */
-    private $workoutMaximumLoad;
+    private ?WorkoutMaximumLoad $workoutMaximumLoad = null;
 
     /**
      * @ORM\OneToMany(targetEntity=Training::class, mappedBy="user")
      */
-    private $trainings;
+    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $trainings;
 
     public function __construct()
     {

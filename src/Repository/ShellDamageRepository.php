@@ -34,10 +34,7 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 class ShellDamageRepository extends ServiceEntityRepository
 {
-    /**
-     * @var PaginatorInterface
-     */
-    private $paginator;
+    private \Knp\Component\Pager\PaginatorInterface $paginator;
 
     public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {

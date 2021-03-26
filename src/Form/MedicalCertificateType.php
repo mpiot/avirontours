@@ -31,7 +31,7 @@ use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class MedicalCertificateType extends AbstractType
 {
-    private $router;
+    private \Symfony\Component\Routing\RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     {

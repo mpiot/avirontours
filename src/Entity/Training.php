@@ -57,13 +57,13 @@ class Training
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trainings")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private ?User $user = null;
 
     /**
      * @ORM\Column(type="datetime")
@@ -75,35 +75,35 @@ class Training
      * @ORM\Column(type="dateinterval")
      * @Assert\NotNull
      */
-    private $duration;
+    private ?\DateInterval $duration = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $distance;
+    private ?float $distance = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull
      */
-    private $sport;
+    private ?string $sport = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $feeling;
+    private ?float $feeling = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $comment;
+    private ?string $comment = null;
 
     /**
      * @ORM\OneToMany(targetEntity=TrainingPhase::class, mappedBy="training", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
      * @Assert\Valid
      */
-    private $trainingPhases;
+    private Collection $trainingPhases;
 
     public function __construct(User $user)
     {

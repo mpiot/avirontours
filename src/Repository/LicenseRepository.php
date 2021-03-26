@@ -37,7 +37,7 @@ use function Symfony\Component\String\u;
  */
 class LicenseRepository extends ServiceEntityRepository
 {
-    private $paginator;
+    private \Knp\Component\Pager\PaginatorInterface $paginator;
 
     public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
     {
