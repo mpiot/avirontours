@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -27,7 +29,7 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -42,7 +44,7 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         yield ['GET', '/workout-maximum-load/edit'];
     }
 
-    public function testShowWorkoutMaximumLoad()
+    public function testShowWorkoutMaximumLoad(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         WorkoutMaximumLoadFactory::createOne([
@@ -57,7 +59,7 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowWorkoutMaximumLoadWithoutInfos()
+    public function testShowWorkoutMaximumLoadWithoutInfos(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -69,7 +71,7 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testEditWorkoutMaximumLoad()
+    public function testEditWorkoutMaximumLoad(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $workoutMaximumLoad = WorkoutMaximumLoadFactory::createOne([

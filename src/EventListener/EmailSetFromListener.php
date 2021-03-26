@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -32,7 +34,7 @@ class EmailSetFromListener implements EventSubscriberInterface
         $this->senderEmail = $senderEmail;
     }
 
-    public function onMessage(MessageEvent $event)
+    public function onMessage(MessageEvent $event): void
     {
         $email = $event->getMessage();
         if (!$email instanceof Email) {

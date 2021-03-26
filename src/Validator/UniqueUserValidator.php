@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -31,7 +33,7 @@ class UniqueUserValidator extends ConstraintValidator
         $this->userRepository = $userRepository;
     }
 
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         $users = $this->userRepository->findForUniqueness(['firstName' => $value->firstName, 'lastName' => $value->lastName]);
 

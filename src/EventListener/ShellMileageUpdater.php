@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -29,7 +31,7 @@ class ShellMileageUpdater
     private $oldCoveredDistance;
     private $newCoveredDistance;
 
-    public function prePersist(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
+    public function prePersist(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
     {
         if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
             return;
@@ -38,7 +40,7 @@ class ShellMileageUpdater
         $logbookEntry->getShell()->addToMileage($coveredDistance);
     }
 
-    public function preUpdate(LogbookEntry $logbookEntry, PreUpdateEventArgs $args)
+    public function preUpdate(LogbookEntry $logbookEntry, PreUpdateEventArgs $args): void
     {
         if (false === $args->hasChangedField('coveredDistance') && false === $args->hasChangedField('shell')) {
             return;
@@ -62,7 +64,7 @@ class ShellMileageUpdater
         }
     }
 
-    public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
+    public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
     {
         if (null === $this->oldShell && null === $this->newShell) {
             return;
@@ -82,7 +84,7 @@ class ShellMileageUpdater
         $args->getObjectManager()->flush();
     }
 
-    public function preRemove(LogbookEntry $logbookEntry, LifecycleEventArgs $args)
+    public function preRemove(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
     {
         if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
             return;

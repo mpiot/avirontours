@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -242,7 +244,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setEmail(?string $email): self
     {
         if (null !== $email) {
-            $email = u($email)->lower();
+            $email = u($email)->lower()->toString();
         }
 
         $this->email = $email;
@@ -299,7 +301,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): void
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
@@ -307,7 +309,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -353,7 +355,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setFirstName(?string $firstName): self
     {
         if (null !== $firstName) {
-            $firstName = u($firstName)->lower()->title(true);
+            $firstName = u($firstName)->lower()->title(true)->toString();
         }
 
         $this->firstName = $firstName;
@@ -369,7 +371,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function setLastName(?string $lastName): self
     {
         if (null !== $lastName) {
-            $lastName = u($lastName)->lower()->title(true);
+            $lastName = u($lastName)->lower()->title(true)->toString();
         }
 
         $this->lastName = $lastName;
@@ -629,44 +631,6 @@ class User implements UserInterface, EmailTwoFactorInterface
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function defineUsername()
-    {
-        $slugger = new AsciiSlugger('fr');
-        $firstName = $slugger->slug($this->firstName)->lower();
-        $lastName = $slugger->slug($this->lastName)->lower();
-
-        $this->username = "$firstName.$lastName";
-    }
-
-    public static function getAvailableCivilities(): array
-    {
-        return [
-            'Madame' => self::GENDER_FEMALE,
-            'Monsieur' => self::GENDER_MALE,
-        ];
-    }
-
-    public static function getAvailableGenders(): array
-    {
-        return [
-            'Femme' => self::GENDER_FEMALE,
-            'Homme' => self::GENDER_MALE,
-        ];
-    }
-
-    public static function getAvailableRowerCategories(): array
-    {
-        return [
-            'A' => self::ROWER_CATEGORY_A,
-            'B' => self::ROWER_CATEGORY_B,
-            'C' => self::ROWER_CATEGORY_C,
-        ];
-    }
-
     public function getPhysiology(): ?Physiology
     {
         return $this->physiology;
@@ -721,5 +685,43 @@ class User implements UserInterface, EmailTwoFactorInterface
     public function getTrainings(): Collection
     {
         return $this->trainings;
+    }
+
+    public static function getAvailableCivilities(): array
+    {
+        return [
+            'Madame' => self::GENDER_FEMALE,
+            'Monsieur' => self::GENDER_MALE,
+        ];
+    }
+
+    public static function getAvailableGenders(): array
+    {
+        return [
+            'Femme' => self::GENDER_FEMALE,
+            'Homme' => self::GENDER_MALE,
+        ];
+    }
+
+    public static function getAvailableRowerCategories(): array
+    {
+        return [
+            'A' => self::ROWER_CATEGORY_A,
+            'B' => self::ROWER_CATEGORY_B,
+            'C' => self::ROWER_CATEGORY_C,
+        ];
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function defineUsername(): void
+    {
+        $slugger = new AsciiSlugger('fr');
+        $firstName = $slugger->slug($this->firstName)->lower();
+        $lastName = $slugger->slug($this->lastName)->lower();
+
+        $this->username = "$firstName.$lastName";
     }
 }

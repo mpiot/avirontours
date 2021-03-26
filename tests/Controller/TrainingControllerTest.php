@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -31,11 +33,11 @@ class TrainingControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $training = TrainingFactory::createOne();
-            $url = str_replace('{id}', $training->getId(), $url);
+            $url = str_replace('{id}', (string) $training->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -48,13 +50,13 @@ class TrainingControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForUnlicensedUser($method, $url)
+    public function testAccessDeniedForUnlicensedUser($method, $url): void
     {
         $user = UserFactory::createOne();
 
         if (mb_strpos($url, '{id}')) {
             $training = TrainingFactory::createOne(['user' => $user]);
-            $url = str_replace('{id}', $training->getId(), $url);
+            $url = str_replace('{id}', (string) $training->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -76,7 +78,7 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['DELETE', '/training/{id}'];
     }
 
-    public function testIndexTrainings()
+    public function testIndexTrainings(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         TrainingFactory::createMany(6, ['user' => $user]);
@@ -91,7 +93,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertCount(6, $crawler->filter('table > tbody > tr'));
     }
 
-    public function testShowTraining()
+    public function testShowTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $training = TrainingFactory::createOne(['user' => $user]);
@@ -104,7 +106,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowOtherUserTraining()
+    public function testShowOtherUserTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $training = TrainingFactory::createOne();
@@ -117,7 +119,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function testNewTraining()
+    public function testNewTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -151,7 +153,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame('My little comment...', $training->getComment());
     }
 
-    public function testNewTrainingWithPhases()
+    public function testNewTrainingWithPhases(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -203,7 +205,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(10, $training->getTrainingPhases()->first()->getSpm());
     }
 
-    public function testNewTrainingWithoutData()
+    public function testNewTrainingWithoutData(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -233,7 +235,7 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assertCount(0);
     }
 
-    public function testNewTrainingWithEmptyPhase()
+    public function testNewTrainingWithEmptyPhase(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -273,7 +275,7 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assertCount(0);
     }
 
-    public function testNewTrainingWithBadSplitInPhase()
+    public function testNewTrainingWithBadSplitInPhase(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -312,7 +314,7 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assertCount(0);
     }
 
-    public function testEditTraining()
+    public function testEditTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $training = TrainingFactory::createOne(['user' => $user]);
@@ -344,7 +346,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame('My little comment...', $training->getComment());
     }
 
-    public function testEditOtherUserTraining()
+    public function testEditOtherUserTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         $training = TrainingFactory::createOne();
@@ -357,7 +359,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function testDeleteTraining()
+    public function testDeleteTraining(): void
     {
         $training = TrainingFactory::createOne([
             'user' => $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser(),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -28,7 +30,7 @@ class UserControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,11 +42,11 @@ class UserControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $user = UserFactory::createOne();
-            $url = str_replace('{id}', $user->getId(), $url);
+            $url = str_replace('{id}', (string) $user->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -66,7 +68,7 @@ class UserControllerTest extends AppWebTestCase
         yield ['DELETE', '/admin/user/{id}'];
     }
 
-    public function testIndexUsers()
+    public function testIndexUsers(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -76,7 +78,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowUser()
+    public function testShowUser(): void
     {
         $user = UserFactory::createOne();
 
@@ -88,7 +90,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewUser()
+    public function testNewUser(): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -135,7 +137,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
-    public function testNewUserWithoutData()
+    public function testNewUserWithoutData(): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -173,7 +175,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertCount(11, $crawler->filter('.form-error-message'));
     }
 
-    public function testEditUser()
+    public function testEditUser(): void
     {
         $user = UserFactory::createOne();
 
@@ -219,7 +221,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
-    public function testDeleteUser()
+    public function testDeleteUser(): void
     {
         $user = UserFactory::createOne()->disableAutoRefresh();
 

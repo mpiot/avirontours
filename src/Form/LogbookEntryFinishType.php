@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -29,7 +31,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LogbookEntryFinishType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('recaptcha', Recaptcha3Type::class, [
@@ -48,7 +50,7 @@ class LogbookEntryFinishType extends AbstractType
         $builder->get('endAt')->setRequired(true);
         $builder->get('coveredDistance')->setRequired(true);
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             /* @var LogbookEntry $data */
             $data = $event->getData();
 
@@ -63,7 +65,7 @@ class LogbookEntryFinishType extends AbstractType
         return LogbookEntryType::class;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'validation_groups' => ['finish'],

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -28,7 +30,7 @@ class SeasonControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,11 +42,11 @@ class SeasonControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
-            $url = str_replace('{id}', $season->getId(), $url);
+            $url = str_replace('{id}', (string) $season->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -66,7 +68,7 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['DELETE', '/admin/season/{id}'];
     }
 
-    public function testIndexSeasons()
+    public function testIndexSeasons(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -76,7 +78,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowSeason()
+    public function testShowSeason(): void
     {
         $season = SeasonFactory::createOne();
 
@@ -88,7 +90,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewSeason()
+    public function testNewSeason(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -124,7 +126,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertTrue($season->getSeasonCategories()->first()->getDisplayed());
     }
 
-    public function testNewSeasonWithoutData()
+    public function testNewSeasonWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -144,7 +146,7 @@ class SeasonControllerTest extends AppWebTestCase
         SeasonFactory::repository()->assertCount(0);
     }
 
-    public function testEditSeason()
+    public function testEditSeason(): void
     {
         $season = SeasonFactory::createOne();
 
@@ -163,7 +165,7 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertSame(2030, $season->getName());
     }
 
-    public function testDeleteSeason()
+    public function testDeleteSeason(): void
     {
         $season = SeasonFactory::createOne()->disableAutoRefresh();
 

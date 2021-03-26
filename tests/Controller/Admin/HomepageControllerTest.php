@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -23,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HomepageControllerTest extends AppWebTestCase
 {
-    public function testIndex()
+    public function testIndex(): void
     {
         $client = static::createClient();
         $client->request('GET', '/admin');

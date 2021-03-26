@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -149,7 +151,7 @@ class License
         );
     }
 
-    public function setMarking($marking, $context = [])
+    public function setMarking($marking, $context = []): void
     {
         $this->marking = $marking;
         $this->transitionContexts[] = [
@@ -164,7 +166,7 @@ class License
         return $this->transitionContexts;
     }
 
-    public function setTransitionContexts($transitionContexts)
+    public function setTransitionContexts($transitionContexts): void
     {
         $this->transitionContexts = $transitionContexts;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -31,7 +33,7 @@ class BumpVersionCommand extends Command
 {
     protected static $defaultName = 'app:bump-version';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Bump project version')

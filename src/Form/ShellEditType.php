@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -23,7 +25,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ShellEditType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->get('numberRowers')->setDisabled(true);
         $builder->get('coxed')->setDisabled(true);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -27,7 +29,7 @@ class SportsProfileControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -39,11 +41,11 @@ class SportsProfileControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $user = UserFactory::createOne();
-            $url = str_replace('{id}', $user->getId(), $url);
+            $url = str_replace('{id}', (string) $user->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -61,7 +63,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         yield ['GET', '/admin/sports-profile/{id}/anatomy'];
     }
 
-    public function testIndexUsers()
+    public function testIndexUsers(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -71,7 +73,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewPhysiology()
+    public function testNewPhysiology(): void
     {
         $user = UserFactory::createOne();
 
@@ -103,7 +105,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertSame(215, $user->getPhysiology()->getMaximumHeartRate());
     }
 
-    public function testNewAnatomy()
+    public function testNewAnatomy(): void
     {
         $user = UserFactory::createOne();
 
@@ -131,7 +133,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertSame(100, $user->getAnatomy()->getLegLength());
     }
 
-    public function testNewPhysicalQualities()
+    public function testNewPhysicalQualities(): void
     {
         $user = UserFactory::createOne();
 
@@ -167,7 +169,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertSame(9, $user->getPhysicalQualities()->getRecovery());
     }
 
-    public function testNewWorkoutMaximumLoad()
+    public function testNewWorkoutMaximumLoad(): void
     {
         $user = UserFactory::createOne();
 

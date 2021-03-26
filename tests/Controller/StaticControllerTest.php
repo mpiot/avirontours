@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -22,7 +24,7 @@ use App\Tests\AppWebTestCase;
 
 class StaticControllerTest extends AppWebTestCase
 {
-    public function testLegalNotice()
+    public function testLegalNotice(): void
     {
         $client = static::createClient();
         $client->request('GET', '/mentions-legales');
@@ -30,7 +32,7 @@ class StaticControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testReleaseNotes()
+    public function testReleaseNotes(): void
     {
         $client = static::createClient();
         $client->request('GET', '/release-notes');

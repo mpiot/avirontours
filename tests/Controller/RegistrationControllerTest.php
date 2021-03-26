@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -28,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationControllerTest extends AppWebTestCase
 {
-    public function testRegistration()
+    public function testRegistration(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -93,7 +95,7 @@ class RegistrationControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assertCount(1);
     }
 
-    public function testRegistrationWithoutData()
+    public function testRegistrationWithoutData(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -141,7 +143,7 @@ class RegistrationControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assertCount(0);
     }
 
-    public function testRegistrationTwice()
+    public function testRegistrationTwice(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
         $license = LicenseFactory::createOne(['seasonCategory' => $season->getSeasonCategories()->first()]);
@@ -181,7 +183,7 @@ class RegistrationControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assertCount(1);
     }
 
-    public function testNonEnabledRegistration()
+    public function testNonEnabledRegistration(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
@@ -192,7 +194,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testNonDisplayedCategoryRegistration()
+    public function testNonDisplayedCategoryRegistration(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesNotDisplayed()->create();
 
@@ -203,7 +205,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testRegistrationAsLogInUser()
+    public function testRegistrationAsLogInUser(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -215,7 +217,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/profile');
     }
 
-    public function testRenew()
+    public function testRenew(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -245,7 +247,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
     }
 
-    public function testNonDisplayedCategoryRenew()
+    public function testNonDisplayedCategoryRenew(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesNotDisplayed()->create();
 
@@ -257,7 +259,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testNonEnabledRenew()
+    public function testNonEnabledRenew(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
@@ -269,7 +271,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testRenewAsAnonymousUser()
+    public function testRenewAsAnonymousUser(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
 
