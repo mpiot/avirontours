@@ -12,8 +12,9 @@ import './styles/app.scss';
 import './bootstrap';
 
 // import jQuery & Bootstrap
-import $ from "jquery";
+import 'popper.js';
 import 'bootstrap';
+import $ from "jquery";
 
 $('.custom-file-input').on('change', function(event) {
     let inputFile = event.currentTarget;
@@ -24,5 +25,7 @@ $('.custom-file-input').on('change', function(event) {
 });
 
 $(document).ready(() => {
+    $('[data-toggle="popover"]').popover();
+    $('[data-toggle="tooltip"]').tooltip();
     $('.toast').toast('show');
 });
