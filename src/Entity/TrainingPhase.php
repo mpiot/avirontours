@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -182,7 +184,7 @@ class TrainingPhase
     /**
      * @Assert\Callback
      */
-    public function validateDuration(ExecutionContextInterface $context)
+    public function validateDuration(ExecutionContextInterface $context): void
     {
         if (null === $this->duration) {
             return;

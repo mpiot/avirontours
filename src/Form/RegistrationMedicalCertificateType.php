@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -26,14 +28,14 @@ use Symfony\Component\Form\FormEvents;
 
 class RegistrationMedicalCertificateType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->remove('type')
             ->get('file')->setRequired(true)
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             /** @var MedicalCertificate $data */
             $data = $event->getData();
             $data->setType(MedicalCertificate::TYPE_CERTIFICATE);

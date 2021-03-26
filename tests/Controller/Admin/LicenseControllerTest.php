@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -31,7 +33,7 @@ class LicenseControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -43,18 +45,18 @@ class LicenseControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
             $season = SeasonFactory::createOne();
-            $url = str_replace('{season_id}', $season->getId(), $url);
+            $url = str_replace('{season_id}', (string) $season->getId(), $url);
         }
 
         if (mb_strpos($url, '{id}')) {
             $license = LicenseFactory::createOne([
                 'seasonCategory' => SeasonCategoryFactory::createOne(['season' => SeasonFactory::createOne()]),
             ]);
-            $url = str_replace('{id}', $license->getId(), $url);
+            $url = str_replace('{id}', (string) $license->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -76,7 +78,7 @@ class LicenseControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
     }
 
-    public function testNewLicense()
+    public function testNewLicense(): void
     {
         SeasonFactory::createOne();
         $user = UserFactory::createOne();
@@ -112,7 +114,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 
-    public function testNewLicenseWithoutData()
+    public function testNewLicenseWithoutData(): void
     {
         $season = SeasonFactory::createOne();
 
@@ -138,7 +140,7 @@ class LicenseControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assertCount(0);
     }
 
-    public function testNewLicenseNonUnique()
+    public function testNewLicenseNonUnique(): void
     {
         $license = LicenseFactory::createOne();
 
@@ -165,7 +167,7 @@ class LicenseControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assertCount(1);
     }
 
-    public function testEditLicense()
+    public function testEditLicense(): void
     {
         $license = LicenseFactory::createOne();
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
@@ -191,7 +193,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 
-    public function testDeleteLicense()
+    public function testDeleteLicense(): void
     {
         $license = LicenseFactory::createOne()->disableAutoRefresh();
 
@@ -209,7 +211,7 @@ class LicenseControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assert()->notExists($license);
     }
 
-    public function testChainMedicalCertificateValidation()
+    public function testChainMedicalCertificateValidation(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1]]);
 
@@ -229,7 +231,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testValidateMedicalCertificate()
+    public function testValidateMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => null]);
 
@@ -249,7 +251,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testRejectMedicalCertificate()
+    public function testRejectMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => null]);
 
@@ -269,7 +271,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testUnrejectMedicalCertificate()
+    public function testUnrejectMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1]]);
 
@@ -289,7 +291,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testValidatePayment()
+    public function testValidatePayment(): void
     {
         $license = LicenseFactory::createOne(['marking' => null]);
 
@@ -309,7 +311,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testValidateLicense()
+    public function testValidateLicense(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['medical_certificate_validated' => 1, 'payment_validated' => 1]]);
 

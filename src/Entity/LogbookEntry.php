@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -158,9 +160,7 @@ class LogbookEntry
 
     public function getFullCrew(): array
     {
-        $crewMembers = $this->crewMembers->map(function (User $user) {
-            return $user->getFullName();
-        })->toArray();
+        $crewMembers = $this->crewMembers->map(fn (User $user) => $user->getFullName())->toArray();
 
         return array_merge($crewMembers, $this->nonUserCrewMembers);
     }
@@ -248,7 +248,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewLength(ExecutionContextInterface $context, $payload)
+    public function validateCrewLength(ExecutionContextInterface $context, $payload): void
     {
         if (null === $this->getShell()) {
             return;
@@ -266,7 +266,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewRowerCategory(ExecutionContextInterface $context)
+    public function validateCrewRowerCategory(ExecutionContextInterface $context): void
     {
         if (null === $this->getShell()) {
             return;
@@ -296,7 +296,7 @@ class LogbookEntry
     /**
      * @Assert\Callback(groups={"start"})
      */
-    public function validateCrewRowerLogbookEntry(ExecutionContextInterface $context)
+    public function validateCrewRowerLogbookEntry(ExecutionContextInterface $context): void
     {
         if ($this->getCrewMembers()->isEmpty()) {
             return;

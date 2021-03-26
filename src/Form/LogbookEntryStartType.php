@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -36,7 +38,7 @@ class LogbookEntryStartType extends AbstractType
         $this->security = $security;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('recaptcha', Recaptcha3Type::class, [
@@ -51,7 +53,7 @@ class LogbookEntryStartType extends AbstractType
             ->remove('shellDamages')
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             if ($this->security->isGranted('ROLE_USER')) {
                 $data = $event->getData();
                 $data->addCrewMember($this->security->getUser());
@@ -65,7 +67,7 @@ class LogbookEntryStartType extends AbstractType
         return LogbookEntryType::class;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'validation_groups' => ['start'],

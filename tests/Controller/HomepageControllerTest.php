@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -26,7 +28,7 @@ use App\Tests\AppWebTestCase;
 
 class HomepageControllerTest extends AppWebTestCase
 {
-    public function testIndex()
+    public function testIndex(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,7 +42,7 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testIndexWithStats()
+    public function testIndexWithStats(): void
     {
         $user = UserFactory::createOne();
         PhysicalQualitiesFactory::createOne(['user' => $user]);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -27,7 +29,7 @@ class ShellControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -39,11 +41,11 @@ class ShellControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $shell = ShellFactory::createOne();
-            $url = str_replace('{id}', $shell->getId(), $url);
+            $url = str_replace('{id}', (string) $shell->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -65,7 +67,7 @@ class ShellControllerTest extends AppWebTestCase
         yield ['DELETE', '/admin/shell/{id}'];
     }
 
-    public function testIndexShells()
+    public function testIndexShells(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -75,7 +77,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowShell()
+    public function testShowShell(): void
     {
         $shell = ShellFactory::createOne();
 
@@ -87,7 +89,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewShell()
+    public function testNewShell(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -110,7 +112,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertSame('2x/2-', $shell->getAbbreviation());
     }
 
-    public function testNewShellWithoutData()
+    public function testNewShellWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -138,7 +140,7 @@ class ShellControllerTest extends AppWebTestCase
         ShellFactory::repository()->assertCount(0);
     }
 
-    public function testEditShell()
+    public function testEditShell(): void
     {
         $shell = ShellFactory::createOne([
             'numberRowers' => 2,
@@ -172,7 +174,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertSame('2-', $shell->getAbbreviation());
     }
 
-    public function testDeleteShell()
+    public function testDeleteShell(): void
     {
         $shell = ShellFactory::createOne()->disableAutoRefresh();
 

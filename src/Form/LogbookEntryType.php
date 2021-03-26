@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -45,7 +47,7 @@ class LogbookEntryType extends AbstractType
         $this->security = $security;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('shell', EntityType::class, [
@@ -80,7 +82,7 @@ class LogbookEntryType extends AbstractType
                         $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-sign-out-alt"></span></span>';
                     }
 
-                    if (false === $shell->getShellDamages()->filter(function (ShellDamage $damage) { return ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority(); })->isEmpty()) {
+                    if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
                         $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-tools"></span></span>';
                     }
 
@@ -187,7 +189,7 @@ class LogbookEntryType extends AbstractType
         }
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => LogbookEntry::class,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -26,7 +28,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class WorkoutMaximumLoadType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('rowingTirage', IntegerType::class, [
@@ -52,7 +54,7 @@ class WorkoutMaximumLoadType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => WorkoutMaximumLoad::class,

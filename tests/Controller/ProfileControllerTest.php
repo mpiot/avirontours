@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -25,7 +27,7 @@ class ProfileControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -41,7 +43,7 @@ class ProfileControllerTest extends AppWebTestCase
         yield ['GET', '/profile/edit-password'];
     }
 
-    public function testProfileShow()
+    public function testProfileShow(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -51,7 +53,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testProfileEditProfile()
+    public function testProfileEditProfile(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -89,7 +91,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertTrue($user->getPartnersEmailAllowed());
     }
 
-    public function testProfileEditProfileWithoutData()
+    public function testProfileEditProfileWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -121,7 +123,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertCount(8, $crawler->filter('.form-error-message'));
     }
 
-    public function testEditPassword()
+    public function testEditPassword(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -141,7 +143,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertNotSame($oldPassword, $user->getPassword());
     }
 
-    public function testEditPasswordWithoutData()
+    public function testEditPasswordWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();

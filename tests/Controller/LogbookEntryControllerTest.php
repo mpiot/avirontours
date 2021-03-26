@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -35,11 +37,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     /**
      * @dataProvider mainAndLogbookSubdomainUrlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+            $url = str_replace('{id}', (string) $logbookEntry->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -52,11 +54,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     /**
      * @dataProvider mainAndLogbookSubdomainUrlProvider
      */
-    public function testAccessDeniedForUnlicensedUser($method, $url)
+    public function testAccessDeniedForUnlicensedUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+            $url = str_replace('{id}', (string) $logbookEntry->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -70,11 +72,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     /**
      * @dataProvider onlyMainUrlProvider
      */
-    public function testAccessUnauthorizedForAnonymousUserOnSubDomain($method, $url)
+    public function testAccessUnauthorizedForAnonymousUserOnSubDomain($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+            $url = str_replace('{id}', (string) $logbookEntry->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -89,11 +91,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     /**
      * @dataProvider onlyMainUrlProvider
      */
-    public function testAccessForbiddenOnSubDomain($method, $url)
+    public function testAccessForbiddenOnSubDomain($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+            $url = str_replace('{id}', (string) $logbookEntry->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -112,11 +114,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     /**
      * @dataProvider mainAndLogbookSubdomainUrlProvider
      */
-    public function testAccessOnSubDomain($method, $url)
+    public function testAccessOnSubDomain($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
-            $url = str_replace('{id}', $logbookEntry->getId(), $url);
+            $url = str_replace('{id}', (string) $logbookEntry->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -149,7 +151,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         yield ['DELETE', '/logbook-entry/{id}'];
     }
 
-    public function testIndexLogbookEntries()
+    public function testIndexLogbookEntries(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -159,7 +161,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewLogbookEntry()
+    public function testNewLogbookEntry(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $licences = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create();
@@ -190,7 +192,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertEmpty($logBookEntry->getShellDamages());
     }
 
-    public function testNewLogbookEntryWithoutData()
+    public function testNewLogbookEntryWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -212,7 +214,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
-    public function testNewLogbookEntryInvalidCrewSize()
+    public function testNewLogbookEntryInvalidCrewSize(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $licences = LicenseFactory::new()->annualActive()->many(2)->create();
@@ -237,7 +239,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
-    public function testNewLogbookEntryWithCrewMemberOnWater()
+    public function testNewLogbookEntryWithCrewMemberOnWater(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $licences = LicenseFactory::new()->annualActive()->many(2)->create();
@@ -266,7 +268,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(1);
     }
 
-    public function testNewLogbookEntryWithInvalidRowerCategory()
+    public function testNewLogbookEntryWithInvalidRowerCategory(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_A]);
         $licences = LicenseFactory::new(['user' => UserFactory::new(['rowerCategory' => User::ROWER_CATEGORY_C])->create()])
@@ -295,7 +297,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
-    public function testNewLogbookEntryWithInvalidLogbookEntryLimit()
+    public function testNewLogbookEntryWithInvalidLogbookEntryLimit(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $licences = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create(['logbookEntryLimit' => 0]);
@@ -320,7 +322,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
-    public function testNewLogbookEntryWithShellOnWater()
+    public function testNewLogbookEntryWithShellOnWater(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
@@ -348,7 +350,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(1);
     }
 
-    public function testNewLogbookEntryWithHighlyDamagedShell()
+    public function testNewLogbookEntryWithHighlyDamagedShell(): void
     {
         $damage = ShellDamageFactory::new()->highlyDamaged()->notRepaired()->create([
             'shell' => ShellFactory::createOne(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]),
@@ -375,7 +377,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(0);
     }
 
-    public function testNewLogbookEntryWithMediumDamagedShell()
+    public function testNewLogbookEntryWithMediumDamagedShell(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $shellDamage = ShellDamageFactory::new()->mediumDamaged()->create(['shell' => $shell]);
@@ -399,7 +401,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assertCount(1);
     }
 
-    public function testUserListLogbookEntryFormAsAdmin()
+    public function testUserListLogbookEntryFormAsAdmin(): void
     {
         LicenseFactory::new()->annualActive()->many(2)->create();
         LicenseFactory::new()->annualInactive()->many(3)->create();
@@ -414,7 +416,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(10, $crawler->filter('#logbook_entry_start_crewMembers > option'));
     }
 
-    public function testUserListLogbookEntryFormAsUser()
+    public function testUserListLogbookEntryFormAsUser(): void
     {
         $users = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create();
         LicenseFactory::new()->annualInactive()->many(3)->create();
@@ -429,7 +431,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(2, $crawler->filter('#logbook_entry_start_crewMembers > option'));
     }
 
-    public function testNewLogbookEntryWithNonUserCrewMember()
+    public function testNewLogbookEntryWithNonUserCrewMember(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C]);
         $license = LicenseFactory::new()->annualInactive()->withInvalidLicense()->create();
@@ -454,7 +456,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
     }
 
-    public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser()
+    public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser(): void
     {
         $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
@@ -467,7 +469,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(0, $crawler->filter('#logbook_entry_start_nonUserCrewMembers'));
     }
 
-    public function testNewLogbookEntryWithOnlyNonUserCrewMembers()
+    public function testNewLogbookEntryWithOnlyNonUserCrewMembers(): void
     {
         $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_A])->create();
 
@@ -493,7 +495,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(2, $logBookEntry->getNonUserCrewMembers());
     }
 
-    public function testEditLogbookEntry()
+    public function testEditLogbookEntry(): void
     {
         $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create();
         $users = UserFactory::createMany(2);
@@ -525,7 +527,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame(12.2, $entry->getShell()->getMileage());
     }
 
-    public function testEditLogbookEntryWithCrewMemberOnWater()
+    public function testEditLogbookEntryWithCrewMemberOnWater(): void
     {
         $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
         LogbookEntryFactory::new()->notFinished()->create([
@@ -555,7 +557,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(0, $entry->getNonUserCrewMembers());
     }
 
-    public function testEditLogbookEntryWithShellOnWater()
+    public function testEditLogbookEntryWithShellOnWater(): void
     {
         $entries = LogbookEntryFactory::new()->notFinished()->many(2)->create([
             'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create(),
@@ -577,7 +579,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame($entries[1]->getShell()->getId(), $entries[0]->getShell()->getId());
     }
 
-    public function testEditLogbookEntryWithDamagedShell()
+    public function testEditLogbookEntryWithDamagedShell(): void
     {
         $shellDamage = ShellDamageFactory::new()->highlyDamaged()->create();
         $entry = LogbookEntryFactory::new()->notFinished()->create([
@@ -600,7 +602,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame($shellDamage->getShell()->getId(), $entry->getShell()->getId());
     }
 
-    public function testEditShellLogbookEntry()
+    public function testEditShellLogbookEntry(): void
     {
         $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create();
         $entryShell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false, 'rowerCategory' => Shell::ROWER_CATEGORY_C])->create();
@@ -631,7 +633,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame(0.0, $entryShell->getMileage());
     }
 
-    public function testFinishLogbookEntry()
+    public function testFinishLogbookEntry(): void
     {
         $entry = LogbookEntryFactory::new()->notFinished()->create();
 
@@ -653,7 +655,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame(12.2, $entry->getShell()->getMileage());
     }
 
-    public function testFinishLogbookWithDamageEntry()
+    public function testFinishLogbookWithDamageEntry(): void
     {
         $entry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
         $categories = ShellDamageCategoryFactory::createMany(2);
@@ -684,7 +686,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame('A little description', $entry->getShellDamages()->last()->getDescription());
     }
 
-    public function testDeleteLogbookEntry()
+    public function testDeleteLogbookEntry(): void
     {
         $shell = ShellFactory::createOne();
         $entry = LogbookEntryFactory::createOne([

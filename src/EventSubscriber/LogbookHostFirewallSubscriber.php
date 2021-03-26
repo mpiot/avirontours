@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -36,7 +38,7 @@ class LogbookHostFirewallSubscriber implements EventSubscriberInterface
         $this->router = $router;
     }
 
-    public function onKernelRequest(RequestEvent $event)
+    public function onKernelRequest(RequestEvent $event): void
     {
         if ($this->logbookDomain !== $event->getRequest()->getHost()) {
             return;

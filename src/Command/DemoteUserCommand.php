@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -28,7 +30,7 @@ class DemoteUserCommand extends RoleCommand
     // so it will be instantiated only when the command is actually called.
     protected static $defaultName = 'app:user:demote';
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this

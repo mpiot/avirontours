@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -32,7 +34,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LicenseType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('user', EntityType::class, [
@@ -63,9 +65,7 @@ class LicenseType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => function (SeasonCategory $seasonCategory) {
-                    return $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName();
-                },
+                'choice_label' => fn (SeasonCategory $seasonCategory) => $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName(),
                 'placeholder' => '--- Choisissez une catégorie ---',
             ])
             ->add('logbookEntryLimit', IntegerType::class, [
@@ -83,7 +83,7 @@ class LicenseType extends AbstractType
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => License::class,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -123,7 +125,7 @@ class SeasonController extends AbstractController
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
-        $response = new StreamedResponse(function () use ($csv) {
+        $response = new StreamedResponse(function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
         });
@@ -146,7 +148,7 @@ class SeasonController extends AbstractController
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
-        $response = new StreamedResponse(function () use ($csv) {
+        $response = new StreamedResponse(function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
         });

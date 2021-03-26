@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -33,7 +35,7 @@ class InvalidMedicalCertificateNotificationSubscriber implements EventSubscriber
         $this->mailer = $mailer;
     }
 
-    public function onMedicalCertificateRejected(Event $event)
+    public function onMedicalCertificateRejected(Event $event): void
     {
         /** @var License $license */
         $license = $event->getSubject();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -81,7 +83,7 @@ class ShellRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findDamagedShells(?string $priority = null, array $shells = null)
+    public function findDamagedShells(?int $priority = null, array $shells = null)
     {
         $qb = $this->createQueryBuilder('shell')
             ->innerJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -29,7 +31,7 @@ class ShellDamageControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -41,11 +43,11 @@ class ShellDamageControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $damage = ShellDamageFactory::createOne();
-            $url = str_replace('{id}', $damage->getId(), $url);
+            $url = str_replace('{id}', (string) $damage->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -66,7 +68,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         yield ['DELETE', '/admin/shell-damage/{id}'];
     }
 
-    public function testIndexShellDamages()
+    public function testIndexShellDamages(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -76,7 +78,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewShellDamage()
+    public function testNewShellDamage(): void
     {
         $shell = ShellFactory::createOne();
         $category = ShellDamageCategoryFactory::createOne();
@@ -109,7 +111,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         $this->assertSame('2020-09-15', $damage->getRepairEndAt()->format('Y-m-d'));
     }
 
-    public function testNewShellDamageWithoutData()
+    public function testNewShellDamageWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -136,7 +138,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         ShellDamageFactory::repository()->assertCount(0);
     }
 
-    public function testEditShellDamage()
+    public function testEditShellDamage(): void
     {
         $damage = ShellDamageFactory::createOne();
         $shell = ShellFactory::createOne();
@@ -167,7 +169,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         $this->assertSame('2020-02-01', $damage->getRepairEndAt()->format('Y-m-d'));
     }
 
-    public function testDeleteShellDamage()
+    public function testDeleteShellDamage(): void
     {
         $damage = ShellDamageFactory::createOne()->disableAutoRefresh();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -40,17 +42,17 @@ class ShellAbbreviationSubscriber implements EventSubscriber
         ];
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $this->generateAbbreviation($args);
     }
 
-    public function preUpdate(LifecycleEventArgs $args)
+    public function preUpdate(LifecycleEventArgs $args): void
     {
         $this->generateAbbreviation($args);
     }
 
-    private function generateAbbreviation(LifecycleEventArgs $args)
+    private function generateAbbreviation(LifecycleEventArgs $args): void
     {
         $shell = $args->getObject();
 

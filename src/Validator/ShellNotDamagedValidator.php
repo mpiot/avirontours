@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -33,7 +35,7 @@ class ShellNotDamagedValidator extends ConstraintValidator
         $this->shellRepository = $shellRepository;
     }
 
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         /* @var $constraint \App\Validator\ShellAvailable */
 

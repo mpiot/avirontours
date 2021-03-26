@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -28,7 +30,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url)
+    public function testAccessDeniedForAnonymousUser($method, $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,11 +42,11 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url)
+    public function testAccessDeniedForRegularUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $category = ShellDamageCategoryFactory::createOne();
-            $url = str_replace('{id}', $category->getId(), $url);
+            $url = str_replace('{id}', (string) $category->getId(), $url);
         }
 
         static::ensureKernelShutdown();
@@ -65,7 +67,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         yield ['DELETE', '/admin/shell-damage-category/{id}'];
     }
 
-    public function testIndexShellDamageCategorys()
+    public function testIndexShellDamageCategorys(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -75,7 +77,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNewShellDamageCategory()
+    public function testNewShellDamageCategory(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -97,7 +99,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
     }
 
-    public function testNewShellDamageCategoryWithoutData()
+    public function testNewShellDamageCategoryWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -118,7 +120,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         ShellDamageCategoryFactory::repository()->assertCount(0);
     }
 
-    public function testEditShellDamageCategory()
+    public function testEditShellDamageCategory(): void
     {
         $category = ShellDamageCategoryFactory::createOne();
 
@@ -139,7 +141,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
     }
 
-    public function testDeleteShellDamageCategory()
+    public function testDeleteShellDamageCategory(): void
     {
         $category = ShellDamageCategoryFactory::createOne()->disableAutoRefresh();
 
