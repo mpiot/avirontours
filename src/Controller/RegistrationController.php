@@ -37,19 +37,17 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register/{slug}", name="app_register")
      * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(slug)")
      */
+    #[Route(path: '/register/{slug}', name: 'app_register')]
     public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
-
         $registrationModel = new RegistrationModel();
         $form = $this->createForm(RegistrationFormType::class, $registrationModel);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $registrationModel->generateUser($seasonCategory, $passwordEncoder);
 
@@ -87,20 +85,18 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/renew/{slug}", name="renew")
      * @Security("is_granted('ROLE_USER')")
      */
+    #[Route(path: '/renew/{slug}', name: 'renew')]
     public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, MailerInterface $mailer): Response
     {
         $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {
             throw $this->createNotFoundException();
         }
-
         $license = new License($seasonCategory, $this->getUser());
         $form = $this->createForm(RenewType::class, $license);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             // Persist user
             $entityManager = $this->getDoctrine()->getManager();

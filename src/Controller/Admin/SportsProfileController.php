@@ -35,14 +35,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/sports-profile")
  * @Security("is_granted('ROLE_SPORT_ADMIN')")
  */
+#[Route(path: '/admin/sports-profile')]
 class SportsProfileController extends AbstractController
 {
-    /**
-     * @Route("", name="sports_profile_index", methods="GET")
-     */
+    #[Route(path: '', name: 'sports_profile_index', methods: ['GET'])]
     public function index(Request $request, UserRepository $userRepository): Response
     {
         return $this->render('admin/sports_profile/index.html.twig', [
@@ -53,15 +51,12 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/physiology", name="sports_profile_physiology", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/physiology', name: 'sports_profile_physiology', methods: ['GET', 'POST'])]
     public function physiology(Request $request, User $user): Response
     {
         $physiology = $user->getPhysiology() ?? new Physiology($user);
         $form = $this->createForm(PhysiologyType::class, $physiology);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -76,15 +71,12 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/anatomy", name="sports_profile_anatomy", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/anatomy', name: 'sports_profile_anatomy', methods: ['GET', 'POST'])]
     public function anatomy(Request $request, User $user): Response
     {
         $anatomy = $user->getAnatomy() ?? new Anatomy($user);
         $form = $this->createForm(AnatomyType::class, $anatomy);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -99,15 +91,12 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/physical-qualities", name="sports_profile_physical_qualities", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/physical-qualities', name: 'sports_profile_physical_qualities', methods: ['GET', 'POST'])]
     public function physicalQualities(Request $request, User $user): Response
     {
         $physicalQualities = $user->getPhysicalQualities() ?? new PhysicalQualities($user);
         $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -122,15 +111,12 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/workout-maximum-load", name="sports_profile_workout_maximum_load", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/workout-maximum-load', name: 'sports_profile_workout_maximum_load', methods: ['GET', 'POST'])]
     public function workoutMaximumLoad(Request $request, User $user): Response
     {
         $workoutMaximumLoad = $user->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($user);
         $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 

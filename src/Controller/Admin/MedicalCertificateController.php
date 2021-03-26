@@ -26,14 +26,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 /**
- * @Route("/medical-certificate")
  * @Security("is_granted('ROLE_USER_ADMIN')")
  */
+#[Route(path: '/medical-certificate')]
 class MedicalCertificateController extends AbstractController
 {
-    /**
-     * @Route("/{id}/dowload", name="medical_certificate_download", methods="GET")
-     */
+    #[Route(path: '/{id}/dowload', name: 'medical_certificate_download', methods: ['GET'])]
     public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {
         return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file', null, null, false);

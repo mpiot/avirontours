@@ -28,28 +28,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/workout-maximum-load")
  * @Security("(is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')")
  */
+#[Route(path: '/workout-maximum-load')]
 class WorkoutMaximumLoadController extends AbstractController
 {
-    /**
-     * @Route("", name="workout_maximum_load_show", methods={"GET"})
-     */
+    #[Route(path: '', name: 'workout_maximum_load_show', methods: ['GET'])]
     public function show(): Response
     {
         return $this->render('workout_maximum_load/show.html.twig');
     }
 
-    /**
-     * @Route("/edit", name="workout_maximum_load_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/edit', name: 'workout_maximum_load_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request): Response
     {
         $workoutMaximumLoad = $this->getUser()->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($this->getUser());
         $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 

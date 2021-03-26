@@ -29,14 +29,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/shell")
  * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
  */
+#[Route(path: '/admin/shell')]
 class ShellController extends AbstractController
 {
-    /**
-     * @Route("", name="shell_index", methods={"GET"})
-     */
+    #[Route(path: '', name: 'shell_index', methods: ['GET'])]
     public function index(ShellRepository $shellRepository): Response
     {
         return $this->render('admin/shell/index.html.twig', [
@@ -44,15 +42,12 @@ class ShellController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="shell_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'shell_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $shell = new Shell();
         $form = $this->createForm(ShellType::class, $shell);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($shell);
@@ -69,9 +64,7 @@ class ShellController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="shell_show", methods={"GET"})
-     */
+    #[Route(path: '/{id}', name: 'shell_show', methods: ['GET'])]
     public function show(Shell $shell): Response
     {
         return $this->render('admin/shell/show.html.twig', [
@@ -79,14 +72,11 @@ class ShellController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="shell_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'shell_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Shell $shell): Response
     {
         $form = $this->createForm(ShellEditType::class, $shell);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -101,9 +91,7 @@ class ShellController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="shell_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/{id}', name: 'shell_delete', methods: ['DELETE'])]
     public function delete(Request $request, Shell $shell): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shell->getId(), $request->request->get('_token'))) {
