@@ -121,8 +121,7 @@ class SeasonCsvGenerator
 
         // the FFA server want a CSV without enclosure, set a special enclosure, then remove it
         $csv = $serializer->serialize($data, 'csv', [CsvEncoder::DELIMITER_KEY => ';', CsvEncoder::ENCLOSURE_KEY => \chr(127)]);
-        $csv = str_replace(\chr(127), '', $csv);
 
-        return $csv;
+        return str_replace(\chr(127), '', $csv);
     }
 }

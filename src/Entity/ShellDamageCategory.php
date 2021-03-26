@@ -26,25 +26,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ShellDamageCategory
 {
-    const PRIORITY_HIGH = 0;
-    const PRIORITY_MEDIUM = 1;
+    public const PRIORITY_HIGH = 0;
+    public const PRIORITY_MEDIUM = 1;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $priority;
 

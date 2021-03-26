@@ -32,11 +32,11 @@ class License
 {
     use BlameableEntity;
     use TimestampableEntity;
-    const NUM_ITEMS = 20;
+    public const NUM_ITEMS = 20;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -44,22 +44,22 @@ class License
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SeasonCategory", inversedBy="licenses")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $seasonCategory;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
      * @ORM\JoinColumn(name="app_user", nullable=false)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $user;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\MedicalCertificate", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
-     * @Assert\Valid()
+     * @Assert\NotNull
+     * @Assert\Valid
      */
     private $medicalCertificate;
 
@@ -80,7 +80,7 @@ class License
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Positive()
+     * @Assert\Positive
      */
     private $logbookEntryLimit;
 
@@ -141,10 +141,10 @@ class License
     public function isValid(): bool
     {
         return null !== $this->marking && (
-            (\array_key_exists('validated', $this->marking) && 1 === $this->marking['validated']) ||
-            (
-                (\array_key_exists('medical_certificate_validated', $this->marking) && 1 === $this->marking['medical_certificate_validated']) &&
-                (\array_key_exists('payment_validated', $this->marking) && 1 === $this->marking['payment_validated'])
+            (\array_key_exists('validated', $this->marking) && 1 === $this->marking['validated'])
+            || (
+                (\array_key_exists('medical_certificate_validated', $this->marking) && 1 === $this->marking['medical_certificate_validated'])
+                && (\array_key_exists('payment_validated', $this->marking) && 1 === $this->marking['payment_validated'])
             )
         );
     }

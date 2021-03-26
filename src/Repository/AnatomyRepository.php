@@ -50,7 +50,7 @@ class AnatomyRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?Anatomy
@@ -62,5 +62,5 @@ class AnatomyRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

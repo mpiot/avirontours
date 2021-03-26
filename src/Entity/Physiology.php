@@ -36,14 +36,14 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\LessThan(propertyPath="heavyAerobicHeartRateMin")
      */
     private $lightAerobicHeartRateMin;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\GreaterThan(propertyPath="lightAerobicHeartRateMin")
      * @Assert\LessThan(propertyPath="anaerobicThresholdHeartRateMin")
      */
@@ -51,7 +51,7 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\GreaterThan(propertyPath="heavyAerobicHeartRateMin")
      * @Assert\LessThan(propertyPath="oxygenTransportationHeartRateMin")
      */
@@ -59,7 +59,7 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\GreaterThan(propertyPath="anaerobicThresholdHeartRateMin")
      * @Assert\LessThan(propertyPath="anaerobicHeartRateMin")
      */
@@ -67,7 +67,7 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\GreaterThan(propertyPath="oxygenTransportationHeartRateMin")
      * @Assert\LessThanOrEqual(propertyPath="maximumHeartRate")
      */
@@ -75,7 +75,7 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      * @Assert\GreaterThanOrEqual(100)
      */
     private $maximumHeartRate;

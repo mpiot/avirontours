@@ -27,14 +27,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @AppAssert\UniqueUser()
+ * @AppAssert\UniqueUser
  */
 class RegistrationModel
 {
     /**
      * @var string
-     * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     public $email;
 
@@ -45,68 +45,68 @@ class RegistrationModel
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      * @Assert\Length(min="6", max="4096")
      */
     public $plainPassword;
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $gender;
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $firstName;
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $lastName;
 
     /**
      * @var \DateTime
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $birthday;
 
     /**
      * @var int
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $laneNumber;
 
     /**
      * @var string
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     public $laneType;
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $laneName;
 
     /**
      * @var int
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $postalCode;
 
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     public $city;
 
     /**
      * @var MedicalCertificate
-     * @Assert\Valid()
+     * @Assert\Valid
      */
     public $medicalCertificate;
 

@@ -50,7 +50,7 @@ class PhysicalQualitiesRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?PhysicalQualities
@@ -62,5 +62,5 @@ class PhysicalQualitiesRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

@@ -28,61 +28,61 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Shell
 {
-    const ROWER_CATEGORY_A = 1;
-    const ROWER_CATEGORY_B = 2;
-    const ROWER_CATEGORY_C = 3;
+    public const ROWER_CATEGORY_A = 1;
+    public const ROWER_CATEGORY_B = 2;
+    public const ROWER_CATEGORY_C = 3;
 
-    const ROWING_TYPE_BOTH = 'both';
-    const ROWING_TYPE_SCULL = 'scull';
-    const ROWING_TYPE_SWEEP = 'sweep';
+    public const ROWING_TYPE_BOTH = 'both';
+    public const ROWING_TYPE_SCULL = 'scull';
+    public const ROWING_TYPE_SWEEP = 'sweep';
 
-    const WEIGHT_CATEGORY_50 = 50;
-    const WEIGHT_CATEGORY_60 = 60;
-    const WEIGHT_CATEGORY_70 = 70;
-    const WEIGHT_CATEGORY_80 = 80;
-    const WEIGHT_CATEGORY_90 = 90;
+    public const WEIGHT_CATEGORY_50 = 50;
+    public const WEIGHT_CATEGORY_60 = 60;
+    public const WEIGHT_CATEGORY_70 = 70;
+    public const WEIGHT_CATEGORY_80 = 80;
+    public const WEIGHT_CATEGORY_90 = 90;
 
-    const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
-    const RIGGER_MATERIAL_CARBON = 'carbon';
+    public const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
+    public const RIGGER_MATERIAL_CARBON = 'carbon';
 
-    const RIGGER_POSITION_BACK = 'back';
-    const RIGGER_POSITION_FRONT = 'front';
+    public const RIGGER_POSITION_BACK = 'back';
+    public const RIGGER_POSITION_FRONT = 'front';
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\Regex("/1|2|4|8/", message="Le nombre de rameur doit être: 1, 2, 4 ou 8.")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $numberRowers;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $coxed;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $rowingType;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $yolette;
 
@@ -113,7 +113,7 @@ class Shell
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      * @Assert\GreaterThanOrEqual(0)
      */
     private $mileage;

@@ -40,7 +40,7 @@ use Symfony\Component\Workflow\WorkflowInterface;
 class LicenseController extends AbstractController
 {
     /**
-     * @Route("/new", name="license_new", methods={"GET","POST"})
+     * @Route("/new", name="license_new", methods={"GET", "POST"})
      * @Entity("season", expr="repository.find(seasonId)")
      */
     public function new(Request $request, Season $season): Response
@@ -66,7 +66,7 @@ class LicenseController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="license_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="license_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, License $license): Response
     {

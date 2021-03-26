@@ -29,8 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Season
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -38,7 +38,7 @@ class Season
     /**
      * @ORM\Column(type="integer")
      * @Assert\Length(min="4", max="4")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $name;
 

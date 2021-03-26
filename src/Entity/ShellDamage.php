@@ -28,11 +28,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ShellDamage
 {
     use TimestampableEntity;
-    const NUM_ITEMS = 20;
+    public const NUM_ITEMS = 20;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -40,7 +40,7 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ShellDamageCategory")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $category;
 
@@ -67,7 +67,7 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $shell;
 

@@ -25,39 +25,39 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MedicalCertificateRepository")
- * @Vich\Uploadable()
+ * @Vich\Uploadable
  */
 class MedicalCertificate
 {
-    const TYPE_CERTIFICATE = 'certificate';
-    const TYPE_ATTESTATION = 'attestation';
+    public const TYPE_CERTIFICATE = 'certificate';
+    public const TYPE_ATTESTATION = 'attestation';
 
-    const LEVEL_PRACTICE = 'practice';
-    const LEVEL_COMPETITION = 'competition';
-    const LEVEL_UPGRADE = 'upgrade';
+    public const LEVEL_PRACTICE = 'practice';
+    public const LEVEL_COMPETITION = 'competition';
+    public const LEVEL_UPGRADE = 'upgrade';
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $type;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $level;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      * @Assert\GreaterThan("-1 year", message="Le certificat médical doit avoir moins d'un an.")
      */
     private $date;
@@ -70,9 +70,9 @@ class MedicalCertificate
      * @var File|null
      *
      * @Assert\File(
-     *     maxSize = "3M",
-     *     mimeTypes = {"application/pdf", "application/x-pdf", "image/*"},
-     *     mimeTypesMessage = "Le fichier doit être au format PDF ou bien une image."
+     *     maxSize="3M",
+     *     mimeTypes={"application/pdf", "application/x-pdf", "image/*"},
+     *     mimeTypesMessage="Le fichier doit être au format PDF ou bien une image."
      * )
      * @Assert\NotNull(groups={"new"})
      */

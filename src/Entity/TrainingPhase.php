@@ -28,12 +28,12 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class TrainingPhase
 {
-    const INTENSITY_REST = 0;
-    const INTENSITY_LIGHT_AEROBIC = 1;
-    const INTENSITY_HEAVY_AEROBIC = 2;
-    const INTENSITY_ANAEROBIC_THRESHOLD = 3;
-    const INTENSITY_OXYGEN_TRANSPORTATION = 4;
-    const INTENSITY_ANAEROBIC = 5;
+    public const INTENSITY_REST = 0;
+    public const INTENSITY_LIGHT_AEROBIC = 1;
+    public const INTENSITY_HEAVY_AEROBIC = 2;
+    public const INTENSITY_ANAEROBIC_THRESHOLD = 3;
+    public const INTENSITY_OXYGEN_TRANSPORTATION = 4;
+    public const INTENSITY_ANAEROBIC = 5;
 
     /**
      * @ORM\Id
@@ -55,13 +55,13 @@ class TrainingPhase
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $intensity;
 
     /**
      * @ORM\Column(type="dateinterval")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $duration;
 

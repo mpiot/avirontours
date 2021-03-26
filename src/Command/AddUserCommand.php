@@ -164,18 +164,18 @@ class AddUserCommand extends Command
     private function getCommandHelp(): string
     {
         return <<<'HELP'
-The <info>%command.name%</info> command creates new users and saves them in the database:
+            The <info>%command.name%</info> command creates new users and saves them in the database:
 
-  <info>php %command.full_name%</info> <comment>email password pseudo</comment>
+              <info>php %command.full_name%</info> <comment>email password pseudo</comment>
 
-If you omit any of the three required arguments, the command will ask you to
-provide the missing values:
+            If you omit any of the three required arguments, the command will ask you to
+            provide the missing values:
 
-  # command will ask you for the password
-  <info>php %command.full_name%</info> <comment>email</comment>
+              # command will ask you for the password
+              <info>php %command.full_name%</info> <comment>email</comment>
 
-  # command will ask you for all arguments
-  <info>php %command.full_name%</info>
-HELP;
+              # command will ask you for all arguments
+              <info>php %command.full_name%</info>
+            HELP;
     }
 }

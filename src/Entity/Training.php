@@ -30,25 +30,25 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class Training
 {
-    const NUM_ITEMS = 25;
+    public const NUM_ITEMS = 25;
 
-    const FEELING_GREAT = 0.2;
-    const FEELING_GOOD = 0.4;
-    const FEELING_OK = 0.6;
-    const FEELING_NOT_GOOD = 0.8;
-    const FEELING_BAD = 1.0;
+    public const FEELING_GREAT = 0.2;
+    public const FEELING_GOOD = 0.4;
+    public const FEELING_OK = 0.6;
+    public const FEELING_NOT_GOOD = 0.8;
+    public const FEELING_BAD = 1.0;
 
-    const SPORT_OTHER = 'other';
-    const SPORT_ROWING = 'rowing';
-    const SPORT_RUNNING = 'running';
-    const SPORT_ERGOMETER = 'ergometer';
-    const SPORT_WORKOUT_ENDURANCE = 'workout_endurance';
-    const SPORT_WORKOUT_STRENGTH = 'workout_strength';
-    const SPORT_SWIMMING = 'swimming';
-    const SPORT_GENERAL_PHYSICAL_PREPARATION = 'general_physical_preparation';
-    const SPORT_STRENGTHENING = 'strengthening';
-    const SPORT_CYCLING = 'cycling';
-    const SPORT_YOGA = 'yoga';
+    public const SPORT_OTHER = 'other';
+    public const SPORT_ROWING = 'rowing';
+    public const SPORT_RUNNING = 'running';
+    public const SPORT_ERGOMETER = 'ergometer';
+    public const SPORT_WORKOUT_ENDURANCE = 'workout_endurance';
+    public const SPORT_WORKOUT_STRENGTH = 'workout_strength';
+    public const SPORT_SWIMMING = 'swimming';
+    public const SPORT_GENERAL_PHYSICAL_PREPARATION = 'general_physical_preparation';
+    public const SPORT_STRENGTHENING = 'strengthening';
+    public const SPORT_CYCLING = 'cycling';
+    public const SPORT_YOGA = 'yoga';
 
     /**
      * @ORM\Id
@@ -65,13 +65,13 @@ class Training
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $trained_at;
 
     /**
      * @ORM\Column(type="dateinterval")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $duration;
 
@@ -82,7 +82,7 @@ class Training
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $sport;
 
@@ -99,7 +99,7 @@ class Training
     /**
      * @ORM\OneToMany(targetEntity=TrainingPhase::class, mappedBy="training", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
-     * @Assert\Valid()
+     * @Assert\Valid
      */
     private $trainingPhases;
 

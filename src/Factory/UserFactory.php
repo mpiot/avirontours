@@ -37,7 +37,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class UserFactory extends ModelFactory
 {
-    const PASSWORD = 'engage';
+    public const PASSWORD = 'engage';
 
     protected function getDefaults(): array
     {

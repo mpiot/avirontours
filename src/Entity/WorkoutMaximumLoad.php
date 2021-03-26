@@ -36,31 +36,31 @@ class WorkoutMaximumLoad
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero
      */
     private $rowingTirage;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero
      */
     private $benchPress;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero
      */
     private $squat;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero
      */
     private $legPress;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero()
+     * @Assert\PositiveOrZero
      */
     private $clean;
 
