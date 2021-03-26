@@ -160,7 +160,7 @@ class User implements UserInterface, EmailTwoFactorInterface, \Stringable
     private Collection $licenses;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $authCode;
 
