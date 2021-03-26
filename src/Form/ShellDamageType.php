@@ -40,21 +40,17 @@ class ShellDamageType extends AbstractType
                 'label' => 'Bâteau',
                 'class' => Shell::class,
                 'choice_label' => 'fullName',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('shell')
-                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC');
-                },
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('shell')
+                    ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
             ->add('category', EntityType::class, [
                 'label' => 'Catégorie',
                 'class' => ShellDamageCategory::class,
                 'choice_label' => 'name',
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('category')
-                        ->orderBy('category.priority', 'DESC')
-                        ->orderBy('category.name', 'ASC');
-                },
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('category')
+                    ->orderBy('category.priority', 'DESC')
+                    ->orderBy('category.name', 'ASC'),
                 'group_by' => function (ShellDamageCategory $choice, $key, $value) {
                     if (ShellDamageCategory::PRIORITY_HIGH === $choice->getPriority()) {
                         return 'Importante';

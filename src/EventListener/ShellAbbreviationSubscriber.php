@@ -21,17 +21,15 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\Shell;
+use App\Service\ShellAbbreviationGenerator;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ShellAbbreviationSubscriber implements EventSubscriber
 {
-    private $abbreviationGenerator;
-
-    public function __construct(\App\Service\ShellAbbreviationGenerator $abbreviationGenerator)
+    public function __construct(private ShellAbbreviationGenerator $abbreviationGenerator)
     {
-        $this->abbreviationGenerator = $abbreviationGenerator;
     }
 
     public function getSubscribedEvents()

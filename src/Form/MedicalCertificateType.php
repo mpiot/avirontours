@@ -31,11 +31,8 @@ use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class MedicalCertificateType extends AbstractType
 {
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

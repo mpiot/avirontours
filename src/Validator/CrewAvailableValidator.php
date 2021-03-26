@@ -28,16 +28,13 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class CrewAvailableValidator extends ConstraintValidator
 {
-    private $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function validate($value, Constraint $constraint): void
     {
-        /* @var $constraint \App\Validator\CrewAvailable */
+        /* @var $constraint CrewAvailable */
 
         if (!$value instanceof Collection) {
             throw new \Exception('The CrewAvailableValidator must be used on a User ArrayCollection.');

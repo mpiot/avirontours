@@ -33,32 +33,32 @@ class Anatomy
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $height;
+    private ?int $height = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $weight;
+    private ?float $weight = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $armSpan;
+    private ?int $armSpan = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $bustLength;
+    private ?int $bustLength = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $legLength;
+    private ?int $legLength = null;
 
     public function __construct(User $user)
     {

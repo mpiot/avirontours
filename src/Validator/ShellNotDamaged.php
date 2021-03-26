@@ -31,5 +31,5 @@ class ShellNotDamaged extends Constraint
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
      */
-    public $message = 'Ce bâteau est endommagé.';
+    public string $message = 'Ce bâteau est endommagé.';
 }

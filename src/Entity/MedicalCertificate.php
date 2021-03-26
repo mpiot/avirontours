@@ -43,19 +43,19 @@ class MedicalCertificate
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $type;
+    private ?string $type = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $level;
+    private ?string $level = null;
 
     /**
      * @ORM\Column(type="date")
@@ -69,8 +69,6 @@ class MedicalCertificate
      *
      * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize", mimeType="fileMimeType")
      *
-     * @var File|null
-     *
      * @Assert\File(
      *     maxSize="3M",
      *     mimeTypes={"application/pdf", "application/x-pdf", "image/*"},
@@ -78,28 +76,22 @@ class MedicalCertificate
      * )
      * @Assert\NotNull(groups={"new"})
      */
-    private $file;
+    private ?\Symfony\Component\HttpFoundation\File\File $file = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string|null
      */
-    private $fileName;
+    private ?string $fileName = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     *
-     * @var int|null
      */
-    private $fileSize;
+    private ?int $fileSize = null;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string|null
      */
-    private $fileMimeType;
+    private ?string $fileMimeType = null;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)

@@ -35,12 +35,9 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 class TrainingRepository extends ServiceEntityRepository
 {
-    private $paginator;
-
-    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
     {
         parent::__construct($registry, Training::class);
-        $this->paginator = $paginator;
     }
 
     public function findUserPaginated(User $user, $page = 1): PaginationInterface

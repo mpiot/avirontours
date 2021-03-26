@@ -29,13 +29,8 @@ use function Symfony\Component\String\u;
 
 class LogbookHostFirewallSubscriber implements EventSubscriberInterface
 {
-    private $logbookDomain;
-    private $router;
-
-    public function __construct(string $logbookDomain, RouterInterface $router)
+    public function __construct(private string $logbookDomain, private RouterInterface $router)
     {
-        $this->logbookDomain = $logbookDomain;
-        $this->router = $router;
     }
 
     public function onKernelRequest(RequestEvent $event): void

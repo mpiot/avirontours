@@ -27,16 +27,13 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ShellAvailableValidator extends ConstraintValidator
 {
-    private $shellRepository;
-
-    public function __construct(ShellRepository $shellRepository)
+    public function __construct(private ShellRepository $shellRepository)
     {
-        $this->shellRepository = $shellRepository;
     }
 
     public function validate($value, Constraint $constraint): void
     {
-        /* @var $constraint \App\Validator\ShellAvailable */
+        /* @var $constraint ShellAvailable */
 
         if (null === $value || '' === $value) {
             return;

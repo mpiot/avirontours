@@ -35,30 +35,30 @@ class Season
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\Length(min="4", max="4")
      * @Assert\NotBlank
      */
-    private $name;
+    private ?int $name = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
      * @Assert\Count(min="1")
      */
-    private $seasonCategories;
+    private Collection $seasonCategories;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $subscriptionEnabled;
+    private ?bool $subscriptionEnabled = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $active;
+    private ?bool $active = null;
 
     public function __construct()
     {

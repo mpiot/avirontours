@@ -34,70 +34,70 @@ class PhysicalQualities
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $proprioception;
+    private ?int $proprioception = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $weightPowerRatio;
+    private ?int $weightPowerRatio = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $explosiveStrength;
+    private ?int $explosiveStrength = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $enduranceStrength;
+    private ?int $enduranceStrength = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $maximumStrength;
+    private ?int $maximumStrength = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $stressResistance;
+    private ?int $stressResistance = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $coreStrength;
+    private ?int $coreStrength = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $flexibility;
+    private ?int $flexibility = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThanOrEqual(value="0")
      * @Assert\LessThanOrEqual(value="20")
      */
-    private $recovery;
+    private ?int $recovery = null;
 
     public function __construct(User $user)
     {

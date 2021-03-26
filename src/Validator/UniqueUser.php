@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueUser extends Constraint
 {
-    public $message = 'Un compte existe déjà avec ce nom et prénom.';
+    public string $message = 'Un compte existe déjà avec ce nom et prénom.';
 
     public function getTargets()
     {

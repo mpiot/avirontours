@@ -41,11 +41,9 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
-    private $resetPasswordHelper;
 
-    public function __construct(ResetPasswordHelperInterface $resetPasswordHelper)
+    public function __construct(private ResetPasswordHelperInterface $resetPasswordHelper)
     {
-        $this->resetPasswordHelper = $resetPasswordHelper;
     }
 
     /**

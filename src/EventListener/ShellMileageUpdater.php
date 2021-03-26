@@ -21,15 +21,16 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\LogbookEntry;
+use App\Entity\Shell;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ShellMileageUpdater
 {
-    private $oldShell;
-    private $newShell;
-    private $oldCoveredDistance;
-    private $newCoveredDistance;
+    private ?Shell $oldShell = null;
+    private ?Shell $newShell = null;
+    private ?float $oldCoveredDistance = null;
+    private ?float $newCoveredDistance = null;
 
     public function prePersist(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
     {

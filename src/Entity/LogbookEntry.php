@@ -40,7 +40,7 @@ class LogbookEntry
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="logbookEntries")
@@ -49,19 +49,19 @@ class LogbookEntry
      * @AppAssert\ShellAvailable(groups={"start"})
      * @AppAssert\ShellNotDamaged(groups={"start"})
      */
-    private $shell;
+    private ?Shell $shell = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
      * @Assert\NotNull(groups={"start", "edit"})
      * @AppAssert\CrewAvailable(groups={"start"})
      */
-    private $crewMembers;
+    private Collection $crewMembers;
 
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $nonUserCrewMembers = [];
+    private ?array $nonUserCrewMembers = [];
 
     /**
      * @ORM\Column(type="date")
@@ -79,7 +79,7 @@ class LogbookEntry
      * @ORM\Column(type="time", nullable=true)
      * @Assert\NotBlank(groups={"finish"})
      */
-    private $endAt;
+    private ?\DateTimeInterface $endAt = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -87,13 +87,13 @@ class LogbookEntry
      * @Assert\LessThanOrEqual(30, groups={"finish"})
      * @Assert\GreaterThanOrEqual(1, groups={"finish"})
      */
-    private $coveredDistance;
+    private ?float $coveredDistance = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="logbookEntry", cascade={"persist", "remove"})
      * @Assert\Valid
      */
-    private $shellDamages;
+    private Collection $shellDamages;
 
     public function __construct()
     {

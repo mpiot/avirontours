@@ -43,41 +43,41 @@ class SeasonCategory
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="seasonCategories")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $season;
+    private ?Season $season = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * @ORM\Column(type="float")
      * @Assert\NotBlank
      */
-    private $price;
+    private ?float $price = null;
 
     /**
      * @ORM\Column(type="string", length=5)
      * @Assert\NotBlank
      */
-    private $licenseType;
+    private ?string $licenseType = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="seasonCategory")
      */
-    private $licenses;
+    private Collection $licenses;
 
     /**
      * @Gedmo\Slug(handlers={
@@ -90,12 +90,12 @@ class SeasonCategory
      * }, fields={"name"})
      * @ORM\Column(length=128, unique=true)
      */
-    private $slug;
+    private string $slug;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $displayed;
+    private ?bool $displayed = null;
 
     public function __construct()
     {

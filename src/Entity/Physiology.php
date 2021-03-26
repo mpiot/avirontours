@@ -34,14 +34,14 @@ class Physiology
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull
      * @Assert\LessThan(propertyPath="heavyAerobicHeartRateMin")
      */
-    private $lightAerobicHeartRateMin;
+    private ?int $lightAerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -49,7 +49,7 @@ class Physiology
      * @Assert\GreaterThan(propertyPath="lightAerobicHeartRateMin")
      * @Assert\LessThan(propertyPath="anaerobicThresholdHeartRateMin")
      */
-    private $heavyAerobicHeartRateMin;
+    private ?int $heavyAerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -57,7 +57,7 @@ class Physiology
      * @Assert\GreaterThan(propertyPath="heavyAerobicHeartRateMin")
      * @Assert\LessThan(propertyPath="oxygenTransportationHeartRateMin")
      */
-    private $anaerobicThresholdHeartRateMin;
+    private ?int $anaerobicThresholdHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -65,7 +65,7 @@ class Physiology
      * @Assert\GreaterThan(propertyPath="anaerobicThresholdHeartRateMin")
      * @Assert\LessThan(propertyPath="anaerobicHeartRateMin")
      */
-    private $oxygenTransportationHeartRateMin;
+    private ?int $oxygenTransportationHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -73,19 +73,19 @@ class Physiology
      * @Assert\GreaterThan(propertyPath="oxygenTransportationHeartRateMin")
      * @Assert\LessThanOrEqual(propertyPath="maximumHeartRate")
      */
-    private $anaerobicHeartRateMin;
+    private ?int $anaerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull
      * @Assert\GreaterThanOrEqual(100)
      */
-    private $maximumHeartRate;
+    private ?int $maximumHeartRate = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $maximumOxygenConsumption;
+    private ?float $maximumOxygenConsumption = null;
 
     public function __construct(User $user)
     {
