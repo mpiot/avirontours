@@ -28,14 +28,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/training")
  * @Security("(is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')")
  */
+#[Route(path: '/training')]
 class TrainingController extends AbstractController
 {
-    /**
-     * @Route("", name="training_index", methods={"GET"})
-     */
+    #[Route(path: '', name: 'training_index', methods: ['GET'])]
     public function index(TrainingRepository $trainingRepository): Response
     {
         return $this->render('training/index.html.twig', [
@@ -43,15 +41,12 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="training_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'training_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $training = new Training($this->getUser());
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($training);
@@ -70,9 +65,9 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="training_show", methods={"GET"})
      * @Security("training.getUser() == user")
      */
+    #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
     public function show(Training $training): Response
     {
         return $this->render('training/show.html.twig', [
@@ -81,14 +76,13 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="training_edit", methods={"GET", "POST"})
      * @Security("training.getUser() == user")
      */
+    #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -104,9 +98,9 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="training_delete", methods={"DELETE"})
      * @Security("training.getUser() == user")
      */
+    #[Route(path: '/{id}', name: 'training_delete', methods: ['DELETE'])]
     public function delete(Request $request, Training $training): Response
     {
         if ($this->isCsrfTokenValid('delete'.$training->getId(), $request->request->get('_token'))) {

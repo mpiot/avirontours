@@ -32,14 +32,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/season")
  * @Security("is_granted('ROLE_USER_ADMIN')")
  */
+#[Route(path: '/admin/season')]
 class SeasonController extends AbstractController
 {
-    /**
-     * @Route("", name="season_index", methods={"GET"})
-     */
+    #[Route(path: '', name: 'season_index', methods: ['GET'])]
     public function index(SeasonRepository $seasonRepository): Response
     {
         return $this->render('admin/season/index.html.twig', [
@@ -47,15 +45,12 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="season_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'season_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $season = new Season();
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($season);
@@ -72,9 +67,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="season_show", methods={"GET"})
-     */
+    #[Route(path: '/{id}', name: 'season_show', methods: ['GET'])]
     public function show(Request $request, LicenseRepository $licenseRepository, Season $season): Response
     {
         return $this->render('admin/season/show.html.twig', [
@@ -88,14 +81,11 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="season_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Season $season): Response
     {
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -110,9 +100,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="season_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/{id}', name: 'season_delete', methods: ['DELETE'])]
     public function delete(Request $request, Season $season): Response
     {
         if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {
@@ -126,19 +114,15 @@ class SeasonController extends AbstractController
         return $this->redirectToRoute('season_index');
     }
 
-    /**
-     * @Route("/{id}/export/contact", name="season_export_contact", methods={"GET"})
-     */
+    #[Route(path: '/{id}/export/contact', name: 'season_export_contact', methods: ['GET'])]
     public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportContacts($season);
-
         if (null === $csv) {
             $this->addFlash('notice', 'Aucun contacts à exporter.');
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
-
         $response = new StreamedResponse(function () use ($csv) {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
@@ -153,19 +137,15 @@ class SeasonController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/{id}/export/license", name="season_export_license", methods={"GET"})
-     */
+    #[Route(path: '/{id}/export/license', name: 'season_export_license', methods: ['GET'])]
     public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportLicenses($season);
-
         if (null === $csv) {
             $this->addFlash('notice', 'Aucune licences à exporter.');
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
-
         $response = new StreamedResponse(function () use ($csv) {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);

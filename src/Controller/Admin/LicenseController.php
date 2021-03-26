@@ -34,21 +34,20 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
- * @Route("/admin/season/{seasonId}/license")
  * @Security("is_granted('ROLE_USER_ADMIN')")
  */
+#[Route(path: '/admin/season/{seasonId}/license')]
 class LicenseController extends AbstractController
 {
     /**
-     * @Route("/new", name="license_new", methods={"GET", "POST"})
      * @Entity("season", expr="repository.find(seasonId)")
      */
+    #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
     public function new(Request $request, Season $season): Response
     {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($license);
@@ -65,14 +64,11 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="license_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, License $license): Response
     {
         $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -89,9 +85,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="license_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/{id}', name: 'license_delete', methods: ['DELETE'])]
     public function delete(Request $request, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), $request->request->get('_token'))) {
@@ -106,9 +100,9 @@ class LicenseController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/apply-transition", name="license_apply_transition", methods={"POST"})
      * @Route("/{id}/chain-validation-apply-transition", name="license_chain_validation_apply_transition", methods={"POST"})
      */
+    #[Route(path: '/{id}/apply-transition', name: 'license_apply_transition', methods: ['POST'])]
     public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId)
     {
         try {
@@ -122,7 +116,6 @@ class LicenseController extends AbstractController
         } catch (ExceptionInterface $error) {
             $this->addFlash('error', $error->getMessage());
         }
-
         if ('license_chain_validation_apply_transition' === $request->get('_route')) {
             return $this->redirectToRoute('license_validate_medical_certificate', ['seasonId' => $seasonId]);
         }
@@ -133,14 +126,13 @@ class LicenseController extends AbstractController
     }
 
     /**
-     * @Route("/chain-medical-certificate-validation", name="license_validate_medical_certificate", methods={"GET"})
      * @Entity("season", expr="repository.find(seasonId)")
      * @Entity("license", expr="repository.findOneForValidation(season)")
      */
+    #[Route(path: '/chain-medical-certificate-validation', name: 'license_validate_medical_certificate', methods: ['GET'])]
     public function chainValidation(Season $season, LicenseRepository $repository): Response
     {
         $license = $repository->findOneForValidation($season);
-
         if (null !== $license) {
             $previousLicenses = $repository->findUserLicences($license->getUser(), (new \DateTime('-3 years'))->format('Y'), ($season->getName() - 1));
         }

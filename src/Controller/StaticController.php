@@ -24,17 +24,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StaticController extends AbstractController
 {
-    /**
-     * @Route("/mentions-legales", name="legal_notice")
-     */
+    #[Route(path: '/mentions-legales', name: 'legal_notice')]
     public function legalNotice()
     {
         return $this->render('static/legal_notice.html.twig');
     }
 
-    /**
-     * @Route("/release-notes", name="release_notes")
-     */
+    #[Route(path: '/release-notes', name: 'release_notes')]
     public function releaseNotes(string $projectDir)
     {
         $finder = new Finder();

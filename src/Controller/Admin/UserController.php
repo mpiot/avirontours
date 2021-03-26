@@ -30,14 +30,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * @Route("/admin/user")
  * @Security("is_granted('ROLE_USER_ADMIN')")
  */
+#[Route(path: '/admin/user')]
 class UserController extends AbstractController
 {
-    /**
-     * @Route("", name="user_index", methods="GET")
-     */
+    #[Route(path: '', name: 'user_index', methods: ['GET'])]
     public function index(Request $request, UserRepository $userRepository): Response
     {
         return $this->render('admin/user/index.html.twig', [
@@ -48,15 +46,12 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="user_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -72,9 +67,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="user_show", methods={"GET"})
-     */
+    #[Route(path: '/{id}', name: 'user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
         return $this->render('admin/user/show.html.twig', [
@@ -82,14 +75,11 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="user_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -104,9 +94,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="user_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/{id}', name: 'user_delete', methods: ['DELETE'])]
     public function delete(Request $request, User $user): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

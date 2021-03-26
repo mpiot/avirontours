@@ -28,14 +28,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/admin/shell-damage-category")
  * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
  */
+#[Route(path: '/admin/shell-damage-category')]
 class ShellDamageCategoryController extends AbstractController
 {
-    /**
-     * @Route("", name="shell_damage_category_index", methods={"GET"})
-     */
+    #[Route(path: '', name: 'shell_damage_category_index', methods: ['GET'])]
     public function index(ShellDamageCategoryRepository $shellDamageRepository): Response
     {
         return $this->render('admin/shell_damage_category/index.html.twig', [
@@ -43,15 +41,12 @@ class ShellDamageCategoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="shell_damage_category_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'shell_damage_category_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $shellDamage = new ShellDamageCategory();
         $form = $this->createForm(ShellDamageCategoryType::class, $shellDamage);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($shellDamage);
@@ -68,14 +63,11 @@ class ShellDamageCategoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="shell_damage_category_edit", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ShellDamageCategory $shellDamage): Response
     {
         $form = $this->createForm(ShellDamageCategoryType::class, $shellDamage);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -90,9 +82,7 @@ class ShellDamageCategoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="shell_damage_category_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['DELETE'])]
     public function delete(Request $request, ShellDamageCategory $shellDamage): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), $request->request->get('_token'))) {

@@ -34,14 +34,12 @@ use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/logbook-entry")
  * @Security("is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN')")
  */
+#[Route(path: '/logbook-entry')]
 class LogbookEntryController extends AbstractController
 {
-    /**
-     * @Route("", name="logbook_entry_index", methods={"GET"})
-     */
+    #[Route(path: '', name: 'logbook_entry_index', methods: ['GET'])]
     public function index(Request $request, LogbookEntryRepository $logbookEntryRepository): Response
     {
         return $this->render('logbook_entry/index.html.twig', [
@@ -49,15 +47,12 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="logbook_entry_new", methods={"GET", "POST"})
-     */
+    #[Route(path: '/new', name: 'logbook_entry_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $logbookEntry = new LogbookEntry();
         $form = $this->createForm(LogbookEntryStartType::class, $logbookEntry);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($logbookEntry);
@@ -74,18 +69,14 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/finish", name="logbook_entry_finish", methods={"GET", "POST"})
-     */
+    #[Route(path: '/{id}/finish', name: 'logbook_entry_finish', methods: ['GET', 'POST'])]
     public function finish(Request $request, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
     {
         if (null !== $logbookEntry->getEndAt()) {
             throw $this->createNotFoundException();
         }
-
         $form = $this->createForm(LogbookEntryFinishType::class, $logbookEntry);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -106,14 +97,13 @@ class LogbookEntryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="logbook_entry_edit", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
      */
+    #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, LogbookEntry $logbookEntry): Response
     {
         $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
@@ -129,9 +119,9 @@ class LogbookEntryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="logbook_entry_delete", methods={"DELETE"})
      * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
      */
+    #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['DELETE'])]
     public function delete(Request $request, LogbookEntry $logbookEntry): Response
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), $request->request->get('_token'))) {
@@ -145,9 +135,7 @@ class LogbookEntryController extends AbstractController
         return $this->redirectToRoute('logbook_entry_index');
     }
 
-    /**
-     * @Route("/statistics", name="logbook_entry_statistics")
-     */
+    #[Route(path: '/statistics', name: 'logbook_entry_statistics')]
     public function statistics(ShellRepository $shellRepository, UserRepository $userRepository)
     {
         return $this->render('logbook_entry/statistics.html.twig', [

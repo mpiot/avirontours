@@ -30,14 +30,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * @Route("/profile")
  * @Security("is_granted('ROLE_USER')")
  */
+#[Route(path: '/profile')]
 class ProfileController extends AbstractController
 {
-    /**
-     * @Route("", name="profile_show", methods="GET")
-     */
+    #[Route(path: '', name: 'profile_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, SeasonRepository $seasonRepository): Response
     {
         return $this->render('profile/show.html.twig', [
@@ -46,14 +44,11 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/edit", name="profile_edit", methods="GET|POST")
-     */
+    #[Route(path: '/edit', name: 'profile_edit', methods: ['GET|POST'])]
     public function edit(Request $request)
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
@@ -69,14 +64,11 @@ class ProfileController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/edit-password", name="profile_edit_password", methods="GET|POST")
-     */
+    #[Route(path: '/edit-password', name: 'profile_edit_password', methods: ['GET|POST'])]
     public function editPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
         $user = $this->getUser();
         $form = $this->createForm(ChangePasswordType::class, $user);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
