@@ -151,13 +151,13 @@ class User implements UserInterface, EmailTwoFactorInterface, \Stringable
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="crewMembers")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $logbookEntries;
+    private Collection $logbookEntries;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="user", cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $licenses;
+    private Collection $licenses;
 
     /**
      * @ORM\Column(type="integer", nullable=true)

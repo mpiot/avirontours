@@ -40,7 +40,7 @@ class LicenseType extends AbstractType
             ->add('user', EntityType::class, [
                 'label' => 'Utilisateur',
                 'class' => User::class,
-                'query_builder' => fn(EntityRepository $repository) => $repository->createQueryBuilder('app_user')
+                'query_builder' => fn (EntityRepository $repository) => $repository->createQueryBuilder('app_user')
                     ->orderBy('app_user.firstName', 'ASC')
                     ->addOrderBy('app_user.lastName', 'ASC'),
                 'choice_label' => 'fullName',

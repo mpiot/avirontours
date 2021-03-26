@@ -56,7 +56,7 @@ class LogbookEntry
      * @Assert\NotNull(groups={"start", "edit"})
      * @AppAssert\CrewAvailable(groups={"start"})
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $crewMembers;
+    private Collection $crewMembers;
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -93,7 +93,7 @@ class LogbookEntry
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="logbookEntry", cascade={"persist", "remove"})
      * @Assert\Valid
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $shellDamages;
+    private Collection $shellDamages;
 
     public function __construct()
     {

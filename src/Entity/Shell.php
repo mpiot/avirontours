@@ -96,7 +96,7 @@ class Shell
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="shell")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $logbookEntries;
+    private Collection $logbookEntries;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -106,7 +106,7 @@ class Shell
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $weightCategory;
+    private ?int $weightCategory = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -148,7 +148,7 @@ class Shell
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="shell")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $shellDamages;
+    private Collection $shellDamages;
 
     public function __construct()
     {

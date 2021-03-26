@@ -69,7 +69,6 @@ class MedicalCertificate
      *
      * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize", mimeType="fileMimeType")
      *
-     *
      * @Assert\File(
      *     maxSize="3M",
      *     mimeTypes={"application/pdf", "application/x-pdf", "image/*"},

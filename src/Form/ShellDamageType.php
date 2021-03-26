@@ -40,7 +40,7 @@ class ShellDamageType extends AbstractType
                 'label' => 'Bâteau',
                 'class' => Shell::class,
                 'choice_label' => 'fullName',
-                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('shell')
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('shell')
                     ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
                 'placeholder' => '--- Sélectionner un bâteau ---',
             ])
@@ -48,7 +48,7 @@ class ShellDamageType extends AbstractType
                 'label' => 'Catégorie',
                 'class' => ShellDamageCategory::class,
                 'choice_label' => 'name',
-                'query_builder' => fn(EntityRepository $er) => $er->createQueryBuilder('category')
+                'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('category')
                     ->orderBy('category.priority', 'DESC')
                     ->orderBy('category.name', 'ASC'),
                 'group_by' => function (ShellDamageCategory $choice, $key, $value) {

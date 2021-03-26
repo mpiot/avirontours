@@ -77,7 +77,7 @@ class SeasonCategory
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="seasonCategory")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $licenses;
+    private Collection $licenses;
 
     /**
      * @Gedmo\Slug(handlers={

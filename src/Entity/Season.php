@@ -48,7 +48,7 @@ class Season
      * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
      * @Assert\Count(min="1")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $seasonCategories;
+    private Collection $seasonCategories;
 
     /**
      * @ORM\Column(type="boolean")
