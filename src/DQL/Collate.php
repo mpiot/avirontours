@@ -23,8 +23,8 @@ use Doctrine\ORM\Query\Lexer;
 
 class Collate extends FunctionNode
 {
-    public $expressionToCollate = null;
-    public $collation = null;
+    public $expressionToCollate;
+    public $collation;
 
     public function parse(\Doctrine\ORM\Query\Parser $parser)
     {

@@ -42,7 +42,7 @@ class WorkoutMaximumLoadController extends AbstractController
     }
 
     /**
-     * @Route("/edit", name="workout_maximum_load_edit", methods={"GET","POST"})
+     * @Route("/edit", name="workout_maximum_load_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request): Response
     {

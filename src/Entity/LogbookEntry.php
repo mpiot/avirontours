@@ -27,15 +27,15 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LogbookEntryRepository")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks
  */
 class LogbookEntry
 {
-    const NUM_ITEMS = 20;
+    public const NUM_ITEMS = 20;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -89,7 +89,7 @@ class LogbookEntry
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="logbookEntry", cascade={"persist", "remove"})
-     * @Assert\Valid()
+     * @Assert\Valid
      */
     private $shellDamages;
 

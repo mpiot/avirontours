@@ -54,7 +54,7 @@ class SportsProfileController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/physiology", name="sports_profile_physiology", methods={"GET","POST"})
+     * @Route("/{id}/physiology", name="sports_profile_physiology", methods={"GET", "POST"})
      */
     public function physiology(Request $request, User $user): Response
     {
@@ -77,7 +77,7 @@ class SportsProfileController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/anatomy", name="sports_profile_anatomy", methods={"GET","POST"})
+     * @Route("/{id}/anatomy", name="sports_profile_anatomy", methods={"GET", "POST"})
      */
     public function anatomy(Request $request, User $user): Response
     {
@@ -100,7 +100,7 @@ class SportsProfileController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/physical-qualities", name="sports_profile_physical_qualities", methods={"GET","POST"})
+     * @Route("/{id}/physical-qualities", name="sports_profile_physical_qualities", methods={"GET", "POST"})
      */
     public function physicalQualities(Request $request, User $user): Response
     {
@@ -123,7 +123,7 @@ class SportsProfileController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/workout-maximum-load", name="sports_profile_workout_maximum_load", methods={"GET","POST"})
+     * @Route("/{id}/workout-maximum-load", name="sports_profile_workout_maximum_load", methods={"GET", "POST"})
      */
     public function workoutMaximumLoad(Request $request, User $user): Response
     {

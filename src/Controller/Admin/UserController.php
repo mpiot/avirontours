@@ -49,7 +49,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="user_new", methods={"GET","POST"})
+     * @Route("/new", name="user_new", methods={"GET", "POST"})
      */
     public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
@@ -83,7 +83,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="user_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, User $user): Response
     {

@@ -50,7 +50,7 @@ class MedicalCertificateRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?MedicalCertificate
@@ -62,5 +62,5 @@ class MedicalCertificateRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

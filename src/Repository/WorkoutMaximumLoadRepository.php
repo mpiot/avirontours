@@ -50,7 +50,7 @@ class WorkoutMaximumLoadRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?WorkoutMaximumLoad
@@ -62,5 +62,5 @@ class WorkoutMaximumLoadRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

@@ -50,7 +50,7 @@ class TrainingPhaseRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?TrainingPhase
@@ -62,5 +62,5 @@ class TrainingPhaseRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

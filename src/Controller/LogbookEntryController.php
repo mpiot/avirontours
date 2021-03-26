@@ -50,7 +50,7 @@ class LogbookEntryController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="logbook_entry_new", methods={"GET","POST"})
+     * @Route("/new", name="logbook_entry_new", methods={"GET", "POST"})
      */
     public function new(Request $request): Response
     {
@@ -75,7 +75,7 @@ class LogbookEntryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/finish", name="logbook_entry_finish", methods={"GET","POST"})
+     * @Route("/{id}/finish", name="logbook_entry_finish", methods={"GET", "POST"})
      */
     public function finish(Request $request, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
     {
@@ -106,7 +106,7 @@ class LogbookEntryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="logbook_entry_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="logbook_entry_edit", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
      */
     public function edit(Request $request, LogbookEntry $logbookEntry): Response

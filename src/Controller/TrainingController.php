@@ -44,7 +44,7 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="training_new", methods={"GET","POST"})
+     * @Route("/new", name="training_new", methods={"GET", "POST"})
      */
     public function new(Request $request): Response
     {
@@ -81,7 +81,7 @@ class TrainingController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="training_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="training_edit", methods={"GET", "POST"})
      * @Security("training.getUser() == user")
      */
     public function edit(Request $request, Training $training): Response

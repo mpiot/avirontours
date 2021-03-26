@@ -29,16 +29,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SeasonCategory
 {
-    const LICENSE_TYPE_ANNUAL = 'A';
-    const LICENSE_TYPE_UNIVERSITY = 'U';
-    const LICENSE_TYPE_INDOOR = 'I';
-    const LICENSE_TYPE_DISCOVERY_7D = 'D_7D';
-    const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
-    const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
+    public const LICENSE_TYPE_ANNUAL = 'A';
+    public const LICENSE_TYPE_UNIVERSITY = 'U';
+    public const LICENSE_TYPE_INDOOR = 'I';
+    public const LICENSE_TYPE_DISCOVERY_7D = 'D_7D';
+    public const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
+    public const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -51,19 +51,19 @@ class SeasonCategory
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=5)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $licenseType;
 
@@ -79,12 +79,12 @@ class SeasonCategory
 
     /**
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="season"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="-"),
-     *          @Gedmo\SlugHandlerOption(name="urilize", value=true)
-     *      })
+     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *         @Gedmo\SlugHandlerOption(name="relationField", value="season"),
+     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
+     *         @Gedmo\SlugHandlerOption(name="separator", value="-"),
+     *         @Gedmo\SlugHandlerOption(name="urilize", value=true)
+     *     })
      * }, fields={"name"})
      * @ORM\Column(length=128, unique=true)
      */

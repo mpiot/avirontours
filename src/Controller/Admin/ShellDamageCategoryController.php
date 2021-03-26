@@ -44,7 +44,7 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="shell_damage_category_new", methods={"GET","POST"})
+     * @Route("/new", name="shell_damage_category_new", methods={"GET", "POST"})
      */
     public function new(Request $request): Response
     {
@@ -69,7 +69,7 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="shell_damage_category_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="shell_damage_category_edit", methods={"GET", "POST"})
      */
     public function edit(Request $request, ShellDamageCategory $shellDamage): Response
     {

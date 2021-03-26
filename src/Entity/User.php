@@ -32,22 +32,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.", repositoryMethod="findForUniqueness")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks
  */
 class User implements UserInterface, EmailTwoFactorInterface
 {
-    const NUM_ITEMS = 20;
+    public const NUM_ITEMS = 20;
 
-    const GENDER_FEMALE = 'f';
-    const GENDER_MALE = 'm';
+    public const GENDER_FEMALE = 'f';
+    public const GENDER_MALE = 'm';
 
-    const ROWER_CATEGORY_A = 1;
-    const ROWER_CATEGORY_B = 2;
-    const ROWER_CATEGORY_C = 3;
+    public const ROWER_CATEGORY_A = 1;
+    public const ROWER_CATEGORY_B = 2;
+    public const ROWER_CATEGORY_C = 3;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
+     * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private $id;
@@ -59,8 +59,8 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     /**
      * @ORM\Column(type="string", length=180)
-     * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     private $email;
 
@@ -82,67 +82,67 @@ class User implements UserInterface, EmailTwoFactorInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $rowerCategory;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $birthday;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $subscriptionDate;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $laneNumber;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $laneType;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $laneName;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $postalCode;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank
      */
     private $city;
 

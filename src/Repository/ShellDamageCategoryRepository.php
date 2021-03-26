@@ -50,7 +50,7 @@ class ShellDamageCategoryRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?ShellDamageCategory
@@ -62,5 +62,5 @@ class ShellDamageCategoryRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }

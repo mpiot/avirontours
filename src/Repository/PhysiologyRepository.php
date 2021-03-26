@@ -50,7 +50,7 @@ class PhysiologyRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    */
+     */
 
     /*
     public function findOneBySomeField($value): ?Physiology
@@ -62,5 +62,5 @@ class PhysiologyRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
 }
