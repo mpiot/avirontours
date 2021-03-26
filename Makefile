@@ -7,7 +7,7 @@ SYMFONY?=symfony
 .PHONY: help
 .PHONY: start stop install uninstall
 .PHONY: db-reset db-fixtures
-.PHONY: assets-server assets-watch assets-dev assets-build
+.PHONY: assets-server assets-watch assets-dev assets-build assets-analyzer
 .PHONY: tests tests-weak tets-all test-all-weak lint lint-symfony lint-yaml lint-twig lint-container php-cs security-check validate-schema
 .PHONY: deps
 
@@ -64,6 +64,10 @@ assets-dev: node_modules                                                        
 
 assets-build: node_modules                                                                             ## Build the production version of the assets
 	yarn build
+
+assets-analyze:                                                                                       ## Analyze generated assets files
+	yarn run --silent build --json > webpack-stats.json
+	yarn webpack-bundle-analyzer webpack-stats.json public/build
 
 
 ##
