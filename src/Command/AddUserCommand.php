@@ -37,15 +37,10 @@ class AddUserCommand extends Command
     protected static $defaultName = 'app:user:add';
 
     private ?\Symfony\Component\Console\Style\SymfonyStyle $io = null;
-    private \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder;
-    private \Doctrine\ORM\EntityManagerInterface $entityManager;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
+    public function __construct(private UserPasswordEncoderInterface $passwordEncoder, private EntityManagerInterface $entityManager)
     {
         parent::__construct();
-
-        $this->passwordEncoder = $passwordEncoder;
-        $this->entityManager = $entityManager;
     }
 
     /**

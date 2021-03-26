@@ -27,11 +27,8 @@ use Symfony\Component\Serializer\Serializer;
 
 class SeasonCsvGenerator
 {
-    private LicenseRepository $licenseRepository;
-
-    public function __construct(LicenseRepository $licenseRepository)
+    public function __construct(private LicenseRepository $licenseRepository)
     {
-        $this->licenseRepository = $licenseRepository;
     }
 
     public function exportContacts(Season $season): ?string

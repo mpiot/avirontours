@@ -35,11 +35,8 @@ use Symfony\Component\Security\Core\Security;
 
 class UserType extends AbstractType
 {
-    private \Symfony\Component\Security\Core\Security $security;
-
-    public function __construct(Security $security)
+    public function __construct(private Security $security)
     {
-        $this->security = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

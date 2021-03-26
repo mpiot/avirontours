@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.", repositoryMethod="findForUniqueness")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements UserInterface, EmailTwoFactorInterface
+class User implements UserInterface, EmailTwoFactorInterface, \Stringable
 {
     public const NUM_ITEMS = 20;
 
@@ -202,7 +202,7 @@ class User implements UserInterface, EmailTwoFactorInterface
     /**
      * @ORM\OneToMany(targetEntity=Training::class, mappedBy="user")
      */
-    private array|\Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\ArrayCollection $trainings;
+    private Collection $trainings;
 
     public function __construct()
     {
@@ -216,7 +216,7 @@ class User implements UserInterface, EmailTwoFactorInterface
         $this->trainings = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getFullName();
     }

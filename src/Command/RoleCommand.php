@@ -33,13 +33,9 @@ abstract class RoleCommand extends Command
 {
     private ?\Symfony\Component\Console\Style\SymfonyStyle $io = null;
 
-    private \Doctrine\ORM\EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
         parent::__construct();
-
-        $this->entityManager = $entityManager;
     }
 
     protected function configure(): void

@@ -35,12 +35,9 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 class LogbookEntryRepository extends ServiceEntityRepository
 {
-    private \Knp\Component\Pager\PaginatorInterface $paginator;
-
-    public function __construct(ManagerRegistry $registry, PaginatorInterface $paginator)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
     {
         parent::__construct($registry, LogbookEntry::class);
-        $this->paginator = $paginator;
     }
 
     public function findAllPaginated($page = 1): PaginationInterface

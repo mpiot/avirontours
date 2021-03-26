@@ -28,11 +28,8 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class ShellNotDamagedValidator extends ConstraintValidator
 {
-    private ShellRepository $shellRepository;
-
-    public function __construct(ShellRepository $shellRepository)
+    public function __construct(private ShellRepository $shellRepository)
     {
-        $this->shellRepository = $shellRepository;
     }
 
     public function validate($value, Constraint $constraint): void

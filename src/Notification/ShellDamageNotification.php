@@ -34,11 +34,8 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class ShellDamageNotification extends Notification implements ChatNotificationInterface, EmailNotificationInterface
 {
-    private ShellDamage $shellDamage;
-
-    public function __construct(ShellDamage $shellDamage)
+    public function __construct(private ShellDamage $shellDamage)
     {
-        $this->shellDamage = $shellDamage;
         $this->importance(ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM);
 
         parent::__construct('Nouvelle avarie');

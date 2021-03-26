@@ -28,11 +28,8 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 class ShellAbbreviationSubscriber implements EventSubscriber
 {
-    private ShellAbbreviationGenerator $abbreviationGenerator;
-
-    public function __construct(ShellAbbreviationGenerator $abbreviationGenerator)
+    public function __construct(private ShellAbbreviationGenerator $abbreviationGenerator)
     {
-        $this->abbreviationGenerator = $abbreviationGenerator;
     }
 
     public function getSubscribedEvents()
