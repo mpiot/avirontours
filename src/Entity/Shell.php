@@ -308,7 +308,7 @@ class Shell
         return $this;
     }
 
-    public function getWeightCategory(): ?string
+    public function getWeightCategory(): ?int
     {
         return $this->weightCategory;
     }
@@ -329,7 +329,7 @@ class Shell
         return $text;
     }
 
-    public function setWeightCategory(?string $weightCategory): self
+    public function setWeightCategory(?int $weightCategory): self
     {
         $this->weightCategory = $weightCategory;
 
