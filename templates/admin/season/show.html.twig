@@ -12,7 +12,7 @@
     <div class="d-flex">
         <h1>{{ season.name }}</h1>
 
-        <div class="ml-auto align-self-center ">
+        <div class="ms-auto align-self-center ">
             {% embed 'admin/season/_delete_form.html.twig' %}
                 {% block buttons %}
                     <div class="btn-group-sm">
@@ -28,94 +28,87 @@
     </div>
 
     <div class="card border-0 shadow mb-3">
-        <div class="card-body">
-            <div class="accordion" id="categories-list">
-                <div class="card">
-                    <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
-                        <span class="h5">Catégories</span>
-                    </div>
-
-                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categories-list">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
+        <div class="accordion" id="accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCategories">
+                    <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">
+                        Catégories
+                    </button>
+                </h2>
+                <div id="collapseCategories" class="accordion-collapse collapse" aria-labelledby="headingCategories" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prix</th>
+                                    <th>Type de licence</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for category in season.seasonCategories %}
                                     <tr>
-                                        <th>Nom</th>
-                                        <th>Prix</th>
-                                        <th>Type de licence</th>
-                                        <th></th>
+                                        <td>{{ category.name }}</td>
+                                        <td>{{ category.price }} €</td>
+                                        <td>{{ category.textLicenseType }}</td>
+                                        <td></td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for category in season.seasonCategories %}
-                                        <tr>
-                                            <td>{{ category.name }}</td>
-                                            <td>{{ category.price }} €</td>
-                                            <td>{{ category.textLicenseType }}</td>
-                                            <td></td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card border-0 shadow mb-3">
-        <div class="card-body">
-            <div class="accordion" id="statistics">
-                <div class="card">
-                    <div class="card-header" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" id="headingTwo">
-                        <span class="h5">Statistiques</span>
-                    </div>
-
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#statistics">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Status</th>
-                                        <th>Nombre</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Attente de paiement et certificat médical</td>
-                                            <td>{{ statistics.waitAll }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Attente de paiement</td>
-                                            <td>{{ statistics.waitPaymentValidation }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Attente de certificat médical</td>
-                                            <td>{{ statistics.waitMedicalCertificateValidation }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Attente de validation fédéral</td>
-                                            <td>{{ statistics.waitValidation }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Certificat médical rejeté</td>
-                                            <td>{{ statistics.medicalCertificateRejected }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Validé</td>
-                                            <td>{{ statistics.validated }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Total Licences</td>
-                                            <td>{{ statistics.total }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingStatistics">
+                    <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatistics" aria-expanded="false" aria-controls="collapseStatistics">
+                        Statistiques
+                    </button>
+                </h2>
+                <div id="collapseStatistics" class="accordion-collapse collapse" aria-labelledby="headingStatistics" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Nombre</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Attente de paiement et certificat médical</td>
+                                    <td>{{ statistics.waitAll }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de paiement</td>
+                                    <td>{{ statistics.waitPaymentValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de certificat médical</td>
+                                    <td>{{ statistics.waitMedicalCertificateValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Attente de validation fédéral</td>
+                                    <td>{{ statistics.waitValidation }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Certificat médical rejeté</td>
+                                    <td>{{ statistics.medicalCertificateRejected }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Validé</td>
+                                    <td>{{ statistics.validated }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Licences</td>
+                                    <td>{{ statistics.total }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -129,7 +122,7 @@
                 <div class="card-header d-flex">
                     <span class="h5 align-self-center">Licences</span>
 
-                    <a href="{{ path('license_new', { 'seasonId': season.id }) }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+                    <a href="{{ path('license_new', { 'seasonId': season.id }) }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
                         <span class="fas fa-plus"></span> Ajouter une licence
                     </a>
                 </div>
@@ -149,16 +142,10 @@
                             </a>
                         </div>
 
-                        <form method="get" class="ml-auto">
-                            <div class="form-row">
-                                <div class="col-md-auto col-sm-12 ml-auto align-self-center">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><span class="fa fa-search"></span></div>
-                                        </div>
-                                        <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
-                                    </div>
-                                </div>
+                        <form method="get" class="ms-auto">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </form>
                     </div>
@@ -186,7 +173,7 @@
                                     <td>
                                         {% for place in workflow_marked_places(license)  %}
                                             <div>
-                                                <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }}">
+                                                <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }}">
                                                     {{ workflow_metadata(license, 'title', place) }}
                                                 </span>
                                             </div>
@@ -199,7 +186,7 @@
                                     </td>
                                     <td class="d-flex justify-content-end align-items-center">
                                         <form action="{{ path('license_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
-                                            <div class="btn-group-vertical btn-group-sm mr-3" role="group">
+                                            <div class="btn-group-vertical btn-group-sm me-3" role="group">
                                                 {% for transition in workflow_transitions(license) %}
                                                     <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
                                                         {{ workflow_metadata(license, 'title', transition) }}

@@ -11,7 +11,7 @@
     <div class="d-flex">
         <h1>Carnet d'entraînements</h1>
 
-        <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+        <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
             <span class="fas fa-plus"></span> Ajouter un entraînement
         </a>
     </div>
@@ -40,7 +40,7 @@
                             <td>{{ training.duration.format('%H:%I') }}</td>
                             <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
                             <td>{{ training.comment|u.truncate(25, '...') }}</td>
-                            <td class="text-right">
+                            <td class="text-end">
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('training_edit', {'id': training.id}) }}">
                                     <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>

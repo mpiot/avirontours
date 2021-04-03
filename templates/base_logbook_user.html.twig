@@ -18,7 +18,9 @@
     </head>
 
     <body>
-        <div class="my-3 ml-3">
+        {{ include('_flash_messages.html.twig') }}
+
+        <div class="my-3 ms-3">
             <img src="{{ asset('build/images/logo_colored.svg') }}" height="50px" alt="Aviron Tours Métropole">
         </div>
 
@@ -40,7 +42,6 @@
                 </div>
 
                 <div class="container-fluid my-3">
-                    {{ include('_flash_messages.html.twig') }}
                     {% block body %}{% endblock %}
                 </div>
             </div>

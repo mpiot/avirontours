@@ -69,7 +69,6 @@ Encore
 
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
-        config.plugins.push('@babel/plugin-proposal-private-methods');
     })
 
     // enables @babel/preset-env polyfills

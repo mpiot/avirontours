@@ -114,8 +114,8 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_damage_category_name"] .form-error-message')->text());
-        $this->assertCount(1, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_damage_category_name')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
 
         ShellDamageCategoryFactory::repository()->assertCount(0);
     }

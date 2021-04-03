@@ -12,20 +12,28 @@ import './styles/app.scss';
 import './bootstrap';
 
 // import jQuery & Bootstrap
-import 'popper.js';
+import '@popperjs/core';
 import 'bootstrap';
-import $ from "jquery";
+import { Toast } from 'bootstrap';
 
-$('.custom-file-input').on('change', function(event) {
-    let inputFile = event.currentTarget;
+document.addEventListener("DOMContentLoaded", function() {
+    // Sidebar display
+    if (window.innerWidth < 1200) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggle-sidebar');
 
-    $(inputFile).parent()
-        .find('.custom-file-label')
-        .html(inputFile.files[0].name);
-});
+        sidebar.classList.remove('show');
+        toggleSidebar.setAttribute('aria-expanded', 'false');
+    }
 
-$(document).ready(() => {
-    $('[data-toggle="popover"]').popover();
-    $('[data-toggle="tooltip"]').tooltip();
-    $('.toast').toast('show');
+    // let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    // tooltipTriggerList.map(function (tooltipTriggerEl) {
+    //     return new bootstrap.Tooltip(tooltipTriggerEl);
+    // })
+
+    let toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    let toastList = toastElList.map(function (toastEl) {
+        return new Toast(toastEl);
+    })
+    toastList.forEach(toast => toast.show());
 });

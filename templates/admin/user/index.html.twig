@@ -11,7 +11,7 @@
     <div class="d-flex">
         <h1>Gestion des utilisateurs</h1>
 
-        <a href="{{ path('user_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+        <a href="{{ path('user_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
             <span class="fas fa-plus"></span> Ajouter un utilisateur
         </a>
     </div>
@@ -19,15 +19,9 @@
     <div class="card border-0 shadow">
         <div class="card-body">
             <form method="get">
-                <div class="form-row align-items-center">
-                    <div class="col-md-auto col-sm-12 ml-auto">
-                        <div class="input-group mb-2">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text"><span class="fa fa-search"></span></div>
-                            </div>
-                            <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}">
-                        </div>
-                    </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </form>
 
@@ -47,7 +41,7 @@
                                 <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
                             </td>
                             <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                            <td class="text-right">
+                            <td class="text-end">
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                                     <a class="btn btn-outline-info btn-sm rounded-pill"
                                        href="{{ path('homepage', {'_switch_user': user.username}) }}">

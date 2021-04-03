@@ -131,9 +131,9 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_shell"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="shell_damage_category"] .form-error-message')->text());
-        $this->assertCount(2, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_shell')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_category')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
 
         ShellDamageFactory::repository()->assertCount(0);
     }
