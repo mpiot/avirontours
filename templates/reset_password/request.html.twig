@@ -3,7 +3,7 @@
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
 
 {% block body %}
-    <h2>Réinitialiser mon mot de passe</h2>
+    <div class="fs-4 mb-3">Réinitialiser mon mot de passe</div>
 
     {% for flashError in app.flashes('reset_password_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
@@ -12,6 +12,8 @@
     {{ form_start(requestForm) }}
         {{ form_row(requestForm.username) }}
 
-        <button class="btn btn-primary">Envoyer un email de récupération</button>
+        <div class="d-grid gap-2">
+            <button class="btn btn-lg btn-primary">Envoyer un email de récupération</button>
+        </div>
     {{ form_end(requestForm) }}
 {% endblock %}

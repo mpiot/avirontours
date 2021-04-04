@@ -35,7 +35,6 @@ class ResetPasswordRequestFormType extends AbstractType
         $builder
             ->add('username', TextType::class, [
                 'label' => 'Nom d\'utilisateur',
-                'help' => 'Entrez votre nom d\'utilisateur et nous vous enverrons un lien pour réinitialiser votre mot de passe.',
                 'constraints' => [
                     new NotBlank(),
                 ],

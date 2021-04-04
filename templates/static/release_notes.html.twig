@@ -33,7 +33,7 @@
                 <section class="position-relative py-5 px-3">
                     <header class="timeline-decorator d-flex flex-items-center mb-3">
                         <h2>
-                            <span class="badge badge-info align-self-center mr-2">{{ release }}</span>
+                            <span class="badge bg-info align-self-center me-2">{{ release }}</span>
                         </h2>
                     </header>
 
@@ -41,11 +41,11 @@
                         {% for description in data %}
                             {% set type, description = description|u.after('[').before(']'), description|u.after(']')|trim %}
                             <li class="d-flex flex-items-start mb-2">
-                                <div class="badge align-self-start text-uppercase d-inline-flex mr-2 ml-md-5 ml-3
+                                <div class="badge align-self-start text-uppercase d-inline-flex me-2 ms-md-5 ms-3
                                 {{-
-                                'New' == type or 'Added' == type ? ' badge-success' :
-                                'Removed' == type ? ' badge-danger' :
-                                ' badge-primary'
+                                'New' == type or 'Added' == type ? ' bg-success' :
+                                'Removed' == type ? ' bg-danger' :
+                                ' bg-primary'
                                 -}}
                             ">
                                     {{ type }}</div>

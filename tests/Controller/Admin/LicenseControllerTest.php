@@ -130,12 +130,12 @@ class LicenseControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="license_user"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="license_seasonCategory"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_level')->previousAll()->filter('legend')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_type')->previousAll()->filter('legend')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="license_medicalCertificate_date"] .form-error-message')->text());
-        $this->assertCount(5, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#license_user')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#license_seasonCategory')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_level')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_type')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_date')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(5, $crawler->filter('.invalid-feedback'));
 
         LicenseFactory::repository()->assertCount(0);
     }
@@ -161,8 +161,8 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.form-error-message')->text());
-        $this->assertCount(1, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
 
         LicenseFactory::repository()->assertCount(1);
     }

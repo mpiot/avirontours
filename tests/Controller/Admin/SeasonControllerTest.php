@@ -139,9 +139,9 @@ class SeasonControllerTest extends AppWebTestCase
             'season[name]' => '',
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.alert.alert-danger.d-block')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="season_name"] .form-error-message')->text());
-        $this->assertCount(2, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.invalid-feedback.d-block')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#season_name')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
 
         SeasonFactory::repository()->assertCount(0);
     }

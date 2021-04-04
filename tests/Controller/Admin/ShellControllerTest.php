@@ -132,10 +132,10 @@ class ShellControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_name"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_numberRowers"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="shell_mileage"] .form-error-message')->text());
-        $this->assertCount(3, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_name')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_numberRowers')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_mileage')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(3, $crawler->filter('.invalid-feedback'));
 
         ShellFactory::repository()->assertCount(0);
     }

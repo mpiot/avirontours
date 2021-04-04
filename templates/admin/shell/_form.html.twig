@@ -14,14 +14,15 @@
         </div>
     </div>
 
-    <div class="accordion mb-3" id="accordionExample">
-        <div class="card">
-            <div class="card-header" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" id="headingOne">
-                <span class="h5">Informations cotation</span>
-            </div>
-
-            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
+    <div class="accordion mb-3" id="accordionQuotation">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingQuotation">
+                <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Informations cotation
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingQuotation" data-bs-parent="#accordionQuotation">
+                <div class="accordion-body">
                     <div class="row">
                         <div class="col">
                             {{ form_row(form.productionYear) }}

@@ -38,7 +38,7 @@
                         <div class="card-body d-flex flex-column">
                             <h1 class="card-title pricing-card-title">{{ seasonCategory.price }} € <small class="text-muted">/ an</small></h1>
                             {% if seasonCategory.description is not null %}
-                                <div class="mt-3 text-left">
+                                <div class="mt-3 text-start">
                                     {{ seasonCategory.description|markdown_to_html }}
                                 </div>
                             {% endif %}
@@ -65,9 +65,9 @@
                     Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
                 </div>
 
-                <div class="ml-auto align-self-center d-flex flex-column">
+                <div class="ms-auto align-self-center d-flex flex-column">
                     {% for place in workflow_marked_places(license)  -%}
-                        <span class="badge badge-pill badge-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
+                        <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
                             {{- workflow_metadata(license, 'title', place) -}}
                         </span>
                     {%- endfor %}

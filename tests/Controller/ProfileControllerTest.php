@@ -112,15 +112,15 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][city]' => '',
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_email"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_firstName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_lastName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneNumber"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('label[for="profile_address_laneType"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_laneName"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_postalCode"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="profile_address_city"] .form-error-message')->text());
-        $this->assertCount(8, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_email')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_firstName')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_lastName')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_laneNumber')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#profile_address_laneType')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_laneName')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_postalCode')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_city')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(8, $crawler->filter('.invalid-feedback'));
     }
 
     public function testEditPassword(): void
@@ -158,8 +158,8 @@ class ProfileControllerTest extends AppWebTestCase
             'change_password[plainPassword][second]' => '',
         ]);
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $crawler->filter('label[for="change_password_currentPassword"] .form-error-message')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('label[for="change_password_plainPassword_first"] .form-error-message')->text());
-        $this->assertCount(2, $crawler->filter('.form-error-message'));
+        $this->assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $crawler->filter('#change_password_currentPassword')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#change_password_plainPassword_first')->parents()->filter('.invalid-feedback')->text());
+        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
     }
 }

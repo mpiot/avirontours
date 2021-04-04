@@ -9,13 +9,13 @@
     {% if is_granted('ROLE_MATERIAL_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="h4">Gestion du matériel</span>
+                <span class="fs-4">Gestion du matériel</span>
                 <div class="app-list d-flex flex-wrap">
                     <a href="{{ path('shell_damage_index') }}">
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Avaries</h4>
+                                <h4 class="card-title fw-normal fs-5">Avaries</h4>
                             </div>
                         </div>
                     </a>
@@ -24,7 +24,7 @@
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Parc</h4>
+                                <h4 class="card-title fw-normal fs-5">Parc</h4>
                             </div>
                         </div>
                     </a>
@@ -33,7 +33,7 @@
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Catégories d'avaries</h4>
+                                <h4 class="card-title fw-normal fs-5">Catégories d'avaries</h4>
                             </div>
                         </div>
                     </a>
@@ -45,13 +45,13 @@
     {% if is_granted('ROLE_SPORT_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="h4">Gestion sport</span>
+                <span class="fs-4">Gestion sport</span>
                 <div class="app-list d-flex flex-wrap">
                     <a href="{{ path('sports_profile_index') }}">
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Profils sportifs</h4>
+                                <h4 class="card-title fw-normal fs-5">Profils sportifs</h4>
                             </div>
                         </div>
                     </a>
@@ -63,13 +63,13 @@
     {% if is_granted('ROLE_USER_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="h4">Gestion des membres et saisons</span>
+                <span class="fs-4">Gestion des membres et saisons</span>
                 <div class="app-list d-flex flex-wrap">
                     <a href="{{ path('user_index') }}">
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Utilisateurs</h4>
+                                <h4 class="card-title fw-normal fs-5">Utilisateurs</h4>
                             </div>
                         </div>
                     </a>
@@ -78,7 +78,7 @@
                         <div class="card h-75 m-3" style="width: 15rem;">
                             <div class="card-body text-center">
                                 <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title">Saisons</h4>
+                                <h4 class="card-title fw-normal fs-5">Saisons</h4>
                             </div>
                         </div>
                     </a>

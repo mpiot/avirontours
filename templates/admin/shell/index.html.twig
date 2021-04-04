@@ -11,7 +11,7 @@
     <div class="d-flex">
         <h1>Gestion du parc</h1>
 
-        <a href="{{ path('shell_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+        <a href="{{ path('shell_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
             <span class="fas fa-plus"></span> Ajouter un bâteau
         </a>
     </div>
@@ -44,7 +44,7 @@
                                 {% endif %}
                             </td>
                             <td>{{ shell.mileage }} km</td>
-                            <td class="text-right">
+                            <td class="text-end">
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('shell_edit', {'id': shell.id}) }}">
                                     <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>

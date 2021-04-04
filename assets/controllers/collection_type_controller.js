@@ -1,28 +1,27 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
-    static values = { buttonId: String, buttonText: String, fullWidth: Boolean, label: String, numberEntriesAtInit: Number }
+    static values = {
+        buttonId: String,
+        buttonText: String,
+        label: String,
+        numberEntriesAtInit: Number
+    }
 
     initialize() {
         this.index = 0;
-        this.addButton = null;
+        this.entryAddLink = null;
     }
 
     connect() {
         // Initialize the index
         this.index = this.element.childNodes.length;
 
-        // Add a button
-        this.#createAddButton();
-        this.element.append(this.addButton);
+        // Insert an add entry link
+        this.appendEntryAddLink();
 
-        // Add a remove button to existing entries
-        if (this.index > 0) {
-            let entries = this.element.querySelectorAll(':scope > fieldset.form-group, :scope > div.form-group');
-            for (let i = 0; i < entries.length; i++) {
-                this.#formatEntry(entries[i]);
-            }
-        }
+        // Process existing entries
+        this.processExistingEntries();
 
         // Create default field(s) if needed
         if (0 === this.index && this.numberEntriesAtInitValue > 0) {
@@ -32,19 +31,42 @@ export default class extends Controller {
         }
     }
 
-    addEntry(event, buttonAction = true) {
+    processExistingEntries() {
+        if (this.index === 0) {
+            return;
+        }
+
+        let entries = this.element.querySelectorAll(':scope > fieldset.form-group, :scope > div.form-group');
+        for(let entry of entries) {
+            this.appendEntryRemoveLink(entry);
+            this.processEntryLabel(entry);
+        }
+    }
+
+    addEntry(event, focusField = true) {
         if (event) {
             event.preventDefault();
         }
 
-        let entry = this.#createEntryFromPrototype();
-        this.#formatEntry(entry);
+        // Get the entry content
+        let entry = this.getEntryContent();
+        this.appendEntryRemoveLink(entry);
+        this.processEntryLabel(entry);
 
-        this.element.insertBefore(entry, this.addButton);
+        // Insert the new entry in DOM
+        this.element.insertBefore(entry, this.entryAddLink);
 
-        if (true === buttonAction) {
-            entry.querySelector('input, select').focus();
+        try {
+            if (true === focusField) {
+                const fields = this.element.querySelectorAll(':scope > fieldset.form-group, :scope > div.form-group');
+                fields[fields.length - 1].querySelector('input, select').focus();
+            }
+        } catch (exception) {
+            console.log(exception);
         }
+
+        // Update the index
+        this.index++;
     }
 
     removeEntry(event) {
@@ -53,87 +75,71 @@ export default class extends Controller {
         this.element.removeChild(event.target.closest('fieldset, div.form-group'));
     }
 
-    #formatEntry(entry) {
-        // Display flex the form fieldset
-        entry.classList.add('d-flex');
-
-        // Continue to fill the page
-        let divWrapper = entry.querySelector(':scope > div');
-        if (divWrapper) {
-            divWrapper.classList.add('flex-fill');
-        }
-
-        // Modify the legend for non-dynamic entries
-        let labelWrapper = entry.querySelector('legend.col-form-label');
-        let label = entry.querySelector('span.label')
-        if (label && /^\d+$/.test(label.innerHTML)) {
-            if (this.hasLabelValue) {
-                label.innerHTML = this.labelValue + (Number(label.innerHTML) + 1);
-            } else {
-                labelWrapper.remove();
-            }
-        }
-
-        // Create the button
-        let button = this.#createRemoveEntryButton();
-        button.classList.add('align-self-end', 'mb-3', 'ml-3');
-
-        if (true === this.fullWidthValue) {
-            entry.classList.add('justify-content-between');
-        }
-
-        // Add remove button
-        entry.append(button);
-    }
-
-    #createAddButton() {
+    appendEntryAddLink() {
         let button = document.createElement('button');
+
+        button.type =  'button';
+        button.className = 'btn btn-outline-secondary btn-sm align-self-end ';
+        button.innerHTML = `<span class="fas fa-plus"></span> ${ this.hasButtonTextValue ? this.buttonTextValue : 'Ajouter' }`;
+        button.setAttribute('data-action', 'click->collection-type#addEntry');
 
         // If we define a specific id for the button
         if (this.hasButtonIdValue) {
             button.id = this.buttonIdValue;
         }
 
-        button.setAttribute('class', 'btn btn-outline-secondary btn-sm');
-        button.setAttribute('data-action', 'click->collection-type#addEntry');
+        let div = document.createElement('div');
+        div.className = 'w-100';
+        div.append(button);
 
-        let span = document.createElement('span');
-        span.setAttribute('class', 'fas fa-plus');
-
-        if (false === this.hasButtonTextValue) {
-            this.buttonTextValue = 'Ajouter';
-        }
-
-        button.innerHTML = span.outerHTML + ' ' + this.buttonTextValue;
-
-        this.addButton = button;
-
-        return button;
+        this.entryAddLink = div;
+        this.element.append(this.entryAddLink);
     }
 
-    #createRemoveEntryButton() {
+    appendEntryRemoveLink(entry) {
         let button = document.createElement('button');
 
-        button.setAttribute('class', 'btn btn-danger btn-sm');
+        button.type = 'button';
+        button.className = 'btn btn-danger btn-sm align-self-end mb-3 ms-3';
+        button.innerHTML = `<span class="fas fa-trash-alt"></span>`;
         button.setAttribute('data-action', 'click->collection-type#removeEntry');
 
-        let span = document.createElement('span');
-        span.setAttribute('class', 'fas fa-trash-alt');
-        button.innerHTML = span.outerHTML;
-
-        return button;
+        let fieldDiv = entry.querySelector('fieldset > div, div.form-group > input, div.form-group > select');
+        entry.querySelector('fieldset > div, div.form-group > input, div.form-group > select').outerHTML = '<div class="d-flex">' + fieldDiv.outerHTML + button.outerHTML + '</div>';
     }
 
-    #createEntryFromPrototype() {
-        let entry = document.createElement('div');
-        entry.innerHTML = this.element.dataset.prototype
-            .replace(/class="col-sm-2 control-label required"/, 'class="col-sm-2 control-label"')
-            .replace(/__name__label__/g, (this.labelValue ?? '') + (this.index + 1))
+    processEntryLabel(entry) {
+        let legend = entry.querySelector('legend');
+
+        if (null === legend) {
+            return entry;
+        }
+
+        if (false === this.hasLabelValue) {
+            legend.remove();
+
+            return entry;
+        }
+
+        if (legend.innerText.match(/^[0-9]+$/)) {
+            legend.innerText = `${this.labelValue}${parseInt(legend.innerText) + 1}`;
+
+            return entry;
+        }
+
+        return entry;
+    }
+
+    getEntryContent() {
+        let prototype = this.element.dataset.prototype;
+        prototype = prototype
+            .replace(/__name__label__/g, `${(this.labelValue ?? '') + (this.index + 1)}`)
             .replace(/__name__/g, this.index)
         ;
 
-        this.index ++;
+        const template = document.createElement('template');
+        template.innerHTML = prototype;
 
-        return entry.firstChild;
+        return template.content
     }
 }

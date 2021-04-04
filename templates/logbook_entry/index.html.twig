@@ -11,7 +11,7 @@
     <div class="d-flex">
         <h1>Gestion des sorties</h1>
 
-        <a href="{{ path('logbook_entry_new') }}" class="btn btn-outline-primary btn-sm ml-auto align-self-center">
+        <a href="{{ path('logbook_entry_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
             <span class="fas fa-plus"></span> Ajouter une sortie
         </a>
     </div>
@@ -68,7 +68,7 @@
                                     {{ logbook_entry.coveredDistance }} km
                                 {% endif %}
                             </td>
-                            <td class="text-right">
+                            <td class="text-end">
                                 {% if logbook_entry.endAt is null %}
                                     <a class="btn btn-success btn-sm rounded-pill"
                                        href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">

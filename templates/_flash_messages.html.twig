@@ -1,10 +1,10 @@
 {# List flashes messages #}
-<div aria-live="polite" aria-atomic="true" class="toast-container">
-    <div class="toast-wrapper">
+<div aria-live="polite" aria-atomic="true" class="position-relative" style="z-index: 10000">
+    <div class="toast-container position-absolute top-0 end-0 p-3">
         {% for label, messages in app.flashes(['success', 'notice', 'warning', 'error']) %}
             {% set color = 'notice' == label ? 'info' : 'error' == label ? 'danger' : label %}
             {% for message in messages %}
-                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast border-{{ color }}" data-delay="{{ 'error' == label ? '10000' : '5000' }}">
+                <div class="toast border-{{ color }}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="{{ 'error' == label ? '10000' : '5000' }}">
                     <div class="toast-body d-flex align-items-start">
                         <div class="text-{{ color }} align-self-center">
                             {% if 'success' == label %}
@@ -17,13 +17,11 @@
                                 <span class="fas fa-times-circle"></span>
                             {% endif %}
                         </div>
-                        <div class="ml-3">
+                        <div class="ms-3">
                             {{ message|trans }}
                         </div>
-                        <div class="ml-auto">
-                            <button type="button" class="ml-auto mb-1 close" data-dismiss="toast" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <div class="ms-auto">
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
