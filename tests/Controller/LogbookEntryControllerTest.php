@@ -210,8 +210,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#logbook_entry_start_startAt')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(0);
+        LogbookEntryFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryInvalidCrewSize(): void
@@ -235,8 +234,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Le nombre de membre d\'équipage ne correspond pas au nombre de place.', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(0);
+        LogbookEntryFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryWithCrewMemberOnWater(): void
@@ -264,8 +262,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString(sprintf('Certains membres d\'équipage sont déjà sortis: %s.', $licences[0]->getUser()->getFullName()), $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(1);
+        LogbookEntryFactory::repository()->assert()->count(1);
     }
 
     public function testNewLogbookEntryWithInvalidRowerCategory(): void
@@ -293,8 +290,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau:', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(0);
+        LogbookEntryFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryWithInvalidLogbookEntryLimit(): void
@@ -318,8 +314,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Certains membres d\'équipage ont atteint leur limite de nombre de sorties:', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(0);
+        LogbookEntryFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryWithShellOnWater(): void
@@ -346,8 +341,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(1);
+        LogbookEntryFactory::repository()->assert()->count(1);
     }
 
     public function testNewLogbookEntryWithHighlyDamagedShell(): void
@@ -373,8 +367,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LogbookEntryFactory::repository()->assertCount(0);
+        LogbookEntryFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryWithMediumDamagedShell(): void
@@ -397,8 +390,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseRedirects();
-
-        LogbookEntryFactory::repository()->assertCount(1);
+        LogbookEntryFactory::repository()->assert()->count(1);
     }
 
     public function testUserListLogbookEntryFormAsAdmin(): void

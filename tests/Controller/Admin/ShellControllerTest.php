@@ -136,8 +136,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_numberRowers')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_mileage')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(3, $crawler->filter('.invalid-feedback'));
-
-        ShellFactory::repository()->assertCount(0);
+        ShellFactory::repository()->assert()->count(0);
     }
 
     public function testEditShell(): void
@@ -188,7 +187,6 @@ class ShellControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/shell');
-
         ShellFactory::repository()->assert()->notExists($shell);
     }
 }

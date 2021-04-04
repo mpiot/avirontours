@@ -136,8 +136,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_type')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_date')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(5, $crawler->filter('.invalid-feedback'));
-
-        LicenseFactory::repository()->assertCount(0);
+        LicenseFactory::repository()->assert()->count(0);
     }
 
     public function testNewLicenseNonUnique(): void
@@ -160,11 +159,9 @@ class LicenseControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseIsSuccessful();
-
         $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        LicenseFactory::repository()->assertCount(1);
+        LicenseFactory::repository()->assert()->count(1);
     }
 
     public function testEditLicense(): void
@@ -207,7 +204,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
         LicenseFactory::repository()->assert()->notExists($license);
     }
 
