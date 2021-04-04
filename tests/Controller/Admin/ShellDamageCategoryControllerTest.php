@@ -116,8 +116,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_damage_category_name')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        ShellDamageCategoryFactory::repository()->assertCount(0);
+        ShellDamageCategoryFactory::repository()->assert()->count(0);
     }
 
     public function testEditShellDamageCategory(): void
@@ -155,7 +154,6 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/shell-damage-category');
-
         ShellDamageCategoryFactory::repository()->assert()->notExists($category);
     }
 }

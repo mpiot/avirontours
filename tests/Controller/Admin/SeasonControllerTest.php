@@ -138,12 +138,12 @@ class SeasonControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Sauver', [
             'season[name]' => '',
         ]);
+
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.invalid-feedback.d-block')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#season_name')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
-
-        SeasonFactory::repository()->assertCount(0);
+        SeasonFactory::repository()->assert()->count(0);
     }
 
     public function testEditSeason(): void
@@ -179,7 +179,6 @@ class SeasonControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/season');
-
         SeasonFactory::repository()->assert()->notExists($season);
     }
 }

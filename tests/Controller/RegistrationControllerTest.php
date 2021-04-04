@@ -90,9 +90,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
         $this->assertTrue($user->getLicenses()->first()->getFederationEmailAllowed());
-
-        UserFactory::repository()->assertCount(1);
-        LicenseFactory::repository()->assertCount(1);
+        UserFactory::repository()->assert()->count(1);
+        LicenseFactory::repository()->assert()->count(1);
     }
 
     public function testRegistrationWithoutData(): void
@@ -138,9 +137,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_form_agreeSwim')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(15, $crawler->filter('.invalid-feedback'));
-
-        UserFactory::repository()->assertCount(0);
-        LicenseFactory::repository()->assertCount(0);
+        UserFactory::repository()->assert()->count(0);
+        LicenseFactory::repository()->assert()->count(0);
     }
 
     public function testRegistrationTwice(): void
@@ -178,9 +176,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('#registration_form_firstName')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        UserFactory::repository()->assertCount(1);
-        LicenseFactory::repository()->assertCount(1);
+        UserFactory::repository()->assert()->count(1);
+        LicenseFactory::repository()->assert()->count(1);
     }
 
     public function testNonEnabledRegistration(): void

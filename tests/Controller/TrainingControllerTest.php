@@ -231,8 +231,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.invalid-feedback')->eq(1)->text());
         $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->eq(2)->text());
         $this->assertCount(3, $crawler->filter('.invalid-feedback'));
-
-        TrainingFactory::repository()->assertCount(0);
+        TrainingFactory::repository()->assert()->count(0);
     }
 
     public function testNewTrainingWithEmptyPhase(): void
@@ -271,8 +270,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainingPhases_0_intensity')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.invalid-feedback')->eq(1)->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
-
-        TrainingFactory::repository()->assertCount(0);
+        TrainingFactory::repository()->assert()->count(0);
     }
 
     public function testNewTrainingWithBadSplitInPhase(): void
@@ -310,8 +308,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Le split doit avoir le format: "0:00.0".', $crawler->filter('#training_trainingPhases_0_split')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-
-        TrainingFactory::repository()->assertCount(0);
+        TrainingFactory::repository()->assert()->count(0);
     }
 
     public function testEditTraining(): void
