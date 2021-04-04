@@ -8,3 +8,11 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.deprecations.log"
             buffer_size: 50 # How many messages should be saved? Prevent memory leaks
             max_files: 10
+
+#monolog:
+#    channels: [deprecation]
+#    handlers:
+#        deprecation:
+#            type: stream
+#            channels: [deprecation]
+#            path: php://stderr
