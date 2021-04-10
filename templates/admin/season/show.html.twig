@@ -184,21 +184,23 @@
                                             <span class="far fa-file-pdf"></span> Certificat
                                         </a>
                                     </td>
-                                    <td class="d-flex justify-content-end align-items-center">
-                                        <form action="{{ path('license_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
-                                            <div class="btn-group-vertical btn-group-sm me-3" role="group">
-                                                {% for transition in workflow_transitions(license) %}
-                                                    <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
-                                                        {{ workflow_metadata(license, 'title', transition) }}
-                                                    </button>
-                                                {% endfor %}
-                                            </div>
-                                        </form>
+                                    <td>
+                                        <div class="d-flex justify-content-end align-items-center">
+                                            <form action="{{ path('license_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
+                                                <div class="btn-group-vertical btn-group-sm me-3" role="group">
+                                                    {% for transition in workflow_transitions(license) %}
+                                                        <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
+                                                            {{ workflow_metadata(license, 'title', transition) }}
+                                                        </button>
+                                                    {% endfor %}
+                                                </div>
+                                            </form>
 
-                                        <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                           href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
-                                            <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                        </a>
+                                            <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                               href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
+                                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             {% else %}
