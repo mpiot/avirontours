@@ -15,7 +15,7 @@
             </div>
         {% endif %}
 
-        <div class="form-label-group">
+        <div class="form-floating">
             <input
                 type="text"
                 id="_auth_code"
@@ -40,7 +40,7 @@
             <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
         {% endif %}
 
-        <div class="d-grid gap-2">
+        <div class="d-grid gap-2 mt-3">
             <button class="btn btn-lg btn-primary" type="submit">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
         </div>
     </form>
