@@ -95,8 +95,8 @@ lint-yaml:                                                                      
 lint-twig:                                                                                             ## Lint Twig files
 	$(CONSOLE) lint:twig templates
 
-lint-container:                                                                                        ## Lint Symfony Container
-	$(CONSOLE) lint:container
+#lint-container:                                                                                        ## Lint Symfony Container
+#	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
 	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --diff --diff-format=udiff --no-interaction -v
