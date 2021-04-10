@@ -42,7 +42,7 @@ final class ShellDamageCategoryFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->name,
+            'name' => self::faker()->name(),
             'priority' => self::faker()->randomElement(ShellDamageCategory::getAvailablePriorities()),
         ];
     }

@@ -43,7 +43,7 @@ final class LogbookEntryFactory extends ModelFactory
     protected function getDefaults(): array
     {
         $shell = ShellFactory::new();
-        $finished = self::faker()->boolean;
+        $finished = self::faker()->boolean();
 
         return [
             'shell' => $shell,

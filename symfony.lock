@@ -1,7 +1,4 @@
 {
-    "beberlei/assert": {
-        "version": "v3.2.7"
-    },
     "beberlei/doctrineextensions": {
         "version": "v1.2.6"
     },
@@ -88,12 +85,12 @@
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
-        "version": "2.2",
+        "version": "3.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.2",
-            "ref": "baaa439e3e3179e69e3da84b671f0a3e4a2f56ad"
+            "version": "3.1",
+            "ref": "ee609429c9ee23e22d6fa5728211768f51ed2818"
         },
         "files": [
             "config/packages/doctrine_migrations.yaml",
@@ -193,9 +190,6 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.2"
     },
-    "lcobucci/jwt": {
-        "version": "3.3.1"
-    },
     "lorenzo/pinky": {
         "version": "1.0.5"
     },
@@ -207,9 +201,6 @@
     },
     "ocramius/package-versions": {
         "version": "1.5.1"
-    },
-    "paragonie/constant_time_encoding": {
-        "version": "v2.3.0"
     },
     "php": {
         "version": "7.4"
@@ -241,18 +232,21 @@
     "psr/log": {
         "version": "1.1.2"
     },
-    "scheb/two-factor-bundle": {
-        "version": "3.16",
+    "scheb/2fa-bundle": {
+        "version": "5.0",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
-            "version": "3.16",
-            "ref": "b5789cd9710e2ee555bf361079b991068a0f640b"
+            "version": "5.0",
+            "ref": "95d9da4bffdc29417c209141cae8292e40d6af19"
         },
         "files": [
-            "config/packages/scheb_two_factor.yaml",
-            "config/routes/scheb_two_factor.yaml"
+            "config/packages/scheb_2fa.yaml",
+            "config/routes/scheb_2fa.yaml"
         ]
+    },
+    "scheb/2fa-email": {
+        "version": "v5.8.0"
     },
     "scienta/doctrine-json-functions": {
         "version": "4.1.2"
@@ -268,9 +262,6 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
-    },
-    "spomky-labs/otphp": {
-        "version": "v10.0.1"
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.2",
@@ -532,6 +523,9 @@
     "symfony/property-info": {
         "version": "v5.0.2"
     },
+    "symfony/proxy-manager-bridge": {
+        "version": "v5.2.4"
+    },
     "symfony/routing": {
         "version": "5.1",
         "recipe": {
@@ -711,9 +705,6 @@
         "files": [
             "config/packages/reset_password.yaml"
         ]
-    },
-    "thecodingmachine/safe": {
-        "version": "v1.1.1"
     },
     "tijsverkoyen/css-to-inline-styles": {
         "version": "2.2.3"
