@@ -23,7 +23,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface as EmailTwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.", repositoryMethod="findForUniqueness")
  * @ORM\HasLifecycleCallbacks
  */
-class User implements UserInterface, EmailTwoFactorInterface, \Stringable
+class User implements UserInterface, TwoFactorInterface, \Stringable
 {
     public const NUM_ITEMS = 20;
 
