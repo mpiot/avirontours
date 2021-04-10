@@ -42,10 +42,10 @@ final class SeasonCategoryFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->sentence,
+            'name' => self::faker()->sentence(),
             'price' => self::faker()->randomElement([120, 200, 320]),
             'licenseType' => self::faker()->randomElement(SeasonCategory::getAvailableLicenseTypes()),
-            'description' => self::faker()->text,
+            'description' => self::faker()->text(),
             'displayed' => self::faker()->boolean(0.8),
         ];
     }

@@ -45,10 +45,10 @@ final class ShellDamageFactory extends ModelFactory
         return [
             'category' => ShellDamageCategoryFactory::new(),
             'shell' => ShellFactory::new(),
-            'description' => self::faker()->text,
-            'note' => self::faker()->text,
-            'repairStartAt' => self::faker()->optional()->dateTimeThisYear,
-            'repairEndAt' => self::faker()->optional()->dateTimeThisYear,
+            'description' => self::faker()->text(),
+            'note' => self::faker()->text(),
+            'repairStartAt' => self::faker()->optional()->dateTimeThisYear(),
+            'repairEndAt' => self::faker()->optional()->dateTimeThisYear(),
         ];
     }
 
@@ -69,7 +69,7 @@ final class ShellDamageFactory extends ModelFactory
     public function repaired(): self
     {
         return $this->addState([
-            'repairEndAt' => self::faker()->dateTimeThisYear,
+            'repairEndAt' => self::faker()->dateTimeThisYear(),
         ]);
     }
 

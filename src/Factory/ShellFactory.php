@@ -42,12 +42,12 @@ final class ShellFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->name,
+            'name' => self::faker()->name(),
             'numberRowers' => self::faker()->randomElement([1, 2, 4, 8]),
             'coxed' => self::faker()->boolean(0.1),
             'rowingType' => self::faker()->randomElement(Shell::getAvailableRowingTypes()),
             'yolette' => self::faker()->boolean(0.1),
-            'productionYear' => self::faker()->year,
+            'productionYear' => self::faker()->year(),
             'weightCategory' => self::faker()->randomElement(Shell::getAvailableWeightCategories()),
             'riggerMaterial' => self::faker()->randomElement(Shell::getAvailableRiggerMaterials()),
             'riggerPosition' => self::faker()->randomElement(Shell::getAvailableRiggerPositions()),

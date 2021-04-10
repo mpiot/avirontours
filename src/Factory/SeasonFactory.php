@@ -42,9 +42,9 @@ final class SeasonFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->year,
-            'active' => self::faker()->boolean,
-            'subscriptionEnabled' => self::faker()->boolean,
+            'name' => self::faker()->year(),
+            'active' => self::faker()->boolean(),
+            'subscriptionEnabled' => self::faker()->boolean(),
             'seasonCategories' => SeasonCategoryFactory::new()->many(2, 5),
         ];
     }
