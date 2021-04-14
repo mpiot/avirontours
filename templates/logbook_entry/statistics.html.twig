@@ -27,7 +27,7 @@
                                 {{ top.0.fullName }}
                             </span>
 
-                                <span>{{ top.totalDistance }} km</span>
+                                <span>{{ top.totalDistance|round(1) }} km</span>
                             </li>
                         {% else %}
                             <li class="list-group-item">Pas d'entrée</li>
