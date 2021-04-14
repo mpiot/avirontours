@@ -27,10 +27,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
-/**
- * @Security("is_granted('ROLE_USER_ADMIN')")
- */
 #[Route(path: '/medical-certificate')]
+#[Security('is_granted("ROLE_USER_ADMIN")')]
 class MedicalCertificateController extends AbstractController
 {
     #[Route(path: '/{id}/dowload', name: 'medical_certificate_download', methods: ['GET'])]

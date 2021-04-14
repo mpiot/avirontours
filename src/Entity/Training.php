@@ -67,14 +67,14 @@ class Training
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private $trained_at;
 
     /**
      * @ORM\Column(type="dateinterval")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?\DateInterval $duration = null;
 
     /**
@@ -84,8 +84,8 @@ class Training
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?string $sport = null;
 
     /**
@@ -101,8 +101,8 @@ class Training
     /**
      * @ORM\OneToMany(targetEntity=TrainingPhase::class, mappedBy="training", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"id": "ASC"})
-     * @Assert\Valid
      */
+    #[Assert\Valid]
     private Collection $trainingPhases;
 
     public function __construct(User $user)
@@ -254,15 +254,12 @@ class Training
         return $this;
     }
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validateDuration(ExecutionContextInterface $context): void
     {
         if (null === $this->duration) {
             return;
         }
-
         $date = new \DateTimeImmutable();
         if ($date->add($this->duration) < $date->add(new \DateInterval('PT5M'))) {
             $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')

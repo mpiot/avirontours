@@ -22,9 +22,7 @@ namespace App\Validator;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class UniqueUser extends Constraint
 {
     public string $message = 'Un compte existe déjà avec ce nom et prénom.';

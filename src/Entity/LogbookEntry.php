@@ -45,17 +45,17 @@ class LogbookEntry
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="logbookEntries")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull(groups={"start", "edit"})
-     * @AppAssert\ShellAvailable(groups={"start"})
-     * @AppAssert\ShellNotDamaged(groups={"start"})
      */
+    #[Assert\NotNull(groups: ['start', 'edit'])]
+    #[AppAssert\ShellAvailable(groups: ['start'])]
+    #[AppAssert\ShellNotDamaged(groups: ['start'])]
     private ?Shell $shell = null;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
-     * @Assert\NotNull(groups={"start", "edit"})
-     * @AppAssert\CrewAvailable(groups={"start"})
      */
+    #[Assert\NotNull(groups: ['start', 'edit'])]
+    #[AppAssert\CrewAvailable(groups: ['start'])]
     private Collection $crewMembers;
 
     /**
@@ -65,34 +65,34 @@ class LogbookEntry
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotNull(groups={"start", "edit"})
      */
+    #[Assert\NotNull(groups: ['start', 'edit'])]
     private $date;
 
     /**
      * @ORM\Column(type="time")
-     * @Assert\NotBlank(groups={"start", "edit"})
      */
+    #[Assert\NotBlank(groups: ['start', 'edit'])]
     private $startAt;
 
     /**
      * @ORM\Column(type="time", nullable=true)
-     * @Assert\NotBlank(groups={"finish"})
      */
+    #[Assert\NotBlank(groups: ['finish'])]
     private ?\DateTimeInterface $endAt = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
-     * @Assert\NotBlank(groups={"finish"})
-     * @Assert\LessThanOrEqual(30, groups={"finish"})
-     * @Assert\GreaterThanOrEqual(1, groups={"finish"})
      */
+    #[Assert\NotBlank(groups: ['finish'])]
+    #[Assert\LessThanOrEqual(value: 30, groups: ['finish'])]
+    #[Assert\GreaterThanOrEqual(value: 1, groups: ['finish'])]
     private ?float $coveredDistance = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="logbookEntry", cascade={"persist", "remove"})
-     * @Assert\Valid
      */
+    #[Assert\Valid]
     private Collection $shellDamages;
 
     public function __construct()
@@ -245,17 +245,13 @@ class LogbookEntry
         return $this;
     }
 
-    /**
-     * @Assert\Callback(groups={"start"})
-     */
+    #[Assert\Callback(groups: ['start'])]
     public function validateCrewLength(ExecutionContextInterface $context, $payload): void
     {
         if (null === $this->getShell()) {
             return;
         }
-
         $numberCrewMembers = $this->getCrewMembers()->count() + \count($this->nonUserCrewMembers);
-
         if ($numberCrewMembers !== $this->getShell()->getCrewSize()) {
             $context->buildViolation('Le nombre de membre d\'équipage ne correspond pas au nombre de place.')
                 ->atPath('crewMembers')
@@ -263,19 +259,15 @@ class LogbookEntry
         }
     }
 
-    /**
-     * @Assert\Callback(groups={"start"})
-     */
+    #[Assert\Callback(groups: ['start'])]
     public function validateCrewRowerCategory(ExecutionContextInterface $context): void
     {
         if (null === $this->getShell()) {
             return;
         }
-
         if ($this->getCrewMembers()->isEmpty()) {
             return;
         }
-
         if (null !== $this->getShell()) {
             $invalidCrewMembers = [];
             foreach ($this->getCrewMembers() as $crewMember) {
@@ -284,7 +276,6 @@ class LogbookEntry
                 }
             }
         }
-
         if (!empty($invalidCrewMembers)) {
             $context->buildViolation('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau: {{ invalidMembers }}.')
                 ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
@@ -293,15 +284,12 @@ class LogbookEntry
         }
     }
 
-    /**
-     * @Assert\Callback(groups={"start"})
-     */
+    #[Assert\Callback(groups: ['start'])]
     public function validateCrewRowerLogbookEntry(ExecutionContextInterface $context): void
     {
         if ($this->getCrewMembers()->isEmpty()) {
             return;
         }
-
         $invalidCrewMembers = [];
         foreach ($this->getCrewMembers() as $crewMember) {
             if ($crewMember->getLicenses()->isEmpty()) {
@@ -313,7 +301,6 @@ class LogbookEntry
                 $invalidCrewMembers[] = $crewMember->getFullName();
             }
         }
-
         if (!empty($invalidCrewMembers)) {
             $context->buildViolation('Certains membres d\'équipage ont atteint leur limite de nombre de sorties: {{ invalidMembers }}.')
                 ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))

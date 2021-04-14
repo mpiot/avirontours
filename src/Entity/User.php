@@ -33,16 +33,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
- * @UniqueEntity(fields={"firstName", "lastName"}, message="Un compte existe déjà avec ce nom et prénom.", repositoryMethod="findForUniqueness")
  * @ORM\HasLifecycleCallbacks
  */
+#[UniqueEntity(fields: ['firstName', 'lastName'], message: 'Un compte existe déjà avec ce nom et prénom.', repositoryMethod: 'findForUniqueness')]
 class User implements UserInterface, TwoFactorInterface, \Stringable
 {
     public const NUM_ITEMS = 20;
-
     public const GENDER_FEMALE = 'f';
     public const GENDER_MALE = 'm';
-
     public const ROWER_CATEGORY_A = 1;
     public const ROWER_CATEGORY_B = 2;
     public const ROWER_CATEGORY_C = 3;
@@ -61,9 +59,9 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
 
     /**
      * @ORM\Column(type="string", length=180)
-     * @Assert\NotBlank
-     * @Assert\Email
      */
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     /**
@@ -84,68 +82,68 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $gender = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $firstName = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $lastName = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotBlank
      */
-    private ?int $rowerCategory = null;
+    #[Assert\NotBlank]
+    private ?int $rowerCategory;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $birthday = null;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private $subscriptionDate;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $laneNumber = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?string $laneType = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private $laneName;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $postalCode = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private $city;
 
     /**
@@ -162,17 +160,17 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $authCode;
+    private ?string $authCode = null;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private ?bool $clubEmailAllowed = null;
+    private ?bool $clubEmailAllowed;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private ?bool $partnersEmailAllowed = null;
+    private ?bool $partnersEmailAllowed;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

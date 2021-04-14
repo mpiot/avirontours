@@ -38,48 +38,48 @@ class Physiology
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\LessThan(propertyPath="heavyAerobicHeartRateMin")
      */
+    #[Assert\NotNull]
+    #[Assert\LessThan(propertyPath: 'heavyAerobicHeartRateMin')]
     private ?int $lightAerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\GreaterThan(propertyPath="lightAerobicHeartRateMin")
-     * @Assert\LessThan(propertyPath="anaerobicThresholdHeartRateMin")
      */
+    #[Assert\NotNull]
+    #[Assert\LessThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
+    #[Assert\GreaterThan(propertyPath: 'lightAerobicHeartRateMin')]
     private ?int $heavyAerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\GreaterThan(propertyPath="heavyAerobicHeartRateMin")
-     * @Assert\LessThan(propertyPath="oxygenTransportationHeartRateMin")
      */
+    #[Assert\NotNull]
+    #[Assert\LessThan(propertyPath: 'oxygenTransportationHeartRateMin')]
+    #[Assert\GreaterThan(propertyPath: 'heavyAerobicHeartRateMin')]
     private ?int $anaerobicThresholdHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\GreaterThan(propertyPath="anaerobicThresholdHeartRateMin")
-     * @Assert\LessThan(propertyPath="anaerobicHeartRateMin")
      */
+    #[Assert\NotNull]
+    #[Assert\LessThan(propertyPath: 'anaerobicHeartRateMin')]
+    #[Assert\GreaterThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
     private ?int $oxygenTransportationHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\GreaterThan(propertyPath="oxygenTransportationHeartRateMin")
-     * @Assert\LessThanOrEqual(propertyPath="maximumHeartRate")
      */
+    #[Assert\NotNull]
+    #[Assert\LessThanOrEqual(propertyPath: 'maximumHeartRate')]
+    #[Assert\GreaterThan(propertyPath: 'oxygenTransportationHeartRateMin')]
     private ?int $anaerobicHeartRateMin = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
-     * @Assert\GreaterThanOrEqual(100)
      */
+    #[Assert\NotNull]
+    #[Assert\GreaterThanOrEqual(value: 100)]
     private ?int $maximumHeartRate = null;
 
     /**

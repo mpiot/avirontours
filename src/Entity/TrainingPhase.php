@@ -57,14 +57,14 @@ class TrainingPhase
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?int $intensity = null;
 
     /**
      * @ORM\Column(type="dateinterval")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?\DateInterval $duration = null;
 
     /**
@@ -74,8 +74,8 @@ class TrainingPhase
 
     /**
      * @ORM\Column(type="string", length=6, nullable=true)
-     * @Assert\Regex(pattern="#\d\:\d{2}\.\d#", message="Le split doit avoir le format: ""0:00.0"".")
      */
+    #[Assert\Regex(pattern: '#\d\:\d{2}\.\d#', message: 'Le split doit avoir le format: "0:00.0".')]
     private ?string $split = null;
 
     /**
@@ -181,15 +181,12 @@ class TrainingPhase
         return $this;
     }
 
-    /**
-     * @Assert\Callback
-     */
+    #[Assert\Callback]
     public function validateDuration(ExecutionContextInterface $context): void
     {
         if (null === $this->duration) {
             return;
         }
-
         $date = new \DateTimeImmutable();
         if ($date->add($this->duration) < $date->add(new \DateInterval('PT10S'))) {
             $context->buildViolation('Une phase doit durer au moins 10 secondes.')

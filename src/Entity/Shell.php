@@ -59,33 +59,33 @@ class Shell
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\Regex("/1|2|4|8/", message="Le nombre de rameur doit être: 1, 2, 4 ou 8.")
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: '/1|2|4|8/', message: 'Le nombre de rameur doit être: 1, 2, 4 ou 8.')]
     private ?int $numberRowers = null;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?bool $coxed = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?string $rowingType = null;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?bool $yolette = null;
 
     /**
@@ -115,9 +115,9 @@ class Shell
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank
-     * @Assert\GreaterThanOrEqual(0)
      */
+    #[Assert\NotBlank]
+    #[Assert\GreaterThanOrEqual(value: 0)]
     private $mileage;
 
     /**

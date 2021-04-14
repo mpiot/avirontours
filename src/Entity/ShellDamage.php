@@ -42,8 +42,8 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ShellDamageCategory")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?ShellDamageCategory $category = null;
 
     /**
@@ -69,8 +69,8 @@ class ShellDamage
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?Shell $shell = null;
 
     /**

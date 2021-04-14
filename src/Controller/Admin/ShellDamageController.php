@@ -29,10 +29,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
- */
 #[Route(path: '/admin/shell-damage')]
+#[Security('is_granted("ROLE_MATERIAL_ADMIN")')]
 class ShellDamageController extends AbstractController
 {
     #[Route(path: '', name: 'shell_damage_index', methods: ['GET'])]

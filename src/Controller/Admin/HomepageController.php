@@ -26,10 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomepageController extends AbstractController
 {
-    /**
-     * @Security("is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN')")
-     */
     #[Route(path: '/admin', name: 'admin_homepage')]
+    #[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
     public function homepage()
     {
         return $this->render('admin/homepage/homepage.twig');

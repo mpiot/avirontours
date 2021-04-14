@@ -38,10 +38,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
-    /**
-     * @Entity("seasonCategory", expr="repository.findSubscriptionSeasonCategory(slug)")
-     */
     #[Route(path: '/register/{slug}', name: 'app_register')]
+    #[Entity(data: 'seasonCategory', expr: 'repository.findSubscriptionSeasonCategory(slug)')]
     public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
@@ -86,10 +84,8 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('ROLE_USER')")
-     */
     #[Route(path: '/renew/{slug}', name: 'renew')]
+    #[Security('is_granted("ROLE_USER")')]
     public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, MailerInterface $mailer): Response
     {
         $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());

@@ -35,16 +35,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\WorkflowInterface;
 
-/**
- * @Security("is_granted('ROLE_USER_ADMIN')")
- */
 #[Route(path: '/admin/season/{seasonId}/license')]
+#[Security('is_granted("ROLE_USER_ADMIN")')]
 class LicenseController extends AbstractController
 {
-    /**
-     * @Entity("season", expr="repository.find(seasonId)")
-     */
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
+    #[Entity(data: 'season', expr: 'repository.find(seasonId)')]
     public function new(Request $request, Season $season): Response
     {
         $license = new License();
@@ -101,10 +97,8 @@ class LicenseController extends AbstractController
         return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
     }
 
-    /**
-     * @Route("/{id}/chain-validation-apply-transition", name="license_chain_validation_apply_transition", methods={"POST"})
-     */
     #[Route(path: '/{id}/apply-transition', name: 'license_apply_transition', methods: ['POST'])]
+    #[Route(path: '/{id}/chain-validation-apply-transition', name: 'license_chain_validation_apply_transition', methods: ['POST'])]
     public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId)
     {
         try {
@@ -127,11 +121,9 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    /**
-     * @Entity("season", expr="repository.find(seasonId)")
-     * @Entity("license", expr="repository.findOneForValidation(season)")
-     */
     #[Route(path: '/chain-medical-certificate-validation', name: 'license_validate_medical_certificate', methods: ['GET'])]
+    #[Entity(data: 'season', expr: 'repository.find(seasonId)')]
+    #[Entity(data: 'license', expr: 'repository.findOneForValidation(season)')]
     public function chainValidation(Season $season, LicenseRepository $repository): Response
     {
         $license = $repository->findOneForValidation($season);

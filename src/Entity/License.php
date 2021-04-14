@@ -28,12 +28,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LicenseRepository")
- * @UniqueEntity(fields={"seasonCategory", "user"}, message="Déjà inscrit pour cette saison.")
  */
+#[UniqueEntity(fields: ['seasonCategory', 'user'], message: 'Déjà inscrit pour cette saison.')]
 class License
 {
     use BlameableEntity;
     use TimestampableEntity;
+
     public const NUM_ITEMS = 20;
 
     /**
@@ -46,23 +47,23 @@ class License
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\SeasonCategory", inversedBy="licenses")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
      */
-    private ?SeasonCategory $seasonCategory = null;
+    #[Assert\NotNull]
+    private ?SeasonCategory $seasonCategory;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
      * @ORM\JoinColumn(name="app_user", nullable=false)
-     * @Assert\NotNull
      */
-    private ?User $user = null;
+    #[Assert\NotNull]
+    private ?User $user;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\MedicalCertificate", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
-     * @Assert\Valid
      */
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private ?MedicalCertificate $medicalCertificate = null;
 
     /**
@@ -78,12 +79,12 @@ class License
     /**
      * @ORM\Column(type="boolean")
      */
-    private ?bool $federationEmailAllowed = null;
+    private ?bool $federationEmailAllowed;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Assert\Positive
      */
+    #[Assert\Positive]
     private ?int $logbookEntryLimit = null;
 
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)

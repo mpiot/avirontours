@@ -35,10 +35,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('ROLE_LOGBOOK_USER') or (is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN')")
- */
 #[Route(path: '/logbook-entry')]
+#[Security('is_granted("ROLE_LOGBOOK_USER") or (is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_LOGBOOK_ADMIN")')]
 class LogbookEntryController extends AbstractController
 {
     #[Route(path: '', name: 'logbook_entry_index', methods: ['GET'])]
@@ -98,10 +96,8 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
-     */
     #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
+    #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
     public function edit(Request $request, LogbookEntry $logbookEntry): Response
     {
         $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
@@ -120,10 +116,8 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("is_granted('ROLE_LOGBOOK_ADMIN')")
-     */
     #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['DELETE'])]
+    #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
     public function delete(Request $request, LogbookEntry $logbookEntry): Response
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), $request->request->get('_token'))) {

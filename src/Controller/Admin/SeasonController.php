@@ -33,10 +33,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('ROLE_USER_ADMIN')")
- */
 #[Route(path: '/admin/season')]
+#[Security('is_granted("ROLE_USER_ADMIN")')]
 class SeasonController extends AbstractController
 {
     #[Route(path: '', name: 'season_index', methods: ['GET'])]

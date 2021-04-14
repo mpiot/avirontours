@@ -38,65 +38,65 @@ class PhysicalQualities
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $proprioception = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $weightPowerRatio = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $explosiveStrength = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $enduranceStrength = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $maximumStrength = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $stressResistance = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $coreStrength = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $flexibility = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\GreaterThanOrEqual(value="0")
-     * @Assert\LessThanOrEqual(value="20")
      */
+    #[Assert\GreaterThanOrEqual(value: '0')]
+    #[Assert\LessThanOrEqual(value: '20')]
     private ?int $recovery = null;
 
     public function __construct(User $user)

@@ -38,32 +38,32 @@ class WorkoutMaximumLoad
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero
      */
+    #[Assert\PositiveOrZero]
     private ?int $rowingTirage = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero
      */
+    #[Assert\PositiveOrZero]
     private ?int $benchPress = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero
      */
+    #[Assert\PositiveOrZero]
     private ?int $squat = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero
      */
+    #[Assert\PositiveOrZero]
     private ?int $legPress = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\PositiveOrZero
      */
+    #[Assert\PositiveOrZero]
     private ?int $clean = null;
 
     public function __construct(User $user)

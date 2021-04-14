@@ -30,10 +30,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('ROLE_MATERIAL_ADMIN')")
- */
 #[Route(path: '/admin/shell')]
+#[Security('is_granted("ROLE_MATERIAL_ADMIN")')]
 class ShellController extends AbstractController
 {
     #[Route(path: '', name: 'shell_index', methods: ['GET'])]

@@ -40,14 +40,14 @@ class ShellDamageCategory
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\NotNull
      */
+    #[Assert\NotNull]
     private ?int $priority = null;
 
     public function getId(): ?int

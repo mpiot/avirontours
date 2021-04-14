@@ -31,10 +31,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-/**
- * @Security("is_granted('ROLE_USER')")
- */
 #[Route(path: '/profile')]
+#[Security('is_granted("ROLE_USER")')]
 class ProfileController extends AbstractController
 {
     #[Route(path: '', name: 'profile_show', methods: ['GET'])]

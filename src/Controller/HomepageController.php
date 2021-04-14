@@ -31,10 +31,8 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class HomepageController extends AbstractController
 {
-    /**
-     * @Security("is_granted('ROLE_USER')")
-     */
     #[Route(path: '', name: 'homepage')]
+    #[Security('is_granted("ROLE_USER")')]
     public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
     {
         // Logbook chart
@@ -88,6 +86,7 @@ class HomepageController extends AbstractController
                 ],
             ],
         ]);
+
         // Physical qualities chart
         /** @var PhysicalQualities $physicalQualities */
         $physicalQualities = $this->getUser()->getPhysicalQualities();

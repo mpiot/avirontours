@@ -28,9 +28,7 @@ use App\Validator as AppAssert;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @AppAssert\UniqueUser
- */
+#[AppAssert\UniqueUser]
 class RegistrationModel
 {
     /**

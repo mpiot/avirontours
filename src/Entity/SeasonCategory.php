@@ -53,20 +53,20 @@ class SeasonCategory
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     /**
      * @ORM\Column(type="float")
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?float $price = null;
 
     /**
      * @ORM\Column(type="string", length=5)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $licenseType = null;
 
     /**

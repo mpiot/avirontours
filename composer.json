@@ -28,7 +28,7 @@
         "scheb/2fa-bundle": "^5.8",
         "scheb/2fa-email": "^5.8",
         "scienta/doctrine-json-functions": "^4.2",
-        "sensio/framework-extra-bundle": "^5.1",
+        "sensio/framework-extra-bundle": "^6.1",
         "stof/doctrine-extensions-bundle": "^1.5",
         "symfony/asset": "5.2.*",
         "symfony/console": "5.2.*",

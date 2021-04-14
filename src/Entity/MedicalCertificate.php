@@ -47,35 +47,34 @@ class MedicalCertificate
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $type = null;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
     private ?string $level = null;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
-     * @Assert\GreaterThan("-1 year", message="Le certificat médical doit avoir moins d'un an.")
      */
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(value: '-1 year', message: 'Le certificat médical doit avoir moins d\'un an.')]
     private $date;
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      *
      * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize", mimeType="fileMimeType")
-     *
-     * @Assert\File(
-     *     maxSize="3M",
-     *     mimeTypes={"application/pdf", "application/x-pdf", "image/*"},
-     *     mimeTypesMessage="Le fichier doit être au format PDF ou bien une image."
-     * )
-     * @Assert\NotNull(groups={"new"})
      */
+    #[Assert\NotNull(groups: ['new'])]
+    #[Assert\File(
+        maxSize: '3M',
+        mimeTypes: ['application/pdf', 'application/x-pdf', 'image/*'],
+        mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image.'
+    )]
     private ?\Symfony\Component\HttpFoundation\File\File $file = null;
 
     /**

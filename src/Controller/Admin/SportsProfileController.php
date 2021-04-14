@@ -36,10 +36,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('ROLE_SPORT_ADMIN')")
- */
 #[Route(path: '/admin/sports-profile')]
+#[Security('is_granted("ROLE_SPORT_ADMIN")')]
 class SportsProfileController extends AbstractController
 {
     #[Route(path: '', name: 'sports_profile_index', methods: ['GET'])]

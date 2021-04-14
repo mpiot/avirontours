@@ -29,10 +29,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("(is_granted('ROLE_USER') and user.hasValidLicense()) or is_granted('ROLE_ADMIN')")
- */
 #[Route(path: '/training')]
+#[Security('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")')]
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
@@ -66,10 +64,8 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("training.getUser() == user")
-     */
     #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
+    #[Security('training.getUser() == user')]
     public function show(Training $training): Response
     {
         return $this->render('training/show.html.twig', [
@@ -77,10 +73,8 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("training.getUser() == user")
-     */
     #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
+    #[Security('training.getUser() == user')]
     public function edit(Request $request, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
@@ -99,10 +93,8 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Security("training.getUser() == user")
-     */
     #[Route(path: '/{id}', name: 'training_delete', methods: ['DELETE'])]
+    #[Security('training.getUser() == user')]
     public function delete(Request $request, Training $training): Response
     {
         if ($this->isCsrfTokenValid('delete'.$training->getId(), $request->request->get('_token'))) {

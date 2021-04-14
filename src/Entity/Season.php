@@ -39,15 +39,15 @@ class Season
 
     /**
      * @ORM\Column(type="integer")
-     * @Assert\Length(min="4", max="4")
-     * @Assert\NotBlank
      */
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 4, max: 4)]
     private ?int $name = null;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
-     * @Assert\Count(min="1")
      */
+    #[Assert\Count(min: 1)]
     private Collection $seasonCategories;
 
     /**
