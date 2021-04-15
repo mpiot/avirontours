@@ -76,10 +76,10 @@ assets-analyze:                                                                 
 
 tests: db-reset                                                                                        ## Run all the PHP tests
 	$(CONSOLE) cache:clear --env test
-	$(RUN) php bin/phpunit
+	FOUNDRY_RESET_MODE=migrate $(RUN) php vendor/bin/paratest --runner WrapperRunner
 
 tests-weak: db-reset                                                                                   ## Run all the PHP tests without Deprecations helper
-	SYMFONY_DEPRECATIONS_HELPER=weak $(RUN) php bin/phpunit
+	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(RUN) php vendor/bin/paratest --runner WrapperRunner
 
 test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests
 

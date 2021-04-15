@@ -70,6 +70,7 @@
         "vich/uploader-bundle": "^1.13"
     },
     "require-dev": {
+        "brianium/paratest": "^6.2",
         "dama/doctrine-test-bundle": "^6.4",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "easycorp/easy-deploy-bundle": "^1.0",
