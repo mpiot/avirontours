@@ -33,17 +33,13 @@
     }
 }
 
-body {
-  overflow-x: hidden;
-}
-
 #sidebar {
   &.offcanvas {
     width: 318px;
 
     &.show {
       +main {
-        left: 318px;
+       margin-left: 318px;
 
         #sidebarToggle {
           color:$dark;
@@ -61,9 +57,7 @@ body {
 }
 
 main {
-  position: relative;
-  left: 0;
-  transition: left $offcanvas-transition-duration;
+  transition: margin-left $offcanvas-transition-duration ease-in-out;
 }
 
 /**
