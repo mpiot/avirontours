@@ -9,34 +9,40 @@
     {% if is_granted('ROLE_MATERIAL_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="fs-4">Gestion du matériel</span>
-                <div class="app-list d-flex flex-wrap">
-                    <a href="{{ path('shell_damage_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Avaries</h4>
+                <div class="fs-4 mb-3">Gestion du matériel</div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
+                    <div class="col">
+                        <a href="{{ path('shell_damage_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Avaries</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
 
-                    <a href="{{ path('shell_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Parc</h4>
+                    <div class="col">
+                        <a href="{{ path('shell_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Parc</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
 
-                    <a href="{{ path('shell_damage_category_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Catégories d'avaries</h4>
+                    <div class="col">
+                        <a href="{{ path('shell_damage_category_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Catégories d'avaries</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,16 +51,18 @@
     {% if is_granted('ROLE_SPORT_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="fs-4">Gestion sport</span>
-                <div class="app-list d-flex flex-wrap">
-                    <a href="{{ path('sports_profile_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Profils sportifs</h4>
+                <div class="fs-4 mb-3">Gestion du matériel</div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
+                    <div class="col">
+                        <a href="{{ path('sports_profile_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Profils sportifs</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,25 +71,29 @@
     {% if is_granted('ROLE_USER_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <span class="fs-4">Gestion des membres et saisons</span>
-                <div class="app-list d-flex flex-wrap">
-                    <a href="{{ path('user_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Utilisateurs</h4>
+                <div class="fs-4 mb-3">Gestion du matériel</div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
+                    <div class="col">
+                        <a href="{{ path('user_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Utilisateurs</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
 
-                    <a href="{{ path('season_index') }}">
-                        <div class="card h-75 m-3" style="width: 15rem;">
-                            <div class="card-body text-center">
-                                <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
-                                <h4 class="card-title fw-normal fs-5">Saisons</h4>
+                    <div class="col">
+                        <a href="{{ path('season_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Saisons</h4>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
