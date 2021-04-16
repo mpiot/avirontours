@@ -18,99 +18,93 @@
     </head>
 
     <body>
-        <div class="d-flex vh-100">
-            <nav>
-                <div id="sidebar" class="h-100 collapse width show">
-                    <div class="h-100 d-flex flex-column p-2 text-white bg-dark" style="width: 280px;">
-                        <a class="m-2" href="{{ path('homepage') }}">
-                            <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
+        <nav class="offcanvas offcanvas-start" tabindex="-1" id="sidebar">
+            <div class="offcanvas-body text-white bg-dark d-flex flex-column">
+                <a class="m-2" href="{{ path('homepage') }}">
+                    <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
+                </a>
+
+                <hr>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
+                    </li>
+
+                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link link-light" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
+                        </li>
+                    {% endif %}
+
+                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge bg-success ml-auto">New</span></a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge bg-success">New</span></a>
+                        </li>
+                    {% endif %}
+
+                    {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link link-light" href="{{ path('admin_homepage') }}">Administration</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <hr class="mt-auto">
+
+                <ul class="nav flex-column small">
+                    <li class="nav-item">
+                        <a class="nav-link link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-secondary" href="{{ asset('files/guide_atm.pdf') }}">Guide 2020</a>
+                    </li>
+                </ul>
+
+                <hr>
+
+                {% if app.user is not null %}
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://robohash.org/{{ app.user.firstName|slice(0, 1)|upper ~ app.user.lastName|slice(0, 1)|upper }}.png?set=set4" alt="mdo" width="32" height="32" class="rounded-circle me-2">
+                            <strong>{{ app.user.fullName }}</strong>
                         </a>
-
-                        <hr>
-
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
-                            </li>
-
-                            {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
-                                <li class="nav-item">
-                                    <a class="nav-link link-light" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
-                                </li>
-                            {% endif %}
-
-                            {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
-                                <li class="nav-item">
-                                    <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge bg-success ml-auto">New</span></a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge bg-success">New</span></a>
-                                </li>
-                            {% endif %}
-
-                            {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
-                                <li class="nav-item">
-                                    <a class="nav-link link-light" href="{{ path('admin_homepage') }}">Administration</a>
-                                </li>
+                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="{{ path('profile_show') }}">Mon profil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                            {% if is_granted('IS_IMPERSONATOR') %}
+                                <li><a class="dropdown-item text-danger" href="{{ path('user_index', {'_switch_user': '_exit'}) }}">Quitter l'impersonation</a></li>
                             {% endif %}
                         </ul>
-
-                        <hr class="mt-auto">
-
-                        <ul class="nav flex-column small">
-                            <li class="nav-item">
-                                <a class="nav-link link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link link-secondary" href="{{ asset('files/guide_atm.pdf') }}">Guide 2020</a>
-                            </li>
-                        </ul>
-
-                        <hr>
-
-                        {% if app.user is not null %}
-                            <div class="dropdown">
-                                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="https://robohash.org/{{ app.user.firstName|slice(0, 1)|upper ~ app.user.lastName|slice(0, 1)|upper }}.png?set=set4" alt="mdo" width="32" height="32" class="rounded-circle me-2">
-                                    <strong>{{ app.user.fullName }}</strong>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                                    <li><a class="dropdown-item" href="{{ path('profile_show') }}">Mon profil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                                    {% if is_granted('IS_IMPERSONATOR') %}
-                                        <li><a class="dropdown-item text-danger" href="{{ path('user_index', {'_switch_user': '_exit'}) }}">Quitter l'impersonation</a></li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        {% endif %}
-
-                        <div class="text-muted small p-1 text-end">
-                            Aviron Tours - <a class="text-muted" href="{{ path('release_notes') }}">v{{ APP_VERSION }}</a>
-                        </div>
                     </div>
+                {% endif %}
+
+                <div class="text-muted small p-1 text-end">
+                    Aviron Tours - <a class="text-muted" href="{{ path('release_notes') }}">v{{ APP_VERSION }}</a>
                 </div>
+            </div>
+        </nav>
+
+        <main>
+            <nav class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
+                <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle"></button>
+
+                <ol class="breadcrumb mb-0 pt-3">
+                    {% block breadcrumb %}
+                        <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                    {% endblock %}
+                </ol>
             </nav>
 
-            <div class="flex-grow-1 overflow-auto bg-light">
-                <nav class="d-flex bg-white shadow-sm" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-                    <button id="toggle-sidebar" class="btn ms-2 me-3 py-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="true" aria-controls="sidebar">
-                        <span></span>
-                    </button>
-
-                    <ol class="breadcrumb mb-0 pt-3">
-                        {% block breadcrumb %}
-                            <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-                        {% endblock %}
-                    </ol>
-                </nav>
-
-                <main class="my-3 px-3">
-                    {{ include('_flash_messages.html.twig') }}
-                    {% block body %}{% endblock %}
-                </main>
-            </div>
-        </div>
+            <section class="my-3 px-3">
+                {{ include('_flash_messages.html.twig') }}
+                {% block body %}{% endblock %}
+            </section>
+        </main>
     </body>
 </html>

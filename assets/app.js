@@ -14,23 +14,37 @@ import './bootstrap';
 // import jQuery & Bootstrap
 import '@popperjs/core';
 import 'bootstrap';
-import { Toast } from 'bootstrap';
+import { Offcanvas, Toast } from 'bootstrap';
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Sidebar display
-    if (window.innerWidth < 1200) {
-        const sidebar = document.getElementById('sidebar');
-        const toggleSidebar = document.getElementById('toggle-sidebar');
+    // Sidebar
+    let sidebarToggle = document.getElementById('sidebarToggle');
+    let sidebar = document.getElementById('sidebar');
+    let bsSidebar = new Offcanvas(sidebar, {
+        backdrop: false,
+        keyboard: false,
+        scroll: true
+    })
+    let displayed = false;
 
-        sidebar.classList.remove('show');
-        toggleSidebar.setAttribute('aria-expanded', 'false');
+    sidebarToggle.addEventListener('click', function() {
+        event.stopPropagation();
+        displayed = !displayed;
+        bsSidebar.toggle();
+    })
+
+    sidebar.addEventListener('hide.bs.offcanvas', function(event) {
+        if (displayed) {
+            event.preventDefault();
+        }
+    })
+
+    if (window.innerWidth >= 1200) {
+        displayed = true;
+        bsSidebar.show();
     }
 
-    // let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    // tooltipTriggerList.map(function (tooltipTriggerEl) {
-    //     return new bootstrap.Tooltip(tooltipTriggerEl);
-    // })
-
+    // Toasts
     let toastElList = [].slice.call(document.querySelectorAll('.toast'))
     let toastList = toastElList.map(function (toastEl) {
         return new Toast(toastEl);

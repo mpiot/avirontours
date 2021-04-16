@@ -5,26 +5,14 @@
 @import "~@fortawesome/fontawesome-free/scss/solid";
 
 /**
- * Sidebar
+ * sidebar
  */
-#toggle-sidebar {
-  &:focus {
-    outline:none !important;
-  }
+#sidebarToggle {
+  color: $gray-600;
 
-  &[aria-expanded="true"] {
-    color:$dark;
-
-    &::after {
-      @extend %fa-icon;
-      @extend .fas;
-
-      content: fa-content($fa-var-times);
+    &:focus {
+      outline:none !important;
     }
-  }
-
-  &[aria-expanded="false"] {
-    color: $gray-600;
 
     &::after {
       @extend %fa-icon;
@@ -43,16 +31,39 @@
         content: fa-content($fa-var-hamburger);
       }
     }
-  }
+}
+
+body {
+  overflow-x: hidden;
 }
 
 #sidebar {
-  &.collapsing.width {
-    height: auto;
-    width: 0;
-    overflow: hidden;
-    @include transition(width .35s ease);
+  &.offcanvas {
+    width: 318px;
+
+    &.show {
+      +main {
+        left: 318px;
+
+        #sidebarToggle {
+          color:$dark;
+
+          &::after {
+            @extend %fa-icon;
+            @extend .fas;
+
+            content: fa-content($fa-var-times);
+          }
+        }
+      }
+    }
   }
+}
+
+main {
+  position: relative;
+  left: 0;
+  transition: left $offcanvas-transition-duration;
 }
 
 /**
