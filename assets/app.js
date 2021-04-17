@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
     })
 
     sidebar.addEventListener('hide.bs.offcanvas', function(event) {
-        if (displayed) {
+        if (true === displayed && window.innerWidth >= 1200) {
             event.preventDefault();
         }
     })

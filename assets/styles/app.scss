@@ -35,11 +35,17 @@
 
 #sidebar {
   &.offcanvas {
-    width: 318px;
+    width: $navbar-width;
 
     &.show {
       +main {
-       margin-left: 318px;
+        @include media-breakpoint-down(xl) {
+          left: $navbar-width;
+        }
+
+        @include media-breakpoint-up(xl) {
+          margin-left: $navbar-width;
+        }
 
         #sidebarToggle {
           color:$dark;
@@ -56,8 +62,22 @@
   }
 }
 
+body {
+  @include media-breakpoint-down(xl) {
+    overflow-x: hidden;
+  }
+}
+
 main {
-  transition: margin-left $offcanvas-transition-duration ease-in-out;
+  @include media-breakpoint-down(xl) {
+    position: relative;
+    left: 0;
+    transition: left $offcanvas-transition-duration ease-in-out;
+  }
+
+  @include media-breakpoint-up(xl) {
+    transition: margin-left $offcanvas-transition-duration ease-in-out;
+  }
 }
 
 /**
