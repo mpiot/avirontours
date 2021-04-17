@@ -14,13 +14,3 @@ import './bootstrap';
 // import jQuery & Bootstrap
 import '@popperjs/core';
 import 'bootstrap';
-import { Toast } from 'bootstrap';
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Toasts
-    let toastElList = [].slice.call(document.querySelectorAll('.toast'))
-    let toastList = toastElList.map(function (toastEl) {
-        return new Toast(toastEl);
-    })
-    toastList.forEach(toast => toast.show());
-});

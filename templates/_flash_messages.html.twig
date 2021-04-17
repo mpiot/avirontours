@@ -4,7 +4,7 @@
         {% for label, messages in app.flashes(['success', 'notice', 'warning', 'error']) %}
             {% set color = 'notice' == label ? 'info' : 'error' == label ? 'danger' : label %}
             {% for message in messages %}
-                <div class="toast border-{{ color }}" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="{{ 'error' == label ? '10000' : '5000' }}">
+                <div class="toast border-{{ color }}" role="alert" aria-live="assertive" aria-atomic="true" {{ stimulus_controller('toast', { 'delay': 'error' == label ? 10000 : 5000 }) }}>
                     <div class="toast-body d-flex align-items-start">
                         <div class="text-{{ color }} align-self-center">
                             {% if 'success' == label %}
@@ -21,7 +21,7 @@
                             {{ message|trans }}
                         </div>
                         <div class="ms-auto">
-                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-action="toast#dismiss" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
