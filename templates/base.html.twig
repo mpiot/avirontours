@@ -17,8 +17,8 @@
         {% endblock %}
     </head>
 
-    <body>
-        <nav class="offcanvas offcanvas-start" tabindex="-1" id="sidebar">
+    <body {{ stimulus_controller('sidebar', { 'display': 'false' }) }}>
+        <nav class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" data-sidebar-target="sidebar">
             <div class="offcanvas-body text-white bg-dark d-flex flex-column">
                 <a class="m-2" href="{{ path('homepage') }}">
                     <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
@@ -92,7 +92,7 @@
 
         <main>
             <nav class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
-                <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle"></button>
+                <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle" data-action="sidebar#toggle"></button>
 
                 <ol class="breadcrumb mb-0 pt-3">
                     {% block breadcrumb %}

@@ -14,36 +14,9 @@ import './bootstrap';
 // import jQuery & Bootstrap
 import '@popperjs/core';
 import 'bootstrap';
-import { Offcanvas, Toast } from 'bootstrap';
+import { Toast } from 'bootstrap';
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Sidebar
-    let sidebarToggle = document.getElementById('sidebarToggle');
-    let sidebar = document.getElementById('sidebar');
-    let bsSidebar = new Offcanvas(sidebar, {
-        backdrop: false,
-        keyboard: false,
-        scroll: true
-    })
-    let displayed = false;
-
-    sidebarToggle.addEventListener('click', function() {
-        event.stopPropagation();
-        displayed = !displayed;
-        bsSidebar.toggle();
-    })
-
-    sidebar.addEventListener('hide.bs.offcanvas', function(event) {
-        if (true === displayed && window.innerWidth >= 1200) {
-            event.preventDefault();
-        }
-    })
-
-    if (window.innerWidth >= 1200) {
-        displayed = true;
-        bsSidebar.show();
-    }
-
     // Toasts
     let toastElList = [].slice.call(document.querySelectorAll('.toast'))
     let toastList = toastElList.map(function (toastEl) {
