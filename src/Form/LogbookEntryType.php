@@ -64,23 +64,23 @@ class LogbookEntryType extends AbstractType
                     $suffix = '';
 
                     if ($shell->getRowerCategory() <= 2) {
-                        $suffix .= '<span class="badge badge-primary ml-2">Compétition</span>';
+                        $suffix .= '<span class="badge bg-primary ms-2">Compétition</span>';
                     }
 
                     if (true === $shell->getPersonalBoat()) {
-                        $suffix .= '<span class="badge badge-info ml-2">Personnel</span>';
+                        $suffix .= '<span class="badge bg-info ms-2">Personnel</span>';
                     }
 
                     if (null !== $shell->getWeightCategory()) {
-                        $suffix .= '<span class="badge badge-info ml-2">'.$shell->getTextWeightCategory().'</span>';
+                        $suffix .= '<span class="badge bg-info ms-2">'.$shell->getTextWeightCategory().'</span>';
                     }
 
                     if (false === $shell->getLogbookEntries()->isEmpty()) {
-                        $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-sign-out-alt"></span></span>';
+                        $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
                     }
 
                     if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
-                        $suffix .= '<span class="badge badge-danger ml-2"><span class="fas fa-tools"></span></span>';
+                        $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
                     }
 
                     if ('' !== empty($suffix)) {
@@ -124,13 +124,13 @@ class LogbookEntryType extends AbstractType
                 'choice_attr' => function (User $user) {
                     if (false === $user->getLogbookEntries()->isEmpty()) {
                         return [
-                            'data-select2-suffix' => '<span class="badge badge-danger ml-2"><span class="fas fa-sign-out-alt"></span></span>',
+                            'data-select2-suffix' => '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>',
                         ];
                     }
 
                     if (false === $user->getLicenses()->isEmpty() && null !== $user->getLicenses()->last()->getLogbookEntryLimit()) {
                         return [
-                            'data-select2-suffix' => '<span class="badge badge-info ml-2">Découverte</span>',
+                            'data-select2-suffix' => '<span class="badge bg-info ms-2">Découverte</span>',
                         ];
                     }
 
