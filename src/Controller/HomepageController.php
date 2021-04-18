@@ -24,7 +24,6 @@ use App\Entity\PhysicalQualities;
 use App\Repository\LogbookEntryRepository;
 use App\Service\ArrayNormalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;

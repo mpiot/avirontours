@@ -20,11 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\ShellDamageCategory;
 use App\Form\ShellDamageCategoryType;
 use App\Repository\ShellDamageCategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,41 +46,48 @@ class ShellDamageCategoryController extends AbstractController
     public function new(Request $request): Response
     {
         $shellDamage = new ShellDamageCategory();
-        $form = $this->createForm(ShellDamageCategoryType::class, $shellDamage);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($shellDamage);
-            $entityManager->flush();
 
-            $this->addFlash('success', 'La catégorie d\'avarie  a été créée avec succès.');
+        return $this->handleForm(
+            $this->createForm(ShellDamageCategoryType::class, $shellDamage),
+            $request,
+            function () use ($shellDamage) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($shellDamage);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('shell_damage_category_index');
-        }
+                $this->addFlash('success', 'La catégorie d\'avarie  a été créée avec succès.');
 
-        return $this->render('admin/shell_damage_category/new.html.twig', [
-            'shell' => $shellDamage,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($shellDamage) {
+                return $this->render('admin/shell_damage_category/new.html.twig', [
+                    'shell' => $shellDamage,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ShellDamageCategory $shellDamage): Response
     {
-        $form = $this->createForm(ShellDamageCategoryType::class, $shellDamage);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        return $this->handleForm(
+            $this->createForm(ShellDamageCategoryType::class, $shellDamage),
+            $request,
+            function () {
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'La catégorie d\'avarie  a été modifiée avec succès.');
+                $this->addFlash('success', 'La catégorie d\'avarie  a été modifiée avec succès.');
 
-            return $this->redirectToRoute('shell_damage_category_index');
-        }
-
-        return $this->render('admin/shell_damage_category/edit.html.twig', [
-            'shell_damage_category' => $shellDamage,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($shellDamage) {
+                return $this->render('admin/shell_damage_category/edit.html.twig', [
+                    'shell_damage_category' => $shellDamage,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['DELETE'])]

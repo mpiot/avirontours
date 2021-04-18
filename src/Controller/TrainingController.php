@@ -24,7 +24,7 @@ use App\Entity\Training;
 use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,23 +45,27 @@ class TrainingController extends AbstractController
     public function new(Request $request): Response
     {
         $training = new Training($this->getUser());
-        $form = $this->createForm(TrainingType::class, $training);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($training);
-            $entityManager->flush();
 
-            $this->addFlash('success', 'Votre entraînement a été créé avec succès.');
+        return $this->handleForm(
+            $this->createForm(TrainingType::class, $training),
+            $request,
+            function () use ($training) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($training);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('training_show', [
-                'id' => $training->getId(),
-            ]);
-        }
+                $this->addFlash('success', 'Votre entraînement a été créé avec succès.');
 
-        return $this->render('training/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('training_show', [
+                    'id' => $training->getId(),
+                ], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) {
+                return $this->render('training/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
@@ -77,20 +81,23 @@ class TrainingController extends AbstractController
     #[Security('training.getUser() == user')]
     public function edit(Request $request, Training $training): Response
     {
-        $form = $this->createForm(TrainingType::class, $training);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        return $this->handleForm(
+            $this->createForm(TrainingType::class, $training),
+            $request,
+            function () {
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
+                $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
 
-            return $this->redirectToRoute('training_index');
-        }
-
-        return $this->render('training/edit.html.twig', [
-            'training' => $training,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('training_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($training) {
+                return $this->render('training/edit.html.twig', [
+                    'training' => $training,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'training_delete', methods: ['DELETE'])]

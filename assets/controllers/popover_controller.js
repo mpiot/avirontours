@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 import { Popover } from 'bootstrap';
 
+/* stimulusFetch: "lazy" */
 export default class extends Controller {
     static values = { options: Object };
 

@@ -112,8 +112,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
             'shell_damage_category[name]' => '',
         ]);
 
-        $this->assertResponseIsSuccessful();
-
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_damage_category_name')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         ShellDamageCategoryFactory::repository()->assert()->count(0);
@@ -135,7 +134,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
             'shell_damage_category[name]' => 'A modified shell damage category',
         ]);
 
-        $this->assertResponseRedirects();
+        $this->assertResponseStatusCodeSame(Response::HTTP_SEE_OTHER);
         $this->assertSame('A modified shell damage category', $category->getName());
         $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
     }

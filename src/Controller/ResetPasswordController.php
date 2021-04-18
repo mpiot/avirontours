@@ -21,9 +21,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,20 +51,23 @@ class ResetPasswordController extends AbstractController
     #[Route(path: '', name: 'app_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer): Response
     {
-        $form = $this->createForm(ResetPasswordRequestFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $username = u($form->get('username')->getData())->lower();
+        return $this->handleForm(
+            $this->createForm(ResetPasswordRequestFormType::class),
+            $request,
+            function (FormInterface $form) use ($mailer) {
+                $username = u($form->get('username')->getData())->lower()->toString();
 
-            return $this->processSendingPasswordResetEmail(
-                $username,
-                $mailer
-            );
-        }
-
-        return $this->render('reset_password/request.html.twig', [
-            'requestForm' => $form->createView(),
-        ]);
+                return $this->processSendingPasswordResetEmail(
+                    $username,
+                    $mailer
+                );
+            },
+            function (FormInterface $form) {
+                return $this->render('reset_password/request.html.twig', [
+                    'requestForm' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     /**
@@ -97,6 +99,7 @@ class ResetPasswordController extends AbstractController
 
             return $this->redirectToRoute('app_reset_password');
         }
+
         $token = $this->getTokenFromSession();
         if (null === $token) {
             throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
@@ -112,31 +115,35 @@ class ResetPasswordController extends AbstractController
 
             return $this->redirectToRoute('app_forgot_password_request');
         }
+
         // The token is valid; allow the user to change their password.
-        $form = $this->createForm(ChangePasswordFormType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // A password reset token should be used only once, remove it.
-            $this->resetPasswordHelper->removeResetRequest($token);
+        return $this->handleForm(
+            $this->createForm(ResetPasswordRequestFormType::class),
+            $request,
+            function (FormInterface $form) use ($user, $passwordEncoder, $token) {
+                // A password reset token should be used only once, remove it.
+                $this->resetPasswordHelper->removeResetRequest($token);
 
-            // Encode the plain password, and set it.
-            $encodedPassword = $passwordEncoder->encodePassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
+                // Encode the plain password, and set it.
+                $encodedPassword = $passwordEncoder->encodePassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                );
 
-            $user->setPassword($encodedPassword);
-            $this->getDoctrine()->getManager()->flush();
+                $user->setPassword($encodedPassword);
+                $this->getDoctrine()->getManager()->flush();
 
-            // The session is cleaned up after the password has been changed.
-            $this->cleanSessionAfterReset();
+                // The session is cleaned up after the password has been changed.
+                $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('homepage');
-        }
-
-        return $this->render('reset_password/reset.html.twig', [
-            'resetForm' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('homepage', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) {
+                return $this->render('reset_password/reset.html.twig', [
+                    'resetForm' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer): RedirectResponse

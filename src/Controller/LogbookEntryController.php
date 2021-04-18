@@ -24,12 +24,11 @@ use App\Entity\LogbookEntry;
 use App\Form\LogbookEntryFinishType;
 use App\Form\LogbookEntryStartType;
 use App\Form\LogbookEntryType;
-use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\ShellRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Notifier\NotifierInterface;
@@ -51,22 +50,26 @@ class LogbookEntryController extends AbstractController
     public function new(Request $request): Response
     {
         $logbookEntry = new LogbookEntry();
-        $form = $this->createForm(LogbookEntryStartType::class, $logbookEntry);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($logbookEntry);
-            $entityManager->flush();
 
-            $this->addFlash('success', 'Votre sortie a été créée avec succès.');
+        return $this->handleForm(
+            $this->createForm(LogbookEntryStartType::class, $logbookEntry),
+            $request,
+            function () use ($logbookEntry) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($logbookEntry);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('logbook_entry_index');
-        }
+                $this->addFlash('success', 'Votre sortie a été créée avec succès.');
 
-        return $this->render('logbook_entry/new.html.twig', [
-            'logbook_entry' => $logbookEntry,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($logbookEntry) {
+                return $this->render('logbook_entry/new.html.twig', [
+                    'logbook_entry' => $logbookEntry,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}/finish', name: 'logbook_entry_finish', methods: ['GET', 'POST'])]
@@ -75,45 +78,47 @@ class LogbookEntryController extends AbstractController
         if (null !== $logbookEntry->getEndAt()) {
             throw $this->createNotFoundException();
         }
-        $form = $this->createForm(LogbookEntryFinishType::class, $logbookEntry);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
 
-            // send an email to admins if there is damage
-            foreach ($logbookEntry->getShellDamages() as $shellDamage) {
-                $notifier->send(new ShellDamageNotification($shellDamage), ...$notifier->getAdminRecipients());
+        return $this->handleForm(
+            $this->createForm(LogbookEntryFinishType::class, $logbookEntry),
+            $request,
+            function () {
+                $this->getDoctrine()->getManager()->flush();
+
+                $this->addFlash('success', 'Votre sortie a été terminée avec succès.');
+
+                return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($logbookEntry) {
+                return $this->render('logbook_entry/finish.html.twig', [
+                    'logbook_entry' => $logbookEntry,
+                    'form' => $form->createView(),
+                ]);
             }
-
-            $this->addFlash('success', 'Votre sortie a été terminée avec succès.');
-
-            return $this->redirectToRoute('logbook_entry_index');
-        }
-
-        return $this->render('logbook_entry/finish.html.twig', [
-            'logbook_entry' => $logbookEntry,
-            'form' => $form->createView(),
-        ]);
+        );
     }
 
     #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
     #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
     public function edit(Request $request, LogbookEntry $logbookEntry): Response
     {
-        $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        return $this->handleForm(
+            $this->createForm(LogbookEntryType::class, $logbookEntry),
+            $request,
+            function () {
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'La sortie a été modifiée avec succès.');
+                $this->addFlash('success', 'La sortie a été modifiée avec succès.');
 
-            return $this->redirectToRoute('logbook_entry_index');
-        }
-
-        return $this->render('logbook_entry/edit.html.twig', [
-            'logbook_entry' => $logbookEntry,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($logbookEntry) {
+                return $this->render('logbook_entry/edit.html.twig', [
+                    'logbook_entry' => $logbookEntry,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['DELETE'])]
