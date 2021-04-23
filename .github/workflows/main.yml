@@ -16,15 +16,15 @@ jobs:
 
     env:
       APP_ENV: "test"
-      DATABASE_URL: "pgsql://postgres:postgres@localhost:5432/postgres"
+      DATABASE_URL: "pgsql://user:password@localhost:5432/main_test"
 
     services:
       postgres:
         image: postgres:11.10
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: main_test
         ports:
           - 5432:5432
 
@@ -102,7 +102,7 @@ jobs:
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
       - name: Upload PHPUnit Reports
         uses: actions/upload-artifact@v2

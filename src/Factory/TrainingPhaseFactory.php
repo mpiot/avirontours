@@ -42,7 +42,7 @@ final class TrainingPhaseFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->optional()->word,
+            'name' => self::faker()->optional()->word(),
             'intensity' => self::faker()->randomElement(TrainingPhase::getAvailableIntensities()),
             'duration' => new \DateInterval('PT1H10M25S'),
             'distance' => self::faker()->optional()->randomFloat(1, 2, 60),
