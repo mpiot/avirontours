@@ -4,17 +4,18 @@ services:
     database:
         image: postgres:13.2
         environment:
-            POSTGRES_USER: app
-            POSTGRES_PASSWORD: app
-            POSTGRES_DB: app
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: main
         volumes:
-            - database_data:/var/lib/postgresql/data
-        ports: [5432]
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - 5432
 
     mailcatcher:
         image: schickling/mailcatcher
         ports: [1025, 1080]
 
 volumes:
-    database_data:
+    pgdata:
         driver: local
