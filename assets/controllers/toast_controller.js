@@ -2,14 +2,20 @@ import { Controller } from 'stimulus';
 import { Toast } from 'bootstrap';
 
 export default class extends Controller {
-    static values = { 'delay': Number }
+    static values = {
+        options: Object,
+        initShow: Boolean
+    };
 
     connect() {
-        console.log(this.delayValue);
+        this.toast = new Toast(this.element, this.hasOptionsValue ? this.optionsValue : {});
 
-        this.toast = new Toast(this.element, {
-            delay: this.delayValue,
-        });
+        if (false === this.hasInitShowValue || true === this.initShowValue) {
+            this.show();
+        }
+    }
+
+    show() {
         this.toast.show();
     }
 
