@@ -7,6 +7,10 @@
 /**
  * sidebar
  */
+body {
+  overflow-x: hidden;
+}
+
 #sidebarToggle {
   color: $gray-600;
 
@@ -34,49 +38,39 @@
 }
 
 #sidebar {
-  &.offcanvas {
-    width: $navbar-width;
-
-    &.show {
-      +main {
-        @include media-breakpoint-down(xl) {
-          left: $navbar-width;
-        }
-
-        @include media-breakpoint-up(xl) {
-          margin-left: $navbar-width;
-        }
-
-        #sidebarToggle {
-          color:$dark;
-
-          &::after {
-            @extend %fa-icon;
-            @extend .fas;
-
-            content: fa-content($fa-var-times);
-          }
-        }
-      }
-    }
-  }
-}
-
-body {
-  @include media-breakpoint-down(xl) {
-    overflow-x: hidden;
-  }
+  transition: transform 0.25s ease-in-out;
+  left: -20rem;
+  width: 20rem;
+  position: fixed;
 }
 
 main {
-  @include media-breakpoint-down(xl) {
-    position: relative;
-    left: 0;
-    transition: left $offcanvas-transition-duration ease-in-out;
+  transition: transform 0.25s ease-in-out;
+  width: 100%;
+}
+
+.sidebar-show {
+  #sidebarToggle {
+    color:$dark;
+
+    &::after {
+      @extend %fa-icon;
+      @extend .fas;
+
+      content: fa-content($fa-var-times);
+    }
   }
 
-  @include media-breakpoint-up(xl) {
-    transition: margin-left $offcanvas-transition-duration ease-in-out;
+  #sidebar {
+    transform: translateX(20rem);
+  }
+
+  main {
+    transform: translateX(20rem);
+
+    @include media-breakpoint-up(xl) {
+      width: calc(100% - 20rem) !important;
+    }
   }
 }
 

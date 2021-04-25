@@ -2,35 +2,29 @@ import { Controller } from 'stimulus';
 import { Offcanvas } from 'bootstrap';
 
 export default class extends Controller {
-    static targets = ['sidebar'];
-    static values = { 'display': Boolean }
+    static targets = ['sidebar', 'main'];
 
     connect() {
-        // Init the sidebar
-        this.sidebar = new Offcanvas(this.sidebarTarget, {
-            backdrop: false,
-            keyboard: false,
-            scroll: true
-        })
-
         // On xl screen, display the menu automatically
         if (window.innerWidth >= 1200) {
-            this.displayValue = true;
-            this.sidebar.show();
+            this.sidebarTarget.classList.add('sidebar-show');
         }
-
-        // Add an event listener to catch hide event
-        let _this = this;
-        this.sidebarTarget.addEventListener('hide.bs.offcanvas', function(event) {
-            if (true === _this.displayValue && window.innerWidth >= 1200) {
-                event.preventDefault();
-            }
-        })
     }
 
     toggle(event) {
         event.stopPropagation();
-        this.displayValue = !this.displayValue;
-        this.sidebar.toggle();
+        this.sidebarTarget.classList.toggle('sidebar-show');
+    }
+
+    main() {
+        if (window.innerWidth >= 1200) {
+            return;
+        }
+
+        if (false === this.sidebarTarget.classList.contains('sidebar-show')) {
+            return;
+        }
+
+        this.sidebarTarget.classList.remove('sidebar-show');
     }
 }
