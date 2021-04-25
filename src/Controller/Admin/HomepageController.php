@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomepageController extends AbstractController
 {
-    #[Route(path: '/admin', name: 'admin_homepage')]
+    #[Route(path: '/admin', name: 'admin_home')]
     #[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
     public function homepage()
     {

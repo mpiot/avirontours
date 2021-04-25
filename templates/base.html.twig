@@ -20,7 +20,7 @@
     <body class="min-vh-100" {{ stimulus_controller('sidebar', { 'display': 'false' }) }}>
         <div class="d-flex vh-100" data-sidebar-target="sidebar">
             <div id="sidebar" class="d-flex flex-column p-3 text-white bg-dark vh-100">
-                <a class="m-2" href="{{ path('homepage') }}">
+                <a class="m-2" href="{{ path('app_home') }}">
                     <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
                 </a>
 
@@ -28,7 +28,7 @@
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
+                        <a class="nav-link text-light" href="{{ path('app_home') }}">Accueil</a>
                     </li>
 
                     {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
@@ -49,7 +49,7 @@
 
                     {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link link-light" href="{{ path('admin_homepage') }}">Administration</a>
+                            <a class="nav-link link-light" href="{{ path('admin_home') }}">Administration</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -95,7 +95,7 @@
 
                     <ol class="breadcrumb mb-0 pt-3">
                         {% block breadcrumb %}
-                            <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                            <li class="breadcrumb-item"><a href="{{ path('app_home') }}"><span class="fas fa-home"></span> Accueil</a></li>
                         {% endblock %}
                     </ol>
                 </nav>

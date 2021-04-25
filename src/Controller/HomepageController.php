@@ -30,7 +30,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 class HomepageController extends AbstractController
 {
-    #[Route(path: '', name: 'homepage')]
+    #[Route(path: '', name: 'app_home')]
     #[Security('is_granted("ROLE_USER")')]
     public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
     {
