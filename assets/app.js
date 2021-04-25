@@ -11,6 +11,9 @@ import './styles/app.scss';
 // start the Stimulus application
 import './bootstrap';
 
-// import jQuery & Bootstrap
+// import Bootstrap
 import '@popperjs/core';
 import 'bootstrap';
+
+// import Turbo
+import * as Turbo from "@hotwired/turbo"

@@ -131,7 +131,7 @@ class ShellControllerTest extends AppWebTestCase
             'shell[riggerPosition]' => '',
         ]);
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_name')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_numberRowers')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_mileage')->parents()->filter('.invalid-feedback')->text());

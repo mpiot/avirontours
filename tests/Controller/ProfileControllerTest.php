@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProfileControllerTest extends AppWebTestCase
 {
@@ -111,7 +112,8 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][postalCode]' => '',
             'profile[address][city]' => '',
         ]);
-        $this->assertResponseIsSuccessful();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_email')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_firstName')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_lastName')->parents()->filter('.invalid-feedback')->text());
@@ -157,7 +159,8 @@ class ProfileControllerTest extends AppWebTestCase
             'change_password[plainPassword][first]' => '',
             'change_password[plainPassword][second]' => '',
         ]);
-        $this->assertResponseIsSuccessful();
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $crawler->filter('#change_password_currentPassword')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#change_password_plainPassword_first')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));

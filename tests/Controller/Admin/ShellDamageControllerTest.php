@@ -129,8 +129,7 @@ class ShellDamageControllerTest extends AppWebTestCase
             'shell_damage[repairEndAt]' => '',
         ]);
 
-        $this->assertResponseIsSuccessful();
-
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_shell')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_category')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));

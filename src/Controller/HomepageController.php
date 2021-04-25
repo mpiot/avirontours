@@ -24,14 +24,13 @@ use App\Entity\PhysicalQualities;
 use App\Repository\LogbookEntryRepository;
 use App\Service\ArrayNormalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 class HomepageController extends AbstractController
 {
-    #[Route(path: '', name: 'homepage')]
+    #[Route(path: '', name: 'app_home')]
     #[Security('is_granted("ROLE_USER")')]
     public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
     {

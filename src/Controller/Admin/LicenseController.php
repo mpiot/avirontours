@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\License;
 use App\Entity\Season;
 use App\Form\LicenseEditType;
@@ -29,7 +30,7 @@ use DoctrineExtensions\Query\Mysql\Date;
 use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,43 +45,52 @@ class LicenseController extends AbstractController
     public function new(Request $request, Season $season): Response
     {
         $license = new License();
-        $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($license);
-            $entityManager->flush();
 
-            $this->addFlash('success', 'La licence a été créée avec succès.');
+        return $this->handleForm(
+            $this->createForm(LicenseType::class, $license, ['season' => $season]),
+            $request,
+            function () use ($license, $season) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($license);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
-        }
+                $this->addFlash('success', 'La licence a été créée avec succès.');
 
-        return $this->render('admin/license/new.html.twig', [
-            'season' => $season,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('season_show', [
+                    'id' => $season->getId(),
+                ], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($season) {
+                return $this->render('admin/license/new.html.twig', [
+                    'season' => $season,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, License $license): Response
     {
-        $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        return $this->handleForm(
+            $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]),
+            $request,
+            function () use ($license) {
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'La licence a été modifiée avec succès.');
+                $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
-            return $this->redirectToRoute('season_show', [
-                'id' => $license->getSeasonCategory()->getSeason()->getId(),
-            ]);
-        }
-
-        return $this->render('admin/license/edit.html.twig', [
-            'license' => $license,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('season_show', [
+                    'id' => $license->getSeasonCategory()->getSeason()->getId(),
+                ], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($license) {
+                return $this->render('admin/license/edit.html.twig', [
+                    'license' => $license,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['DELETE'])]

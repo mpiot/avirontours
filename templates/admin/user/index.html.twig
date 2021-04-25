@@ -44,7 +44,7 @@
                             <td class="text-end">
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                                     <a class="btn btn-outline-info btn-sm rounded-pill"
-                                       href="{{ path('homepage', {'_switch_user': user.username}) }}">
+                                       href="{{ path('app_home', {'_switch_user': user.username}) }}">
                                         <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
                                     </a>
                                 {% endif %}

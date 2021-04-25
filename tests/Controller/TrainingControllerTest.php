@@ -226,7 +226,7 @@ class TrainingControllerTest extends AppWebTestCase
             'training[comment]' => '',
         ]);
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.invalid-feedback')->eq(1)->text());
         $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->eq(2)->text());
@@ -266,7 +266,7 @@ class TrainingControllerTest extends AppWebTestCase
         $values['training']['trainingPhases'][0]['spm'] = '';
         $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainingPhases_0_intensity')->parents()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('.invalid-feedback')->eq(1)->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
@@ -305,7 +305,7 @@ class TrainingControllerTest extends AppWebTestCase
         $values['training']['trainingPhases'][0]['spm'] = '';
         $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Le split doit avoir le format: "0:00.0".', $crawler->filter('#training_trainingPhases_0_split')->parents()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);

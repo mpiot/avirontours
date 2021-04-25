@@ -20,11 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\ShellDamage;
 use App\Form\ShellDamageType;
 use App\Repository\ShellDamageRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,41 +46,47 @@ class ShellDamageController extends AbstractController
     public function new(Request $request): Response
     {
         $shellDamage = new ShellDamage();
-        $form = $this->createForm(ShellDamageType::class, $shellDamage);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($shellDamage);
-            $entityManager->flush();
 
-            $this->addFlash('success', 'L\'avarie  a été créée avec succès.');
+        return $this->handleForm(
+            $this->createForm(ShellDamageType::class, $shellDamage),
+            $request,
+            function () use ($shellDamage) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($shellDamage);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('shell_damage_index');
-        }
+                $this->addFlash('success', 'L\'avarie  a été créée avec succès.');
 
-        return $this->render('admin/shell_damage/new.html.twig', [
-            'shell' => $shellDamage,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('shell_damage_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) {
+                return $this->render('admin/shell_damage/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_damage_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ShellDamage $shellDamage): Response
     {
-        $form = $this->createForm(ShellDamageType::class, $shellDamage);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        return $this->handleForm(
+            $this->createForm(ShellDamageType::class, $shellDamage),
+            $request,
+            function () {
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', 'L\'avarie  a été modifiée avec succès.');
+                $this->addFlash('success', 'L\'avarie  a été modifiée avec succès.');
 
-            return $this->redirectToRoute('shell_damage_index');
-        }
-
-        return $this->render('admin/shell_damage/edit.html.twig', [
-            'shell_damage' => $shellDamage,
-            'form' => $form->createView(),
-        ]);
+                return $this->redirectToRoute('shell_damage_index', [], Response::HTTP_SEE_OTHER);
+            },
+            function (FormInterface $form) use ($shellDamage) {
+                return $this->render('admin/shell_damage/edit.html.twig', [
+                    'shell_damage' => $shellDamage,
+                    'form' => $form->createView(),
+                ]);
+            }
+        );
     }
 
     #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['DELETE'])]

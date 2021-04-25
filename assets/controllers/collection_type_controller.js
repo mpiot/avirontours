@@ -1,5 +1,6 @@
 import { Controller } from 'stimulus';
 
+/* stimulusFetch: "lazy" */
 export default class extends Controller {
     static values = {
         buttonId: String,
@@ -26,7 +27,7 @@ export default class extends Controller {
         // Create default field(s) if needed
         if (0 === this.index && this.numberEntriesAtInitValue > 0) {
             for (let i = 0; i < this.numberEntriesAtInitValue; ++i) {
-                this.addEntry(null, false);
+                this.addEntry();
             }
         }
     }
@@ -43,7 +44,7 @@ export default class extends Controller {
         }
     }
 
-    addEntry(event, focusField = true) {
+    addEntry(event) {
         if (event) {
             event.preventDefault();
         }
@@ -55,15 +56,6 @@ export default class extends Controller {
 
         // Insert the new entry in DOM
         this.element.insertBefore(entry, this.entryAddLink);
-
-        try {
-            if (true === focusField) {
-                const fields = this.element.querySelectorAll(':scope > fieldset, :scope > div');
-                fields[fields.length - 1].querySelector('input, select').focus();
-            }
-        } catch (exception) {
-            console.log(exception);
-        }
 
         // Update the index
         this.index++;
