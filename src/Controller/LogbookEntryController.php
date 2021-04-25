@@ -63,9 +63,8 @@ class LogbookEntryController extends AbstractController
 
                 return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
             },
-            function (FormInterface $form) use ($logbookEntry) {
+            function (FormInterface $form) {
                 return $this->render('logbook_entry/new.html.twig', [
-                    'logbook_entry' => $logbookEntry,
                     'form' => $form->createView(),
                 ]);
             }

@@ -60,9 +60,8 @@ class ShellController extends AbstractController
 
                 return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
             },
-            function (FormInterface $form) use ($shell) {
+            function (FormInterface $form) {
                 return $this->render('admin/shell/new.html.twig', [
-                    'shell' => $shell,
                     'form' => $form->createView(),
                 ]);
             }

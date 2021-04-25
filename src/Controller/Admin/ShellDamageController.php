@@ -59,9 +59,8 @@ class ShellDamageController extends AbstractController
 
                 return $this->redirectToRoute('shell_damage_index', [], Response::HTTP_SEE_OTHER);
             },
-            function (FormInterface $form) use ($shellDamage) {
+            function (FormInterface $form) {
                 return $this->render('admin/shell_damage/new.html.twig', [
-                    'shell' => $shellDamage,
                     'form' => $form->createView(),
                 ]);
             }

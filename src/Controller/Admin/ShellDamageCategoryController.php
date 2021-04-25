@@ -45,23 +45,22 @@ class ShellDamageCategoryController extends AbstractController
     #[Route(path: '/new', name: 'shell_damage_category_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
-        $shellDamage = new ShellDamageCategory();
+        $shellDamageCategory = new ShellDamageCategory();
 
         return $this->handleForm(
-            $this->createForm(ShellDamageCategoryType::class, $shellDamage),
+            $this->createForm(ShellDamageCategoryType::class, $shellDamageCategory),
             $request,
-            function () use ($shellDamage) {
+            function () use ($shellDamageCategory) {
                 $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($shellDamage);
+                $entityManager->persist($shellDamageCategory);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La catégorie d\'avarie  a été créée avec succès.');
 
                 return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
             },
-            function (FormInterface $form) use ($shellDamage) {
+            function (FormInterface $form) {
                 return $this->render('admin/shell_damage_category/new.html.twig', [
-                    'shell' => $shellDamage,
                     'form' => $form->createView(),
                 ]);
             }
@@ -69,10 +68,10 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ShellDamageCategory $shellDamage): Response
+    public function edit(Request $request, ShellDamageCategory $shellDamageCategory): Response
     {
         return $this->handleForm(
-            $this->createForm(ShellDamageCategoryType::class, $shellDamage),
+            $this->createForm(ShellDamageCategoryType::class, $shellDamageCategory),
             $request,
             function () {
                 $this->getDoctrine()->getManager()->flush();
@@ -81,9 +80,9 @@ class ShellDamageCategoryController extends AbstractController
 
                 return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
             },
-            function (FormInterface $form) use ($shellDamage) {
+            function (FormInterface $form) use ($shellDamageCategory) {
                 return $this->render('admin/shell_damage_category/edit.html.twig', [
-                    'shell_damage_category' => $shellDamage,
+                    'shell_damage_category' => $shellDamageCategory,
                     'form' => $form->createView(),
                 ]);
             }
@@ -91,11 +90,11 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['DELETE'])]
-    public function delete(Request $request, ShellDamageCategory $shellDamage): Response
+    public function delete(Request $request, ShellDamageCategory $shellDamageCategory): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$shellDamageCategory->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($shellDamage);
+            $entityManager->remove($shellDamageCategory);
             $entityManager->flush();
 
             $this->addFlash('success', 'La catégorie d\'avarie  a été supprimée avec succès.');
