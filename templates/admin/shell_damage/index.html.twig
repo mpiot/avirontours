@@ -49,7 +49,7 @@
                             <td>
                                 {{ shell_damage.shell.fullName }}
                                 {% if shell_damage.logbookEntry %}
-                                    <span title="{{ shell_damage.logbookEntry.fullCrew|join(', ') }} ">
+                                    <span {{ stimulus_controller('tooltip') }} title="{{ shell_damage.logbookEntry.fullCrew|join(', ') }} ">
                                         <span class="fas fa-users"></span>
                                     </span>
                                 {% endif %}

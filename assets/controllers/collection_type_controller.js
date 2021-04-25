@@ -36,7 +36,7 @@ export default class extends Controller {
             return;
         }
 
-        let entries = this.element.querySelectorAll(':scope > fieldset.form-group, :scope > div.form-group');
+        let entries = this.element.querySelectorAll(':scope > fieldset.mb-3, :scope > div.mb-3');
         for(let entry of entries) {
             this.appendEntryRemoveLink(entry);
             this.processEntryLabel(entry);
@@ -58,7 +58,7 @@ export default class extends Controller {
 
         try {
             if (true === focusField) {
-                const fields = this.element.querySelectorAll(':scope > fieldset.form-group, :scope > div.form-group');
+                const fields = this.element.querySelectorAll(':scope > fieldset, :scope > div');
                 fields[fields.length - 1].querySelector('input, select').focus();
             }
         } catch (exception) {
@@ -71,8 +71,9 @@ export default class extends Controller {
 
     removeEntry(event) {
         event.preventDefault();
+        let entry = event.target.closest('fieldset, div.mb-3');
 
-        this.element.removeChild(event.target.closest('fieldset, div.form-group'));
+        this.element.removeChild(entry);
     }
 
     appendEntryAddLink() {
@@ -100,12 +101,12 @@ export default class extends Controller {
         let button = document.createElement('button');
 
         button.type = 'button';
-        button.className = 'btn btn-danger btn-sm align-self-end mb-3 ms-3';
+        button.className = 'btn btn-danger btn-sm align-self-end ms-3';
         button.innerHTML = `<span class="fas fa-trash-alt"></span>`;
         button.setAttribute('data-action', 'click->collection-type#removeEntry');
 
-        let fieldDiv = entry.querySelector('fieldset > div, div.form-group > input, div.form-group > select');
-        entry.querySelector('fieldset > div, div.form-group > input, div.form-group > select').outerHTML = '<div class="d-flex">' + fieldDiv.outerHTML + button.outerHTML + '</div>';
+        let fieldDiv = entry.querySelector('fieldset > div, div > input, div > select');
+        entry.querySelector('fieldset > div, div > input, div > select').outerHTML = '<div class="d-flex">' + fieldDiv.outerHTML + button.outerHTML + '</div>';
     }
 
     processEntryLabel(entry) {
