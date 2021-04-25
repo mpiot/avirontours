@@ -17,9 +17,9 @@
         {% endblock %}
     </head>
 
-    <body {{ stimulus_controller('sidebar', { 'display': 'false' }) }}>
-        <nav class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" data-sidebar-target="sidebar">
-            <div class="offcanvas-body text-white bg-dark d-flex flex-column">
+    <body class="min-vh-100" {{ stimulus_controller('sidebar', { 'display': 'false' }) }}>
+        <div class="d-flex vh-100" data-sidebar-target="sidebar">
+            <div id="sidebar" class="d-flex flex-column p-3 text-white bg-dark vh-100">
                 <a class="m-2" href="{{ path('homepage') }}">
                     <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
                 </a>
@@ -88,23 +88,23 @@
                     Aviron Tours - <a class="text-muted" href="{{ path('release_notes') }}">v{{ APP_VERSION }}</a>
                 </div>
             </div>
-        </nav>
 
-        <main>
-            <nav class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
-                <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle" data-action="sidebar#toggle"></button>
+            <main data-action="click->sidebar#main">
+                <nav class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
+                    <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle" data-action="sidebar#toggle"></button>
 
-                <ol class="breadcrumb mb-0 pt-3">
-                    {% block breadcrumb %}
-                        <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-                    {% endblock %}
-                </ol>
-            </nav>
+                    <ol class="breadcrumb mb-0 pt-3">
+                        {% block breadcrumb %}
+                            <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                        {% endblock %}
+                    </ol>
+                </nav>
 
-            <section class="my-3 px-3">
-                {{ include('_flash_messages.html.twig') }}
-                {% block body %}{% endblock %}
-            </section>
-        </main>
+                <section class="my-3 px-3">
+                    {{ include('_flash_messages.html.twig') }}
+                    {% block body %}{% endblock %}
+                </section>
+            </main>
+        </div>
     </body>
 </html>
