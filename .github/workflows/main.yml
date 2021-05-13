@@ -75,7 +75,7 @@ jobs:
           php-cs-fixer fix --diff --dry-run --no-interaction -v
           bin/console lint:yaml config --parse-tags config
           bin/console lint:twig templates --env=prod
-#          bin/console lint:container
+          bin/console lint:container
 
       - name: Verify schema
         run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
