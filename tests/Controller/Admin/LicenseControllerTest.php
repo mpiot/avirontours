@@ -97,7 +97,7 @@ class LicenseControllerTest extends AppWebTestCase
             'license[logbookEntryLimit]' => 4,
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'license[medicalCertificate][date]' => '2020-05-01',
+            'license[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
         $form['license[medicalCertificate][file][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -111,7 +111,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame(4, $license->getLogbookEntryLimit());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
-        $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+        $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 
     public function testNewLicenseWithoutData(): void
@@ -155,7 +155,7 @@ class LicenseControllerTest extends AppWebTestCase
             'license[seasonCategory]' => $license->getSeasonCategory()->getId(),
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'license[medicalCertificate][date]' => '2020-05-01',
+            'license[medicalCertificate][date]' => date('Y-m-d'),
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -180,14 +180,14 @@ class LicenseControllerTest extends AppWebTestCase
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
             'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
-            'license_edit[medicalCertificate][date]' => '2020-05-01',
+            'license_edit[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
 
         $this->assertResponseRedirects();
         $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
-        $this->assertSame('2020-05-01', $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+        $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 
     public function testDeleteLicense(): void
