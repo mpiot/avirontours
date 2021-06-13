@@ -75,7 +75,7 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['POST', '/training/new'];
         yield ['GET', '/training/{id}/edit'];
         yield ['POST', '/training/{id}/edit'];
-        yield ['DELETE', '/training/{id}'];
+        yield ['POST', '/training/{id}'];
     }
 
     public function testIndexTrainings(): void

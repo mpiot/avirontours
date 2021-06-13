@@ -89,7 +89,7 @@ class ShellDamageController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['POST'])]
     public function delete(Request $request, ShellDamage $shellDamage): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), $request->request->get('_token'))) {

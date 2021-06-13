@@ -74,7 +74,7 @@ class LicenseControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{season_id}/license/{id}/edit'];
         yield ['POST', '/admin/season/{season_id}/license/{id}/edit'];
         yield ['POST', '/admin/season/{season_id}/license/{id}/apply-transition'];
-        yield ['DELETE', '/admin/season/{season_id}/license/{id}'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}'];
         yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
     }
 

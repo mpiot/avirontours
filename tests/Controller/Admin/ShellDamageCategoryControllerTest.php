@@ -64,7 +64,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         yield ['POST', '/admin/shell-damage-category/new'];
         yield ['GET', '/admin/shell-damage-category/{id}/edit'];
         yield ['POST', '/admin/shell-damage-category/{id}/edit'];
-        yield ['DELETE', '/admin/shell-damage-category/{id}'];
+        yield ['POST', '/admin/shell-damage-category/{id}'];
     }
 
     public function testIndexShellDamageCategorys(): void

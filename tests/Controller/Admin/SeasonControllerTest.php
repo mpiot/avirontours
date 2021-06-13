@@ -65,7 +65,7 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['POST', '/admin/season/new'];
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
-        yield ['DELETE', '/admin/season/{id}'];
+        yield ['POST', '/admin/season/{id}'];
     }
 
     public function testIndexSeasons(): void

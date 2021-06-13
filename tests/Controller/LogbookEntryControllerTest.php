@@ -160,7 +160,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         yield ['GET', '/logbook-entry/{id}/edit'];
         yield ['POST', '/logbook-entry/{id}/edit'];
-        yield ['DELETE', '/logbook-entry/{id}'];
+        yield ['POST', '/logbook-entry/{id}'];
     }
 
     public function testIndexLogbookEntries(): void

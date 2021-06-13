@@ -65,7 +65,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         yield ['POST', '/admin/shell-damage/new'];
         yield ['GET', '/admin/shell-damage/{id}/edit'];
         yield ['POST', '/admin/shell-damage/{id}/edit'];
-        yield ['DELETE', '/admin/shell-damage/{id}'];
+        yield ['POST', '/admin/shell-damage/{id}'];
     }
 
     public function testIndexShellDamages(): void

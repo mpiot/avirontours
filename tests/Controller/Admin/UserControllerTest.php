@@ -65,7 +65,7 @@ class UserControllerTest extends AppWebTestCase
         yield ['POST', '/admin/user/new'];
         yield ['GET', '/admin/user/{id}/edit'];
         yield ['POST', '/admin/user/{id}/edit'];
-        yield ['DELETE', '/admin/user/{id}'];
+        yield ['POST', '/admin/user/{id}'];
     }
 
     public function testIndexUsers(): void

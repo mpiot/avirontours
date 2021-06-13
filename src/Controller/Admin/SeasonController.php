@@ -107,7 +107,7 @@ class SeasonController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'season_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
     public function delete(Request $request, Season $season): Response
     {
         if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {

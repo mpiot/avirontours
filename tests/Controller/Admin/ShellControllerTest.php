@@ -64,7 +64,7 @@ class ShellControllerTest extends AppWebTestCase
         yield ['POST', '/admin/shell/new'];
         yield ['GET', '/admin/shell/{id}/edit'];
         yield ['POST', '/admin/shell/{id}/edit'];
-        yield ['DELETE', '/admin/shell/{id}'];
+        yield ['POST', '/admin/shell/{id}'];
     }
 
     public function testIndexShells(): void

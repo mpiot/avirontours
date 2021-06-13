@@ -100,7 +100,7 @@ class TrainingController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'training_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
     #[Security('training.getUser() == user')]
     public function delete(Request $request, Training $training): Response
     {
