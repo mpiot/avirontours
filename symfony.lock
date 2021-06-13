@@ -5,9 +5,6 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
-    "brianium/paratest": {
-        "version": "v6.2.0"
-    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.1"
     },
@@ -564,6 +561,9 @@
     "symfony/orm-pack": {
         "version": "v1.0.7"
     },
+    "symfony/password-hasher": {
+        "version": "v5.3.0"
+    },
     "symfony/phpunit-bridge": {
         "version": "5.1",
         "recipe": {
@@ -603,6 +603,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.17.0"
     },
+    "symfony/polyfill-php81": {
+        "version": "v1.23.0"
+    },
     "symfony/process": {
         "version": "v5.0.2"
     },
@@ -631,6 +634,9 @@
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
+    },
+    "symfony/runtime": {
+        "version": "v5.3.0"
     },
     "symfony/security-bundle": {
         "version": "5.1",
