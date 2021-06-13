@@ -112,7 +112,6 @@ class UserControllerTest extends AppWebTestCase
             'user[address][laneName]' => 'du test',
             'user[address][postalCode]' => '01000',
             'user[address][city]' => 'One City',
-            'user[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user[licenseNumber]' => '0123456789',
         ]);
 
@@ -133,7 +132,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
-        $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
 
@@ -198,7 +196,6 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[address][laneName]' => 'du test',
             'user_edit[address][postalCode]' => '01000',
             'user_edit[address][city]' => 'One City',
-            'user_edit[rowerCategory]' => User::ROWER_CATEGORY_A,
             'user_edit[licenseNumber]' => '0123456789',
         ]);
 
@@ -216,7 +213,6 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
-        $this->assertSame(User::ROWER_CATEGORY_A, $user->getRowerCategory());
         $this->assertCount(0, $user->getLicenses());
         $this->assertSame('0123456789', $user->getLicenseNumber());
     }
