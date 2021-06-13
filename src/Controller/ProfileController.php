@@ -25,11 +25,11 @@ use App\Form\ProfileType;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 #[Route(path: '/profile')]
 #[Security('is_granted("ROLE_USER")')]
@@ -48,55 +48,44 @@ class ProfileController extends AbstractController
     public function edit(Request $request)
     {
         $user = $this->getUser();
+        $form = $this->createForm(ProfileType::class, $user);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(ProfileType::class, $user),
-            $request,
-            function () {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
 
-                $this->addFlash('success', 'Votre profil a été modifié avec succès.');
+            $this->addFlash('success', 'Votre profil a été modifié avec succès.');
 
-                return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) {
-                return $this->render('profile/edit.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('profile/edit.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route(path: '/edit-password', name: 'profile_edit_password', methods: ['GET|POST'])]
-    public function editPassword(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function editPassword(Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         $user = $this->getUser();
+        $form = $this->createForm(ChangePasswordType::class, $user);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(ChangePasswordType::class, $user),
-            $request,
-            function (FormInterface $form) use ($user, $passwordEncoder) {
-                // encode the plain password
-                $user->setPassword(
-                    $passwordEncoder->encodePassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword($passwordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
 
-                $this->addFlash('success', 'Votre mot de passe a été modifié avec succès.');
+            $this->addFlash('success', 'Votre mot de passe a été modifié avec succès.');
 
-                return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) {
-                return $this->render('profile/edit_password.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('profile/edit_password.html.twig', [
+            'form' => $form,
+        ]);
     }
 }

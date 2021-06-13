@@ -28,66 +28,64 @@ use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Message;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
 {
     #[Route(path: '/register/{slug}', name: 'app_register')]
     #[Entity(data: 'seasonCategory', expr: 'repository.findSubscriptionSeasonCategory(slug)')]
-    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordEncoderInterface $passwordEncoder, MailerInterface $mailer): Response
+    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
 
         $registrationModel = new RegistrationModel();
+        $user = $this->getUser();
+        $form = $this->createForm(RegistrationFormType::class, $registrationModel);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(RegistrationFormType::class, $registrationModel),
-            $request,
-            function () use ($registrationModel, $seasonCategory, $passwordEncoder, $mailer) {
-                $user = $registrationModel->generateUser($seasonCategory, $passwordEncoder);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $registrationModel->generateUser($seasonCategory, $passwordHasher);
 
-                // Persist user
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
+            // Persist user
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-                // Send email
-                $email = new Email();
-                $email->to($user->getEmail())
-                    ->text('')
-                    ->setHeaders(
-                        $email->getHeaders()
-                            ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                            ->addTextHeader('X-MJ-TemplateID', '1669922')
-                            ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                            ->addTextHeader('X-MJ-Vars', json_encode([
-                                'fullName' => $user->getFullName(),
-                                'username' => $user->getUsername(),
-                            ]))
-                    )
-                ;
-                $mailer->send($email);
+            // Send email
+            $email = new Email();
+            $email->to($user->getEmail())
+                ->text('')
+                ->setHeaders(
+                    $email->getHeaders()
+                        ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
+                        ->addTextHeader('X-MJ-TemplateID', '1669922')
+                        ->addTextHeader('X-MJ-TemplateLanguage', '1')
+                        ->addTextHeader('X-MJ-Vars', json_encode([
+                            'fullName' => $user->getFullName(),
+                            'username' => $user->getUsername(),
+                        ]))
+                )
+            ;
+            $mailer->send($email);
 
-                // Add flash message
-                $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
+            // Add flash message
+            $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
-                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) {
-                return $this->render('registration/register.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('registration/register.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
@@ -100,43 +98,40 @@ class RegistrationController extends AbstractController
         }
 
         $license = new License($seasonCategory, $this->getUser());
+        $form = $this->createForm(RenewType::class, $license);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(RenewType::class, $license),
-            $request,
-            function () use ($license, $mailer) {
-                // Persist user
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($license);
-                $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Persist user
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($license);
+            $entityManager->flush();
 
-                // Send email
-                $email = new Email();
-                $email->to($this->getUser()->getEmail())
-                    ->text('')
-                    ->setHeaders(
-                        $email->getHeaders()
-                            ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                            ->addTextHeader('X-MJ-TemplateID', '1669929')
-                            ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                            ->addTextHeader('X-MJ-Vars', json_encode([
-                                'fullName' => $this->getUser()->getFullName(),
-                            ]))
-                    )
-                ;
-                $mailer->send($email);
+            // Send email
+            $email = new Email();
+            $email->to($this->getUser()->getEmail())
+                ->text('')
+                ->setHeaders(
+                    $email->getHeaders()
+                        ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
+                        ->addTextHeader('X-MJ-TemplateID', '1669929')
+                        ->addTextHeader('X-MJ-TemplateLanguage', '1')
+                        ->addTextHeader('X-MJ-Vars', json_encode([
+                            'fullName' => $this->getUser()->getFullName(),
+                        ]))
+                )
+            ;
+            $mailer->send($email);
 
-                // Add flash message
-                $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
+            // Add flash message
+            $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
 
-                return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($seasonCategory) {
-                return $this->render('registration/renew.html.twig', [
-                    'form' => $form->createView(),
-                    'season_category' => $seasonCategory,
-                ]);
-            }
-        );
+            return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('registration/renew.html.twig', [
+            'form' => $form,
+            'season_category' => $seasonCategory,
+        ]);
     }
 }

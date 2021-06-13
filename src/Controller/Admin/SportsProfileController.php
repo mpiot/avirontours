@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\AbstractController;
 use App\Entity\Anatomy;
 use App\Entity\PhysicalQualities;
 use App\Entity\Physiology;
@@ -32,7 +31,7 @@ use App\Form\PhysiologyType;
 use App\Form\WorkoutMaximumLoadType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -56,95 +55,83 @@ class SportsProfileController extends AbstractController
     public function physiology(Request $request, User $user): Response
     {
         $physiology = $user->getPhysiology() ?? new Physiology($user);
+        $form = $this->createForm(PhysiologyType::class, $physiology);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(PhysiologyType::class, $physiology),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                $this->addFlash('success', 'La physiologie a été modifiée avec succès.');
+            $this->addFlash('success', 'La physiologie a été modifiée avec succès.');
 
-                return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($user) {
-                return $this->render('admin/sports_profile/physiology.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/sports_profile/physiology.html.twig', [
+            'form' => $form,
+            'user' => $user,
+        ]);
     }
 
     #[Route(path: '/{id}/anatomy', name: 'sports_profile_anatomy', methods: ['GET', 'POST'])]
     public function anatomy(Request $request, User $user): Response
     {
         $anatomy = $user->getAnatomy() ?? new Anatomy($user);
+        $form = $this->createForm(AnatomyType::class, $anatomy);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(AnatomyType::class, $anatomy),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                $this->addFlash('success', 'L\'anatomie a été modifiée avec succès.');
+            $this->addFlash('success', 'L\'anatomie a été modifiée avec succès.');
 
-                return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($user) {
-                return $this->render('admin/sports_profile/anatomy.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/sports_profile/anatomy.html.twig', [
+            'form' => $form,
+            'user' => $user,
+        ]);
     }
 
     #[Route(path: '/{id}/physical-qualities', name: 'sports_profile_physical_qualities', methods: ['GET', 'POST'])]
     public function physicalQualities(Request $request, User $user): Response
     {
         $physicalQualities = $user->getPhysicalQualities() ?? new PhysicalQualities($user);
+        $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(PhysicalQualitiesType::class, $physicalQualities),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                $this->addFlash('success', 'Les qualités physiques ont été modifiées avec succès.');
+            $this->addFlash('success', 'Les qualités physiques ont été modifiées avec succès.');
 
-                return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($user) {
-                return $this->render('admin/sports_profile/physical_qualities.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/sports_profile/physical_qualities.html.twig', [
+            'form' => $form,
+            'user' => $user,
+        ]);
     }
 
     #[Route(path: '/{id}/workout-maximum-load', name: 'sports_profile_workout_maximum_load', methods: ['GET', 'POST'])]
     public function workoutMaximumLoad(Request $request, User $user): Response
     {
         $workoutMaximumLoad = $user->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($user);
+        $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                $this->addFlash('success', 'Les 1RM on été modifiées avec succès.');
+            $this->addFlash('success', 'Les 1RM on été modifiées avec succès.');
 
-                return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($user) {
-                return $this->render('admin/sports_profile/workout_maximum_load.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/sports_profile/workout_maximum_load.html.twig', [
+            'form' => $form,
+            'user' => $user,
+        ]);
     }
 }

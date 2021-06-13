@@ -9,13 +9,13 @@
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
 
-    {{ form_start(requestForm) }}
-        {{ form_row(requestForm.username, {
+    {{ form_start(form) }}
+        {{ form_row(form.username, {
             'help': 'Renseignez votre nom d\'utilisateur et nous vous enverrons un lien pour réinitialiser votre mot de passe.'
         }) }}
 
         <div class="d-grid gap-2">
             <button class="btn btn-lg btn-primary">Envoyer un email de récupération</button>
         </div>
-    {{ form_end(requestForm) }}
+    {{ form_end(form) }}
 {% endblock %}
