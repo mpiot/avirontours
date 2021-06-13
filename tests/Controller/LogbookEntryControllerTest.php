@@ -81,7 +81,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->request($method, $url, [], [],
+        $client->request(
+            $method,
+            $url,
+            [],
+            [],
             ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
         );
 
@@ -104,7 +108,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
             'PHP_AUTH_USER' => 'logbook',
             'PHP_AUTH_PW' => 'engage',
         ]);
-        $client->request($method, $url, [], [],
+        $client->request(
+            $method,
+            $url,
+            [],
+            [],
             ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
         );
 
@@ -127,7 +135,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
             'PHP_AUTH_USER' => 'logbook',
             'PHP_AUTH_PW' => 'engage',
         ]);
-        $client->request($method, $url, [], [],
+        $client->request(
+            $method,
+            $url,
+            [],
+            [],
             ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
         );
 

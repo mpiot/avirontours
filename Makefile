@@ -100,7 +100,7 @@ lint-container:                                                                 
 	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
-	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --diff --diff-format=udiff --no-interaction -v
+	$(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check
