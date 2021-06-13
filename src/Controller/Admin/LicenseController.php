@@ -93,7 +93,7 @@ class LicenseController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'license_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
     public function delete(Request $request, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), $request->request->get('_token'))) {

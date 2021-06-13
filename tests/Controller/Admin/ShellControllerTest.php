@@ -64,7 +64,7 @@ class ShellControllerTest extends AppWebTestCase
         yield ['POST', '/admin/shell/new'];
         yield ['GET', '/admin/shell/{id}/edit'];
         yield ['POST', '/admin/shell/{id}/edit'];
-        yield ['DELETE', '/admin/shell/{id}'];
+        yield ['POST', '/admin/shell/{id}'];
     }
 
     public function testIndexShells(): void
@@ -132,9 +132,9 @@ class ShellControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_name')->parents()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_numberRowers')->parents()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_mileage')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_name')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_numberRowers')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_mileage')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         ShellFactory::repository()->assert()->count(0);
     }

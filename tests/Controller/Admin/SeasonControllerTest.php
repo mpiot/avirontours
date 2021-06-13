@@ -65,7 +65,7 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['POST', '/admin/season/new'];
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
-        yield ['DELETE', '/admin/season/{id}'];
+        yield ['POST', '/admin/season/{id}'];
     }
 
     public function testIndexSeasons(): void
@@ -141,7 +141,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.invalid-feedback.d-block')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#season_name')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#season_name')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         SeasonFactory::repository()->assert()->count(0);
     }

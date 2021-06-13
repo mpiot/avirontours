@@ -76,11 +76,11 @@ assets-analyze:                                                                 
 
 tests:                                                                                                ## Run all the PHP tests
 	$(CONSOLE) cache:clear --env test
-	FOUNDRY_RESET_MODE=migrate $(RUN) php vendor/bin/paratest --runner WrapperRunner
+	FOUNDRY_RESET_MODE=migrate $(RUN) php bin/phpunit
 
 tests-weak:                                                                                           ## Run all the PHP tests without Deprecations helper
 	$(CONSOLE) cache:clear --env test
-	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(RUN) php vendor/bin/paratest --runner WrapperRunner
+	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(RUN) php bin/phpunit
 
 test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests
 
@@ -100,7 +100,7 @@ lint-container:                                                                 
 	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
-	$(SYMFONY) php vendor/bin/php-cs-fixer fix --diff --dry-run --diff --diff-format=udiff --no-interaction -v
+	$(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check

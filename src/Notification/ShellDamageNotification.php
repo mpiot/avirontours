@@ -45,20 +45,24 @@ class ShellDamageNotification extends Notification implements ChatNotificationIn
     {
         $message = new ChatMessage('');
         $options = (new DiscordOptions())
-            ->addEmbed((new DiscordEmbed())
+            ->addEmbed(
+                (new DiscordEmbed())
                 ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15_489_088 : 11_184_810)
                 ->title('Nouvelle avarie')
-                ->addField((new DiscordFieldEmbedObject())
+                ->addField(
+                    (new DiscordFieldEmbedObject())
                     ->name('Bateau')
                     ->value($this->shellDamage->getShell()->getName())
                     ->inline(true)
                 )
-                ->addField((new DiscordFieldEmbedObject())
+                ->addField(
+                    (new DiscordFieldEmbedObject())
                     ->name('Catégorie')
                     ->value($this->shellDamage->getCategory()->getName())
                     ->inline(true)
                 )
-                ->addField((new DiscordFieldEmbedObject())
+                ->addField(
+                    (new DiscordFieldEmbedObject())
                     ->name('Desription')
                     ->value($this->shellDamage->getDescription() ?? '-')
                 )

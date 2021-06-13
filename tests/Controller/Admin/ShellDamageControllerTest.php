@@ -65,7 +65,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         yield ['POST', '/admin/shell-damage/new'];
         yield ['GET', '/admin/shell-damage/{id}/edit'];
         yield ['POST', '/admin/shell-damage/{id}/edit'];
-        yield ['DELETE', '/admin/shell-damage/{id}'];
+        yield ['POST', '/admin/shell-damage/{id}'];
     }
 
     public function testIndexShellDamages(): void
@@ -130,8 +130,8 @@ class ShellDamageControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_shell')->parents()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_category')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#shell_damage_category')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         ShellDamageFactory::repository()->assert()->count(0);
     }

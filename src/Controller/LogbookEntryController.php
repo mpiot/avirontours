@@ -120,7 +120,7 @@ class LogbookEntryController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['POST'])]
     #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
     public function delete(Request $request, LogbookEntry $logbookEntry): Response
     {

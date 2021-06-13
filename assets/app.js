@@ -14,6 +14,3 @@ import './bootstrap';
 // import Bootstrap
 import '@popperjs/core';
 import 'bootstrap';
-
-// import Turbo
-import * as Turbo from "@hotwired/turbo"

@@ -24,7 +24,7 @@ jobs:
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: main_test
+          POSTGRES_DB: main
         ports:
           - 5432:5432
 
@@ -72,7 +72,7 @@ jobs:
 
       - name: Lint
         run: |
-          php-cs-fixer fix --diff --dry-run --no-interaction -v
+          ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
           bin/console lint:yaml config --parse-tags config
           bin/console lint:twig templates --env=prod
           bin/console lint:container
@@ -92,17 +92,11 @@ jobs:
         run: |
           yarn build
 
-      - name: Update database
-        run: bin/console doctrine:migrations:migrate -n
-
-      - name: Run fixtures
-        run: bin/console doctrine:migrations:migrate -n
-
       - name: Clear the test cache
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --coverage-clover coverage-report.xml --log-junit tests-report.xml
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
       - name: Upload PHPUnit Reports
         uses: actions/upload-artifact@v2

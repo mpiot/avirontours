@@ -98,7 +98,7 @@ class ShellController extends AbstractController
         );
     }
 
-    #[Route(path: '/{id}', name: 'shell_delete', methods: ['DELETE'])]
+    #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
     public function delete(Request $request, Shell $shell): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shell->getId(), $request->request->get('_token'))) {
