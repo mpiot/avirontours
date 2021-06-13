@@ -102,7 +102,7 @@ jobs:
         run: bin/console cache:clear --env test
 
       - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --coverage-clover coverage-report.xml --log-junit tests-report.xml
+        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
       - name: Upload PHPUnit Reports
         uses: actions/upload-artifact@v2
