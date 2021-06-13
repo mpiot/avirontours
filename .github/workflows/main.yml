@@ -24,7 +24,7 @@ jobs:
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
-          POSTGRES_DB: main_test
+          POSTGRES_DB: main
         ports:
           - 5432:5432
 
@@ -91,12 +91,6 @@ jobs:
       - name: Build assets
         run: |
           yarn build
-
-      - name: Update database
-        run: bin/console doctrine:migrations:migrate -n
-
-      - name: Run fixtures
-        run: bin/console doctrine:migrations:migrate -n
 
       - name: Clear the test cache
         run: bin/console cache:clear --env test

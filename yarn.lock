@@ -960,6 +960,9 @@
 "@symfony/ux-chartjs@file:vendor/symfony/ux-chartjs/Resources/assets":
   version "1.1.0"
 
+"@symfony/ux-turbo@file:vendor/symfony/ux-turbo/Resources/assets":
+  version "0.1.0"
+
 "@symfony/webpack-encore@^1.0.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@symfony/webpack-encore/-/webpack-encore-1.4.0.tgz#9b5e1628a99029166f7a41f7e9bf46208b1daca4"
