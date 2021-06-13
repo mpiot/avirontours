@@ -54,5 +54,4 @@ return (new PhpCsFixer\Config())
         'single_line_throw' => true,
     ])
     ->setFinder($finder)
-    ->setCacheFile('.php-cs-fixer.cache') // forward compatibility with 3.x line
 ;
