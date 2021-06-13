@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\MedicalCertificate;
-use App\Entity\User;
 use App\Factory\LicenseFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;

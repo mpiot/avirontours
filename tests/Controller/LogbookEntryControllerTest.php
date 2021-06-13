@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Entity\Shell;
-use App\Entity\User;
 use App\Factory\LicenseFactory;
 use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellDamageCategoryFactory;

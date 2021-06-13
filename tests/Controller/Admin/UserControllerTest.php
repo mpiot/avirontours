@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\User;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
