@@ -25,7 +25,7 @@ use App\Entity\MedicalCertificate;
 use App\Entity\SeasonCategory;
 use App\Entity\User;
 use App\Validator as AppAssert;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[AppAssert\UniqueUser]
@@ -101,7 +101,7 @@ class RegistrationModel
 
     public ?bool $partnersEmailAllowed = false;
 
-    public function generateUser(SeasonCategory $seasonCategory, UserPasswordEncoderInterface $passwordEncoder)
+    public function generateUser(SeasonCategory $seasonCategory, UserPasswordHasherInterface $passwordHasher)
     {
         $license = (new License($seasonCategory))
             ->setMedicalCertificate($this->medicalCertificate)
@@ -112,12 +112,7 @@ class RegistrationModel
         $user
             ->setEmail($this->email)
             ->setPhoneNumber($this->phoneNumber)
-            ->setPassword(
-                $passwordEncoder->encodePassword(
-                    $user,
-                    $this->plainPassword
-                )
-            )
+            ->setPassword($passwordHasher->hashPassword($user, $this->plainPassword))
             ->setGender($this->gender)
             ->setFirstName($this->firstName)
             ->setLastName($this->lastName)

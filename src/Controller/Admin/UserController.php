@@ -20,13 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\AbstractController;
 use App\Entity\User;
 use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,25 +49,22 @@ class UserController extends AbstractController
     public function new(Request $request): Response
     {
         $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(UserType::class, $user),
-            $request,
-            function () use ($user) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-                $this->addFlash('success', 'L\'utilisateur a été créé avec succès.');
+            $this->addFlash('success', 'L\'utilisateur a été créé avec succès.');
 
-                return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) {
-                return $this->render('admin/user/new.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/user/new.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route(path: '/{id}', name: 'user_show', methods: ['GET'])]
@@ -82,23 +78,21 @@ class UserController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user): Response
     {
-        return $this->handleForm(
-            $this->createForm(UserEditType::class, $user),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        $form = $this->createForm(UserEditType::class, $user);
+        $form->handleRequest($request);
 
-                $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($user) {
-                return $this->render('admin/user/edit.html.twig', [
-                    'user' => $user,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
+
+            return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/user/edit.html.twig', [
+            'form' => $form,
+            'user' => $user,
+        ]);
     }
 
     #[Route(path: '/{id}', name: 'user_delete', methods: ['POST'])]

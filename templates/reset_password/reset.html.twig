@@ -5,12 +5,12 @@
 {% block body %}
     <div class="fs-4 mb-3">Réinitialiser mon mot de passe</div>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
+    {{ form_start(form) }}
+        {{ form_row(form.plainPassword) }}
 
         <div class="d-grid gap-2">
             <button class="btn btn-lg btn-primary" type="submit">Réinitialiser le mot de passe</button>
         </div>
-    {{ form_end(resetForm) }}
+    {{ form_end(form) }}
 
 {% endblock %}

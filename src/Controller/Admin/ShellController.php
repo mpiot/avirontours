@@ -20,13 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\AbstractController;
 use App\Entity\Shell;
 use App\Form\ShellEditType;
 use App\Form\ShellType;
 use App\Repository\ShellRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,25 +46,22 @@ class ShellController extends AbstractController
     public function new(Request $request): Response
     {
         $shell = new Shell();
+        $form = $this->createForm(ShellType::class, $shell);
+        $form->handleRequest($request);
 
-        return $this->handleForm(
-            $this->createForm(ShellType::class, $shell),
-            $request,
-            function () use ($shell) {
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($shell);
-                $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($shell);
+            $entityManager->flush();
 
-                $this->addFlash('success', 'Le bâteau a été créé avec succès.');
+            $this->addFlash('success', 'Le bâteau a été créé avec succès.');
 
-                return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) {
-                return $this->render('admin/shell/new.html.twig', [
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/shell/new.html.twig', [
+            'form' => $form,
+        ]);
     }
 
     #[Route(path: '/{id}', name: 'shell_show', methods: ['GET'])]
@@ -79,23 +75,21 @@ class ShellController extends AbstractController
     #[Route(path: '/{id}/edit', name: 'shell_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Shell $shell): Response
     {
-        return $this->handleForm(
-            $this->createForm(ShellEditType::class, $shell),
-            $request,
-            function () {
-                $this->getDoctrine()->getManager()->flush();
+        $form = $this->createForm(ShellEditType::class, $shell);
+        $form->handleRequest($request);
 
-                $this->addFlash('success', 'Le bâteau a été modifié avec succès.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-                return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
-            },
-            function (FormInterface $form) use ($shell) {
-                return $this->render('admin/shell/edit.html.twig', [
-                    'shell' => $shell,
-                    'form' => $form->createView(),
-                ]);
-            }
-        );
+            $this->addFlash('success', 'Le bâteau a été modifié avec succès.');
+
+            return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('admin/shell/edit.html.twig', [
+            'form' => $form,
+            'shell' => $shell,
+        ]);
     }
 
     #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
