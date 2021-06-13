@@ -260,31 +260,6 @@ class LogbookEntry
     }
 
     #[Assert\Callback(groups: ['start'])]
-    public function validateCrewRowerCategory(ExecutionContextInterface $context): void
-    {
-        if (null === $this->getShell()) {
-            return;
-        }
-        if ($this->getCrewMembers()->isEmpty()) {
-            return;
-        }
-        if (null !== $this->getShell()) {
-            $invalidCrewMembers = [];
-            foreach ($this->getCrewMembers() as $crewMember) {
-                if ($crewMember->getRowerCategory() > $this->getShell()->getRowerCategory()) {
-                    $invalidCrewMembers[] = $crewMember->getFullName();
-                }
-            }
-        }
-        if (!empty($invalidCrewMembers)) {
-            $context->buildViolation('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau: {{ invalidMembers }}.')
-                ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
-                ->atPath('crewMembers')
-                ->addViolation();
-        }
-    }
-
-    #[Assert\Callback(groups: ['start'])]
     public function validateCrewRowerLogbookEntry(ExecutionContextInterface $context): void
     {
         if ($this->getCrewMembers()->isEmpty()) {

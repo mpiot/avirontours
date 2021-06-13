@@ -63,12 +63,6 @@ class ShellType extends AbstractType
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false,
             ])
-            ->add('rowerCategory', ChoiceType::class, [
-                'label' => 'Catégorie rameur',
-                'choices' => Shell::getAvailableRowerCategories(),
-                'expanded' => true,
-                'label_attr' => ['class' => 'radio-custom'],
-            ])
             ->add('productionYear', NumberType::class, [
                 'label' => 'Année de fabrication',
                 'html5' => true,

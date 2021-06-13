@@ -96,7 +96,7 @@ class ProfileControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'a.user');
+        $this->logIn($client, 'on-water.user');
         $client->request('GET', '/profile/edit');
 
         $this->assertResponseIsSuccessful();

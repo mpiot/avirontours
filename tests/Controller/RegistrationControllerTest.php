@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\MedicalCertificate;
-use App\Entity\User;
 use App\Factory\LicenseFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
@@ -84,7 +83,6 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('One City', $user->getCity());
         $this->assertTrue($user->getClubEmailAllowed());
         $this->assertTrue($user->getPartnersEmailAllowed());
-        $this->assertSame(User::ROWER_CATEGORY_C, $user->getRowerCategory());
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());

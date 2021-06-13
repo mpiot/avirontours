@@ -63,10 +63,6 @@ class LogbookEntryType extends AbstractType
                 'choice_attr' => function (Shell $shell) {
                     $suffix = '';
 
-                    if ($shell->getRowerCategory() <= 2) {
-                        $suffix .= '<span class="badge bg-primary ms-2">Compétition</span>';
-                    }
-
                     if (true === $shell->getPersonalBoat()) {
                         $suffix .= '<span class="badge bg-info ms-2">Personnel</span>';
                     }

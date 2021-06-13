@@ -69,10 +69,6 @@ class UserType extends AbstractType
                 'label' => 'Date de naissance',
                 'widget' => 'single_text',
             ])
-            ->add('rowerCategory', ChoiceType::class, [
-                'label' => 'Catégorie rameur',
-                'choices' => User::getAvailableRowerCategories(),
-            ])
             ->add('licenseNumber', TextType::class, [
                 'label' => 'Numéro de licence',
                 'required' => false,

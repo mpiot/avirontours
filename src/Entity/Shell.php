@@ -30,10 +30,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Shell
 {
-    public const ROWER_CATEGORY_A = 1;
-    public const ROWER_CATEGORY_B = 2;
-    public const ROWER_CATEGORY_C = 3;
-
     public const ROWING_TYPE_BOTH = 'both';
     public const ROWING_TYPE_SCULL = 'scull';
     public const ROWING_TYPE_SWEEP = 'sweep';
@@ -136,11 +132,6 @@ class Shell
     private ?int $usageFrequency = null;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private ?int $rowerCategory = null;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private ?bool $personalBoat = null;
@@ -157,7 +148,6 @@ class Shell
         $this->logbookEntries = new ArrayCollection();
         $this->personalBoat = false;
         $this->shellDamages = new ArrayCollection();
-        $this->rowerCategory = User::ROWER_CATEGORY_C;
         $this->rowingType = self::ROWING_TYPE_BOTH;
         $this->mileage = 0;
     }
@@ -430,28 +420,6 @@ class Shell
         return $this;
     }
 
-    public function getRowerCategory(): ?int
-    {
-        return $this->rowerCategory;
-    }
-
-    public function getTextRowerCategory(): string
-    {
-        $availableRowerCategories = array_flip(self::getAvailableRowerCategories());
-        if (!\array_key_exists($this->rowerCategory, $availableRowerCategories)) {
-            throw new \Exception(sprintf('The rowerCategory "%s" is not available, the method "getAvailableRowerCategories" only return that categories: %s.', $this->rowerCategory, implode(', ', self::getAvailableRowerCategories())));
-        }
-
-        return $availableRowerCategories[$this->rowerCategory];
-    }
-
-    public function setRowerCategory(int $rowerCategory): self
-    {
-        $this->rowerCategory = $rowerCategory;
-
-        return $this;
-    }
-
     public function getPersonalBoat(): ?bool
     {
         return $this->personalBoat;
@@ -508,15 +476,6 @@ class Shell
         return [
             'Arrière' => self::RIGGER_POSITION_BACK,
             'Avant' => self::RIGGER_POSITION_FRONT,
-        ];
-    }
-
-    public static function getAvailableRowerCategories(): array
-    {
-        return [
-            'A' => self::ROWER_CATEGORY_A,
-            'B' => self::ROWER_CATEGORY_B,
-            'C' => self::ROWER_CATEGORY_C,
         ];
     }
 

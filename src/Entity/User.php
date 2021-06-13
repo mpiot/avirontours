@@ -41,9 +41,6 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
     public const NUM_ITEMS = 20;
     public const GENDER_FEMALE = 'f';
     public const GENDER_MALE = 'm';
-    public const ROWER_CATEGORY_A = 1;
-    public const ROWER_CATEGORY_B = 2;
-    public const ROWER_CATEGORY_C = 3;
 
     /**
      * @ORM\Id
@@ -97,12 +94,6 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
      */
     #[Assert\NotBlank]
     private ?string $lastName = null;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    #[Assert\NotBlank]
-    private ?int $rowerCategory;
 
     /**
      * @ORM\Column(type="date")
@@ -205,7 +196,6 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
-        $this->rowerCategory = self::ROWER_CATEGORY_C;
         $this->logbookEntries = new ArrayCollection();
         $this->subscriptionDate = new \DateTimeImmutable();
         $this->licenses = new ArrayCollection();
@@ -385,28 +375,6 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
     public function getFullName(): string
     {
         return $this->getFirstName().' '.$this->getLastName();
-    }
-
-    public function getRowerCategory(): ?int
-    {
-        return $this->rowerCategory;
-    }
-
-    public function getTextRowerCategory(): string
-    {
-        $availableRowerCategories = array_flip(self::getAvailableRowerCategories());
-        if (!\array_key_exists($this->rowerCategory, $availableRowerCategories)) {
-            throw new \Exception(sprintf('The rowerCategory "%s" is not available, the method "getAvailableRowerCategories" only return that categories: %s.', $this->rowerCategory, implode(', ', self::getAvailableRowerCategories())));
-        }
-
-        return $availableRowerCategories[$this->rowerCategory];
-    }
-
-    public function setRowerCategory(int $rowerCategory): self
-    {
-        $this->rowerCategory = $rowerCategory;
-
-        return $this;
     }
 
     public function getBirthday(): ?\DateTimeInterface
@@ -703,15 +671,6 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
         return [
             'Femme' => self::GENDER_FEMALE,
             'Homme' => self::GENDER_MALE,
-        ];
-    }
-
-    public static function getAvailableRowerCategories(): array
-    {
-        return [
-            'A' => self::ROWER_CATEGORY_A,
-            'B' => self::ROWER_CATEGORY_B,
-            'C' => self::ROWER_CATEGORY_C,
         ];
     }
 

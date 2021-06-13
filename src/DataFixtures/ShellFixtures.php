@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Shell;
-use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -29,14 +28,13 @@ class ShellFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        foreach ($this->getShellData() as [$name, $nbRowers, $coxed, $rowingType, $rowerCat]) {
+        foreach ($this->getShellData() as [$name, $nbRowers, $coxed, $rowingType]) {
             $shell = new Shell();
             $shell
                 ->setName($name)
                 ->setNumberRowers($nbRowers)
                 ->setCoxed($coxed)
                 ->setRowingType($rowingType)
-                ->setRowerCategory($rowerCat)
             ;
             $manager->persist($shell);
             $this->addReference($name, $shell);
@@ -48,11 +46,11 @@ class ShellFixtures extends Fixture
     private function getShellData(): array
     {
         return [
-            ['Double Cat A', 2, false, Shell::ROWING_TYPE_BOTH, User::ROWER_CATEGORY_A],
-            ['Double Cat B', 2, false, Shell::ROWING_TYPE_BOTH, User::ROWER_CATEGORY_B],
-            ['Double Cat C', 2, false, Shell::ROWING_TYPE_BOTH, User::ROWER_CATEGORY_C],
-            ['Single highly damaged', 1, false, Shell::ROWING_TYPE_SCULL, User::ROWER_CATEGORY_C],
-            ['Single medium damaged', 1, false, Shell::ROWING_TYPE_SCULL, User::ROWER_CATEGORY_C],
+            ['Double', 2, false, Shell::ROWING_TYPE_BOTH],
+            ['Four', 4, false, Shell::ROWING_TYPE_BOTH],
+            ['Eight', 8, false, Shell::ROWING_TYPE_BOTH],
+            ['Single highly damaged', 1, false, Shell::ROWING_TYPE_SCULL],
+            ['Single medium damaged', 1, false, Shell::ROWING_TYPE_SCULL],
         ];
     }
 }
