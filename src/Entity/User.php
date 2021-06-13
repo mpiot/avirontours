@@ -234,6 +234,11 @@ class User implements UserInterface, TwoFactorInterface, \Stringable
         return $this->username;
     }
 
+    public function getUserIdentifier(): ?string
+    {
+        return $this->username;
+    }
+
     public function getEmail(): ?string
     {
         return $this->email;

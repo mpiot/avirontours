@@ -219,8 +219,8 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#logbook_entry_start_startAt')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#logbook_entry_start_startAt')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
     }
@@ -244,7 +244,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Le nombre de membre d\'équipage ne correspond pas au nombre de place.', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Le nombre de membre d\'équipage ne correspond pas au nombre de place.', $crawler->filter('#logbook_entry_start_crewMembers')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
     }
@@ -272,7 +272,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString(sprintf('Certains membres d\'équipage sont déjà sortis: %s.', $licences[0]->getUser()->getFullName()), $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString(sprintf('Certains membres d\'équipage sont déjà sortis: %s.', $licences[0]->getUser()->getFullName()), $crawler->filter('#logbook_entry_start_crewMembers')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(1);
     }
@@ -300,7 +300,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau:', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Certains membres d\'équipage ne sont pas autorisé sur ce bâteau:', $crawler->filter('#logbook_entry_start_crewMembers')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
     }
@@ -324,7 +324,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Certains membres d\'équipage ont atteint leur limite de nombre de sorties:', $crawler->filter('#logbook_entry_start_crewMembers')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Certains membres d\'équipage ont atteint leur limite de nombre de sorties:', $crawler->filter('#logbook_entry_start_crewMembers')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
     }
@@ -351,7 +351,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(1);
     }
@@ -377,7 +377,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->parents()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
     }
