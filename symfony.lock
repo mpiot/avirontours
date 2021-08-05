@@ -169,7 +169,7 @@
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "0.1",
-            "ref": "107a3a758fe331292f1c23c13d73c66cb3a268c7"
+            "ref": "d1ac708f630e31e2ff442c05715486b5f7bafb0e"
         },
         "files": [
             "config/packages/karser_recaptcha3.yaml"
