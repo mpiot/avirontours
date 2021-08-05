@@ -31,7 +31,7 @@ host('tethys.avirontours.fr')
     ->set('deploy_path', '/var/www/{{application}}')
     ->roles('app')
     ->stage('prod')
-    ->set('branch', 'master');
+    ->set('branch', 'develop');
 
 // Tasks
 desc('Deploy your project');
@@ -56,7 +56,7 @@ task('deploy', [
 
 // Custom deploy
 task('deploy:vendors', function (): void {
-    run('cd {{release_path}} && {{bin/composer}} {{composer_options}}');
+    run('cd {{release_path}} && APP_ENV={{stage}} {{bin/composer}} {{composer_options}}');
 });
 
 task('deploy:assets', function (): void {
@@ -72,9 +72,9 @@ task('deploy:assets', function (): void {
 });
 
 task('deploy:optimize', function (): void {
-    run('cd {{release_path}} && {{bin/php}} {{bin/console}} secrets:decrypt-to-local --force');
+    run('cd {{release_path}} && {{bin/php}} {{bin/console}} secrets:decrypt-to-local --force --env={{stage}}');
     run('cd {{release_path}} && composer dump-env {{stage}}');
-    run('cd {{release_path}} && rm .env .env.prod .env.test .env.prod.local');
+    run('cd {{release_path}} && rm .env .env.prod .env.test .env.{{stage}}.local');
 });
 
 task('deploy:migrate', function (): void {
