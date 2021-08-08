@@ -58,14 +58,10 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
     private function getSeasonData(): array
     {
         return [
-            [$this->getReference('2018-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2018-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2018-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2018-Adulte'), $this->getReference('on-water.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
             [$this->getReference('2018-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
             [$this->getReference('2018-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
-            [$this->getReference('2019-Adulte'), $this->getReference('a.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2019-Adulte'), $this->getReference('b.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2019-Adulte'), $this->getReference('c.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2019-Adulte'), $this->getReference('on-water.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
             [$this->getReference('2019-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
             [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
         ];
