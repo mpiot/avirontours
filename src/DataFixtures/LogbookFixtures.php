@@ -51,7 +51,7 @@ class LogbookFixtures extends Fixture implements DependentFixtureInterface
     private function getShellData(): array
     {
         return [
-            [$this->getReference('Double Cat B'), [$this->getReference('a.user'), $this->getReference('b.user')], new \DateTime('+1 hour'), 10],
+            [$this->getReference('Double'), [$this->getReference('on-water.user'), $this->getReference('super-admin.user')], new \DateTime('+1 hour'), 10],
             [$this->getReference('Single medium damaged'), [$this->getReference('admin.user')], null, null],
         ];
     }
