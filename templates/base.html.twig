@@ -20,7 +20,7 @@
     <body class="min-vh-100" {{ stimulus_controller(app.user is not null ? {'app-menu': {}, 'account-menu': {}} : 'app-menu') }}>
         <div class="d-flex vh-100" data-app-menu-target="menu" data-account-menu-target="menu">
             <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark vh-100">
-                <a class="m-2" href="{{ path('app_home') }}">
+                <a class="m-2" href="{{ path('homepage') }}">
                     <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
                 </a>
 
@@ -28,7 +28,7 @@
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{{ path('app_home') }}">Accueil</a>
+                        <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
                     </li>
 
                     {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
@@ -105,7 +105,7 @@
 
                     <ol class="breadcrumb mb-0 pt-3">
                         {% block breadcrumb %}
-                            <li class="breadcrumb-item"><a href="{{ path('app_home') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                            <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
                         {% endblock %}
                     </ol>
 

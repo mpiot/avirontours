@@ -67,7 +67,7 @@ class ResetPasswordController extends AbstractController
         }
 
         return $this->renderForm('reset_password/request.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
@@ -134,11 +134,11 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('homepage');
         }
 
         return $this->renderForm('reset_password/reset.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

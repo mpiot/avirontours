@@ -34,7 +34,7 @@ class HomepageControllerTest extends AppWebTestCase
         $client = static::createClient();
         $client->request('GET', '/');
 
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseIsSuccessful();
 
         $this->logIn($client, 'ROLE_USER');
         $client->request('GET', '/');

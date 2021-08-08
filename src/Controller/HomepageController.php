@@ -22,19 +22,25 @@ namespace App\Controller;
 
 use App\Entity\PhysicalQualities;
 use App\Repository\LogbookEntryRepository;
+use App\Repository\SeasonCategoryRepository;
 use App\Service\ArrayNormalizer;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 class HomepageController extends AbstractController
 {
-    #[Route(path: '', name: 'app_home')]
-    #[Security('is_granted("ROLE_USER")')]
-    public function homepage(LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer)
+    #[Route(path: '', name: 'homepage')]
+    public function homepage(SeasonCategoryRepository $seasonCategoryRepository, LogbookEntryRepository $repository, ChartBuilderInterface $chartBuilder, ArrayNormalizer $normalizer): Response
     {
+        if (null === $this->getUser()) {
+            return $this->render('homepage/homepage.html.twig', [
+                'season_categories' => $seasonCategoryRepository->findAvailableForSubscription(),
+            ]);
+        }
+
         // Logbook chart
         $logbookCount = $repository->findStatsByMonth($this->getUser());
         $logbookCount = $normalizer->fillMissingMonths($logbookCount, (new \DateTime('-11 months')), (new \DateTime()), ['distance' => 0, 'session' => 0]);
@@ -126,7 +132,7 @@ class HomepageController extends AbstractController
             ]);
         }
 
-        return $this->render('homepage/homepage.html.twig', [
+        return $this->render('homepage/dashboard.html.twig', [
             'logbookChart' => $logbookChart,
             'physicalQualitiesChart' => $physicalQualitiesChart ?? null,
         ]);
