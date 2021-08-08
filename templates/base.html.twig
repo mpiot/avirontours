@@ -17,9 +17,9 @@
         {% endblock %}
     </head>
 
-    <body class="min-vh-100" {{ stimulus_controller('sidebar', { 'display': 'false' }) }}>
-        <div class="d-flex vh-100" data-sidebar-target="sidebar">
-            <div id="sidebar" class="d-flex flex-column p-3 text-white bg-dark vh-100">
+    <body class="min-vh-100" {{ stimulus_controller(app.user is not null ? {'app-menu': {}, 'account-menu': {}} : 'app-menu') }}>
+        <div class="d-flex vh-100" data-app-menu-target="menu" data-account-menu-target="menu">
+            <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark vh-100">
                 <a class="m-2" href="{{ path('app_home') }}">
                     <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
                 </a>
@@ -63,42 +63,61 @@
                     <li class="nav-item">
                         <a class="nav-link link-secondary" href="{{ asset('files/guide_atm.pdf') }}">Guide 2020</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link link-secondary" href="{{ path('release_notes') }}">Aviron Tours - v{{ APP_VERSION }}</a>
+                    </li>
                 </ul>
+            </nav>
 
-                <hr>
-
-                {% if app.user is not null %}
-                    <div class="dropdown">
-                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="https://robohash.org/{{ app.user.firstName|slice(0, 1)|upper ~ app.user.lastName|slice(0, 1)|upper }}.png?set=set4" alt="mdo" width="32" height="32" class="rounded-circle me-2">
-                            <strong>{{ app.user.fullName }}</strong>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" href="{{ path('profile_show') }}">Mon profil</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                            {% if is_granted('IS_IMPERSONATOR') %}
-                                <li><a class="dropdown-item text-danger" href="{{ path('user_index', {'_switch_user': '_exit'}) }}">Quitter l'impersonation</a></li>
-                            {% endif %}
-                        </ul>
+            {% if app.user is not null %}
+                <div id="nav-account-menu" class="d-flex flex-column p-3 text-white bg-dark vh-100">
+                    <div class="mt-2 d-flex flex-column">
+                        <img src="https://robohash.org/{{ app.user.firstName|slice(0, 1)|upper ~ app.user.lastName|slice(0, 1)|upper }}.png?set=set4" alt="Profile image" width="64" height="64" class="rounded-circle mx-auto">
+                        <p class="mt-1 mx-auto">{{ app.user.fullName }}</p>
                     </div>
-                {% endif %}
 
-                <div class="text-muted small p-1 text-end">
-                    Aviron Tours - <a class="text-muted" href="{{ path('release_notes') }}">v{{ APP_VERSION }}</a>
+                    <hr>
+
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ path('profile_show') }}">
+                                <span class="far fa-user"></span>
+                                Mon profil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="{{ path('app_logout') }}">
+                                <span class="fas fa-sign-out-alt"></span> Se déconnecter
+                            </a>
+                        </li>
+                        {% if is_granted('IS_IMPERSONATOR') %}
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{{ path('user_index', {'_switch_user': '_exit'}) }}">Quitter l'impersonation</a>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
-            </div>
+            {% endif %}
 
-            <main data-action="click->sidebar#main">
-                <nav class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
-                    <button class="btn ms-2 me-3 py-3" type="button" aria-controls="sidebar" id="sidebarToggle" data-action="sidebar#toggle"></button>
+            <main data-action="click->app-menu#main click->account-menu#main">
+                <header class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
+                    <button class="btn ms-2 me-3 py-3" type="button" aria-controls="nav-app-menu" id="nav-app-menu-toggle" data-action="click->app-menu#toggle"></button>
 
                     <ol class="breadcrumb mb-0 pt-3">
                         {% block breadcrumb %}
                             <li class="breadcrumb-item"><a href="{{ path('app_home') }}"><span class="fas fa-home"></span> Accueil</a></li>
                         {% endblock %}
                     </ol>
-                </nav>
+
+                    {% if app.user is not null %}
+                        <button class="btn ms-auto me-3 py-3" type="button" aria-controls="nav-account-menu" id="nav-account-menu-toggle" data-action="click->account-menu#toggle"></button>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="ms-auto me-3 py-3">
+                            <span class="fas fa-sign-in-alt"></span>
+                            Se connecter
+                        </a>
+                    {% endif %}
+                </header>
 
                 <section class="my-3 px-3">
                     {{ include('_flash_messages.html.twig') }}
