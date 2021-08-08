@@ -1,19 +1,18 @@
 import { Controller } from 'stimulus';
-import { Offcanvas } from 'bootstrap';
 
 export default class extends Controller {
-    static targets = ['sidebar', 'main'];
+    static targets = ['menu'];
 
     connect() {
         // On xl screen, display the menu automatically
         if (window.innerWidth >= 1200) {
-            this.sidebarTarget.classList.add('sidebar-show');
+            this.menuTarget.classList.add('nav-app-menu-show');
         }
     }
 
     toggle(event) {
         event.stopPropagation();
-        this.sidebarTarget.classList.toggle('sidebar-show');
+        this.menuTarget.classList.toggle('nav-app-menu-show');
     }
 
     main() {
@@ -21,10 +20,10 @@ export default class extends Controller {
             return;
         }
 
-        if (false === this.sidebarTarget.classList.contains('sidebar-show')) {
+        if (false === this.menuTarget.classList.contains('nav-app-menu-show')) {
             return;
         }
 
-        this.sidebarTarget.classList.remove('sidebar-show');
+        this.menuTarget.classList.remove('nav-app-menu-show');
     }
 }

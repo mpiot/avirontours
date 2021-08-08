@@ -11,7 +11,12 @@ body {
   overflow-x: hidden;
 }
 
-#sidebarToggle {
+main {
+  transition: transform 0.25s ease-in-out;
+  width: 100%;
+}
+
+#nav-app-menu-toggle {
   color: $gray-600;
 
     &:focus {
@@ -37,20 +42,16 @@ body {
     }
 }
 
-#sidebar {
+#nav-app-menu {
   transition: transform 0.25s ease-in-out;
   left: -20rem;
   width: 20rem;
   position: fixed;
+  z-index: 2;
 }
 
-main {
-  transition: transform 0.25s ease-in-out;
-  width: 100%;
-}
-
-.sidebar-show {
-  #sidebarToggle {
+.nav-app-menu-show {
+  #nav-app-menu-toggle {
     color:$dark;
 
     &::after {
@@ -61,7 +62,7 @@ main {
     }
   }
 
-  #sidebar {
+  #nav-app-menu {
     transform: translateX(20rem);
   }
 
@@ -70,6 +71,58 @@ main {
 
     @include media-breakpoint-up(xl) {
       width: calc(100% - 20rem) !important;
+    }
+  }
+}
+
+#nav-account-menu-toggle {
+  color: $gray-600;
+
+  &:focus {
+    outline:none !important;
+  }
+
+  &::after {
+    @extend %fa-icon;
+    @extend .fas;
+
+    content: fa-content($fa-var-user-circle);
+  }
+
+  &:hover {
+    color: $gray-700;
+  }
+}
+
+#nav-account-menu {
+  transition: transform 0.25s ease-in-out;
+  right: -20rem;
+  width: 20rem;
+  position: fixed;
+  z-index: 2;
+}
+
+.nav-account-menu-show {
+  #nav-account-menu-toggle {
+    color:$dark;
+
+    &::after {
+      @extend %fa-icon;
+      @extend .fas;
+
+      content: fa-content($fa-var-times);
+    }
+  }
+
+  #nav-account-menu {
+    transform: translateX(-20rem);
+  }
+
+  main {
+    transform: translateX(-20rem);
+
+    @include media-breakpoint-up(xl) {
+      width: calc(100% + 20rem) !important;
     }
   }
 }
