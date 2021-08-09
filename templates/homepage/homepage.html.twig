@@ -1,276 +1,275 @@
-<!DOCTYPE html>
-<head>
-   <meta charset="utf-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'base.html.twig' %}
+{% set appMenuAutoOpen = false %}
 
-   <link rel="icon" type="image/png" href="{{ asset('build/images/favicon.png')}}">
-
-   <title>{% block title %}Aviron Tours Métropole{% endblock %}</title>
-
-   {% block stylesheets %}
-      {{ encore_entry_link_tags('app') }}
-   {% endblock %}
-
-   {% block javascripts %}
-      {{ encore_entry_script_tags('app') }}
-   {% endblock %}
-</head>
-
-<body class="pt-5">
-   <header>
-      <nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
-         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ path('homepage') }}">
-               <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
-            </a>
-            <ul class="navbar-nav ms-auto mb-2 mb-md-0">
-               <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="{{ path('app_login') }}">
-                     <span class="fas fa-sign-in-alt"></span>
-                     Se connecter
-                  </a>
-               </li>
-            </ul>
-         </div>
-      </nav>
-   </header>
-
-   <main>
-      <div id="carousel-practices" class="carousel slide" data-bs-ride="carousel">
-         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="3" aria-label="Slide 4"></button>
-            <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="4" aria-label="Slide 5"></button>
-         </div>
-
-         <div class="carousel-inner">
-            <div class="carousel-item active">
-               <img src="{{ asset('build/images/hobby.webp') }}" class="d-block w-100" alt="Loisir">
-               <div class="carousel-caption">
-                  <h5>Loisir</h5>
-               </div>
+{% block body %}
+    <div class="mt-n3 mx-n3">
+        <div id="carousel-practices" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="3"
+                        aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="4"
+                        aria-label="Slide 5"></button>
             </div>
-            <div class="carousel-item">
-               <img src="{{ asset('build/images/competition.webp') }}" class="d-block w-100" alt="Compétition">
-               <div class="carousel-caption">
-                  <h5>Compétition</h5>
-               </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ asset('build/images/hobby.webp') }}" class="d-block w-100" alt="Loisir">
+                    <div class="carousel-caption">
+                        <h5>Loisir</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('build/images/competition.webp') }}" class="d-block w-100" alt="Compétition">
+                    <div class="carousel-caption">
+                        <h5>Compétition</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('build/images/indoor.webp') }}" class="d-block w-100" alt="Indoor">
+                    <div class="carousel-caption">
+                        <h5>Indoor</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('build/images/discovery.webp') }}" class="d-block w-100" alt="Découverte">
+                    <div class="carousel-caption">
+                        <h5>Découverte</h5>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('build/images/avifit.webp') }}" class="d-block w-100" alt="Avifit">
+                    <div class="carousel-caption">
+                        <h5>Avifit</h5>
+                    </div>
+                </div>
             </div>
-            <div class="carousel-item">
-               <img src="{{ asset('build/images/indoor.webp') }}" class="d-block w-100" alt="Indoor">
-               <div class="carousel-caption">
-                  <h5>Indoor</h5>
-               </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-practices"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-practices"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <div class="row mt-3 mx-3">
+            <div class="col-md-7">
+                <h2>Loisir <span class="text-muted">Une activité pour prendre l'air</span></h2>
+                <p class="lead">
+                    L’aviron est souvent identifié à la pratique de compétition et plus particulièrement en huit avec en
+                    image des célèbres courses anglaises comme Oxford / Cambridge.
+                </p>
+
+                <p class="lead">
+                    Mais l’aviron est aussi une activité sportive récréative que l’on peut découvrir et pratiquer à tout
+                    âge et qui présente de nombreux atouts :
+                </p>
+                <ul class="lead">
+                    <li>Activité d’endurance, portée et non traumatisante</li>
+                    <li>Activité qui se pratique en plein air en toute saison</li>
+                    <li>Activité qui se pratique dans un milieu nautique souvent propre à l’évasion</li>
+                    <li>Activité qui se pratique seul ou en équipage</li>
+                    <li>Activité qui se pratique au sein d’une structure associative</li>
+                </ul>
             </div>
-            <div class="carousel-item">
-               <img src="{{ asset('build/images/discovery.webp') }}" class="d-block w-100" alt="Découverte">
-               <div class="carousel-caption">
-                  <h5>Découverte</h5>
-               </div>
+            <div class="col-md-5 align-self-center">
+                <img class="img-fluid mx-auto" src="{{ asset('build/images/hobby.webp') }}" alt="Loisir">
             </div>
-            <div class="carousel-item">
-               <img src="{{ asset('build/images/avifit.webp') }}" class="d-block w-100" alt="Avifit">
-               <div class="carousel-caption">
-                  <h5>Avifit</h5>
-               </div>
+        </div>
+
+        <hr class="m-5">
+
+        <div class="row mx-3">
+            <div class="col-md-7 order-md-2">
+                <h2>Compétition</h2>
+                <p class="lead">
+                    Les compétitions peuvent être organisées sous de nombreuses formes dont les plus courantes sont :
+                </p>
+                <ul class="lead">
+                    <li><strong>Les courses en ligne</strong> : chaque équipage dispose d’une ligne d’eau, matérialisée
+                        ou non par un balisage. Pour les championnats nationaux, les courses se déroulent sur 6 lignes
+                        d’eaux dans un balisage de type Albano.
+                    </li>
+                    <li><strong>Les courses contre la montre, appelées aussi têtes de rivière</strong> : un départ
+                        séparé est donné à chaque équipage à intervalles de temps réguliers. Le classement s’effectue au
+                        temps.
+                    </li>
+                </ul>
+                </p>
             </div>
-         </div>
-
-         <button class="carousel-control-prev" type="button" data-bs-target="#carousel-practices" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-         </button>
-         <button class="carousel-control-next" type="button" data-bs-target="#carousel-practices" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-         </button>
-      </div>
-
-      <div class="row mt-3 mx-3">
-         <div class="col-md-7">
-            <h2>Loisir <span class="text-muted">Une activité pour prendre l'air</span></h2>
-            <p class="lead">
-               L’aviron est souvent identifié à la pratique de compétition et plus particulièrement en huit avec en image des célèbres courses anglaises comme Oxford / Cambridge.
-            </p>
-
-            <p class="lead">
-               Mais l’aviron est aussi une activité sportive récréative que l’on peut découvrir et pratiquer à tout âge et qui présente de nombreux atouts :
-            </p>
-            <ul class="lead">
-               <li>Activité d’endurance, portée et non traumatisante</li>
-               <li>Activité qui se pratique en plein air en toute saison</li>
-               <li>Activité qui se pratique dans un milieu nautique souvent propre à l’évasion</li>
-               <li>Activité qui se pratique seul ou en équipage</li>
-               <li>Activité qui se pratique au sein d’une structure associative</li>
-            </ul>
-         </div>
-         <div class="col-md-5 align-self-center">
-            <img class="img-fluid mx-auto" src="{{ asset('build/images/hobby.webp') }}" alt="Loisir">
-         </div>
-      </div>
-
-      <hr class="m-5">
-
-      <div class="row mx-3">
-         <div class="col-md-7 order-md-2">
-            <h2>Compétition</h2>
-            <p class="lead">
-               Les compétitions peuvent être organisées sous de nombreuses formes dont les plus courantes sont :
-            </p>
-            <ul class="lead">
-               <li><strong>Les courses en ligne</strong> : chaque équipage dispose d’une ligne d’eau, matérialisée ou non par un balisage. Pour les championnats nationaux, les courses se déroulent sur 6 lignes d’eaux dans un balisage de type Albano.</li>
-               <li><strong>Les courses contre la montre, appelées aussi têtes de rivière</strong> : un départ séparé est donné à chaque équipage à intervalles de temps réguliers. Le classement s’effectue au temps.</li>
-            </ul>
-            </p>
-         </div>
-         <div class="col-md-5 align-self-center order-md-1">
-            <img class="img-fluid mx-auto" src="{{ asset('build/images/competition.webp') }}" alt="Compétition">
-         </div>
-      </div>
-
-      <hr class="m-5">
-
-      <div class="row mx-3">
-         <div class="col-md-7">
-            <h2>Indoor</h2>
-            <p class="lead">
-               Les championnats sont le format de compétition le plus répandu où les rameurs se rassemblent au niveau local, régional, national ou même international pour parcourir la distance reine du 2000 m les uns à côté des autres sur des ergomètres reliés les uns aux autres permettant ainsi de retransmettre sur écran la progression de chaque concurrent.
-            </p>
-            <p class="lead">
-               Si la distance classique est le 2000 m car distance olympique de référence pour les tests de sélection des équipes nationales, il existe également des compétitions sur 500 m, 1000 m et même parfois 5000 m, 6000 m ou 10 000 m en fonction des organisations.
-            </p>
-         </div>
-         <div class="col-md-5 align-self-center">
-            <img class="img-fluid mx-auto" src="{{ asset('build/images/indoor.webp') }}" alt="Indoor">
-         </div>
-      </div>
-
-      <hr class="m-5">
-
-      <div class="row mx-3">
-         <div class="col-md-7 order-md-2">
-            <h2>Avifit <span class="text-muted">Une activité ludique</span></h2>
-            <p class="lead">
-               L’AviFit, créé en 2013, est une activité qui ne cesse de se développer et de séduire de nouveaux pratiquants d’aviron indoor en France. Ce sont des cours collectifs rythmés et en musique encadrés par un coach certifié. Composée d'exercices simples et variés, cette activité ludique et dynamique propose aux clubs d’aviron abonnés un nouveau cours tous les 2 mois !
-            </p>
-            <p class="lead">
-               Le concept se rapproche des dernières tendances du monde de la forme, et l'enchaînement des exercices s'apparente aux nouvelles méthodes de préparation physique.
-            </p>
-         </div>
-         <div class="col-md-5 align-self-center order-md-1">
-            <img class="img-fluid mx-auto" src="{{ asset('build/images/avifit.webp') }}" alt="Avifit">
-         </div>
-      </div>
-
-      <hr class="m-5">
-
-      <div class="row mt-5 mx-3">
-         <div class="col-lg-4">
-            {% embed 'homepage/_staff_card.html.twig' with {
-               image: asset('build/images/t_cadoret.webp'),
-               name: 'Thierry Cadoret',
-               role: 'Éducateur sportif',
-            } %}
-               {% block description %}
-                  <p>
-                     Anciennement entraîneur à Argenteuil, Thierry a rejoint l'équipe de l'ATM au début de la saison 2020-2021.
-                  </p>
-                  <p>
-                     Très apprécié pour son expérience et son drôle d'humour, il est toujours présent pour les rameurs de tous niveaux !
-                  </p>
-               {% endblock %}
-            {% endembed %}
-         </div>
-
-         <div class="col-lg-4">
-            {% embed 'homepage/_staff_card.html.twig' with {
-               image: asset('build/images/r_girault.webp'),
-               name: 'Raphaël Girault',
-               role: 'Éducateur sportif',
-            } %}
-               {% block description %}
-                  <p>
-                     Dynamique, patient et à l'écoute, je suis à fond dans l'aviron depuis 8 ans. Je saurai vous transmettre mes connaissances et mon savoir-faire en tant que rameur expérimenté mais aussi comme un coach à qui on peut faire confiance.
-                  </p>
-                  <p>
-                     Actuellement en formation avec le club, mon objectif est de dynamiser un maximum son développement et de vous aider à vous épanouir dans l'aviron à travers chaque sortie !
-                  </p>
-                  <p>
-                     Sympathique et plutôt blagueur, je serai la pour vous guider !
-                  </p>
-               {% endblock %}
-            {% endembed %}
-         </div>
-
-         <div class="col-lg-4">
-            {% embed 'homepage/_staff_card.html.twig' with {
-               image: asset('build/images/j_bellard.webp'),
-               name: 'Jules Bellard',
-               role: 'Chargé de développement',
-            } %}
-               {% block description %}
-                  <p>
-                     Chargé de développement à l'ATM c'est un objectif clair et concret.
-                  </p>
-                  <p>
-                     Rendre à tout moment l'ATM un meilleur lieu de vie, de sport et de partage pour tous.
-                  </p>
-                  <p>
-                     Un objectif qui me touche particulièrement, dans mes valeurs et dans ma passion de l'aviron, que je partage avec tous les supers membres de l'ATM.
-                  </p>
-               {% endblock %}
-            {% endembed %}
-         </div>
-      </div>
-
-      <hr class="m-5">
-
-      <div class="row row-cols-1 row-cols-lg-5 mx-3 text-center">
-         {% for season_category in season_categories %}
-            <div class="col">
-               <div class="card mb-4 rounded-3 shadow-sm">
-                  <div class="card-header py-3">
-                     <h4 class="my-0 fw-normal">{{ season_category.name }}</h4>
-                  </div>
-                  <div class="card-body">
-                     <h1 class="card-title pricing-card-title">{{ season_category.price }} €<small class="text-muted fw-light">/an</small></h1>
-                     {% if season_category.description is not null %}
-                        <p class="card-text text-start">{{ season_category.description|markdown_to_html }}</p>
-                     {% endif %}
-                     <a class="w-100 btn btn-lg btn-outline-primary" href="{{ path('app_register', { 'slug': season_category.slug }) }}">
-                        S'inscrire
-                     </a>
-                  </div>
-               </div>
+            <div class="col-md-5 align-self-center order-md-1">
+                <img class="img-fluid mx-auto" src="{{ asset('build/images/competition.webp') }}" alt="Compétition">
             </div>
-         {% endfor %}
-      </div>
+        </div>
 
-      <hr class="m-5">
+        <hr class="m-5">
 
-      <div class="row mx-3 mb-3">
-         <div class="col-md-6 mb-3" {{ stimulus_controller('map', { 'lat': 47.374061602795926, 'lng': 0.7252358447121187, 'zoom': 13, 'marker': true }) }}>
-            <div data-map-target="container" style="height: 360px;"></div>
-         </div>
+        <div class="row mx-3">
+            <div class="col-md-7">
+                <h2>Indoor</h2>
+                <p class="lead">
+                    Les championnats sont le format de compétition le plus répandu où les rameurs se rassemblent au
+                    niveau local, régional, national ou même international pour parcourir la distance reine du 2000 m
+                    les uns à côté des autres sur des ergomètres reliés les uns aux autres permettant ainsi de
+                    retransmettre sur écran la progression de chaque concurrent.
+                </p>
+                <p class="lead">
+                    Si la distance classique est le 2000 m car distance olympique de référence pour les tests de
+                    sélection des équipes nationales, il existe également des compétitions sur 500 m, 1000 m et même
+                    parfois 5000 m, 6000 m ou 10 000 m en fonction des organisations.
+                </p>
+            </div>
+            <div class="col-md-5 align-self-center">
+                <img class="img-fluid mx-auto" src="{{ asset('build/images/indoor.webp') }}" alt="Indoor">
+            </div>
+        </div>
 
-         <div class="col-md-6">
-            <h2>Nous trouver</h2>
-            <p>
-               Adresse:<br>
-               5 Avenue de Florence<br>
-               37000 Tours
-            </p>
+        <hr class="m-5">
 
-            <p>
-               Téléphone: 02 47 44 30 44
-            </p>
+        <div class="row mx-3">
+            <div class="col-md-7 order-md-2">
+                <h2>Avifit <span class="text-muted">Une activité ludique</span></h2>
+                <p class="lead">
+                    L’AviFit, créé en 2013, est une activité qui ne cesse de se développer et de séduire de nouveaux
+                    pratiquants d’aviron indoor en France. Ce sont des cours collectifs rythmés et en musique encadrés
+                    par un coach certifié. Composée d'exercices simples et variés, cette activité ludique et dynamique
+                    propose aux clubs d’aviron abonnés un nouveau cours tous les 2 mois !
+                </p>
+                <p class="lead">
+                    Le concept se rapproche des dernières tendances du monde de la forme, et l'enchaînement des
+                    exercices s'apparente aux nouvelles méthodes de préparation physique.
+                </p>
+            </div>
+            <div class="col-md-5 align-self-center order-md-1">
+                <img class="img-fluid mx-auto" src="{{ asset('build/images/avifit.webp') }}" alt="Avifit">
+            </div>
+        </div>
 
-            <p>
-               Email: <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
-            </p>
-         </div>
-      </div>
-   </main>
-</body>
+        <hr class="m-5">
+
+        <div class="row mt-5 mx-3">
+            <div class="col-lg-4">
+                {% embed 'homepage/_staff_card.html.twig' with {
+                    image: asset('build/images/t_cadoret.webp'),
+                    name: 'Thierry Cadoret',
+                    role: 'Éducateur sportif',
+                } %}
+                    {% block description %}
+                        <p>
+                            Anciennement entraîneur à Argenteuil, Thierry a rejoint l'équipe de l'ATM au début de la
+                            saison 2020-2021.
+                        </p>
+                        <p>
+                            Très apprécié pour son expérience et son drôle d'humour, il est toujours présent pour les
+                            rameurs de tous niveaux !
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+
+            <div class="col-lg-4">
+                {% embed 'homepage/_staff_card.html.twig' with {
+                    image: asset('build/images/r_girault.webp'),
+                    name: 'Raphaël Girault',
+                    role: 'Éducateur sportif',
+                } %}
+                    {% block description %}
+                        <p>
+                            Dynamique, patient et à l'écoute, je suis à fond dans l'aviron depuis 8 ans. Je saurai vous
+                            transmettre mes connaissances et mon savoir-faire en tant que rameur expérimenté mais aussi
+                            comme un coach à qui on peut faire confiance.
+                        </p>
+                        <p>
+                            Actuellement en formation avec le club, mon objectif est de dynamiser un maximum son
+                            développement et de vous aider à vous épanouir dans l'aviron à travers chaque sortie !
+                        </p>
+                        <p>
+                            Sympathique et plutôt blagueur, je serai la pour vous guider !
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+
+            <div class="col-lg-4">
+                {% embed 'homepage/_staff_card.html.twig' with {
+                    image: asset('build/images/j_bellard.webp'),
+                    name: 'Jules Bellard',
+                    role: 'Chargé de développement',
+                } %}
+                    {% block description %}
+                        <p>
+                            Chargé de développement à l'ATM c'est un objectif clair et concret.
+                        </p>
+                        <p>
+                            Rendre à tout moment l'ATM un meilleur lieu de vie, de sport et de partage pour tous.
+                        </p>
+                        <p>
+                            Un objectif qui me touche particulièrement, dans mes valeurs et dans ma passion de l'aviron,
+                            que je partage avec tous les supers membres de l'ATM.
+                        </p>
+                    {% endblock %}
+                {% endembed %}
+            </div>
+        </div>
+
+        <hr class="m-5">
+
+        <div class="row row-cols-1 row-cols-lg-5 mx-3 text-center">
+            {% for season_category in season_categories %}
+                <div class="col">
+                    <div class="card mb-4 rounded-3 shadow-sm">
+                        <div class="card-header py-3">
+                            <h4 class="my-0 fw-normal">{{ season_category.name }}</h4>
+                        </div>
+                        <div class="card-body">
+                            <h1 class="card-title pricing-card-title">{{ season_category.price }} €<small
+                                        class="text-muted fw-light">/an</small></h1>
+                            {% if season_category.description is not null %}
+                                <p class="card-text text-start">{{ season_category.description|markdown_to_html }}</p>
+                            {% endif %}
+                            <a class="w-100 btn btn-lg btn-outline-primary"
+                               href="{{ path('app_register', { 'slug': season_category.slug }) }}">
+                                S'inscrire
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <hr class="m-5">
+
+        <div class="row mx-3 mb-3">
+            <div class="col-md-6 mb-3" {{ stimulus_controller('map', { 'lat': 47.374061602795926, 'lng': 0.7252358447121187, 'zoom': 13, 'marker': true }) }}>
+                <div data-map-target="container" style="height: 360px;"></div>
+            </div>
+
+            <div class="col-md-6">
+                <h2>Nous trouver</h2>
+                <p>
+                    Adresse:<br>
+                    5 Avenue de Florence<br>
+                    37000 Tours
+                </p>
+
+                <p>
+                    Téléphone: 02 47 44 30 44
+                </p>
+
+                <p>
+                    Email: <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

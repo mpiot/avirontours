@@ -17,15 +17,33 @@
         {% endblock %}
     </head>
 
-    <body class="min-vh-100" {{ stimulus_controller(app.user is not null ? {'app-menu': {}, 'account-menu': {}} : 'app-menu') }}>
-        <div class="d-flex vh-100" data-app-menu-target="menu" data-account-menu-target="menu">
-            <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark vh-100">
-                <a class="m-2" href="{{ path('homepage') }}">
-                    <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
-                </a>
+    <body class="min-vh-100" {{ stimulus_controller({ 'app-menu': { 'autoOpen': appMenuAutoOpen ?? true }, 'account-menu': {} }) }}>
+        <header>
+            <nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{{ path('homepage') }}">
+                        <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
+                    </a>
 
-                <hr>
 
+                    {% if app.user is not null %}
+                        <button class="btn ms-auto me-3 py-3" type="button" aria-controls="nav-account-menu" id="nav-account-menu-toggle" data-action="click->account-menu#toggle"></button>
+                    {% else %}
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{{ path('app_login') }}">
+                                    <span class="fas fa-sign-in-alt"></span>
+                                    Se connecter
+                                </a>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+
+        <div class="d-flex vh-100">
+            <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark">
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
@@ -58,10 +76,10 @@
 
                 <ul class="nav flex-column small">
                     <li class="nav-item">
-                        <a class="nav-link link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
+                        <a class="nav-link link-secondary" href="{{ asset('files/guide_atm.pdf') }}">Guide 2020</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-secondary" href="{{ asset('files/guide_atm.pdf') }}">Guide 2020</a>
+                        <a class="nav-link link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link link-secondary" href="{{ path('release_notes') }}">Aviron Tours - v{{ APP_VERSION }}</a>
@@ -100,24 +118,15 @@
             {% endif %}
 
             <main data-action="click->app-menu#main click->account-menu#main">
-                <header class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
+                <div class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
                     <button class="btn ms-2 me-3 py-3" type="button" aria-controls="nav-app-menu" id="nav-app-menu-toggle" data-action="click->app-menu#toggle"></button>
 
-                    <ol class="breadcrumb mb-0 pt-3">
+                    <ol class="breadcrumb pt-3">
                         {% block breadcrumb %}
                             <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
                         {% endblock %}
                     </ol>
-
-                    {% if app.user is not null %}
-                        <button class="btn ms-auto me-3 py-3" type="button" aria-controls="nav-account-menu" id="nav-account-menu-toggle" data-action="click->account-menu#toggle"></button>
-                    {% else %}
-                        <a href="{{ path('app_login') }}" class="ms-auto me-3 py-3">
-                            <span class="fas fa-sign-in-alt"></span>
-                            Se connecter
-                        </a>
-                    {% endif %}
-                </header>
+                </div>
 
                 <section class="my-3 px-3">
                     {{ include('_flash_messages.html.twig') }}

@@ -14,6 +14,7 @@ body {
 main {
   transition: transform 0.25s ease-in-out;
   width: 100%;
+  margin-top: 76px;
 }
 
 #nav-app-menu-toggle {
@@ -48,11 +49,13 @@ main {
   width: 20rem;
   position: fixed;
   z-index: 2;
+  margin-top: 76px;
+  height: calc(100% - 76px);
 }
 
 .nav-app-menu-show {
   #nav-app-menu-toggle {
-    color:$dark;
+    color: $dark;
 
     &::after {
       @extend %fa-icon;
@@ -76,7 +79,7 @@ main {
 }
 
 #nav-account-menu-toggle {
-  color: $gray-600;
+  color: $gray-400;
 
   &:focus {
     outline:none !important;
@@ -90,7 +93,7 @@ main {
   }
 
   &:hover {
-    color: $gray-700;
+    color: $white;
   }
 }
 
@@ -100,11 +103,13 @@ main {
   width: 20rem;
   position: fixed;
   z-index: 2;
+  margin-top: 76px;
+  height: calc(100% - 76px);
 }
 
 .nav-account-menu-show {
   #nav-account-menu-toggle {
-    color:$dark;
+    color: $white;
 
     &::after {
       @extend %fa-icon;
@@ -116,14 +121,6 @@ main {
 
   #nav-account-menu {
     transform: translateX(-20rem);
-  }
-
-  main {
-    transform: translateX(-20rem);
-
-    @include media-breakpoint-up(xl) {
-      width: calc(100% + 20rem) !important;
-    }
   }
 }
 
