@@ -129,7 +129,7 @@ class LogbookEntryController extends AbstractController
     }
 
     #[Route(path: '/statistics', name: 'logbook_entry_statistics')]
-    public function statistics(ShellRepository $shellRepository, UserRepository $userRepository)
+    public function statistics(ShellRepository $shellRepository, UserRepository $userRepository): Response
     {
         return $this->render('logbook_entry/statistics.html.twig', [
             'topDistances' => $userRepository->findTop10Distances(),

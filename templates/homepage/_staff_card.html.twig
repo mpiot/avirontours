@@ -1,0 +1,13 @@
+<div>
+    <div class="text-center">
+        <img class="text-center bd-placeholder-img rounded-circle" src="{{ image }}" width="140" height="140">
+
+        <h2 class="mt-1 mb-0">{{ name }}</h2>
+        <h3 class="mt-0 text-secondary">{{ role }}</h3>
+    </div>
+
+    <div>
+        {% block description %}
+        {% endblock %}
+    </div>
+</div>

@@ -103,7 +103,7 @@ class LicenseController extends AbstractController
 
     #[Route(path: '/{id}/apply-transition', name: 'license_apply_transition', methods: ['POST'])]
     #[Route(path: '/{id}/chain-validation-apply-transition', name: 'license_chain_validation_apply_transition', methods: ['POST'])]
-    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId)
+    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId): Response
     {
         try {
             $licenseWorkflow

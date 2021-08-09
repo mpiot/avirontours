@@ -22,18 +22,19 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StaticController extends AbstractController
 {
     #[Route(path: '/mentions-legales', name: 'legal_notice')]
-    public function legalNotice()
+    public function legalNotice(): Response
     {
         return $this->render('static/legal_notice.html.twig');
     }
 
     #[Route(path: '/release-notes', name: 'release_notes')]
-    public function releaseNotes(string $projectDir)
+    public function releaseNotes(string $projectDir): Response
     {
         $finder = new Finder();
         $finder->in($projectDir)->files()->depth('== 0')->name('changelog.json');

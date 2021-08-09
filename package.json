@@ -13,6 +13,7 @@
         "core-js": "^3.16.0",
         "file-loader": "^6.2.0",
         "jquery": "3.6.0",
+        "leaflet": "^1.7.1",
         "node-sass": "^6.0.1",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^12.1.0",
