@@ -16,7 +16,7 @@
    {% endblock %}
 </head>
 
-<body>
+<body class="pt-5">
    <header>
       <nav class="navbar navbar-expand navbar-dark fixed-top bg-dark">
          <div class="container-fluid">
@@ -167,7 +167,7 @@
       <hr class="m-5">
 
       <div class="row mt-5 mx-3">
-         <div class="col-lg-3">
+         <div class="col-lg-4">
             {% embed 'homepage/_staff_card.html.twig' with {
                image: asset('build/images/t_cadoret.webp'),
                name: 'Thierry Cadoret',
@@ -184,7 +184,7 @@
             {% endembed %}
          </div>
 
-         <div class="col-lg-3">
+         <div class="col-lg-4">
             {% embed 'homepage/_staff_card.html.twig' with {
                image: asset('build/images/r_girault.webp'),
                name: 'Raphaël Girault',
@@ -204,7 +204,7 @@
             {% endembed %}
          </div>
 
-         <div class="col-lg-3">
+         <div class="col-lg-4">
             {% embed 'homepage/_staff_card.html.twig' with {
                image: asset('build/images/j_bellard.webp'),
                name: 'Jules Bellard',
@@ -219,23 +219,6 @@
                   </p>
                   <p>
                      Un objectif qui me touche particulièrement, dans mes valeurs et dans ma passion de l'aviron, que je partage avec tous les supers membres de l'ATM.
-                  </p>
-               {% endblock %}
-            {% endembed %}
-         </div>
-
-         <div class="col-lg-3">
-            {% embed 'homepage/_staff_card.html.twig' with {
-               image: asset('build/images/s_galteau.webp'),
-               name: 'Suzie Galteau',
-               role: 'Accompagnement sportif',
-            } %}
-               {% block description %}
-                  <p>
-                     En Service Civique à l'ATM, ma mission principale est d'accompagner Raphaël, Jules et Thierry au quotidien.
-                  </p>
-                  <p>
-                     Aujourd'hui, l'aviron est un élément central dans ma vie, et je me réjouis de pouvoir travailler avec une équipe en béton et des licenciés qui ont la niaque!
                   </p>
                {% endblock %}
             {% endembed %}
