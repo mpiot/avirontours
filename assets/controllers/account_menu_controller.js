@@ -5,14 +5,14 @@ export default class extends Controller {
 
     toggle(event) {
         event.stopPropagation();
-        this.menuTarget.classList.toggle('nav-account-menu-show');
+        this.element.classList.toggle('nav-account-menu-show');
     }
 
     main() {
-        if (false === this.menuTarget.classList.contains('nav-account-menu-show')) {
+        if (false === this.element.classList.contains('nav-account-menu-show')) {
             return;
         }
 
-        this.menuTarget.classList.remove('nav-account-menu-show');
+        this.element.classList.remove('nav-account-menu-show');
     }
 }
