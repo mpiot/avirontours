@@ -1,8 +1,25 @@
 {% extends 'base.html.twig' %}
 {% set appMenuAutoOpen = false %}
 
+{% block navbar_start %}
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="#practices">Pratiques</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#staff">Encadrants</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#licenses">Licences</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#find-us">Nous trouver</a>
+        </li>
+    </ul>
+{% endblock %}
+
 {% block body %}
-    <div class="mt-n3 mx-n3">
+    <div class="mt-n3 mx-n3" tabindex="0">
         <div id="carousel-practices" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#carousel-practices" data-bs-slide-to="0" class="active"
@@ -62,6 +79,7 @@
             </button>
         </div>
 
+        <span id="practices" class="anchor"></span>
         <div class="row mt-3 mx-3">
             <div class="col-md-7">
                 <h2>Loisir <span class="text-muted">Une activité pour prendre l'air</span></h2>
@@ -157,6 +175,7 @@
 
         <hr class="m-5">
 
+        <span id="staff" class="anchor"></span>
         <div class="row mt-5 mx-3">
             <div class="col-lg-4">
                 {% embed 'homepage/_staff_card.html.twig' with {
@@ -224,6 +243,7 @@
 
         <hr class="m-5">
 
+        <span id="licenses" class="anchor"></span>
         <div class="row row-cols-1 row-cols-lg-5 mx-3 text-center">
             {% for season_category in season_categories %}
                 <div class="col">
@@ -249,6 +269,7 @@
 
         <hr class="m-5">
 
+        <span id="find-us" class="anchor"></span>
         <div class="row mx-3 mb-3">
             <div class="col-md-6 mb-3" {{ stimulus_controller('map', { 'lat': 47.374061602795926, 'lng': 0.7252358447121187, 'zoom': 13, 'marker': true }) }}>
                 <div data-map-target="container" style="height: 360px;"></div>
