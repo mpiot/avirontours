@@ -51,7 +51,7 @@ class MedicalCertificateType extends AbstractType
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])
             ->add('date', DateType::class, [
-                'label' => 'Date',
+                'label' => 'Date du certificat ou de l\'attestation questionnaire santé',
                 'widget' => 'single_text',
             ])
             ->add('file', VichFileType::class, [
