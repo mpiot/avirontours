@@ -1,22 +1,19 @@
 security:
+    # https://symfony.com/doc/current/security/experimental_authenticators.html
     enable_authenticator_manager: true
 
-    encoders:
-        App\Entity\User:
-            algorithm: auto
-        Symfony\Component\Security\Core\User\User: auto
-
-    # https://symfony.com/doc/current/security/experimental_authenticators.html
-    # enable_authenticator_manager: true
+    # https://symfony.com/doc/current/security.html#c-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        app_user_provider:
+        app_users:
             entity:
                 class: App\Entity\User
                 property: username
 
-        logbook_user_provider:
+        logbook_users:
             memory:
                 users:
                     logbook:
@@ -31,11 +28,12 @@ security:
         logbook:
             host: '%logbook_subdomain%'
             pattern: ^/logbook-entry
-            provider: logbook_user_provider
+            provider: logbook_users
             http_basic: ~
 
         main:
-            provider: app_user_provider
+            lazy: true
+            provider: app_users
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -50,9 +48,9 @@ security:
                 # target: app_any_route
 
             remember_me:
-                secret:   '%kernel.secret%'
+                secret: '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
-                path:     /
+                path: /
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             switch_user: true
