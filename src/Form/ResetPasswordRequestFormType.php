@@ -39,13 +39,13 @@ class ResetPasswordRequestFormType extends AbstractType
                     new NotBlank(),
                 ],
             ])
-//            ->add('recaptcha', Recaptcha3Type::class, [
-//                'action_name' => 'reset_password_request',
-//                'mapped' => false,
-//                'constraints' => [
-//                    new Recaptcha3(),
-//                ],
-//            ])
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'action_name' => 'reset_password_request',
+                'mapped' => false,
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
+            ])
         ;
     }
 
