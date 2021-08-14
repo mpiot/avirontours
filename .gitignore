@@ -26,10 +26,6 @@ yarn-error.log
 webpack-stats.json
 ###< symfony/webpack-encore-bundle ###
 
-###> docker ###
-docker-compose.override.yml
-###< docker ###
-
 ###> app ###
 protected_files/*
 ###< app ###

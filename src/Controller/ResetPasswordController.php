@@ -23,6 +23,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use function Symfony\Component\String\u;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
@@ -168,22 +168,15 @@ class ResetPasswordController extends AbstractController
             return $this->redirectToRoute('app_check_email');
         }
 
-        $email = new Email();
-        $email->to($user->getEmail())
-            ->text('')
-            ->setHeaders(
-                $email->getHeaders()
-                    ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                    ->addTextHeader('X-MJ-TemplateID', '1669896')
-                    ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                    ->addTextHeader('X-MJ-Vars', json_encode([
-                        'fullName' => $user->getFullName(),
-                        'resetLink' => $this->generateUrl('app_reset_password', ['token' => $resetToken->getToken()], UrlGeneratorInterface::ABSOLUTE_URL),
-                        'tokenLifetime' => $translator->trans($resetToken->getExpirationMessageKey(), $resetToken->getExpirationMessageData(), 'ResetPasswordBundle'),
-                    ]))
-            )
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject('Demande de réinitialisation de mot de passe')
+            ->htmlTemplate('emails/reset_password_request.html.twig')
+            ->context([
+                'user' => $user,
+                'reset_token' => $resetToken,
+            ])
         ;
-
         $mailer->send($email);
 
         // Store the token object in session for retrieval in check-email route.

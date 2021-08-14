@@ -28,6 +28,7 @@ use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,7 +48,6 @@ class RegistrationController extends AbstractController
         }
 
         $registrationModel = new RegistrationModel();
-        $user = $this->getUser();
         $form = $this->createForm(RegistrationFormType::class, $registrationModel);
         $form->handleRequest($request);
 
@@ -60,19 +60,13 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // Send email
-            $email = new Email();
-            $email->to($user->getEmail())
-                ->text('')
-                ->setHeaders(
-                    $email->getHeaders()
-                        ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                        ->addTextHeader('X-MJ-TemplateID', '1669922')
-                        ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                        ->addTextHeader('X-MJ-Vars', json_encode([
-                            'fullName' => $user->getFullName(),
-                            'username' => $user->getUsername(),
-                        ]))
-                )
+            $email = (new TemplatedEmail())
+                ->to($user->getEmail())
+                ->subject('Inscription à l\'Aviron Tours Métropole')
+                ->htmlTemplate('emails/registration.html.twig')
+                ->context([
+                    'user' => $user,
+                ])
             ;
             $mailer->send($email);
 
@@ -107,18 +101,13 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // Send email
-            $email = new Email();
-            $email->to($this->getUser()->getEmail())
-                ->text('')
-                ->setHeaders(
-                    $email->getHeaders()
-                        ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                        ->addTextHeader('X-MJ-TemplateID', '1669929')
-                        ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                        ->addTextHeader('X-MJ-Vars', json_encode([
-                            'fullName' => $this->getUser()->getFullName(),
-                        ]))
-                )
+            $email = (new TemplatedEmail())
+                ->to($this->getUser()->getEmail())
+                ->subject('Inscription à l\'Aviron Tours Métropole')
+                ->htmlTemplate('emails/renew.html.twig')
+                ->context([
+                    'user' => $this->getUser(),
+                ])
             ;
             $mailer->send($email);
 

@@ -1,0 +1,51 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block body %}
+    <container>
+        <row>
+            <columns>
+                <p>
+                    Bonjour {{ user.fullName }},<br/>
+                    Nous sommes au regret de vous informer que votre certificat médical n'a pas pu être validé par le club.
+                </p>
+
+                <p>
+                    Vous pouvez nous faire parvenir un document valide en mentionnant le nom et prénom du rameur à l'adresse suivante contact@avirontours.fr.
+                </p>
+
+                <p>
+                    Vous trouverez ci-dessous les causes les plus fréquentes de rejet des certificats et des attestations.
+                </p>
+
+                <h5>Certificat</h5>
+                <ul>
+                    <li>Le certificat ne mentionne pas "non contre indication à la pratique de l’aviron en compétition" dans le cas d'une licence compétition</li>
+                    <li>Pour les jeunes, le certificat mentionne uniquement la pratique d'un sport dans un contexte scolaire (collège, lycée, etc...)</li>
+                    <li>Le certificat date de plus d'1 an</li>
+                </ul>
+
+                <h5>Attestation</h5>
+                <ul>
+                    <li>Le document fourni n'est pas daté et/ou signé</li>
+                    <li>Le document fourni n'est pas l'attestation fédérale mais le questionnaire de santé QS Sport - CERFA N°15699*01</li>
+                </ul>
+
+                <h5>Autre</h5>
+                <ul>
+                    <li>Le document est tronqué</li>
+                    <li>Le document fourni n'est ni un certificat, ni une attestation</li>
+                    <li>Une attestation santé non remplie (nom, prénom, date, signature)</li>
+                </ul>
+
+                <p>
+                    En effet, l'association est dans l'obligation de vérifier que les certificats médicaux sont en conformités avec la règlementation (Articles L.231.2 et D.231 du Code du sport et règlement médical de la FFA).
+                </p>
+
+                <p>
+                    Sportivement,<br/>
+                    Aviron Tours Métropole
+                </p>
+            </columns>
+        </row>
+    </container>
+{% endblock %}

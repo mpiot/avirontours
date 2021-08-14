@@ -84,7 +84,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
@@ -111,7 +111,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -138,7 +138,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_domain')]
+            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
