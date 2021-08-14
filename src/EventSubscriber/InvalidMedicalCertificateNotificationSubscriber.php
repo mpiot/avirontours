@@ -21,9 +21,9 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Entity\License;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Workflow\Event\Event;
 
 class InvalidMedicalCertificateNotificationSubscriber implements EventSubscriberInterface
@@ -39,18 +39,13 @@ class InvalidMedicalCertificateNotificationSubscriber implements EventSubscriber
         $user = $license->getUser();
 
         // Send email
-        $email = new Email();
-        $email->to($user->getEmail())
-            ->text('')
-            ->setHeaders(
-                $email->getHeaders()
-                    ->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, RN, NRN, AutoReply')
-                    ->addTextHeader('X-MJ-TemplateID', '1699200')
-                    ->addTextHeader('X-MJ-TemplateLanguage', '1')
-                    ->addTextHeader('X-MJ-Vars', json_encode([
-                        'fullName' => $user->getFullName(),
-                    ]))
-            )
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->subject('Certificat médical invalide')
+            ->htmlTemplate('emails/invalid_certificate.html.twig')
+            ->context([
+                'user' => $user,
+            ])
         ;
         $this->mailer->send($email);
     }

@@ -1,0 +1,18 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block body %}
+    <container>
+        <row>
+            <columns>
+                <p>
+                    Bonjour {{ user.fullName }},<br/>
+                    Voici votre code d'authentification a usage unique:
+                </p>
+
+                <p>
+                    <span class="text-center" style="font-size: 3rem;">{{ user.emailAuthCode }}</span>
+                </p>
+            </columns>
+        </row>
+    </container>
+{% endblock %}

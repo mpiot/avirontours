@@ -26,7 +26,7 @@ security:
             security: false
 
         logbook:
-            host: '%logbook_subdomain%'
+            host: '%env(APP_LOGBOOK_URI)%'
             pattern: ^/logbook-entry
             provider: logbook_users
             http_basic: ~
