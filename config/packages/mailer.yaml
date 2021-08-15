@@ -3,5 +3,3 @@ framework:
         dsn: '%env(MAILER_DSN)%'
         envelope:
             sender: 'Aviron Tours Métropole <no-reply@avirontours.fr>'
-        headers:
-            from: 'Aviron Tours Métropole <no-reply@avirontours.fr>'
