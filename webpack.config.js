@@ -63,10 +63,12 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     .configureDevServerOptions(options => {
-        options.firewall = false;
+        options.allowedHosts = 'all';
         options.https = {
             pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
         };
+
+        delete options.client.host;
     })
 
     .configureBabel((config) => {
