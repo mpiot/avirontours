@@ -20,27 +20,34 @@
     <body class="min-vh-100" {{ stimulus_controller({ 'app-menu': { 'autoOpen': appMenuAutoOpen ?? true }, 'account-menu': {}, 'scrollspy': { 'target': '#navbar', 'offset': '76' } }) }}>
         <header>
             <nav id="navbar" class="navbar navbar-expand navbar-dark fixed-top bg-dark">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="{{ path('homepage') }}">
+                <div class="container-fluid d-flex flex-row">
+                    <a class="navbar-brand order-1 order-sm-0" href="{{ path('homepage') }}">
                         <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
                     </a>
-                    {% block navbar_start %}
-                    {% endblock %}
 
-                    {% block navbar_end %}
-                        {% if app.user is not null %}
-                            <button class="btn ms-auto me-3 py-3" type="button" aria-controls="nav-account-menu" id="nav-account-menu-toggle" data-action="click->account-menu#toggle"></button>
-                        {% else %}
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="{{ path('app_login') }}">
-                                        <span class="fas fa-sign-in-alt"></span>
-                                        <span class="d-none d-md-inline">Se connecter</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        {% endif %}
-                    {% endblock %}
+                    <button class="btn py-3 order-0 order-sm-1 align-self-start me-sm-auto" type="button" aria-controls="nav-app-menu" id="nav-app-menu-toggle" data-action="click->app-menu#toggle"></button>
+
+                    <div class="d-none d-sm-flex order-3 me-sm-auto">
+                        {% block navbar_start %}
+                        {% endblock %}
+                    </div>
+
+                    <div class="order-4">
+                        {% block navbar_end %}
+                            {% if app.user is not null %}
+                                <button class="btn ms-auto me-3 py-3" type="button" aria-controls="nav-account-menu" id="nav-account-menu-toggle" data-action="click->account-menu#toggle"></button>
+                            {% else %}
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" aria-current="page" href="{{ path('app_login') }}">
+                                            <span class="fas fa-sign-in-alt"></span>
+                                            <span class="d-none d-md-inline">Se connecter</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        {% endblock %}
+                    </div>
                 </div>
             </nav>
         </header>
@@ -122,9 +129,7 @@
 
             <main data-action="click->app-menu#main click->account-menu#main">
                 <div class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
-                    <button class="btn ms-2 me-3 py-3" type="button" aria-controls="nav-app-menu" id="nav-app-menu-toggle" data-action="click->app-menu#toggle"></button>
-
-                    <ol class="breadcrumb pt-3">
+                    <ol class="breadcrumb pt-3 ps-3">
                         {% block breadcrumb %}
                             <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
                         {% endblock %}

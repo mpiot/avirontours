@@ -18,7 +18,7 @@ main {
 }
 
 #nav-app-menu-toggle {
-  color: $gray-600;
+  color: $gray-500;
 
     &:focus {
       outline:none !important;
@@ -32,7 +32,7 @@ main {
     }
 
     &:hover {
-      color: $gray-700;
+      color: $white;
 
       &::after {
         @extend %fa-icon;
@@ -55,7 +55,7 @@ main {
 
 .nav-app-menu-show {
   #nav-app-menu-toggle {
-    color: $dark;
+    color: $white;
 
     &::after {
       @extend %fa-icon;
