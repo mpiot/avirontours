@@ -33,7 +33,7 @@ set('git_tty', true);
 
 // Shared files/dirs between deploys
 set('shared_files', ['config/secrets/prod/prod.decrypt.private.php']);
-set('shared_dirs', ['var/log', 'var/sessions']);
+set('shared_dirs', ['var/log', 'var/sessions', 'protected_files']);
 
 // Writable dirs by web server
 set('writable_dirs', ['var']);

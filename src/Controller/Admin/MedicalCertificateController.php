@@ -31,7 +31,7 @@ use Vich\UploaderBundle\Handler\DownloadHandler;
 #[Security('is_granted("ROLE_USER_ADMIN")')]
 class MedicalCertificateController extends AbstractController
 {
-    #[Route(path: '/{id}/dowload', name: 'medical_certificate_download', methods: ['GET'])]
+    #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]
     public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {
         return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file', null, null, false);

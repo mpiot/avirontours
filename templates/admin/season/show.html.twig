@@ -180,7 +180,7 @@
                                         {% endfor %}
                                     </td>
                                     <td>
-                                        <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}">
+                                        <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" data-turbo="false">
                                             <span class="far fa-file-pdf"></span> Certificat
                                         </a>
                                     </td>
