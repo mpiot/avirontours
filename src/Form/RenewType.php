@@ -44,6 +44,7 @@ class RenewType extends AbstractType
             ])
             ->remove('seasonCategory')
             ->remove('user')
+            ->remove('logbookEntryLimit')
             ->get('medicalCertificate')->get('file')->setRequired(true)
         ;
     }
