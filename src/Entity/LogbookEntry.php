@@ -255,7 +255,8 @@ class LogbookEntry
         if ($numberCrewMembers !== $this->getShell()->getCrewSize()) {
             $context->buildViolation('Le nombre de membre d\'équipage ne correspond pas au nombre de place.')
                 ->atPath('crewMembers')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 
@@ -280,7 +281,8 @@ class LogbookEntry
             $context->buildViolation('Certains membres d\'équipage ont atteint leur limite de nombre de sorties: {{ invalidMembers }}.')
                 ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
                 ->atPath('crewMembers')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

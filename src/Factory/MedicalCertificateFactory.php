@@ -51,6 +51,14 @@ final class MedicalCertificateFactory extends ModelFactory
         ];
     }
 
+    protected function initialize(): self
+    {
+        // see https://github.com/zenstruck/foundry#initialization
+        return $this
+            // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
+        ;
+    }
+
     private function getUploadedFile(): UploadedFile
     {
         $file = 'medical-certificate.pdf';
@@ -65,14 +73,6 @@ final class MedicalCertificateFactory extends ModelFactory
             null,
             true
         );
-    }
-
-    protected function initialize(): self
-    {
-        // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
-        ;
     }
 
     protected static function getClass(): string

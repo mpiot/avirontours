@@ -40,19 +40,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class LogbookEntryFactory extends ModelFactory
 {
-    protected function getDefaults(): array
-    {
-        $shell = ShellFactory::new();
-        $finished = self::faker()->boolean();
-
-        return [
-            'shell' => $shell,
-            'endAt' => $finished ? new \DateTime('+1 hour') : null,
-            'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
-            'shellDamages' => ShellDamageFactory::new()->many(0, 3),
-        ];
-    }
-
     public function withActiveCrew(int $number): self
     {
         $licences = LicenseFactory::new()->annualActive()->many($number);
@@ -107,6 +94,19 @@ final class LogbookEntryFactory extends ModelFactory
         return $this->addState([
             'shellDamages' => new ArrayCollection(),
         ]);
+    }
+
+    protected function getDefaults(): array
+    {
+        $shell = ShellFactory::new();
+        $finished = self::faker()->boolean();
+
+        return [
+            'shell' => $shell,
+            'endAt' => $finished ? new \DateTime('+1 hour') : null,
+            'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
+            'shellDamages' => ShellDamageFactory::new()->many(0, 3),
+        ];
     }
 
     protected function initialize(): self

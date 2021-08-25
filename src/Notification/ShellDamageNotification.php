@@ -47,24 +47,24 @@ class ShellDamageNotification extends Notification implements ChatNotificationIn
         $options = (new DiscordOptions())
             ->addEmbed(
                 (new DiscordEmbed())
-                ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15_489_088 : 11_184_810)
-                ->title('Nouvelle avarie')
-                ->addField(
+                    ->color(Notification::IMPORTANCE_URGENT === $this->getImportance() ? 15_489_088 : 11_184_810)
+                    ->title('Nouvelle avarie')
+                    ->addField(
                     (new DiscordFieldEmbedObject())
-                    ->name('Bateau')
-                    ->value($this->shellDamage->getShell()->getName())
-                    ->inline(true)
+                        ->name('Bateau')
+                        ->value($this->shellDamage->getShell()->getName())
+                        ->inline(true)
                 )
-                ->addField(
+                    ->addField(
                     (new DiscordFieldEmbedObject())
-                    ->name('Catégorie')
-                    ->value($this->shellDamage->getCategory()->getName())
-                    ->inline(true)
+                        ->name('Catégorie')
+                        ->value($this->shellDamage->getCategory()->getName())
+                        ->inline(true)
                 )
-                ->addField(
+                    ->addField(
                     (new DiscordFieldEmbedObject())
-                    ->name('Desription')
-                    ->value($this->shellDamage->getDescription() ?? '-')
+                        ->name('Desription')
+                        ->value($this->shellDamage->getDescription() ?? '-')
                 )
             )
         ;
@@ -79,7 +79,8 @@ class ShellDamageNotification extends Notification implements ChatNotificationIn
         $message = EmailMessage::fromNotification($this, $recipient);
         $message->getMessage()
             ->htmlTemplate('emails/shell_damage_notification.html.twig')
-            ->context(['shellDamage' => $this->shellDamage]);
+            ->context(['shellDamage' => $this->shellDamage])
+        ;
 
         return $message;
     }

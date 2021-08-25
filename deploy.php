@@ -47,7 +47,8 @@ host('tethys.avirontours.fr')
     ->set('deploy_path', '/var/www/{{application}}')
     ->roles('app')
     ->stage('prod')
-    ->set('branch', 'develop');
+    ->set('branch', 'develop')
+;
 
 // Tasks
 desc('Deploy your project');

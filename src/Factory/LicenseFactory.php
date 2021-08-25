@@ -40,25 +40,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class LicenseFactory extends ModelFactory
 {
-    protected function getDefaults(): array
-    {
-        return [
-            'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
-            'user' => UserFactory::new(),
-            'medicalCertificate' => MedicalCertificateFactory::new(),
-            'marking' => self::faker()->randomElement([
-                null,
-                ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
-                ['wait_medical_certificate_validation' => 1, 'payment_validated' => 1],
-                ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1],
-                ['medical_certificate_rejected' => 1, 'payment_validated' => 1],
-                ['medical_certificate_validated' => 1, 'wait_payment_validation' => 1],
-                ['medical_certificate_validated' => 1, 'payment_validated' => 1],
-                ['validated' => 1],
-            ]),
-        ];
-    }
-
     public function annualActive(): self
     {
         return $this->addState([
@@ -111,6 +92,25 @@ final class LicenseFactory extends ModelFactory
         return $this->addState([
             'marking' => null,
         ]);
+    }
+
+    protected function getDefaults(): array
+    {
+        return [
+            'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
+            'user' => UserFactory::new(),
+            'medicalCertificate' => MedicalCertificateFactory::new(),
+            'marking' => self::faker()->randomElement([
+                null,
+                ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
+                ['wait_medical_certificate_validation' => 1, 'payment_validated' => 1],
+                ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1],
+                ['medical_certificate_rejected' => 1, 'payment_validated' => 1],
+                ['medical_certificate_validated' => 1, 'wait_payment_validation' => 1],
+                ['medical_certificate_validated' => 1, 'payment_validated' => 1],
+                ['validated' => 1],
+            ]),
+        ];
     }
 
     protected function initialize(): self

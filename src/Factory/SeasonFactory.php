@@ -39,16 +39,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class SeasonFactory extends ModelFactory
 {
-    protected function getDefaults(): array
-    {
-        return [
-            'name' => self::faker()->year(),
-            'active' => self::faker()->boolean(),
-            'subscriptionEnabled' => self::faker()->boolean(),
-            'seasonCategories' => SeasonCategoryFactory::new()->many(2, 5),
-        ];
-    }
-
     public function active(): self
     {
         return $this->addState(['active' => true]);
@@ -77,6 +67,16 @@ final class SeasonFactory extends ModelFactory
     public function seasonCategoriesNotDisplayed(): self
     {
         return $this->addState(['seasonCategories' => SeasonCategoryFactory::new()->notDisplayed()->many(2, 5)]);
+    }
+
+    protected function getDefaults(): array
+    {
+        return [
+            'name' => self::faker()->year(),
+            'active' => self::faker()->boolean(),
+            'subscriptionEnabled' => self::faker()->boolean(),
+            'seasonCategories' => SeasonCategoryFactory::new()->many(2, 5),
+        ];
     }
 
     protected function initialize(): self

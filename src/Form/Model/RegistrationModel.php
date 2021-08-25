@@ -118,7 +118,8 @@ class RegistrationModel
         if ($age < 18 && empty($this->phoneNumber)) {
             $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
                 ->atPath('phoneNumber')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

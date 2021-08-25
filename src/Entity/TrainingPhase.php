@@ -191,7 +191,8 @@ class TrainingPhase
         if ($date->add($this->duration) < $date->add(new \DateInterval('PT10S'))) {
             $context->buildViolation('Une phase doit durer au moins 10 secondes.')
                 ->atPath('duration')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 

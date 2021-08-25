@@ -28,9 +28,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -660,6 +660,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->trainings;
     }
 
+    #[Assert\Callback]
+    public function validatePhoneNumber(ExecutionContextInterface $context)
+    {
+        if (null === $this->birthday) {
+            return;
+        }
+
+        if ($this->getAge() < 18 && empty($this->phoneNumber)) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
+                ->atPath('phoneNumber')
+                ->addViolation()
+            ;
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function defineUsername(): void
+    {
+        $slugger = new AsciiSlugger('fr');
+        $firstName = $slugger->slug($this->firstName)->lower();
+        $lastName = $slugger->slug($this->lastName)->lower();
+
+        $this->username = "{$firstName}.{$lastName}";
+    }
+
     public static function getAvailableCivilities(): array
     {
         return [
@@ -674,32 +702,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             'Femme' => self::GENDER_FEMALE,
             'Homme' => self::GENDER_MALE,
         ];
-    }
-
-    #[Assert\Callback]
-    public function validatePhoneNumber(ExecutionContextInterface $context)
-    {
-        if (null === $this->birthday) {
-            return;
-        }
-
-        if ($this->getAge() < 18 && empty($this->phoneNumber)) {
-            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
-                ->atPath('phoneNumber')
-                ->addViolation();
-        }
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function defineUsername(): void
-    {
-        $slugger = new AsciiSlugger('fr');
-        $firstName = $slugger->slug($this->firstName)->lower();
-        $lastName = $slugger->slug($this->lastName)->lower();
-
-        $this->username = "$firstName.$lastName";
     }
 }

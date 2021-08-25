@@ -53,12 +53,14 @@ class LicenseType extends AbstractType
                     $qb = $repository->createQueryBuilder('season_category')
                         ->innerJoin('season_category.season', 'season')
                         ->orderBy('season.name', 'DESC')
-                        ->addOrderBy('season_category.name', 'ASC');
+                        ->addOrderBy('season_category.name', 'ASC')
+                    ;
 
                     if (null !== $season = $options['season']) {
                         $qb
                             ->where('season = :season')
-                            ->setParameter('season', $season);
+                            ->setParameter('season', $season)
+                        ;
                     }
 
                     return $qb;

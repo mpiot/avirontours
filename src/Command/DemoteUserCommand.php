@@ -34,12 +34,13 @@ class DemoteUserCommand extends RoleCommand
     {
         parent::configure();
         $this
-            ->setDescription('Remove a role to specified user');
+            ->setDescription('Remove a role to specified user')
+        ;
     }
 
     protected function executeRoleCommand(EntityManagerInterface $entityManager, SymfonyStyle $io, $email, $role): int
     {
-        /* @var User $user */
+        /** @var User $user */
         $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if (null === $user) {

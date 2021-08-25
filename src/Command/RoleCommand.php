@@ -38,13 +38,16 @@ abstract class RoleCommand extends Command
         parent::__construct();
     }
 
+    abstract protected function executeRoleCommand(EntityManagerInterface $entityManager, SymfonyStyle $io, $email, $role): int;
+
     protected function configure(): void
     {
         $this
             ->setDefinition([
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('role', InputArgument::OPTIONAL, 'The role'),
-            ]);
+            ])
+        ;
     }
 
     /**
@@ -119,6 +122,4 @@ abstract class RoleCommand extends Command
 
         return $exitCode;
     }
-
-    abstract protected function executeRoleCommand(EntityManagerInterface $entityManager, SymfonyStyle $io, $email, $role): int;
 }

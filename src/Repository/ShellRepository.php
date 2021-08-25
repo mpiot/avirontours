@@ -41,7 +41,8 @@ class ShellRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('shell')
             ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
-            ->getQuery();
+            ->getQuery()
+        ;
 
         return $query->getResult();
     }
@@ -62,7 +63,8 @@ class ShellRepository extends ServiceEntityRepository
                 'p30days' => $today->modify('-30 days')->format('Y-m-d'),
             ])
             ->getQuery()
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         return $query->getResult();
     }

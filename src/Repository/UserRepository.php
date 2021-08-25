@@ -111,7 +111,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 'p30days' => $today->modify('-30 days')->format('Y-m-d'),
             ])
             ->getQuery()
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         return $query->getResult();
     }
@@ -132,7 +133,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 'p30days' => $today->modify('-30 days')->format('Y-m-d'),
             ])
             ->getQuery()
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         return $query->getResult();
     }

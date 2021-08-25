@@ -264,7 +264,8 @@ class Training
         if ($date->add($this->duration) < $date->add(new \DateInterval('PT5M'))) {
             $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
                 ->atPath('duration')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 

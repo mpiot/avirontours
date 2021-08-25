@@ -40,18 +40,6 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class ShellDamageFactory extends ModelFactory
 {
-    protected function getDefaults(): array
-    {
-        return [
-            'category' => ShellDamageCategoryFactory::new(),
-            'shell' => ShellFactory::new(),
-            'description' => self::faker()->text(),
-            'note' => self::faker()->text(),
-            'repairStartAt' => self::faker()->optional()->dateTimeThisYear(),
-            'repairEndAt' => self::faker()->optional()->dateTimeThisYear(),
-        ];
-    }
-
     public function highlyDamaged(): self
     {
         return $this->addState([
@@ -78,6 +66,18 @@ final class ShellDamageFactory extends ModelFactory
         return $this->addState([
             'repairEndAt' => null,
         ]);
+    }
+
+    protected function getDefaults(): array
+    {
+        return [
+            'category' => ShellDamageCategoryFactory::new(),
+            'shell' => ShellFactory::new(),
+            'description' => self::faker()->text(),
+            'note' => self::faker()->text(),
+            'repairStartAt' => self::faker()->optional()->dateTimeThisYear(),
+            'repairEndAt' => self::faker()->optional()->dateTimeThisYear(),
+        ];
     }
 
     protected function initialize(): self

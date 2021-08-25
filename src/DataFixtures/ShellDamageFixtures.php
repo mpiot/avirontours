@@ -43,19 +43,19 @@ class ShellDamageFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    private function getShellDamageData(): array
-    {
-        return [
-            [$this->getReference('ShellDamage Category High'), $this->getReference('Single highly damaged'), 'A description...'],
-            [$this->getReference('ShellDamage Category Medium'), $this->getReference('Single medium damaged'), 'A description...'],
-        ];
-    }
-
     public function getDependencies()
     {
         return [
             ShellDamageCategoryFixtures::class,
             ShellFixtures::class,
+        ];
+    }
+
+    private function getShellDamageData(): array
+    {
+        return [
+            [$this->getReference('ShellDamage Category High'), $this->getReference('Single highly damaged'), 'A description...'],
+            [$this->getReference('ShellDamage Category Medium'), $this->getReference('Single medium damaged'), 'A description...'],
         ];
     }
 }

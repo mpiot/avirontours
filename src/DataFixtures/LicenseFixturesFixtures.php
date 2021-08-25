@@ -55,6 +55,14 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
         $manager->flush();
     }
 
+    public function getDependencies()
+    {
+        return [
+            SeasonFixtures::class,
+            UserFixtures::class,
+        ];
+    }
+
     private function getSeasonData(): array
     {
         return [
@@ -64,14 +72,6 @@ class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterfa
             [$this->getReference('2019-Adulte'), $this->getReference('on-water.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
             [$this->getReference('2019-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
             [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
-        ];
-    }
-
-    public function getDependencies()
-    {
-        return [
-            SeasonFixtures::class,
-            UserFixtures::class,
         ];
     }
 

@@ -71,7 +71,8 @@ class SeasonRepository extends ServiceEntityRepository
             ->innerJoin('licenses.user', 'user')
             ->where('user = :user')
             ->setParameter('user', $user)
-            ->getQuery();
+            ->getQuery()
+        ;
 
         return $query->getArrayResult();
     }

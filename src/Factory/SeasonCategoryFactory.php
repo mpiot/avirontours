@@ -39,6 +39,16 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class SeasonCategoryFactory extends ModelFactory
 {
+    public function displayed(): self
+    {
+        return $this->addState(['displayed' => true]);
+    }
+
+    public function notDisplayed(): self
+    {
+        return $this->addState(['displayed' => false]);
+    }
+
     protected function getDefaults(): array
     {
         return [
@@ -48,16 +58,6 @@ final class SeasonCategoryFactory extends ModelFactory
             'description' => self::faker()->text(),
             'displayed' => self::faker()->boolean(0.8),
         ];
-    }
-
-    public function displayed(): self
-    {
-        return $this->addState(['displayed' => true]);
-    }
-
-    public function notDisplayed(): self
-    {
-        return $this->addState(['displayed' => false]);
     }
 
     protected function initialize(): self

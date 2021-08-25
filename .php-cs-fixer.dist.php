@@ -21,6 +21,7 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude('bin')
     ->exclude('config')
     ->exclude('migrations')
+    ->exclude('node_modules')
     ->exclude('public')
     ->notName('Kernel.php')
     ->notName('bootstrap.php')
@@ -31,27 +32,66 @@ $finder = (new PhpCsFixer\Finder())
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@DoctrineAnnotation' => true,
+        // Sets
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHP80Migration' => true,
-        '@PHP80Migration:risky' => true,
-        'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
+        // Alias
         'mb_str_functions' => true,
-        'phpdoc_to_return_type' => true,
-        'align_multiline_comment' => ['comment_type' => 'all_multiline'],
-        'array_indentation' => true,
-        'blank_line_before_statement' => ['statements' => ['break', 'case', 'continue', 'declare', 'default', 'exit', 'goto', 'include', 'include_once', 'require', 'require_once', 'return', 'switch', 'throw', 'try']],
-        'heredoc_to_nowdoc' => true,
+        // Class Notation
+        'no_php4_constructor' => true,
+        'ordered_class_elements' => ['order' => [
+            'use_trait',
+            'constant_public',
+            'constant_protected',
+            'constant_private',
+            'property_public_static',
+            'property_protected_static',
+            'property_private_static',
+            'property',
+            'construct',
+            'destruct',
+            'magic',
+            'method_public_abstract',
+            'method_protected_abstract',
+            'method_public',
+            'method_protected',
+            'method_private',
+            'method_public_abstract_static',
+            'method_protected_abstract_static',
+            'method_public_static',
+            'method_protected_static',
+            'method_private_static'
+        ]],
+        // Comment
+        'comment_to_phpdoc' => true,
+        'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
         'multiline_comment_opening_closing' => true,
-        'no_null_property_initialization' => true,
+        // Control Structure
         'no_superfluous_elseif' => true,
         'no_useless_else' => true,
-        'no_useless_return' => true,
-        'operator_linebreak' => ['only_booleans' => true],
+        // Function Notation
+        'no_unreachable_default_argument_value' => true,
+        // PHPDoc
+        'align_multiline_comment' => ['comment_type' => 'all_multiline'],
+        'phpdoc_order' => true,
         'phpdoc_var_annotation_correct_order' => true,
+        // PHPUnit
+        'php_unit_strict' => true,
+        // String Notation
+        'explicit_string_variable' => true,
+        'no_useless_return' => true,
         'return_assignment' => true,
-        'single_line_throw' => true,
+        // Semicolon
+        'multiline_whitespace_before_semicolons' => ['strategy' => 'new_line_for_chained_calls'],
+        // Strict
+        'strict_comparison' => true,
+        'strict_param' => true,
+        // String Notation
+        'heredoc_to_nowdoc' => true,
+        'simple_to_complex_string_variable' => true,
+        // Whitespace
+        'array_indentation' => true,
+        'blank_line_before_statement' => ['statements' => ['break', 'case', 'continue', 'declare', 'default', 'exit', 'goto', 'include', 'include_once', 'require', 'require_once', 'return', 'switch', 'throw', 'try']],
+        'method_chaining_indentation' => true,
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);

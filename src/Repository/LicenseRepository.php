@@ -52,7 +52,8 @@ class LicenseRepository extends ServiceEntityRepository
             ->orderBy('season.name', 'DESC')
             ->setParameter('user', $user)
             ->getQuery()
-            ->setMaxResults(1);
+            ->setMaxResults(1)
+        ;
 
         return $query->getOneOrNullResult();
     }

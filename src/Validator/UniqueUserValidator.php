@@ -37,7 +37,8 @@ class UniqueUserValidator extends ConstraintValidator
         if (!empty($users)) {
             $this->context->buildViolation($constraint->message)
                 ->atPath('firstName')
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }

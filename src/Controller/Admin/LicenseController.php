@@ -109,7 +109,8 @@ class LicenseController extends AbstractController
             $licenseWorkflow
                 ->apply($license, $request->request->get('transition'), [
                     'time' => date('y-m-d H:i:s'),
-                ]);
+                ])
+            ;
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');

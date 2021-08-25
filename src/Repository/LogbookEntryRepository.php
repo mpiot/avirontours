@@ -75,7 +75,8 @@ class LogbookEntryRepository extends ServiceEntityRepository
                 'today' => $today->format('Y-m-d'),
                 'lastDay' => $today->modify('-'.$nbMonths.' months')->modify('first day of this month')->format('Y-m-d'),
             ])
-            ->getQuery();
+            ->getQuery()
+        ;
 
         return $query->getResult();
     }

@@ -51,7 +51,7 @@ class LogbookEntryFinishType extends AbstractType
         $builder->get('coveredDistance')->setRequired(true);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
-            /* @var LogbookEntry $data */
+            /** @var LogbookEntry $data */
             $data = $event->getData();
 
             $data->setEndAt(new \DateTime());

@@ -48,19 +48,19 @@ class LogbookFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    private function getShellData(): array
-    {
-        return [
-            [$this->getReference('Double'), [$this->getReference('on-water.user'), $this->getReference('super-admin.user')], new \DateTime('+1 hour'), 10],
-            [$this->getReference('Single medium damaged'), [$this->getReference('admin.user')], null, null],
-        ];
-    }
-
     public function getDependencies()
     {
         return [
             UserFixtures::class,
             ShellFixtures::class,
+        ];
+    }
+
+    private function getShellData(): array
+    {
+        return [
+            [$this->getReference('Double'), [$this->getReference('on-water.user'), $this->getReference('super-admin.user')], new \DateTime('+1 hour'), 10],
+            [$this->getReference('Single medium damaged'), [$this->getReference('admin.user')], null, null],
         ];
     }
 }

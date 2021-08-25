@@ -52,7 +52,8 @@ class CrewAvailableValidator extends ConstraintValidator
         if (!empty($unavailableUsers)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', implode(', ', $unavailableUsers))
-                ->addViolation();
+                ->addViolation()
+            ;
         }
     }
 }
