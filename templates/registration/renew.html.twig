@@ -11,18 +11,6 @@
 {% block body %}
     <h1>Réinscription pour la saison {{ season_category.season.name }} - {{ season_category.name }}</h1>
 
-    <div class="alert alert-info" role="alert">
-        <h2>Le document à fournir doit être un des deux suivant:</h2>
-        <ul>
-            <li>Un <b>certificat médical</b> d'aptitude à la pratique de l'aviron de moins d'1an</li>
-            <li>Une <b>attestation</b> questionnaire santé, et non pas le questionnaire santé lui même</li>
-        </ul>
-
-        <a href="{{ asset('files/ffaviron-fiche-pratique-certificats-medicaux.pdf') }}" class="btn btn-primary">
-            <span class="fas fa-file-pdf"></span> Bien comprendre quel document fournir
-        </a>
-    </div>
-
     <div class="card border-0 shadow mt-3">
         <div class="card-body">
             {{ form_start(form) }}
@@ -38,20 +26,29 @@
                     {{ form_row(form.medicalCertificate.file) }}
 
                     <div>
+                        <div class="alert alert-info" role="alert">
+                            <span class="fas fa-info-circle"></span>
+                            Document à fournir:
+                            <ul>
+                                <li>Un <b>certificat médical</b> d'aptitude à la pratique de l'aviron de moins d'1an</li>
+                                <li>Une <b>attestation</b> questionnaire santé (non pas le questionnaire santé lui même)</li>
+                            </ul>
+                        </div>
+
                         <ul>
                             <li>
-                                <a href="{{ asset('files/cerfa-15699-01-1-questionnaire-de-sante-qs-sport.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Questionnaire santé
+                                <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport-pdf.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ asset('files/ffaviron-attestation-questionnaire-de-sante-qs-sport.docx') }}">
-                                    <span class="far fa-file-word"></span> Attestation questionnaire santé (Word)
+                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé (majeurs et mineurs)
                                 </a>
                             </li>
                         </ul>
