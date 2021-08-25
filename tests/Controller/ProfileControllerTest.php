@@ -128,10 +128,8 @@ class ProfileControllerTest extends AppWebTestCase
 
     public function testEditProfileWithoutPhoneNumberForUnderEighteen(): void
     {
-        $user = UserFactory::createOne([
-            'birthday' => UserFactory::faker()->dateTimeBetween('-17 years', '-11 years'),
-            'phoneNumber' => '06 00 00 00 00',
-        ]);
+        $user = UserFactory::new()->minor()->create();
+
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'on-water.user');

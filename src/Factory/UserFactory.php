@@ -41,6 +41,21 @@ final class UserFactory extends ModelFactory
 {
     public const PASSWORD = 'engage';
 
+    public function major(): self
+    {
+        return $this->addState([
+            'birthday' => self::faker()->dateTimeBetween('-80 years', '-20 years'),
+        ]);
+    }
+
+    public function minor(): self
+    {
+        return $this->addState([
+            'birthday' => self::faker()->dateTimeBetween('-17 years', '-11 years'),
+            'phoneNumber' => self::faker()->phoneNumber(),
+        ]);
+    }
+
     protected function getDefaults(): array
     {
         return [
@@ -49,7 +64,7 @@ final class UserFactory extends ModelFactory
             'gender' => self::faker()->randomElement(User::getAvailableGenders()),
             'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
-            'birthday' => self::faker()->dateTimeBetween('-80 years', '-11 years'),
+            'birthday' => self::faker()->dateTimeBetween('-80 years', '-20 years'),
             'laneNumber' => '5',
             'laneType' => 'Avenue',
             'laneName' => 'de Florence',
