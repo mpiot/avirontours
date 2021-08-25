@@ -139,6 +139,86 @@ class RegistrationControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assert()->count(0);
     }
 
+    public function testRegistrationWithoutPhoneNumberForUnderEighteen(): void
+    {
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form([
+            'registration_form[gender]' => 'm',
+            'registration_form[firstName]' => 'John',
+            'registration_form[lastName]' => 'Doe',
+            'registration_form[email]' => 'john.doe@avirontours.fr',
+            'registration_form[phoneNumber]' => '',
+            'registration_form[plainPassword][first]' => 'engage',
+            'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
+            'registration_form[address][laneNumber]' => '100',
+            'registration_form[address][laneType]' => 'Rue',
+            'registration_form[address][laneName]' => 'du test',
+            'registration_form[address][postalCode]' => '01000',
+            'registration_form[address][city]' => 'One City',
+            'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration_form[agreeSwim]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[partnersEmailAllowed]' => 1,
+        ]);
+        $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $crawler = $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un numéro de téléphone.', $crawler->filter('#registration_form_phoneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        UserFactory::repository()->assert()->count(0);
+        LicenseFactory::repository()->assert()->count(0);
+    }
+
+    public function testRegistrationWithoutPhoneNumberOverEighteen(): void
+    {
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form([
+            'registration_form[gender]' => 'm',
+            'registration_form[firstName]' => 'John',
+            'registration_form[lastName]' => 'Doe',
+            'registration_form[email]' => 'john.doe@avirontours.fr',
+            'registration_form[phoneNumber]' => '',
+            'registration_form[plainPassword][first]' => 'engage',
+            'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
+            'registration_form[address][laneNumber]' => '100',
+            'registration_form[address][laneType]' => 'Rue',
+            'registration_form[address][laneName]' => 'du test',
+            'registration_form[address][postalCode]' => '01000',
+            'registration_form[address][city]' => 'One City',
+            'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
+            'registration_form[agreeSwim]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[partnersEmailAllowed]' => 1,
+        ]);
+        $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $client->submit($form);
+
+        $this->assertResponseRedirects();
+        UserFactory::repository()->assert()->count(1);
+        LicenseFactory::repository()->assert()->count(1);
+    }
+
     public function testRegistrationTwice(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();

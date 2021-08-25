@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -44,7 +45,7 @@ class ProfileControllerTest extends AppWebTestCase
         yield ['GET', '/profile/edit-password'];
     }
 
-    public function testProfileShow(): void
+    public function testShowProfile(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -54,7 +55,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testProfileEditProfile(): void
+    public function testEditProfile(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -92,7 +93,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertTrue($user->getPartnersEmailAllowed());
     }
 
-    public function testProfileEditProfileWithoutData(): void
+    public function testEditProfileWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -123,6 +124,29 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_postalCode')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(8, $crawler->filter('.invalid-feedback'));
+    }
+
+    public function testEditProfileWithoutPhoneNumberForUnderEighteen(): void
+    {
+        $user = UserFactory::createOne([
+            'birthday' => UserFactory::faker()->dateTimeBetween('-17 years', '-11 years'),
+            'phoneNumber' => '06 00 00 00 00',
+        ]);
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'on-water.user');
+        $client->loginUser($user->object());
+        $client->request('GET', '/profile/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Modifier', [
+            'profile[phoneNumber]' => '',
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un numéro de téléphone.', $crawler->filter('#profile_phoneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
     }
 
     public function testEditPassword(): void

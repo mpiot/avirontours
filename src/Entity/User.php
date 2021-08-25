@@ -28,6 +28,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -673,6 +674,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             'Femme' => self::GENDER_FEMALE,
             'Homme' => self::GENDER_MALE,
         ];
+    }
+
+    #[Assert\Callback]
+    public function validatePhoneNumber(ExecutionContextInterface $context)
+    {
+        if (null === $this->birthday) {
+            return;
+        }
+
+        if ($this->getAge() < 18 && empty($this->phoneNumber)) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
+                ->atPath('phoneNumber')
+                ->addViolation();
+        }
     }
 
     /**

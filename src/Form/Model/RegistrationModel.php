@@ -27,72 +27,49 @@ use App\Entity\User;
 use App\Validator as AppAssert;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[AppAssert\UniqueUser]
 class RegistrationModel
 {
-    /**
-     * @Assert\NotBlank
-     * @Assert\Email
-     */
+    #[Assert\NotBlank]
+    #[Assert\Email]
     public ?string $email = null;
 
     public ?string $phoneNumber = null;
 
-    /**
-     * @Assert\NotBlank
-     * @Assert\Length(min="6", max="4096")
-     */
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 6, max: 4096)]
     public ?string $plainPassword = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $gender = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $firstName = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $lastName = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?\DateTime $birthday = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $laneNumber = null;
 
-    /**
-     * @Assert\NotNull
-     */
+    #[Assert\NotNull]
     public ?string $laneType = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $laneName = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $postalCode = null;
 
-    /**
-     * @Assert\NotBlank
-     */
+    #[Assert\NotBlank]
     public ?string $city = null;
 
-    /**
-     * @Assert\Valid
-     */
+    #[Assert\Valid]
     public ?MedicalCertificate $medicalCertificate = null;
 
     public ?bool $federationEmailAllowed = false;
@@ -128,5 +105,20 @@ class RegistrationModel
         ;
 
         return $user;
+    }
+
+    #[Assert\Callback]
+    public function validatePhoneNumber(ExecutionContextInterface $context)
+    {
+        if (null === $this->birthday) {
+            return;
+        }
+
+        $age = $this->birthday->diff(new \DateTime())->y;
+        if ($age < 18 && empty($this->phoneNumber)) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
+                ->atPath('phoneNumber')
+                ->addViolation();
+        }
     }
 }
