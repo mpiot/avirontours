@@ -103,7 +103,7 @@ class RegistrationController extends AbstractController
             // Send email
             $email = (new TemplatedEmail())
                 ->to($this->getUser()->getEmail())
-                ->subject('Inscription à l\'Aviron Tours Métropole')
+                ->subject('Réinscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/renew.html.twig')
                 ->context([
                     'user' => $this->getUser(),
