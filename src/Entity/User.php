@@ -125,7 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[Assert\NotBlank]
-    private $laneName;
+    private $laneName = null;
 
     /**
      * @ORM\Column(type="string", length=5, nullable=true)
@@ -448,7 +448,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setLaneName(?string $laneName): self
     {
         if (null !== $laneName) {
-            $laneName = u($laneName)->lower()->title(true);
+            $laneName = u($laneName)->lower()->title(true)->toString();
         }
 
         $this->laneName = $laneName;
@@ -476,7 +476,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setCity(?string $city): self
     {
         if (null !== $city) {
-            $city = u($city)->lower()->title(true);
+            $city = u($city)->lower()->title(true)->toString();
         }
 
         $this->city = $city;

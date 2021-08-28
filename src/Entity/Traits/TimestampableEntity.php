@@ -22,6 +22,7 @@ namespace App\Entity\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 trait TimestampableEntity
 {
@@ -30,6 +31,7 @@ trait TimestampableEntity
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
+    #[Assert\DisableAutoMapping]
     protected $createdAt;
 
     /**
@@ -37,6 +39,7 @@ trait TimestampableEntity
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
+    #[Assert\DisableAutoMapping]
     protected $updatedAt;
 
     public function setCreatedAt(\DateTime $createdAt)

@@ -87,6 +87,7 @@ class Shell
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Assert\DisableAutoMapping]
     private ?string $abbreviation = null;
 
     /**
