@@ -32,7 +32,7 @@ class ShellMileageUpdater
     private ?float $oldCoveredDistance = null;
     private ?float $newCoveredDistance = null;
 
-    public function prePersist(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
+    public function prePersist(LogbookEntry $logbookEntry): void
     {
         if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
             return;
@@ -85,7 +85,7 @@ class ShellMileageUpdater
         $args->getObjectManager()->flush();
     }
 
-    public function preRemove(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
+    public function preRemove(LogbookEntry $logbookEntry): void
     {
         if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
             return;

@@ -246,7 +246,7 @@ class LogbookEntry
     }
 
     #[Assert\Callback(groups: ['start'])]
-    public function validateCrewLength(ExecutionContextInterface $context, $payload): void
+    public function validateCrewLength(ExecutionContextInterface $context): void
     {
         if (null === $this->getShell()) {
             return;

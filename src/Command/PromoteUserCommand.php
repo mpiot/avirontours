@@ -47,7 +47,7 @@ class PromoteUserCommand extends RoleCommand
             $io->error(sprintf('User "%s" do not exists.', $email));
         }
 
-        if (false === ($key = array_search($role, $user->getRoles(), true))) {
+        if (false === array_search($role, $user->getRoles(), true)) {
             $roles = $user->getRoles();
             $roles[] = $role;
             $user->setRoles($roles);

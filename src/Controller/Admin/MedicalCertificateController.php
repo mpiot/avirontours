@@ -34,6 +34,6 @@ class MedicalCertificateController extends AbstractController
     #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]
     public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
     {
-        return $downloadHandler->downloadObject($medicalCertificate, $fileField = 'file', null, null, false);
+        return $downloadHandler->downloadObject($medicalCertificate, 'file', null, null, false);
     }
 }

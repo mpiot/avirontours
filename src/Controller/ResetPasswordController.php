@@ -33,7 +33,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use function Symfony\Component\String\u;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
@@ -51,7 +50,7 @@ class ResetPasswordController extends AbstractController
      * Display & process form to request a password reset.
      */
     #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
+    public function request(Request $request, MailerInterface $mailer): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -62,7 +61,6 @@ class ResetPasswordController extends AbstractController
             return $this->processSendingPasswordResetEmail(
                 $username,
                 $mailer,
-                $translator
             );
         }
 
@@ -142,7 +140,7 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
+    private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer): RedirectResponse
     {
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
             'username' => $usernameFormData,

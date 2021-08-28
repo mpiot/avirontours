@@ -36,33 +36,4 @@ class MedicalCertificateRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MedicalCertificate::class);
     }
-
-    // /**
-    //  * @return MedicalCertificate[] Returns an array of MedicalCertificate objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-     */
-
-    /*
-    public function findOneBySomeField($value): ?MedicalCertificate
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-     */
 }

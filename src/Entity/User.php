@@ -228,7 +228,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getUserIdentifier(): ?string
     {
-        return $this->username;
+        return $this->getUsername();
     }
 
     public function getEmail(): ?string
@@ -555,7 +555,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getEmailAuthRecipient(): string
     {
-        return $this->email;
+        return $this->getEmail();
     }
 
     public function getEmailAuthCode(): string

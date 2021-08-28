@@ -27,7 +27,6 @@ use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
 use App\Form\Type\NonUserCrewMemberType;
-use App\Form\Type\ShellDamageType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -61,25 +60,8 @@ class LogbookEntryType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (Shell $shell) {
-                    $suffix = '';
-
-                    if (true === $shell->getPersonalBoat()) {
-                        $suffix .= '<span class="badge bg-info ms-2">Personnel</span>';
-                    }
-
-                    if (null !== $shell->getWeightCategory()) {
-                        $suffix .= '<span class="badge bg-info ms-2">'.$shell->getTextWeightCategory().'</span>';
-                    }
-
-                    if (false === $shell->getLogbookEntries()->isEmpty()) {
-                        $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
-                    }
-
-                    if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
-                        $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
-                    }
-
-                    if ('' !== empty($suffix)) {
+                    $suffix = $this->shellSuffixes($shell);
+                    if ('' !== $suffix) {
                         return [
                             'data-select2-suffix' => $suffix,
                         ];
@@ -118,15 +100,10 @@ class LogbookEntryType extends AbstractType
                 },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (User $user) {
-                    if (false === $user->getLogbookEntries()->isEmpty()) {
+                    $suffix = $this->crewSuffixes($user);
+                    if ('' !== $suffix) {
                         return [
-                            'data-select2-suffix' => '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>',
-                        ];
-                    }
-
-                    if (false === $user->getLicenses()->isEmpty() && null !== $user->getLicenses()->last()->getLogbookEntryLimit()) {
-                        return [
-                            'data-select2-suffix' => '<span class="badge bg-info ms-2">Découverte</span>',
+                            'data-select2-suffix' => $suffix,
                         ];
                     }
 
@@ -159,7 +136,7 @@ class LogbookEntryType extends AbstractType
             ])
             ->add('shellDamages', CollectionType::class, [
                 'label' => 'Avaries',
-                'entry_type' => ShellDamageType::class,
+                'entry_type' => LogbookEntryShellDamageType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
@@ -188,5 +165,43 @@ class LogbookEntryType extends AbstractType
             'data_class' => LogbookEntry::class,
             'validation_groups' => ['edit'],
         ]);
+    }
+
+    private function shellSuffixes(Shell $shell): string
+    {
+        $suffix = '';
+
+        if (true === $shell->getPersonalBoat()) {
+            $suffix .= '<span class="badge bg-info ms-2">Personnel</span>';
+        }
+
+        if (null !== $shell->getWeightCategory()) {
+            $suffix .= '<span class="badge bg-info ms-2">'.$shell->getTextWeightCategory().'</span>';
+        }
+
+        if (false === $shell->getLogbookEntries()->isEmpty()) {
+            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
+        }
+
+        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
+            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
+        }
+
+        return $suffix;
+    }
+
+    private function crewSuffixes(User $user): string
+    {
+        $suffix = '';
+
+        if (false === $user->getLogbookEntries()->isEmpty()) {
+            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
+        }
+
+        if (false === $user->getLicenses()->isEmpty() && null !== $user->getLicenses()->last()->getLogbookEntryLimit()) {
+            $suffix .= '<span class="badge bg-info ms-2">Découverte</span>';
+        }
+
+        return $suffix;
     }
 }

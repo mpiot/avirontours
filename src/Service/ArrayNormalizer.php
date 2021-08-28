@@ -71,7 +71,7 @@ class ArrayNormalizer
             $monthNumber = (int) $date->format('n');
 
             $subset = $defaultValue;
-            foreach ($data as $key => $value) {
+            foreach ($data as $value) {
                 if ($monthNumber === (int) $value[$fieldName]) {
                     $subset = $value;
                 }

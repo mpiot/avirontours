@@ -51,7 +51,7 @@ class ShellDamageType extends AbstractType
                 'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('category')
                     ->orderBy('category.priority', 'DESC')
                     ->orderBy('category.name', 'ASC'),
-                'group_by' => function (ShellDamageCategory $choice, $key, $value) {
+                'group_by' => function (ShellDamageCategory $choice) {
                     if (ShellDamageCategory::PRIORITY_HIGH === $choice->getPriority()) {
                         return 'Importante';
                     }

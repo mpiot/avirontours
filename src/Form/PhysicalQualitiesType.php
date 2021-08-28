@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\PhysicalQualities;
+use App\Form\Type\PhysicalQualityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -31,41 +31,32 @@ class PhysicalQualitiesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('proprioception', IntegerType::class, [
+            ->add('proprioception', PhysicalQualityType::class, [
                 'label' => 'Proprioception',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('weightPowerRatio', IntegerType::class, [
+            ->add('weightPowerRatio', PhysicalQualityType::class, [
                 'label' => 'Ratio poids/puissance',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('explosiveStrength', IntegerType::class, [
+            ->add('explosiveStrength', PhysicalQualityType::class, [
                 'label' => 'Force explosive',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('enduranceStrength', IntegerType::class, [
+            ->add('enduranceStrength', PhysicalQualityType::class, [
                 'label' => 'Force d\'endurance',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('maximumStrength', IntegerType::class, [
+            ->add('maximumStrength', PhysicalQualityType::class, [
                 'label' => 'Force maximum',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('stressResistance', IntegerType::class, [
+            ->add('stressResistance', PhysicalQualityType::class, [
                 'label' => 'Résistance',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('coreStrength', IntegerType::class, [
+            ->add('coreStrength', PhysicalQualityType::class, [
                 'label' => 'Gainage',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('flexibility', IntegerType::class, [
+            ->add('flexibility', PhysicalQualityType::class, [
                 'label' => 'Souplesse',
-                'help' => 'Note entre 0 et 20',
             ])
-            ->add('recovery', IntegerType::class, [
+            ->add('recovery', PhysicalQualityType::class, [
                 'label' => 'Récupération',
-                'help' => 'Note entre 0 et 20',
             ])
         ;
     }

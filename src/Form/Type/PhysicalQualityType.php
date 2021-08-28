@@ -18,22 +18,23 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Repository;
+namespace App\Form\Type;
 
-use App\Entity\Physiology;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * @method Physiology|null find($id, $lockMode = null, $lockVersion = null)
- * @method Physiology|null findOneBy(array $criteria, array $orderBy = null)
- * @method Physiology[]    findAll()
- * @method Physiology[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class PhysiologyRepository extends ServiceEntityRepository
+class PhysicalQualityType extends AbstractType
 {
-    public function __construct(ManagerRegistry $registry)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        parent::__construct($registry, Physiology::class);
+        $resolver->setDefaults([
+            'help' => 'Note entre 0 et 20',
+        ]);
+    }
+
+    public function getParent(): string
+    {
+        return IntegerType::class;
     }
 }

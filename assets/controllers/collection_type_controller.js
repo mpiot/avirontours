@@ -1,6 +1,5 @@
 import { Controller } from 'stimulus';
 
-/* stimulusFetch: "lazy" */
 export default class extends Controller {
     static values = {
         buttonId: String,
@@ -27,7 +26,7 @@ export default class extends Controller {
         // Create default field(s) if needed
         if (0 === this.index && this.numberEntriesAtInitValue > 0) {
             for (let i = 0; i < this.numberEntriesAtInitValue; ++i) {
-                this.addEntry();
+                this.addEntry(null, false);
             }
         }
     }
@@ -44,7 +43,7 @@ export default class extends Controller {
         }
     }
 
-    addEntry(event) {
+    addEntry(event, focusField = true) {
         if (event) {
             event.preventDefault();
         }
@@ -56,6 +55,15 @@ export default class extends Controller {
 
         // Insert the new entry in DOM
         this.element.insertBefore(entry, this.entryAddLink);
+
+        try {
+            if (true === focusField) {
+                const fields = this.element.querySelectorAll(':scope > fieldset, :scope > div');
+                fields[fields.length - 1].querySelector('input, select').focus();
+            }
+        } catch (exception) {
+            console.log(exception);
+        }
 
         // Update the index
         this.index++;
@@ -93,7 +101,7 @@ export default class extends Controller {
         let button = document.createElement('button');
 
         button.type = 'button';
-        button.className = 'btn btn-danger btn-sm align-self-end ms-3';
+        button.className = 'btn btn-danger btn-sm align-self-end ms-3 mb-3';
         button.innerHTML = `<span class="fas fa-trash-alt"></span>`;
         button.setAttribute('data-action', 'click->collection-type#removeEntry');
 
@@ -104,20 +112,12 @@ export default class extends Controller {
     processEntryLabel(entry) {
         let legend = entry.querySelector('legend');
 
-        if (null === legend) {
-            return entry;
-        }
-
-        if (false === this.hasLabelValue) {
+        if (null !== legend && false === this.hasLabelValue) {
             legend.remove();
-
-            return entry;
         }
 
-        if (legend.innerText.match(/^[0-9]+$/)) {
-            legend.innerText = `${this.labelValue}${parseInt(legend.innerText) + 1}`;
-
-            return entry;
+        if (null !== legend && legend.innerText.match(/^[0-9]+$/)) {
+            legend.innerText = `${this.labelValue} ${parseInt(legend.innerText) + 1}`;
         }
 
         return entry;
@@ -126,7 +126,7 @@ export default class extends Controller {
     getEntryContent() {
         let prototype = this.element.dataset.prototype;
         prototype = prototype
-            .replace(/__name__label__/g, `${(this.labelValue ?? '') + (this.index + 1)}`)
+            .replace(/__name__label__/g, `${this.labelValue ?? ''} ${this.index + 1}`)
             .replace(/__name__/g, this.index)
         ;
 

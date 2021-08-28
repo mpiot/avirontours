@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\WorkoutMaximumLoad;
+use App\Form\Type\WeightType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -31,25 +31,20 @@ class WorkoutMaximumLoadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('rowingTirage', IntegerType::class, [
+            ->add('rowingTirage', WeightType::class, [
                 'label' => 'Tirade rowing',
-                'help' => 'En kg',
             ])
-            ->add('benchPress', IntegerType::class, [
+            ->add('benchPress', WeightType::class, [
                 'label' => 'Développé couché',
-                'help' => 'En kg',
             ])
-            ->add('squat', IntegerType::class, [
+            ->add('squat', WeightType::class, [
                 'label' => 'Squat',
-                'help' => 'En kg',
             ])
-            ->add('legPress', IntegerType::class, [
+            ->add('legPress', WeightType::class, [
                 'label' => 'Presse',
-                'help' => 'En kg',
             ])
-            ->add('clean', IntegerType::class, [
+            ->add('clean', WeightType::class, [
                 'label' => 'Epaulé',
-                'help' => 'En kg',
             ])
         ;
     }
