@@ -18,7 +18,7 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Tests\Controller\Admin;
+namespace App\Tests\Controller;
 
 use App\Factory\LicenseFactory;
 use App\Factory\WorkoutMaximumLoadFactory;

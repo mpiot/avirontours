@@ -6,6 +6,8 @@ twig:
         '%kernel.project_dir%/assets/styles': styles
     globals:
         APP_VERSION: '%env(APP_VERSION)%'
+        APP_IBAN: '%env(APP_IBAN)%'
+        APP_BIC: '%env(APP_BIC)%'
 
 when@test:
     twig:
