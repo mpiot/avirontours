@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use function Symfony\Component\String\u;
@@ -60,7 +59,7 @@ class ResetPasswordController extends AbstractController
 
             return $this->processSendingPasswordResetEmail(
                 $username,
-                $mailer,
+                $mailer
             );
         }
 
@@ -75,9 +74,10 @@ class ResetPasswordController extends AbstractController
     #[Route('/check-email', name: 'app_check_email')]
     public function checkEmail(): Response
     {
-        // We prevent users from directly accessing this page
+        // Generate a fake token if the user does not exist or someone hit this page directly.
+        // This prevents exposing whether or not a user was found with the given email address or not
         if (null === ($resetToken = $this->getTokenObjectFromSession())) {
-            return $this->redirectToRoute('app_forgot_password_request');
+            $resetToken = $this->resetPasswordHelper->generateFakeResetToken();
         }
 
         return $this->render('reset_password/check_email.html.twig', [
@@ -124,9 +124,12 @@ class ResetPasswordController extends AbstractController
             $this->resetPasswordHelper->removeResetRequest($token);
 
             // Encode the plain password, and set it.
-            $encodedPassword = $passwordHasher->hashPassword($user, $form->get('plainPassword')->getData());
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            );
 
-            $user->setPassword($encodedPassword);
+            $user->setPassword($hashedPassword);
             $this->getDoctrine()->getManager()->flush();
 
             // The session is cleaned up after the password has been changed.
@@ -172,9 +175,10 @@ class ResetPasswordController extends AbstractController
             ->htmlTemplate('emails/reset_password_request.html.twig')
             ->context([
                 'user' => $user,
-                'reset_token' => $resetToken,
+                'resetToken' => $resetToken,
             ])
         ;
+
         $mailer->send($email);
 
         // Store the token object in session for retrieval in check-email route.
