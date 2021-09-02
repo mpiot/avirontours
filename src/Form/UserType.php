@@ -54,20 +54,25 @@ class UserType extends AbstractType
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'attr' => ['autocomplete' => 'given-name'],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'attr' => ['autocomplete' => 'family-name'],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'attr' => ['autocomplete' => 'email'],
             ])
             ->add('phoneNumber', TelType::class, [
                 'label' => 'Numéro de téléphone',
+                'attr' => ['autocomplete' => 'tel-national'],
                 'required' => false,
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
                 'widget' => 'single_text',
+                'attr' => ['autocomplete' => 'bday'],
             ])
             ->add('licenseNumber', TextType::class, [
                 'label' => 'Numéro de licence',

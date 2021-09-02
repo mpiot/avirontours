@@ -44,6 +44,7 @@ class AddressType extends AbstractType
             ])
             ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
+                'attr' => ['autocomplete' => 'postal-code'],
             ])
             ->add('city', TextType::class, [
                 'label' => 'Ville',

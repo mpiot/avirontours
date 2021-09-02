@@ -53,15 +53,19 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
+                'attr' => ['autocomplete' => 'given-name'],
             ])
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
+                'attr' => ['autocomplete' => 'family-name'],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'attr' => ['autocomplete' => 'email'],
             ])
             ->add('phoneNumber', TelType::class, [
                 'label' => 'Numéro de téléphone',
+                'attr' => ['autocomplete' => 'tel-national'],
                 'required' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
@@ -73,9 +77,11 @@ class RegistrationFormType extends AbstractType
                         new Length(['min' => 6, 'max' => 4096]),
                         new NotCompromisedPassword(),
                     ],
+                    'attr' => ['autocomplete' => 'new-password'],
                 ],
                 'second_options' => [
                     'label' => 'Répéter le mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
                 ],
             ])
             ->add('address', AddressType::class, [
@@ -84,6 +90,7 @@ class RegistrationFormType extends AbstractType
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
                 'widget' => 'single_text',
+                'attr' => ['autocomplete' => 'bday'],
             ])
             ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
                 'label' => false,

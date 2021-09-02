@@ -39,6 +39,7 @@ class ChangePasswordType extends AbstractType
             ->add('currentPassword', PasswordType::class, [
                 'label' => 'Mot de passe actuel',
                 'constraints' => new UserPassword(['groups' => 'resetPassword']),
+                'attr' => ['autocomplete' => 'current-password'],
                 'mapped' => false,
             ])
             ->add('plainPassword', RepeatedType::class, [
@@ -51,9 +52,11 @@ class ChangePasswordType extends AbstractType
                         new Length(['min' => 6, 'max' => 4096, 'groups' => 'resetPassword']),
                         new NotCompromisedPassword(['groups' => 'resetPassword']),
                     ],
+                    'attr' => ['autocomplete' => 'new-password'],
                 ],
                 'second_options' => [
                     'label' => 'Répéter le mot de passe',
+                    'attr' => ['autocomplete' => 'new-password'],
                 ],
                 'mapped' => false,
             ])
