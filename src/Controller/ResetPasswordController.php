@@ -55,7 +55,7 @@ class ResetPasswordController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $username = u($form->get('username')->getData())->lower()->toString();
+            $username = u($form->get('username')->getData())->ascii()->lower()->replace(' ', '-')->toString();
 
             return $this->processSendingPasswordResetEmail(
                 $username,

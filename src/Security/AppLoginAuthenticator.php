@@ -48,7 +48,7 @@ class AppLoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): PassportInterface
     {
-        $username = u($request->request->get('username'))->lower()->toString();
+        $username = u($request->request->get('username'))->ascii()->lower()->replace(' ', '-')->toString();
         $password = $request->request->get('password');
         $csrfToken = $request->request->get('_csrf_token');
 
