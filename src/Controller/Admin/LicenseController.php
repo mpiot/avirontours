@@ -25,7 +25,6 @@ use App\Entity\Season;
 use App\Form\LicenseEditType;
 use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
-use DoctrineExtensions\Query\Mysql\Date;
 use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
