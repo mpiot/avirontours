@@ -55,9 +55,7 @@ class TrainingController extends AbstractController
 
             $this->addFlash('success', 'Votre entraînement a été créé avec succès.');
 
-            return $this->redirectToRoute('training_show', [
-                'id' => $training->getId(),
-            ], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('training_index');
         }
 
         return $this->renderForm('training/new.html.twig', [

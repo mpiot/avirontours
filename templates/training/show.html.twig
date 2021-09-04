@@ -35,7 +35,7 @@
             <div class="card-deck h2">
                 <div class="card border-0">
                     <div class="card-body">
-                        <span class="far fa-clock text-info"></span> {{ training.duration.format('%H:%I') }}
+                        <span class="far fa-clock text-info"></span> {{ training.formattedDuration }}
                     </div>
                 </div>
                 <div class="card border-0">
@@ -59,42 +59,6 @@
                 <blockquote class="blockquote">
                     <p class="mb-0">{{ training.comment|nl2br }}</p>
                 </blockquote>
-            </div>
-        </div>
-    {% endif %}
-
-    {% if not training.trainingPhases.empty%}
-        <div class="card border-0 shadow mt-3">
-            <div class="card-body">
-                <span class="h4">Phases</span>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nom</th>
-                            <th scope="col">Intensité</th>
-                            <th scope="col">Durée</th>
-                            <th scope="col">Distance</th>
-                            <th scope="col">Split</th>
-                            <th scope="col">SPM</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for phase in training.trainingPhases %}
-                            <tr>
-                                <th scope="row">{{ loop.index }}</th>
-                                <td>{{ phase.name }}</td>
-                                <td>{{ phase.textIntensity }}</td>
-                                <td>{{ phase.duration.format('%H:%I:%S') }}</td>
-                                <td>{{ phase.distance ? phase.distance|format_number ~ ' km' }}</td>
-                                <td>{{ phase.split }}</td>
-                                <td>{{ phase.spm }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     {% endif %}

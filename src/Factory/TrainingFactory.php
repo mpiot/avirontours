@@ -44,12 +44,12 @@ final class TrainingFactory extends ModelFactory
         return [
             'user' => UserFactory::new(),
             'trainedAt' => self::faker()->dateTime(),
-            'duration' => new \DateInterval('PT1H10M25S'),
+            'duration' => self::faker()->numberBetween(1200, 7200),
             'distance' => self::faker()->randomFloat(1, 2, 20),
             'sport' => self::faker()->randomElement(Training::getAvailableSports()),
+            'energyPathway' => self::faker()->randomElement(Training::getAvailableEnergyPathways()),
             'feeling' => self::faker()->randomElement(Training::getAvailableFeelings()),
             'comment' => self::faker()->optional()->text(),
-            'trainingPhases' => TrainingPhaseFactory::new()->many(0, 5),
         ];
     }
 

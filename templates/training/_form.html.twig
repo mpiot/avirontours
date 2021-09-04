@@ -1,28 +1,18 @@
 {{ form_start(form) }}
-    {{ form_row(form.trained_at) }}
+    {{ form_row(form.trainedAt) }}
     {{ form_row(form.sport) }}
-
+    {{ form_row(form.energyPathway) }}
+    {{ form_row(form.distance) }}
+    Durée
     <div class="row">
-        <div class="col">
-            <div class="form-row">
-                {{ form_errors(form.duration) }}
-                <div class="col">
-                    {{ form_row(form.duration.hours) }}
-                </div>
-                <span style="padding-top: 2.5em;">:</span>
-                <div class="col">
-                    {{ form_row(form.duration.minutes) }}
-                </div>
-            </div>
-            {{ form_row(form.comment) }}
-        </div>
-        <div class="col">
-            {{ form_row(form.distance) }}
-            {{ form_row(form.feeling) }}
-        </div>
+        {{ form_errors(form.duration) }}
+        <div class="col">{{ form_row(form.duration.hours) }}</div>
+        <div class="col">{{ form_row(form.duration.minutes) }}</div>
     </div>
+    {{ form_row(form.feeling) }}
+    {{ form_row(form.comment) }}
 
-    {{ form_widget(form) }}
+    {{ form_rest(form) }}
 
     <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
 {{ form_end(form) }}

@@ -21,8 +21,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\TrainingRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Util\DurationManipulator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
@@ -33,6 +32,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 class Training
 {
     public const NUM_ITEMS = 25;
+
+    public const ENERGY_PATHWAY_AEROBIC = 'aerobic';
+    public const ENERGY_PATHWAY_ANAEROBIC_THRESHOLD = 'anaerobic_threshold';
+    public const ENERGY_PATHWAY_ANAEROBIC = 'anaerobic';
 
     public const FEELING_GREAT = 0.2;
     public const FEELING_GOOD = 0.4;
@@ -63,19 +66,18 @@ class Training
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trainings")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?User $user = null;
+    private ?User $user;
 
     /**
      * @ORM\Column(type="datetime")
      */
     #[Assert\NotNull]
-    private $trained_at;
+    private ?\DateTime $trainedAt;
 
     /**
-     * @ORM\Column(type="dateinterval")
+     * @ORM\Column(type="integer")
      */
-    #[Assert\NotNull]
-    private ?\DateInterval $duration = null;
+    private int $duration = 0;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -89,6 +91,12 @@ class Training
     private ?string $sport = null;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    #[Assert\NotNull]
+    private ?string $energyPathway = null;
+
+    /**
      * @ORM\Column(type="float", nullable=true)
      */
     private ?float $feeling = null;
@@ -98,18 +106,10 @@ class Training
      */
     private ?string $comment = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=TrainingPhase::class, mappedBy="training", orphanRemoval=true, cascade={"persist", "remove"})
-     * @ORM\OrderBy({"id": "ASC"})
-     */
-    #[Assert\Valid]
-    private Collection $trainingPhases;
-
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->trained_at = new \DateTime('now');
-        $this->trainingPhases = new ArrayCollection();
+        $this->trainedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -129,24 +129,29 @@ class Training
         return $this;
     }
 
-    public function getTrainedAt(): ?\DateTimeInterface
+    public function getTrainedAt(): ?\DateTime
     {
-        return $this->trained_at;
+        return $this->trainedAt;
     }
 
-    public function setTrainedAt(?\DateTimeInterface $trained_at): self
+    public function setTrainedAt(?\DateTime $trainedAt): self
     {
-        $this->trained_at = $trained_at;
+        $this->trainedAt = $trainedAt;
 
         return $this;
     }
 
-    public function getDuration(): ?\DateInterval
+    public function getDuration(): int
     {
         return $this->duration;
     }
 
-    public function setDuration(?\DateInterval $duration): self
+    public function getFormattedDuration(): string
+    {
+        return DurationManipulator::formatDuration($this->duration, false);
+    }
+
+    public function setDuration(int $duration): self
     {
         $this->duration = $duration;
 
@@ -172,17 +177,29 @@ class Training
 
     public function getTextSport(): ?string
     {
-        $availableSports = array_flip(self::getAvailableSports());
-        if (!\array_key_exists($this->sport, $availableSports)) {
-            throw new \Exception(sprintf('The sport "%s" is not available, the method "getAvailableSports" only return that sports: %s.', $this->sport, implode(', ', self::getAvailableSports())));
-        }
-
-        return $availableSports[$this->sport];
+        return array_flip(self::getAvailableSports())[$this->sport];
     }
 
     public function setSport(string $sport): self
     {
         $this->sport = $sport;
+
+        return $this;
+    }
+
+    public function getEnergyPathway(): ?string
+    {
+        return $this->energyPathway;
+    }
+
+    public function getTextEnergyPathway(): ?string
+    {
+        return array_flip(self::getAvailableEnergyPathways())[$this->sport];
+    }
+
+    public function setEnergyPathway(string $energyPathway): self
+    {
+        $this->energyPathway = $energyPathway;
 
         return $this;
     }
@@ -224,49 +241,24 @@ class Training
         return $this;
     }
 
-    /**
-     * @return Collection|TrainingPhase[]
-     */
-    public function getTrainingPhases(): Collection
-    {
-        return $this->trainingPhases;
-    }
-
-    public function addTrainingPhase(TrainingPhase $trainingPhase): self
-    {
-        if (!$this->trainingPhases->contains($trainingPhase)) {
-            $this->trainingPhases[] = $trainingPhase;
-            $trainingPhase->setTraining($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTrainingPhase(TrainingPhase $trainingPhase): self
-    {
-        if ($this->trainingPhases->removeElement($trainingPhase)) {
-            // set the owning side to null (unless already changed)
-            if ($trainingPhase->getTraining() === $this) {
-                $trainingPhase->setTraining(null);
-            }
-        }
-
-        return $this;
-    }
-
     #[Assert\Callback]
     public function validateDuration(ExecutionContextInterface $context): void
     {
-        if (null === $this->duration) {
-            return;
-        }
-        $date = new \DateTimeImmutable();
-        if ($date->add($this->duration) < $date->add(new \DateInterval('PT5M'))) {
+        if ($this->getDuration() < 5 * 60) {
             $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
                 ->atPath('duration')
                 ->addViolation()
             ;
         }
+    }
+
+    public static function getAvailableEnergyPathways(): array
+    {
+        return [
+            'Aérobie' => self::ENERGY_PATHWAY_AEROBIC,
+            'Seuil anaérobie' => self::ENERGY_PATHWAY_ANAEROBIC_THRESHOLD,
+            'Anaérobie' => self::ENERGY_PATHWAY_ANAEROBIC,
+        ];
     }
 
     public static function getAvailableSports(): array

@@ -21,11 +21,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Training;
-use App\Form\Type\TrainingPhaseType;
+use App\Form\Type\DurationType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -37,10 +35,9 @@ class TrainingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('trained_at', DateTimeType::class, [
-                'label' => 'Date de l\'entraînement',
-                'date_widget' => 'single_text',
-                'time_widget' => 'single_text',
+            ->add('trainedAt', DateTimeType::class, [
+                'label' => 'Date',
+                'widget' => 'single_text',
             ])
             ->add('sport', ChoiceType::class, [
                 'label' => 'Sport',
@@ -50,19 +47,10 @@ class TrainingType extends AbstractType
                     'data-controller' => 'select2',
                 ],
             ])
-            ->add('duration', DateIntervalType::class, [
-                'label' => 'Durée',
-                'labels' => [
-                    'hours' => 'Heures',
-                    'minutes' => 'Minutes',
-                ],
-                'with_years' => false,
-                'with_months' => false,
-                'with_days' => false,
-                'with_weeks' => false,
-                'with_hours' => true,
-                'with_minutes' => true,
-                'with_seconds' => false,
+            ->add('energyPathway', ChoiceType::class, [
+                'label' => 'Filère énergétique',
+                'choices' => Training::getAvailableEnergyPathways(),
+                'placeholder' => '-- Filère énergétique --',
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
@@ -74,6 +62,9 @@ class TrainingType extends AbstractType
                 'html5' => true,
                 'required' => false,
             ])
+            ->add('duration', DurationType::class, [
+                'label' => 'Durée',
+            ])
             ->add('feeling', ChoiceType::class, [
                 'label' => 'Sensation',
                 'choices' => Training::getAvailableFeelings(),
@@ -83,21 +74,6 @@ class TrainingType extends AbstractType
             ->add('comment', TextareaType::class, [
                 'label' => 'Commentaire',
                 'required' => false,
-                'attr' => [
-                    'rows' => 1,
-                ],
-            ])
-            ->add('trainingPhases', CollectionType::class, [
-                'label' => 'Phases',
-                'entry_type' => TrainingPhaseType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'attr' => [
-                    'data-controller' => 'collection-type',
-                    'data-collection-type-button-text-value' => 'Ajouter une phase',
-                    'data-collection-type-label-value' => 'Phase n°',
-                ],
             ])
         ;
     }

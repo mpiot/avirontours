@@ -45,7 +45,7 @@ class TrainingRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('training')
             ->innerJoin('training.user', 'user')
             ->where('user = :user')
-            ->orderBy('training.trained_at', 'DESC')
+            ->orderBy('training.trainedAt', 'DESC')
             ->setParameter('user', $user)
             ->getQuery()
         ;
