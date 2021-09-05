@@ -47,10 +47,11 @@ class TrainingType extends AbstractType
                     'data-controller' => 'select2',
                 ],
             ])
-            ->add('energyPathway', ChoiceType::class, [
-                'label' => 'Filère énergétique',
-                'choices' => Training::getAvailableEnergyPathways(),
-                'placeholder' => '-- Filère énergétique --',
+            ->add('type', ChoiceType::class, [
+                'label' => 'Type d\'entraînement',
+                'choices' => Training::getAvailableTypes(),
+                'placeholder' => '-- Type d\'entraînement --',
+                'required' => false,
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',

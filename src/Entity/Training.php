@@ -33,9 +33,14 @@ class Training
 {
     public const NUM_ITEMS = 25;
 
-    public const ENERGY_PATHWAY_AEROBIC = 'aerobic';
-    public const ENERGY_PATHWAY_ANAEROBIC_THRESHOLD = 'anaerobic_threshold';
-    public const ENERGY_PATHWAY_ANAEROBIC = 'anaerobic';
+    public const TYPE_B0 = 'b0';
+    public const TYPE_B1 = 'b1';
+    public const TYPE_B2 = 'b2';
+    public const TYPE_B3 = 'b3';
+    public const TYPE_B4 = 'b4';
+    public const TYPE_B5 = 'b5';
+    public const TYPE_C1 = 'c1';
+    public const TYPE_C2 = 'c2';
 
     public const FEELING_GREAT = 0.2;
     public const FEELING_GOOD = 0.4;
@@ -91,10 +96,9 @@ class Training
     private ?string $sport = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Assert\NotNull]
-    private ?string $energyPathway = null;
+    private ?string $type = null;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -187,19 +191,23 @@ class Training
         return $this;
     }
 
-    public function getEnergyPathway(): ?string
+    public function getType(): ?string
     {
-        return $this->energyPathway;
+        return $this->type;
     }
 
-    public function getTextEnergyPathway(): ?string
+    public function getTextType(): ?string
     {
-        return array_flip(self::getAvailableEnergyPathways())[$this->sport];
+        if (null === $this->type) {
+            return null;
+        }
+
+        return array_flip(self::getAvailableTypes())[$this->type];
     }
 
-    public function setEnergyPathway(string $energyPathway): self
+    public function setType(?string $type): self
     {
-        $this->energyPathway = $energyPathway;
+        $this->type = $type;
 
         return $this;
     }
@@ -252,12 +260,17 @@ class Training
         }
     }
 
-    public static function getAvailableEnergyPathways(): array
+    public static function getAvailableTypes(): array
     {
         return [
-            'Aérobie' => self::ENERGY_PATHWAY_AEROBIC,
-            'Seuil anaérobie' => self::ENERGY_PATHWAY_ANAEROBIC_THRESHOLD,
-            'Anaérobie' => self::ENERGY_PATHWAY_ANAEROBIC,
+            'B0' => self::TYPE_B0,
+            'B1' => self::TYPE_B1,
+            'B2' => self::TYPE_B2,
+            'B3' => self::TYPE_B3,
+            'B4' => self::TYPE_B4,
+            'B5' => self::TYPE_B5,
+            'C1' => self::TYPE_C1,
+            'C2' => self::TYPE_C2,
         ];
     }
 

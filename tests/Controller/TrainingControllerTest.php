@@ -131,7 +131,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->submitForm('Sauver', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[energyPathway]' => Training::ENERGY_PATHWAY_AEROBIC,
+            'training[type]' => Training::TYPE_B1,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
@@ -146,11 +146,14 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame(Training::ENERGY_PATHWAY_AEROBIC, $training->getEnergyPathway());
+        $this->assertSame('Aviron', $training->getTextSport());
+        $this->assertSame(Training::TYPE_B1, $training->getType());
+        $this->assertSame('B1', $training->getTextType());
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16.3, $training->getDistance());
         $this->assertSame(Training::FEELING_OK, $training->getFeeling());
+        $this->assertSame('OK', $training->getTextFeeling());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -167,7 +170,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Sauver', [
             'training[trainedAt]' => '',
             'training[sport]' => '',
-            'training[energyPathway]' => '',
+            'training[type]' => '',
             'training[duration][hours]' => 0,
             'training[duration][minutes]' => 0,
             'training[distance]' => '',
@@ -178,9 +181,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_energyPathway')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->eq(3)->text());
-        $this->assertCount(4, $crawler->filter('.invalid-feedback'));
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->last()->text());
+        $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
@@ -199,7 +201,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->submitForm('Modifier', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => Training::SPORT_ROWING,
-            'training[energyPathway]' => Training::ENERGY_PATHWAY_AEROBIC,
+            'training[type]' => Training::TYPE_B3,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
@@ -210,7 +212,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame(Training::ENERGY_PATHWAY_AEROBIC, $training->getEnergyPathway());
+        $this->assertSame(Training::TYPE_B3, $training->getType());
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16.3, $training->getDistance());
