@@ -33,14 +33,18 @@ class Training
 {
     public const NUM_ITEMS = 25;
 
-    public const TYPE_B0 = 'b0';
     public const TYPE_B1 = 'b1';
     public const TYPE_B2 = 'b2';
     public const TYPE_B3 = 'b3';
     public const TYPE_B4 = 'b4';
     public const TYPE_B5 = 'b5';
+    public const TYPE_B6 = 'b6';
+    public const TYPE_B7 = 'b7';
+    public const TYPE_B8 = 'b8';
     public const TYPE_C1 = 'c1';
     public const TYPE_C2 = 'c2';
+    public const TYPE_REST = 'rest';
+    public const TYPE_GENERALIZED_ENDURANCE = 'generalized_endurance';
 
     public const FEELING_GREAT = 0.2;
     public const FEELING_GOOD = 0.4;
@@ -263,14 +267,18 @@ class Training
     public static function getAvailableTypes(): array
     {
         return [
-            'B0' => self::TYPE_B0,
             'B1' => self::TYPE_B1,
             'B2' => self::TYPE_B2,
             'B3' => self::TYPE_B3,
             'B4' => self::TYPE_B4,
             'B5' => self::TYPE_B5,
+            'B6' => self::TYPE_B6,
+            'B7' => self::TYPE_B7,
+            'B8' => self::TYPE_B8,
             'C1' => self::TYPE_C1,
             'C2' => self::TYPE_C2,
+            'Récupération' => self::TYPE_REST,
+            'Endurance généralisée' => self::TYPE_GENERALIZED_ENDURANCE,
         ];
     }
 

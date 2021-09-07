@@ -43,13 +43,19 @@ class TrainingType extends AbstractType
                 'label' => 'Sport',
                 'choices' => Training::getAvailableSports(),
                 'placeholder' => '-- Sélectionner un sport --',
-                'attr' => [
-                    'data-controller' => 'select2',
-                ],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type d\'entraînement',
                 'choices' => Training::getAvailableTypes(),
+                'group_by' => function ($choice) {
+                    return match ($choice) {
+                        Training::TYPE_B1, Training::TYPE_B2, Training::TYPE_REST, Training::TYPE_GENERALIZED_ENDURANCE => 'Aérobie',
+                        Training::TYPE_B3, Training::TYPE_B4, Training::TYPE_B7, Training::TYPE_C2 => 'Transition aérobie/anaérobie',
+                        Training::TYPE_B5 => 'Anaérobie lactique',
+                        Training::TYPE_B6, Training::TYPE_B8, Training::TYPE_C1 => 'Anaérobie alactique',
+                        default => 'Autre',
+                    };
+                },
                 'placeholder' => '-- Type d\'entraînement --',
                 'required' => false,
             ])
