@@ -113,7 +113,7 @@ class Training
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->trainedAt = new \DateTime();
+        $this->trainedAt = new \DateTime((new \DateTime())->format('Y-m-d H:i'));
     }
 
     public function getId(): ?int
