@@ -74,12 +74,7 @@ class ShellDamageCategory
 
     public function getTextPriority(): ?string
     {
-        $availablePriorities = array_flip(self::getAvailablePriorities());
-        if (!\array_key_exists($this->priority, $availablePriorities)) {
-            throw new \Exception(sprintf('The priority "%s" is not available, the method "getAvailablePriorities" only return that priorities: %s.', $this->priority, implode(', ', self::getAvailablePriorities())));
-        }
-
-        return $availablePriorities[$this->priority];
+        return array_flip(self::getAvailablePriorities())[$this->priority];
     }
 
     public function setPriority(int $priority): self

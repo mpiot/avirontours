@@ -201,12 +201,7 @@ class Shell
 
     public function getTextRowingType(): string
     {
-        $availableRowingTypes = array_flip(self::getAvailableRowingTypes());
-        if (!\array_key_exists($this->rowingType, $availableRowingTypes)) {
-            throw new \Exception(sprintf('The rowingType "%s" is not available, the method "getAvailableRowingTypes" only return that rowingTypes: %s.', $this->rowingType, implode(', ', self::getAvailableRowingTypes())));
-        }
-
-        return $availableRowingTypes[$this->rowingType];
+        return array_flip(self::getAvailableRowingTypes())[$this->rowingType];
     }
 
     public function setRowingType(string $rowingType): self
@@ -306,12 +301,7 @@ class Shell
 
     public function getTextWeightCategory($withUnit = true): ?string
     {
-        $availableWeightCategories = array_flip(self::getAvailableWeightCategories());
-        if (!\array_key_exists($this->weightCategory, $availableWeightCategories)) {
-            throw new \Exception(sprintf('The weightCategory "%s" is not available, the method "getAvailableWeightCategories" only return that weightCategories: %s.', $this->weightCategory, implode(', ', self::getAvailableWeightCategories())));
-        }
-
-        $text = $availableWeightCategories[$this->weightCategory];
+        $text = array_flip(self::getAvailableWeightCategories())[$this->weightCategory];
 
         if (true === $withUnit) {
             $text .= ' Kg';
@@ -372,12 +362,7 @@ class Shell
 
     public function getTextRiggerMaterial(): ?string
     {
-        $availableRiggerMaterials = array_flip(self::getAvailableRiggerMaterials());
-        if (!\array_key_exists($this->riggerMaterial, $availableRiggerMaterials)) {
-            throw new \Exception(sprintf('The riggerMaterial "%s" is not available, the method "getAvailableRiggerMaterials" only return that riggerMaterials: %s.', $this->riggerMaterial, implode(', ', self::getAvailableGenders())));
-        }
-
-        return $availableRiggerMaterials[$this->riggerMaterial];
+        return array_flip(self::getAvailableRiggerMaterials())[$this->riggerMaterial];
     }
 
     public function setRiggerMaterial(?string $riggerMaterial): self
@@ -394,12 +379,7 @@ class Shell
 
     public function getTextRiggerPosition(): ?string
     {
-        $availableRiggerPositions = array_flip(self::getAvailableRiggerPositions());
-        if (!\array_key_exists($this->riggerPosition, $availableRiggerPositions)) {
-            throw new \Exception(sprintf('The riggerPosition "%s" is not available, the method "getAvailableRiggerPositions" only return that riggerPositions: %s.', $this->riggerPosition, implode(', ', self::getAvailableRiggerPositions())));
-        }
-
-        return $availableRiggerPositions[$this->riggerPosition];
+        return array_flip(self::getAvailableRiggerPositions())[$this->riggerPosition];
     }
 
     public function setRiggerPosition(?string $riggerPosition): self

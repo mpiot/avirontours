@@ -317,22 +317,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getTextGender(): ?string
     {
-        $availableGenders = array_flip(self::getAvailableGenders());
-        if (!\array_key_exists($this->gender, $availableGenders)) {
-            throw new \Exception(sprintf('The gender "%s" is not available, the method "getAvailableGenders" only return that genders: %s.', $this->gender, implode(', ', self::getAvailableGenders())));
-        }
-
-        return $availableGenders[$this->gender];
+        return array_flip(self::getAvailableGenders())[$this->gender];
     }
 
     public function getTextCivility(): ?string
     {
-        $availableCivilities = array_flip(self::getAvailableCivilities());
-        if (!\array_key_exists($this->gender, $availableCivilities)) {
-            throw new \Exception(sprintf('The gender "%s" is not available, the method "getAvailableCivilities" only return that civilities: %s.', $this->gender, implode(', ', self::getAvailableCivilities())));
-        }
-
-        return $availableCivilities[$this->gender];
+        return array_flip(self::getAvailableCivilities())[$this->gender];
     }
 
     public function setGender(string $gender): self

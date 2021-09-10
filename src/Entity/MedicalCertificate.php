@@ -117,12 +117,7 @@ class MedicalCertificate
 
     public function getTextType(): ?string
     {
-        $availableTypes = array_flip(self::getAvailableTypes());
-        if (!\array_key_exists($this->type, $availableTypes)) {
-            throw new \Exception(sprintf('The type "%s" is not available, the method "getAvailableTypes" only return that types: %s.', $this->type, implode(', ', self::getAvailableTypes())));
-        }
-
-        return $availableTypes[$this->type];
+        return array_flip(self::getAvailableTypes())[$this->type];
     }
 
     public function setType(?string $type): self
@@ -139,12 +134,7 @@ class MedicalCertificate
 
     public function getTextLevel(): ?string
     {
-        $availableLevels = array_flip(self::getAvailableLevels());
-        if (!\array_key_exists($this->level, $availableLevels)) {
-            throw new \Exception(sprintf('The level "%s" is not available, the method "getAvailableLevels" only return that levels: %s.', $this->level, implode(', ', self::getAvailableLevels())));
-        }
-
-        return $availableLevels[$this->level];
+        return array_flip(self::getAvailableLevels())[$this->level];
     }
 
     public function setLevel(?string $level): self
