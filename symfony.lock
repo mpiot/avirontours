@@ -62,7 +62,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.4",
-            "ref": "dda18c8830b143bc31c0e0457fb13b9029614d76"
+            "ref": "bac5c852ff628886de2753215fe5eb1f9ce980fb"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -166,7 +166,7 @@
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "0.1",
-            "ref": "d1ac708f630e31e2ff442c05715486b5f7bafb0e"
+            "ref": "c51ce07c10331d506762efe25b6f5843c1a5ea17"
         },
         "files": [
             "config/packages/karser_recaptcha3.yaml"
@@ -273,10 +273,10 @@
     "scheb/2fa-bundle": {
         "version": "5.0",
         "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
+            "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "5.0",
-            "ref": "95d9da4bffdc29417c209141cae8292e40d6af19"
+            "ref": "62660e7d21b8b5295c5a6f8ca17dc7099881f267"
         },
         "files": [
             "config/packages/scheb_2fa.yaml",
@@ -469,7 +469,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "5.3",
-            "ref": "772b77cfb5017644547ef7f9364c54e4eb9a6c61"
+            "ref": "414ba00ad43fa71be42c7906a551f1831716b03c"
         },
         "files": [
             "config/packages/cache.yaml",
@@ -515,7 +515,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.3",
-            "ref": "15658c2a0176cda2e7dba66276a2030b52bd81b2"
+            "ref": "bbfc7e27257d3a3f12a6fb0a42540a42d9623a37"
         },
         "files": [
             "config/packages/mailer.yaml"
@@ -587,7 +587,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "5.3",
-            "ref": "905679249e7b10f06c572917a9022a72cbfedc04"
+            "ref": "97cb3dc7b0f39c7cfc4b7553504c9d7b7795de96"
         },
         "files": [
             ".env.test",
@@ -791,7 +791,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "1.9",
-            "ref": "5ff15d211e3d4a9216218f6b7f1572262efd74e2"
+            "ref": "404714014dd6ff7de9aa0f9582d592147359e617"
         },
         "files": [
             "assets/app.js",
@@ -891,7 +891,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "1.9",
-            "ref": "e03ffeeb52fd76e99f2c527ecddc9c986cb194e5"
+            "ref": "26a9e6291d5fc0bfd1d673bc1d6cfe3c582c7678"
         },
         "files": [
             "config/packages/dev/zenstruck_foundry.yaml",
