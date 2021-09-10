@@ -45,6 +45,8 @@ class Training
     public const TYPE_C2 = 'c2';
     public const TYPE_REST = 'rest';
     public const TYPE_GENERALIZED_ENDURANCE = 'generalized_endurance';
+    public const TYPE_SPLIT_SHORT = 'split_short';
+    public const TYPE_SPLIT_LONG = 'split_long';
 
     public const FEELING_GREAT = 0.2;
     public const FEELING_GOOD = 0.4;
@@ -279,6 +281,8 @@ class Training
             'C2' => self::TYPE_C2,
             'Récupération' => self::TYPE_REST,
             'Endurance généralisée' => self::TYPE_GENERALIZED_ENDURANCE,
+            'Fractionné long' => self::TYPE_SPLIT_LONG,
+            'Fractionné court' => self::TYPE_SPLIT_SHORT,
         ];
     }
 
