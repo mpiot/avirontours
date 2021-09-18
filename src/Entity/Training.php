@@ -48,6 +48,11 @@ class Training
     public const TYPE_SPLIT_SHORT = 'split_short';
     public const TYPE_SPLIT_LONG = 'split_long';
 
+    public const ENERGY_PATHWAY_AEROBIC = 'aerobic';
+    public const ENERGY_PATHWAY_THRESHOLD = 'threshold';
+    public const ENERGY_PATHWAY_LACTIC_ANAEROBIC = 'lactic_aerobic';
+    public const ENERGY_PATHWAY_ALACTIC_ANAEROBIC = 'alactic_aerobic';
+
     public const FEELING_GREAT = 0.2;
     public const FEELING_GOOD = 0.4;
     public const FEELING_OK = 0.6;
@@ -312,5 +317,27 @@ class Training
             'Pas bien' => self::FEELING_NOT_GOOD,
             'Mal' => self::FEELING_BAD,
         ];
+    }
+
+    public static function typeToEnergyPathway(?string $type): string
+    {
+        return match ($type) {
+            self::TYPE_B1, self::TYPE_B2, self::TYPE_REST, self::TYPE_GENERALIZED_ENDURANCE => self::ENERGY_PATHWAY_AEROBIC,
+            self::TYPE_B3, self::TYPE_B4, self::TYPE_B7, self::TYPE_C2, self::TYPE_SPLIT_LONG => self::ENERGY_PATHWAY_THRESHOLD,
+            self::TYPE_B5, self::TYPE_SPLIT_SHORT => self::ENERGY_PATHWAY_LACTIC_ANAEROBIC,
+            self::TYPE_B6, self::TYPE_B8, self::TYPE_C1 => self::ENERGY_PATHWAY_ALACTIC_ANAEROBIC,
+            default => 'other',
+        };
+    }
+
+    public static function typeToTextEnergyPathway(?string $type): string
+    {
+        return match (self::typeToEnergyPathway($type)) {
+            self::ENERGY_PATHWAY_AEROBIC => 'Aérobie',
+            self::ENERGY_PATHWAY_THRESHOLD => 'Transition aérobie/anaérobie',
+            self::ENERGY_PATHWAY_LACTIC_ANAEROBIC => 'Anaérobie lactique',
+            self::ENERGY_PATHWAY_ALACTIC_ANAEROBIC => 'Anaérobie alactique',
+            default => 'Autre',
+        };
     }
 }

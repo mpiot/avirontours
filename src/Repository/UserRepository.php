@@ -22,6 +22,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -77,6 +78,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb = $this->createQueryBuilder('app_user')
             ->orderBy('app_user.firstName', 'ASC')
             ->addOrderBy('app_user.lastName', 'ASC')
+        ;
+
+        if ($query) {
+            $qb
+                ->orWhere('LOWER(app_user.firstName) LIKE :query')
+                ->orWhere('LOWER(app_user.lastName) LIKE :query')
+                ->orWhere('LOWER(app_user.email) LIKE :query')
+                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+            ;
+        }
+
+        return $this->paginator->paginate(
+            $qb->getQuery(),
+            $page,
+            User::NUM_ITEMS
+        );
+    }
+
+    public function findMonthTraining($query = null, $page = 1): PaginationInterface
+    {
+        $qb = $this->createQueryBuilder('app_user')
+            ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :start AND :end')
+            ->orderBy('app_user.firstName', 'ASC')
+            ->addOrderBy('app_user.lastName', 'ASC')
+            ->setParameters([
+                'start' => new \DateTime('first day of this month'),
+                'end' => new \DateTime('last day of this month'),
+            ])
         ;
 
         if ($query) {

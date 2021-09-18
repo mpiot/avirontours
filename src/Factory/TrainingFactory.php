@@ -43,7 +43,7 @@ final class TrainingFactory extends ModelFactory
     {
         return [
             'user' => UserFactory::new(),
-            'trainedAt' => self::faker()->dateTime(),
+            'trainedAt' => self::faker()->dateTimeThisYear(),
             'duration' => self::faker()->numberBetween(1200, 7200),
             'distance' => self::faker()->randomFloat(1, 2, 20),
             'sport' => self::faker()->randomElement(Training::getAvailableSports()),

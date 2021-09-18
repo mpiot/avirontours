@@ -51,7 +51,7 @@
     {% if is_granted('ROLE_SPORT_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <div class="fs-4 mb-3">Gestion du matériel</div>
+                <div class="fs-4 mb-3">Suivi sportif</div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
                     <div class="col">
                         <a href="{{ path('sports_profile_index') }}">
@@ -59,6 +59,16 @@
                                 <div class="card-body text-center">
                                     <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
                                     <h4 class="card-title fw-normal fs-5">Profils sportifs</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="{{ path('admin_training_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <span class="far fa-calendar-alt fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Entraînements</h4>
                                 </div>
                             </div>
                         </a>
@@ -71,7 +81,7 @@
     {% if is_granted('ROLE_USER_ADMIN') %}
         <div class="card border-0 shadow mb-3">
             <div class="card-body">
-                <div class="fs-4 mb-3">Gestion du matériel</div>
+                <div class="fs-4 mb-3">Gestion des utilisateurs</div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
                     <div class="col">
                         <a href="{{ path('user_index') }}">

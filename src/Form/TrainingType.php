@@ -48,13 +48,7 @@ class TrainingType extends AbstractType
                 'label' => 'Type d\'entraînement',
                 'choices' => Training::getAvailableTypes(),
                 'group_by' => function ($choice) {
-                    return match ($choice) {
-                        Training::TYPE_B1, Training::TYPE_B2, Training::TYPE_REST, Training::TYPE_GENERALIZED_ENDURANCE => 'Aérobie',
-                        Training::TYPE_B3, Training::TYPE_B4, Training::TYPE_B7, Training::TYPE_C2, Training::TYPE_SPLIT_LONG => 'Transition aérobie/anaérobie',
-                        Training::TYPE_B5, Training::TYPE_SPLIT_SHORT => 'Anaérobie lactique',
-                        Training::TYPE_B6, Training::TYPE_B8, Training::TYPE_C1 => 'Anaérobie alactique',
-                        default => 'Autre',
-                    };
+                    return Training::typeToTextEnergyPathway($choice);
                 },
                 'placeholder' => '-- Type d\'entraînement --',
                 'required' => false,

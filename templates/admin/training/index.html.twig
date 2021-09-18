@@ -1,0 +1,111 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Suivi des entraînements{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Suivi des entraînements</li>
+{% endblock %}
+
+{% block body %}
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <form method="get">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Membre</th>
+                        <th>Nombre de séances</th>
+                        <th>Distance</th>
+                        <th>Aérobie</th>
+                        <th>Transition aérobie/anaérobie</th>
+                        <th>Anaérobie lactique</th>
+                        <th>Anaérobie alactique</th>
+                        <th>Sensation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.fullname }}</td>
+                            <td>{{ user.trainings|length }}</td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% if training.distance is not null and (constant('App\\Entity\\Training::SPORT_ROWING') == training.sport or constant('App\\Entity\\Training::SPORT_ERGOMETER') == training.sport) %}
+                                        {% set sum = sum + training.distance %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {{ sum }} km
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_AEROBIC') == training.typeToEnergyPathway(training.type)  %}
+                                        {% set sum = sum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {{ (sum / user.trainings|length * 100)|round}}%
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_THRESHOLD') == training.typeToEnergyPathway(training.type)  %}
+                                        {% set sum = sum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {{ (sum / user.trainings|length * 100)|round}}%
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_LACTIC_ANAEROBIC') == training.typeToEnergyPathway(training.type)  %}
+                                        {% set sum = sum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {{ (sum / user.trainings|length * 100)|round}}%
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC') == training.typeToEnergyPathway(training.type)  %}
+                                        {% set sum = sum + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {{ (sum / user.trainings|length * 100)|round}}%
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for training in user.trainings %}
+                                    {% set sum = sum + 1 - training.feeling %}
+                                {% endfor %}
+                                {% set mean = sum / user.trainings|length %}
+
+                                <div class="progress">
+                                    <div class="progress-bar {{ mean < 0.4 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ mean * 100 }}%" aria-valuenow="{{ mean * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">Pas d'entraînement</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
