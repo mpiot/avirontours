@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\MedicalCertificate;
 use App\Entity\Season;
 use App\Repository\LicenseRepository;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
@@ -107,15 +108,15 @@ class SeasonCsvGenerator
                 'TypeLicence' => $license->getSeasonCategory()->getLicenseType(),
                 'code manifestation' => '',
                 'AssuranceIASportPlus' => 'Non',
-                'Date certificat "Pratique"' => '',
+                'Date certificat "Pratique"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
                 'Medecin certificat "Pratique"' => '',
                 'N° Medecin du certificat "Pratique"' => '',
-                'Attestation santé "pratique"' => '',
-                'Date certificat "Compétition"' => '',
+                'Attestation santé "pratique"' => MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? 'Oui' : '',
+                'Date certificat "Compétition"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_COMPETITION === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
                 'Medecin certificat "Compétition"' => '',
                 'N° Medecin du certificat "Compétition"' => '',
-                'Attestation santé "compétition"' => '',
-                'Date certificat "Surclassement"' => '',
+                'Attestation santé "compétition"' => MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_COMPETITION === $license->getMedicalCertificate()->getLevel() ? 'Oui' : '',
+                'Date certificat "Surclassement"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_UPGRADE === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
                 'Medecin certificat "Surclassement"' => '',
                 'N° Medecin du certificat "Surclassement"' => '',
                 'Entreprise' => 'Non',
