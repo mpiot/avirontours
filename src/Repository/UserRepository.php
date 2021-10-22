@@ -96,15 +96,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findMonthTraining($query = null, $page = 1): PaginationInterface
+    public function findTrainings(\DateTime $from = null, \DateTime $to = null, $query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')
-            ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :start AND :end')
+            ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :from AND :to')
+            ->addSelect('trainings')
             ->orderBy('app_user.firstName', 'ASC')
             ->addOrderBy('app_user.lastName', 'ASC')
             ->setParameters([
-                'start' => new \DateTime('first day of this month'),
-                'end' => new \DateTime('last day of this month'),
+                'from' => $from,
+                'to' => $to,
             ])
         ;
 

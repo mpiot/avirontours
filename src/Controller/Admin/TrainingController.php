@@ -34,11 +34,18 @@ class TrainingController extends AbstractController
     #[Route(path: '', name: 'admin_training_index', methods: ['GET'])]
     public function index(Request $request, UserRepository $userRepository): Response
     {
+        $from = new \DateTime($request->query->get('from') ?? '-1 month');
+        $to = new \DateTime($request->query->get('to') ?? 'now');
+
         return $this->render('admin/training/index.html.twig', [
-            'users' => $userRepository->findMonthTraining(
+            'users' => $userRepository->findTrainings(
+                $from,
+                $to,
                 $request->query->get('q'),
                 $request->query->getInt('page', 1)
             ),
+            'from' => $from,
+            'to' => $to,
         ]);
     }
 }
