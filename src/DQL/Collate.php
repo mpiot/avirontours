@@ -26,6 +26,7 @@ use Doctrine\ORM\Query\Lexer;
 class Collate extends FunctionNode
 {
     public ?\Doctrine\ORM\Query\AST\Node $expressionToCollate = null;
+
     public $collation;
 
     public function parse(\Doctrine\ORM\Query\Parser $parser): void

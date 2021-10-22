@@ -28,8 +28,11 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 class ShellMileageUpdater
 {
     private ?Shell $oldShell = null;
+
     private ?Shell $newShell = null;
+
     private ?float $oldCoveredDistance = null;
+
     private ?float $newCoveredDistance = null;
 
     public function prePersist(LogbookEntry $logbookEntry): void
