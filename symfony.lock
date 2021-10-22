@@ -149,13 +149,16 @@
         "version": "v2.4.39"
     },
     "google/recaptcha": {
-        "version": "1.1",
+        "version": "1.2",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
             "version": "1.1",
-            "ref": "d087df3e087f50da3955f2def05079380da5894b"
-        }
+            "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
+        },
+        "files": [
+            "config/packages/google_recaptcha.yaml"
+        ]
     },
     "jms/metadata": {
         "version": "2.1.0"
@@ -881,6 +884,9 @@
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
+    },
+    "zenstruck/assert": {
+        "version": "v1.0.0"
     },
     "zenstruck/callback": {
         "version": "v1.2.0"
