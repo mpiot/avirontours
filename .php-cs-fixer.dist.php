@@ -38,6 +38,11 @@ return (new PhpCsFixer\Config())
         // Alias
         'mb_str_functions' => true,
         // Class Notation
+        'class_attributes_separation' => ['elements' => [
+            'method' => 'one',
+            'property' => 'one',
+            'trait_import' => 'none',
+        ]],
         'no_php4_constructor' => true,
         'ordered_class_elements' => ['order' => [
             'use_trait',
@@ -60,7 +65,7 @@ return (new PhpCsFixer\Config())
             'method_protected_abstract_static',
             'method_public_static',
             'method_protected_static',
-            'method_private_static'
+            'method_private_static',
         ]],
         // Comment
         'comment_to_phpdoc' => true,
@@ -74,6 +79,7 @@ return (new PhpCsFixer\Config())
         // PHPDoc
         'align_multiline_comment' => ['comment_type' => 'all_multiline'],
         'phpdoc_order' => true,
+        'phpdoc_to_comment' => false,
         'phpdoc_var_annotation_correct_order' => true,
         // PHPUnit
         'php_unit_strict' => true,
@@ -94,4 +100,5 @@ return (new PhpCsFixer\Config())
         'blank_line_before_statement' => ['statements' => ['break', 'case', 'continue', 'declare', 'default', 'exit', 'goto', 'include', 'include_once', 'require', 'require_once', 'return', 'switch', 'throw', 'try']],
         'method_chaining_indentation' => true,
     ])
-    ->setFinder($finder);
+    ->setFinder($finder)
+;
