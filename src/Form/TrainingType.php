@@ -51,7 +51,6 @@ class TrainingType extends AbstractType
                     return Training::typeToTextEnergyPathway($choice);
                 },
                 'placeholder' => '-- Type d\'entraînement --',
-                'required' => false,
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
