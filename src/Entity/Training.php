@@ -98,6 +98,7 @@ class Training
     /**
      * @ORM\Column(type="float", nullable=true)
      */
+    #[Assert\LessThanOrEqual(400, message: 'Un entraînement doit faire 400km maximum.')]
     private ?float $distance = null;
 
     /**
@@ -109,6 +110,7 @@ class Training
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Assert\NotNull]
     private ?string $type = null;
 
     /**

@@ -157,6 +157,33 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame('My little comment...', $training->getComment());
     }
 
+    public function testNewTrainingWithTooLongDistance(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/new');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'training[trainedAt]' => '2020-01-15 14:02',
+            'training[sport]' => Training::SPORT_ROWING,
+            'training[type]' => Training::TYPE_B1,
+            'training[duration][hours]' => 1,
+            'training[duration][minutes]' => 30,
+            'training[distance]' => 501,
+            'training[feeling]' => Training::FEELING_OK,
+            'training[comment]' => 'My little comment...',
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Un entraînement doit faire 400km maximum.', $crawler->filter('#training_distance')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
     public function testNewTrainingWithoutData(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
@@ -181,8 +208,9 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_type')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->last()->text());
-        $this->assertCount(3, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(4, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
