@@ -225,6 +225,11 @@ class Training
         return $this;
     }
 
+    public function getEnergyPathway(): ?string
+    {
+        return self::typeToEnergyPathway($this->type);
+    }
+
     public function getFeeling(): ?float
     {
         return $this->feeling;
