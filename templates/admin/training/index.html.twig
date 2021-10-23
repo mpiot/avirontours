@@ -63,44 +63,16 @@
                                 {{ sum }} km
                             </td>
                             <td>
-                                {% set sum = 0 %}
-                                {% for training in user.trainings %}
-                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_AEROBIC') == training.typeToEnergyPathway(training.type)  %}
-                                        {% set sum = sum + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {{ (sum / user.trainings|length * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_AEROBIC')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {% set sum = 0 %}
-                                {% for training in user.trainings %}
-                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_THRESHOLD') == training.typeToEnergyPathway(training.type)  %}
-                                        {% set sum = sum + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {{ (sum / user.trainings|length * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_THRESHOLD')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {% set sum = 0 %}
-                                {% for training in user.trainings %}
-                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_LACTIC_ANAEROBIC') == training.typeToEnergyPathway(training.type)  %}
-                                        {% set sum = sum + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {{ (sum / user.trainings|length * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_LACTIC_ANAEROBIC')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {% set sum = 0 %}
-                                {% for training in user.trainings %}
-                                    {% if constant('App\\Entity\\Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC') == training.typeToEnergyPathway(training.type)  %}
-                                        {% set sum = sum + 1 %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {{ (sum / user.trainings|length * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
                                 {% set sum = 0 %}

@@ -650,6 +650,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->trainings;
     }
 
+    public function getTrainingsDuration(string $energyPathway = null): int
+    {
+        $duration = 0;
+        foreach ($this->trainings as $training) {
+            if (null !== $energyPathway && $energyPathway !== $training->getEnergyPathway()) {
+                continue;
+            }
+
+            $duration += $training->getDuration();
+        }
+
+        return $duration;
+    }
+
     #[Assert\Callback]
     public function validatePhoneNumber(ExecutionContextInterface $context)
     {
