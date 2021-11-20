@@ -666,14 +666,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getTrainingsFeeling(): ?float
     {
-        $feeling = 0;
-        $number = 0;
-        foreach ($this->trainings as $training) {
-            $feeling += $training->getFeeling();
-            ++$number;
+        if ($this->trainings->isEmpty()) {
+            return null;
         }
 
-        return 0 !== $feeling ? $feeling / $number : null;
+        $feeling = 0;
+        foreach ($this->trainings as $training) {
+            $feeling += $training->getFeeling();
+        }
+
+        return $feeling / $this->trainings->count();
     }
 
     #[Assert\Callback]

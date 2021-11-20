@@ -108,8 +108,11 @@ class Training
     private ?string $type = null;
 
     /**
-     * @ORM\Column(type="float", nullable=true)
+     * @ORM\Column(type="float")
      */
+    #[Assert\NotNull]
+    #[Assert\GreaterThanOrEqual(0)]
+    #[Assert\LessThanOrEqual(1)]
     private ?float $feeling = 0.5;
 
     /**
