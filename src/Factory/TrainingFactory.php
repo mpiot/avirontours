@@ -48,7 +48,7 @@ final class TrainingFactory extends ModelFactory
             'distance' => self::faker()->randomFloat(1, 2, 400),
             'sport' => self::faker()->randomElement(Training::getAvailableSports()),
             'type' => self::faker()->randomElement(Training::getAvailableTypes()),
-            'feeling' => self::faker()->randomElement(Training::getAvailableFeelings()),
+            'feeling' => self::faker()->randomFloat(1, 0, 1),
             'comment' => self::faker()->optional()->text(),
         ];
     }

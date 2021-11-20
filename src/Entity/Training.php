@@ -53,12 +53,6 @@ class Training
     public const ENERGY_PATHWAY_LACTIC_ANAEROBIC = 'lactic_aerobic';
     public const ENERGY_PATHWAY_ALACTIC_ANAEROBIC = 'alactic_aerobic';
 
-    public const FEELING_GREAT = 0.2;
-    public const FEELING_GOOD = 0.4;
-    public const FEELING_OK = 0.6;
-    public const FEELING_NOT_GOOD = 0.8;
-    public const FEELING_BAD = 1.0;
-
     public const SPORT_OTHER = 'other';
     public const SPORT_ROWING = 'rowing';
     public const SPORT_RUNNING = 'running';
@@ -116,7 +110,7 @@ class Training
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private ?float $feeling = null;
+    private ?float $feeling = 0.5;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -235,19 +229,6 @@ class Training
         return $this->feeling;
     }
 
-    public function getTextFeeling(): ?string
-    {
-        if (null === $this->feeling) {
-            return null;
-        }
-
-        if (false === $key = array_search($this->feeling, self::getAvailableFeelings(), true)) {
-            throw new \Exception(sprintf('The feeling "%s" is not available, the method "getAvailableFeelings" only return that feelings: %s.', $this->feeling, implode(', ', self::getAvailableFeelings())));
-        }
-
-        return $key;
-    }
-
     public function setFeeling(?float $feeling): self
     {
         $this->feeling = $feeling;
@@ -312,17 +293,6 @@ class Training
             'Renforcement' => self::SPORT_STRENGTHENING,
             'Vélo' => self::SPORT_CYCLING,
             'Yoga' => self::SPORT_YOGA,
-        ];
-    }
-
-    public static function getAvailableFeelings(): array
-    {
-        return [
-            'Super bien !' => self::FEELING_GREAT,
-            'Bien' => self::FEELING_GOOD,
-            'OK' => self::FEELING_OK,
-            'Pas bien' => self::FEELING_NOT_GOOD,
-            'Mal' => self::FEELING_BAD,
         ];
     }
 

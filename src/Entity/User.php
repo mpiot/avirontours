@@ -664,6 +664,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $duration;
     }
 
+    public function getTrainingsFeeling(): ?float
+    {
+        $feeling = 0;
+        $number = 0;
+        foreach ($this->trainings as $training) {
+            $feeling += $training->getFeeling();
+            ++$number;
+        }
+
+        return 0 !== $feeling ? $feeling / $number : null;
+    }
+
     #[Assert\Callback]
     public function validatePhoneNumber(ExecutionContextInterface $context)
     {

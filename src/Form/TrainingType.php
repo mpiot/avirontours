@@ -26,6 +26,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -65,10 +66,13 @@ class TrainingType extends AbstractType
             ->add('duration', DurationType::class, [
                 'label' => 'Durée',
             ])
-            ->add('feeling', ChoiceType::class, [
+            ->add('feeling', RangeType::class, [
                 'label' => 'Sensation',
-                'choices' => Training::getAvailableFeelings(),
-                'placeholder' => 'Comment vous sentez-vous ?',
+                'attr' => [
+                    'min' => 0,
+                    'max' => 1,
+                    'step' => 0.1,
+                ],
                 'required' => false,
             ])
             ->add('comment', TextareaType::class, [
