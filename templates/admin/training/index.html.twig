@@ -75,14 +75,9 @@
                                 {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {% set sum = 0 %}
-                                {% for training in user.trainings %}
-                                    {% set sum = sum + 1 - training.feeling %}
-                                {% endfor %}
-                                {% set mean = sum / user.trainings|length %}
-
+                                {% set feeling = user.trainingsFeeling %}
                                 <div class="progress">
-                                    <div class="progress-bar {{ mean < 0.4 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ mean * 100 }}%" aria-valuenow="{{ mean * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar {{ feeling < 0.4 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ feeling * 100 }}%" aria-valuenow="{{ feeling * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </td>
                         </tr>

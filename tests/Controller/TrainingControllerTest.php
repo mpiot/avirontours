@@ -135,7 +135,7 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => Training::FEELING_OK,
+            'training[feeling]' => 0.9,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -152,8 +152,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16.3, $training->getDistance());
-        $this->assertSame(Training::FEELING_OK, $training->getFeeling());
-        $this->assertSame('OK', $training->getTextFeeling());
+        $this->assertSame(0.9, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -174,7 +173,7 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 501,
-            'training[feeling]' => Training::FEELING_OK,
+            'training[feeling]' => 0.9,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -233,7 +232,7 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => Training::FEELING_OK,
+            'training[feeling]' => 0.9,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -244,7 +243,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16.3, $training->getDistance());
-        $this->assertSame(Training::FEELING_OK, $training->getFeeling());
+        $this->assertSame(0.9, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
