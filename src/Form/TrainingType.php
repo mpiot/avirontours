@@ -73,7 +73,6 @@ class TrainingType extends AbstractType
                     'max' => 1,
                     'step' => 0.1,
                 ],
-                'required' => false,
             ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Commentaire',

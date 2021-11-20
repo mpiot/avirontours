@@ -4,9 +4,9 @@
     {{ form_row(form.type) }}
     {{ form_row(form.distance) }}
 
-    <div>
-        Durée
-        <div class="row">
+    <div class="mb-3">
+        {{ form.duration.vars.label }}
+        <div id="{{ form.duration.vars.id }}" class="row">
             {{ form_errors(form.duration) }}
             <div class="col">{{ form_row(form.duration.hours) }}</div>
             <div class="col">{{ form_row(form.duration.minutes) }}</div>

@@ -208,8 +208,9 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_type')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('.invalid-feedback')->last()->text());
-        $this->assertCount(4, $crawler->filter('.invalid-feedback'));
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_feeling')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertCount(5, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
