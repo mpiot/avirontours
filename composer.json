@@ -20,14 +20,14 @@
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
-        "doctrine/orm": "2.9.*",
+        "doctrine/orm": "^2.9",
         "erusev/parsedown": "^1.7",
         "karser/karser-recaptcha3-bundle": "^0.1.18",
         "knplabs/knp-paginator-bundle": "^5.5",
         "phpdocumentor/reflection-docblock": "^5.2",
         "scheb/2fa-bundle": "^5.10",
         "scheb/2fa-email": "^5.10",
-        "scienta/doctrine-json-functions": "^4.3",
+        "scienta/doctrine-json-functions": "dev-feature/dbal3.0",
         "sensio/framework-extra-bundle": "^6.1",
         "stof/doctrine-extensions-bundle": "^1.6",
         "symfony/asset": "5.3.*",
@@ -132,5 +132,11 @@
             "allow-contrib": true,
             "require": "5.3.*"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/piotaixr/DoctrineJsonFunctions"
+        }
+    ]
 }
