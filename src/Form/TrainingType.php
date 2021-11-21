@@ -67,7 +67,7 @@ class TrainingType extends AbstractType
                 'label' => 'Durée',
             ])
             ->add('feeling', RangeType::class, [
-                'label' => 'Sensation',
+                'label' => 'Comment vous sentez-vous ?',
                 'attr' => [
                     'min' => 0,
                     'max' => 1,
