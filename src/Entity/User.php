@@ -195,6 +195,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     private Collection $trainings;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="members")
+     */
+    private Collection $groups;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -204,6 +209,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->clubEmailAllowed = true;
         $this->partnersEmailAllowed = false;
         $this->trainings = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -676,6 +682,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
 
         return $feeling / $this->trainings->count();
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        if ($this->groups->removeElement($group)) {
+            $group->removeMember($this);
+        }
+
+        return $this;
     }
 
     #[Assert\Callback]

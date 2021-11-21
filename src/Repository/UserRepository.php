@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Group;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -96,7 +97,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findTrainings(\DateTime $from = null, \DateTime $to = null, $query = null, $page = 1): PaginationInterface
+    public function findTrainings(\DateTime $from = null, \DateTime $to = null, Group $group = null, $query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')
             ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :from AND :to')
@@ -109,11 +110,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ])
         ;
 
+        if (null !== $group) {
+            $qb
+                ->innerJoin('app_user.groups', 'groups')
+                ->andWhere('groups = :group')
+                ->setParameter('group', $group)
+            ;
+        }
+
         if ($query) {
             $qb
-                ->orWhere('LOWER(app_user.firstName) LIKE :query')
-                ->orWhere('LOWER(app_user.lastName) LIKE :query')
-                ->orWhere('LOWER(app_user.email) LIKE :query')
+                ->andWhere('LOWER(app_user.firstName) LIKE :query OR LOWER(app_user.lastName) LIKE :query OR LOWER(app_user.email) LIKE :query')
                 ->setParameter('query', '%'.u($query)->lower()->toString().'%')
             ;
         }

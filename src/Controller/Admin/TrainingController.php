@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Repository\GroupRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,20 +33,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'admin_training_index', methods: ['GET'])]
-    public function index(Request $request, UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository, GroupRepository $groupRepository): Response
     {
         $from = new \DateTime($request->query->get('from') ?? '-1 month');
         $to = new \DateTime($request->query->get('to') ?? 'now');
+        $group = $request->query->has('group') ? $groupRepository->find($request->query->getInt('group')) : null;
 
         return $this->render('admin/training/index.html.twig', [
             'users' => $userRepository->findTrainings(
                 $from,
                 $to,
+                $group,
                 $request->query->get('q'),
                 $request->query->getInt('page', 1)
             ),
             'from' => $from,
             'to' => $to,
+            'group' => $group,
+            'groups' => $groupRepository->findBy([], ['name' => 'asc']),
         ]);
     }
 }

@@ -11,21 +11,33 @@
     <div class="card border-0 shadow">
         <div class="card-body">
             <form class="row gx-3 gy-2 align-items-center mb-3" method="get">
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-3">
                     <div class="input-group">
                         <span class="input-group-text" id="from-addon"><span class="fa fa-calendar-alt"></span></span>
                         <input type="date" class="form-control" id="from" name="from"  value="{{ from|date('Y-m-d') }}" max="{{ date('-1 day')|date('Y-m-d') }}" aria-label="Du" aria-describedby="from-addon">
                     </div>
                 </div>
 
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-3">
                     <div class="input-group">
                         <span class="input-group-text" id="to-addon"><span class="fa fa-calendar-alt"></span></span>
                         <input type="date" class="form-control" id="to" name="to"  value="{{ to|date('Y-m-d') }}" max="{{ date('now')|date('Y-m-d') }}" aria-label="Au" aria-describedby="to-addon">
                     </div>
                 </div>
 
-                <div class="col-12 col-md-4">
+                <div class="col-6 col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text" id="group-addon"><span class="fa fa-users"></span></span>
+                        <select class="form-select" id="group" name="group" aria-label="Groupe" aria-describedby="group-addon">
+                            <option value="" selected>Tout les groupes</option>
+                            {% for groupChoice in groups %}
+                                <option value="{{ groupChoice.id }}" {{ groupChoice == group ? 'selected' }}>{{ groupChoice.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
                     <div class="input-group">
                         <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="submit-addon">
                         <button type="submit" class="btn btn-primary" id="submit-addon"><span class="fa fa-search"></span></button>

@@ -1,0 +1,26 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier un groupe{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('group_index') }}">Gestion des groupes</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('group_show', {'id': group.id}) }}">{{ group.name }}</a></li>
+    <li class="breadcrumb-item active">Modifier un groupe</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier un groupe</h1>
+
+        <div class="ms-auto align-self-center">
+            {{ include('admin/group/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ include('admin/group/_form.html.twig', {'button_label': 'Modifier'}) }}
+        </div>
+    </div>
+{% endblock %}
