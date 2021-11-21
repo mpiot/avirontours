@@ -43,7 +43,7 @@ set('allow_anonymous_stats', false);
 set('bin/console', fn () => parse('{{release_path}}/bin/console'));
 
 // Hosts
-host('tethys.avirontours.fr')
+host('rhea.avirontours.fr')
     ->set('deploy_path', '/var/www/{{application}}')
     ->roles('app')
     ->stage('prod')
