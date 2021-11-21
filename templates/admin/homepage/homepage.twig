@@ -67,7 +67,7 @@
                         <a href="{{ path('admin_training_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="far fa-calendar-alt fa-6x mb-3 text-secondary"></span>
+                                    <span class="fas fa-chart-line fa-6x mb-3 text-secondary"></span>
                                     <h4 class="card-title fw-normal fs-5">Entraînements</h4>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                         <a href="{{ path('user_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                                    <span class="fas fa-users-cog fa-6x mb-3 text-secondary"></span>
                                     <h4 class="card-title fw-normal fs-5">Utilisateurs</h4>
                                 </div>
                             </div>
@@ -98,8 +98,20 @@
                         <a href="{{ path('season_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-calendar fa-6x mb-3 text-secondary"></span>
-                                    <h4 class="card-title fw-normal fs-5">Saisons</h4>
+                                    <span class="far fa-id-badge fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Saisons & Licences</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col">
+                        <a href="{{ path('group_index') }}">
+                            <div class="card">
+                                <div class="card-body text-center position-relative">
+                                    <span class="badge bg-success position-absolute top-0 end-0 m-2">Nouveau</span>
+                                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                                    <h4 class="card-title fw-normal fs-5">Groupes</h4>
                                 </div>
                             </div>
                         </a>

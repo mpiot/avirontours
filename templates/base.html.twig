@@ -71,11 +71,11 @@
 
                     {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements <span class="badge bg-success ml-auto">New</span></a>
+                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM <span class="badge bg-success">New</span></a>
+                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM</a>
                         </li>
                     {% endif %}
 
@@ -140,7 +140,7 @@
                     </ol>
                 </div>
 
-                <section class="my-3 px-3">
+                <section class="my-3 p-3">
                     {{ include('_flash_messages.html.twig') }}
                     {% block body %}{% endblock %}
                 </section>
