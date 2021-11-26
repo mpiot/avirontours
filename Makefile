@@ -1,13 +1,12 @@
 CONSOLE=$(SYMFONY) console
 DOCKER_COMPOSE?=docker-compose
-RUN?=$(SYMFONY) run
 SYMFONY?=symfony
 
 .DEFAULT_GOAL := help
 .PHONY: help
 .PHONY: start stop install uninstall
 .PHONY: db-reset db-fixtures
-.PHONY: assets-server assets-watch assets-dev assets-build assets-analyzer
+.PHONY: assets-server assets-watch assets-dev assets-build assets-analyze
 .PHONY: tests tests-weak tets-all test-all-weak lint lint-symfony lint-yaml lint-twig lint-container php-cs security-check validate-schema
 .PHONY: deps
 
@@ -24,8 +23,9 @@ start:                                                                          
 	$(SYMFONY) server:start -d
 
 stop:                                                                                                  ## Stop project
-	$(DOCKER_COMPOSE) stop
 	$(SYMFONY) server:stop
+	$(DOCKER_COMPOSE) stop
+	$(SYMFONY) proxy:stop
 
 install:                                                                                               ## Install the project
 	$(DOCKER_COMPOSE) up -d --remove-orphans
@@ -33,7 +33,7 @@ install:                                                                        
 	$(MAKE) db-fixtures
 
 uninstall:                                                                                             ## Uninstall the project
-	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) down -v
 	rm -R node_modules/  var/ vendor/
 
 ##
@@ -76,11 +76,11 @@ assets-analyze:                                                                 
 
 tests:                                                                                                ## Run all the PHP tests
 	$(CONSOLE) cache:clear --env test
-	FOUNDRY_RESET_MODE=migrate $(RUN) php bin/phpunit
+	FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
 
 tests-weak:                                                                                           ## Run all the PHP tests without Deprecations helper
 	$(CONSOLE) cache:clear --env test
-	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(RUN) php bin/phpunit
+	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
 
 test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests
 
@@ -100,7 +100,7 @@ lint-container:                                                                 
 	$(CONSOLE) lint:container
 
 php-cs:                                                                                                ## Lint PHP code
-	$(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+	PHP_CS_FIXER_IGNORE_ENV=1 $(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 
 security-check:                                                                                        ## Check for vulnerable dependencies
 	$(SYMFONY) security:check
@@ -122,13 +122,13 @@ deps: vendor assets-dev                                                         
 # Rules from files
 
 vendor: composer.lock
-	composer install -n
+	$(SYNFONY) composer install -n
 
 composer.lock: composer.json
 	@echo compose.lock is not up to date.
 
 node_modules: yarn.lock
-	yarn install
+	$(SYMFONY) run -d yarn install
 
 yarn.lock: package.json
 	@echo yarn.lock is not up to date.

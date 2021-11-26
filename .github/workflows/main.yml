@@ -6,21 +6,24 @@ on:
   pull_request:
     types:
       - opened
-      - synchronize
       - reopened
+      - synchronize
+      - ready_for_review
 
 jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
 
+    if: github.event.pull_request.draft == false
+
     env:
       APP_ENV: "test"
-      DATABASE_URL: "pgsql://user:password@localhost:5432/main_test"
+      DATABASE_URL: "pgsql://user:password@localhost:5432/main"
 
     services:
       postgres:
-        image: postgres:11.10
+        image: postgres:14
         env:
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
@@ -35,65 +38,61 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           ini-values: date.timezone = Europe/Paris
+          coverage: pcov
 
       - name: Composer validate
         run: composer validate
 
-      - name: Cache composer dependencies
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Get Composer cache
         uses: actions/cache@v2
         with:
-          path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+            path: ${{ steps.composer-cache.outputs.dir }}
+            key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+            restore-keys: |
+                ${{ runner.os }}-composer-
 
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install PHP CS fixer
-        run: |
-          wget https://cs.symfony.com/download/php-cs-fixer-v2.phar -O php-cs-fixer
-          sudo chmod a+x php-cs-fixer
-          sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
-
-      - name: Install node modules
-        run: |
-          yarn install
+        run: composer install --no-progress --no-interaction
 
       - name: Lint
         run: |
-          ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+          PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
           bin/console lint:yaml config --parse-tags config
-          bin/console lint:twig templates --env=prod
+          bin/console lint:twig templates
           bin/console lint:container
 
       - name: Verify schema
         run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-      - name: Cache security-checked vulnerabilities db
+      - name: Check vulnerabilities
+        uses: symfonycorp/security-checker-action@v2
+
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Get Yarn cache
         uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-          path: ~/.symfony/cache
-          key: security-checker-vulns-db
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-      - uses: symfonycorp/security-checker-action@v1
-
+      - name: Install node modules
+        run: |
+            yarn install
       - name: Build assets
         run: |
-          yarn build
-
-      - name: Clear the test cache
-        run: bin/console cache:clear --env test
+            yarn build
 
       - name: Run test suite
         run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
@@ -101,18 +100,18 @@ jobs:
       - name: Upload PHPUnit Reports
         uses: actions/upload-artifact@v2
         with:
-          name: phpunit-reports
-          path: |
-            coverage-report.xml
-            tests-report.xml
-          retention-days: 1
+            name: phpunit-reports
+            path: |
+                coverage-report.xml
+                tests-report.xml
+            retention-days: 1
 
   sonarcloud:
     name: SonarCloud
-
-    needs: tests
-
     runs-on: ubuntu-latest
+
+    if: github.event.pull_request.draft == false
+    needs: tests
 
     steps:
       - uses: actions/checkout@v2
