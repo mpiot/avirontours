@@ -100,7 +100,7 @@ task('deploy:migrate', function (): void {
 
 // Sub tasks
 task('php:restart', function (): void {
-    run('sudo systemctl restart php8.0-fpm');
+    run('sudo systemctl restart php8.1-fpm');
 });
 
 // Restart PHP (opcache preload) after deployment
