@@ -74,11 +74,11 @@ assets-analyze:                                                                 
 ## Tests
 ##---------------------------------------------------------------------------
 
-tests:                                                                                                ## Run all the PHP tests
+tests:                                                                                                 ## Run all the PHP tests
 	$(CONSOLE) cache:clear --env test
 	FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
 
-tests-weak:                                                                                           ## Run all the PHP tests without Deprecations helper
+tests-weak:                                                                                            ## Run all the PHP tests without Deprecations helper
 	$(CONSOLE) cache:clear --env test
 	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
 
@@ -88,7 +88,7 @@ test-all-weak: lint validate-schema security-check tests-weak                   
 
 lint: lint-symfony php-cs                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
 
-lint-symfony: lint-yaml lint-twig lint-container                                                       ## Lint Symfony (Twig and YAML) files
+lint-symfony: lint-yaml lint-twig lint-container                                                       ## Lint Symfony (Twig, YAML, and container)
 
 lint-yaml:                                                                                             ## Lint YAML files
 	$(CONSOLE) lint:yaml --parse-tags config
@@ -106,7 +106,7 @@ security-check:                                                                 
 	$(SYMFONY) security:check
 
 validate-schema:                                                                                       ## Test the doctrine Schema
-	$(CONSOLE) doctrine:schema:validate --skip-sync -vvv --no-interaction
+	$(CONSOLE) doctrine:schema:validate
 
 
 ##

@@ -1,133 +1,134 @@
 name: Continuous Integration
 
 on:
-  push:
-    branches: [ master, develop ]
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - ready_for_review
+    push:
+        branches: [ master, develop ]
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - ready_for_review
 
 jobs:
-  tests:
-    name: Tests
-    runs-on: ubuntu-latest
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
 
-    if: github.event.pull_request.draft == false
+        if: github.event.pull_request.draft == false
 
-    env:
-      APP_ENV: "test"
-      DATABASE_URL: "pgsql://user:password@localhost:5432/main"
-
-    services:
-      postgres:
-        image: postgres:14
         env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: main
-        ports:
-          - 5432:5432
+            APP_ENV: "test"
+            DATABASE_URL: "pgsql://user:password@localhost:5432/main"
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+        services:
+            postgres:
+                image: postgres:14
+                env:
+                    POSTGRES_USER: user
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: main
+                ports:
+                    - 5432:5432
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          ini-values: date.timezone = Europe/Paris
-          coverage: pcov
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-      - name: Composer validate
-        run: composer validate
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.1'
+                  ini-values: date.timezone = Europe/Paris
+                  coverage: pcov
 
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+            - name: Composer validate
+              run: composer validate
 
-      - name: Get Composer cache
-        uses: actions/cache@v2
-        with:
-            path: ${{ steps.composer-cache.outputs.dir }}
-            key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-            restore-keys: |
-                ${{ runner.os }}-composer-
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: |
+                  echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-      - name: Install Composer dependencies
-        run: composer install --no-progress --no-interaction
+            - name: Get Composer cache
+              uses: actions/cache@v2
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
 
-      - name: Lint
-        run: |
-          PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
-          bin/console lint:yaml config --parse-tags config
-          bin/console lint:twig templates
-          bin/console lint:container
+            - name: Install Composer dependencies
+              run: composer install --no-progress --no-interaction
 
-      - name: Verify schema
-        run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+            - name: Lint
+              run: |
+                  PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+                  bin/console lint:yaml config --parse-tags config
+                  bin/console lint:twig templates
+                  bin/console lint:container
 
-      - name: Check vulnerabilities
-        uses: symfonycorp/security-checker-action@v2
+            - name: Verify schema
+              run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+            - name: Check vulnerabilities
+              uses: symfonycorp/security-checker-action@v2
 
-      - name: Get Yarn cache
-        uses: actions/cache@v2
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+            - name: Get Yarn cache directory path
+              id: yarn-cache-dir-path
+              run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - name: Install node modules
-        run: |
-            yarn install
-      - name: Build assets
-        run: |
-            yarn build
+            - name: Get Yarn cache
+              uses: actions/cache@v2
+              id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+              with:
+                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
 
-      - name: Run test suite
-        run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+            - name: Install node modules
+              run: |
+                  yarn install
 
-      - name: Upload PHPUnit Reports
-        uses: actions/upload-artifact@v2
-        with:
-            name: phpunit-reports
-            path: |
-                coverage-report.xml
-                tests-report.xml
-            retention-days: 1
+            - name: Build assets
+              run: |
+                  yarn build
 
-  sonarcloud:
-    name: SonarCloud
-    runs-on: ubuntu-latest
+            - name: Run test suite
+              run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
-    if: github.event.pull_request.draft == false
-    needs: tests
+            - name: Upload PHPUnit Reports
+              uses: actions/upload-artifact@v2
+              with:
+                  name: phpunit-reports
+                  path: |
+                      coverage-report.xml
+                      tests-report.xml
+                  retention-days: 1
 
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    sonarcloud:
+        name: SonarCloud
+        runs-on: ubuntu-latest
 
-      - name: Download PHPUnit Reports
-        uses: actions/download-artifact@v2
-        with:
-          name: phpunit-reports
+        if: github.event.pull_request.draft == false
+        needs: tests
 
-      - name: Change Paths from PHPUnit reports
-        run: sed -i 's/\/home\/runner\/work\/avirontours\/avirontours/\/github\/workspace/g' coverage-report.xml
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            - name: Download PHPUnit Reports
+              uses: actions/download-artifact@v2
+              with:
+                  name: phpunit-reports
+
+            - name: Change Paths from PHPUnit reports
+              run: sed -i 's/\/home\/runner\/work\/apps\/apps/\/github\/workspace/g' coverage-report.xml
+
+            - name: SonarCloud Scan
+              uses: SonarSource/sonarcloud-github-action@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

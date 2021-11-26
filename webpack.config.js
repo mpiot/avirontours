@@ -63,12 +63,10 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     .configureDevServerOptions(options => {
-        options.allowedHosts = 'all';
+        options.allowedHosts = 'apps.vermon.wip'
         options.https = {
             pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
-        };
-
-        delete options.client.host;
+        }
     })
 
     .configureBabel((config) => {
@@ -101,7 +99,7 @@ Encore
     .enableIntegrityHashes(Encore.isProduction())
 
     // uncomment if you're having problems with a jQuery plugin
-    .autoProvidejQuery()
+    //.autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();

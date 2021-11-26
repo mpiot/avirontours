@@ -2,3 +2,6 @@
 zenstruck_foundry:
     # Whether to auto-refresh proxies by default (https://github.com/zenstruck/foundry#auto-refresh)
     auto_refresh_proxies: true
+    # Define the Faker locale
+    faker:
+        locale: fr_FR

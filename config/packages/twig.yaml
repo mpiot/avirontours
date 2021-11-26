@@ -1,6 +1,10 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-    form_themes: ['forms/bootstrap_5_layout.html.twig']
+    date:
+        format: d/m/Y
+        interval_format: '%%d days'
+    form_themes:
+        - 'bootstrap_5_layout.html.twig'
     paths:
         '%kernel.project_dir%/assets/images': images
         '%kernel.project_dir%/assets/styles': styles

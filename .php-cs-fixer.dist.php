@@ -38,11 +38,6 @@ return (new PhpCsFixer\Config())
         // Alias
         'mb_str_functions' => true,
         // Class Notation
-        'class_attributes_separation' => ['elements' => [
-            'method' => 'one',
-            'property' => 'one',
-            'trait_import' => 'none',
-        ]],
         'no_php4_constructor' => true,
         'ordered_class_elements' => ['order' => [
             'use_trait',
