@@ -12,6 +12,7 @@ twig:
         APP_VERSION: '%env(APP_VERSION)%'
         APP_IBAN: '%env(APP_IBAN)%'
         APP_BIC: '%env(APP_BIC)%'
+        projectDir: '%kernel.project_dir%'
 
 when@test:
     twig:

@@ -5,6 +5,7 @@
         "@popperjs/core": "^2.9.3",
         "@symfony/stimulus-bridge": "^2.0.0",
         "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets",
+        "@symfony/ux-lazy-image": "file:vendor/symfony/ux-lazy-image/Resources/assets",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/Resources/assets",
         "@symfony/webpack-encore": "^1.0.0",
         "@ttskch/select2-bootstrap4-theme": "^1.5.2",

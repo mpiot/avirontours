@@ -160,6 +160,12 @@
             "config/packages/google_recaptcha.yaml"
         ]
     },
+    "guzzlehttp/psr7": {
+        "version": "2.1.0"
+    },
+    "intervention/image": {
+        "version": "2.7.0"
+    },
     "jms/metadata": {
         "version": "2.1.0"
     },
@@ -180,6 +186,9 @@
     },
     "knplabs/knp-paginator-bundle": {
         "version": "v5.1.1"
+    },
+    "kornrunner/blurhash": {
+        "version": "v1.2.1"
     },
     "laminas/laminas-code": {
         "version": "3.4.1"
@@ -267,11 +276,20 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.2"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "scheb/2fa-bundle": {
         "version": "5.0",
@@ -748,6 +766,9 @@
     },
     "symfony/ux-chartjs": {
         "version": "v1.1.0"
+    },
+    "symfony/ux-lazy-image": {
+        "version": "v1.3.0"
     },
     "symfony/ux-turbo": {
         "version": "v1.3.0"
