@@ -132,15 +132,17 @@
             {% endif %}
 
             <main data-action="click->app-menu#main click->account-menu#main">
-                <div class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
-                    <ol class="breadcrumb pt-3 ps-3">
-                        {% block breadcrumb %}
-                            <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-                        {% endblock %}
-                    </ol>
-                </div>
+                {% block breadcrumb_block %}
+                    <div class="d-flex bg-white shadow-sm" aria-label="breadcrumb">
+                        <ol class="breadcrumb pt-3 ps-3">
+                            {% block breadcrumb %}
+                                <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+                            {% endblock %}
+                        </ol>
+                    </div>
+                {% endblock %}
 
-                <section class="my-3 p-3">
+                <section class="mb-3 p-3">
                     {{ include('_flash_messages.html.twig') }}
                     {% block body %}{% endblock %}
                 </section>
