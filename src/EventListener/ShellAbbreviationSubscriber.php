@@ -32,7 +32,7 @@ class ShellAbbreviationSubscriber implements EventSubscriber
     {
     }
 
-    public function getSubscribedEvents()
+    public function getSubscribedEvents(): array
     {
         return [
             Events::prePersist,

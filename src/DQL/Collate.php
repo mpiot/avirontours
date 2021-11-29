@@ -46,7 +46,7 @@ class Collate extends FunctionNode
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
-    public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker)
+    public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker): string
     {
         return sprintf('%s COLLATE %s', $sqlWalker->walkStringPrimary($this->expressionToCollate), $this->collation);
     }

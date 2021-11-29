@@ -45,12 +45,12 @@ final class PhysiologyFactory extends ModelFactory
 
         return [
             'user' => UserFactory::new(),
-            'lightAerobicHeartRateMin' => (int) $max * 0.65,
-            'heavyAerobicHeartRateMin' => (int) $max * 0.70,
-            'anaerobicThresholdHeartRateMin' => (int) $max * 0.80,
-            'oxygenTransportationHeartRateMin' => (int) $max * 0.85,
-            'anaerobicHeartRateMin' => (int) $max * 0.95,
-            'maximumHeartRate' => (int) $max,
+            'lightAerobicHeartRateMin' => round($max * 0.65),
+            'heavyAerobicHeartRateMin' => round($max * 0.70),
+            'anaerobicThresholdHeartRateMin' => round($max * 0.80),
+            'oxygenTransportationHeartRateMin' => round($max * 0.85),
+            'anaerobicHeartRateMin' => round($max * 0.95),
+            'maximumHeartRate' => $max,
             'maximumOxygenConsumption' => self::faker()->randomFloat(2, 20, 90),
         ];
     }

@@ -27,7 +27,7 @@ class UniqueUser extends Constraint
 {
     public string $message = 'Un compte existe déjà avec ce nom et prénom.';
 
-    public function getTargets()
+    public function getTargets(): string|array
     {
         return self::CLASS_CONSTRAINT;
     }
