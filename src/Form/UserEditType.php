@@ -30,7 +30,7 @@ class UserEditType extends AbstractType
         $builder->remove('plainPassword');
     }
 
-    public function getParent()
+    public function getParent(): string
     {
         return UserType::class;
     }

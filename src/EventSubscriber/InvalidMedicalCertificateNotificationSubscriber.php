@@ -50,7 +50,7 @@ class InvalidMedicalCertificateNotificationSubscriber implements EventSubscriber
         $this->mailer->send($email);
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'workflow.license.entered.medical_certificate_rejected' => 'onMedicalCertificateRejected',
