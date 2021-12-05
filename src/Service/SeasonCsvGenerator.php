@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\License;
 use App\Entity\MedicalCertificate;
 use App\Entity\Season;
 use App\Repository\LicenseRepository;
@@ -108,15 +109,15 @@ class SeasonCsvGenerator
                 'TypeLicence' => $license->getSeasonCategory()->getLicenseType(),
                 'code manifestation' => '',
                 'AssuranceIASportPlus' => 'Non',
-                'Date certificat "Pratique"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
+                'Date certificat "Pratique"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_PRACTICE),
                 'Medecin certificat "Pratique"' => '',
                 'N° Medecin du certificat "Pratique"' => '',
-                'Attestation santé "pratique"' => MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? 'Oui' : '',
-                'Date certificat "Compétition"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_COMPETITION === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
+                'Attestation santé "pratique"' => $this->getAttestationValue($license, MedicalCertificate::LEVEL_PRACTICE),
+                'Date certificat "Compétition"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_COMPETITION),
                 'Medecin certificat "Compétition"' => '',
                 'N° Medecin du certificat "Compétition"' => '',
-                'Attestation santé "compétition"' => MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_COMPETITION === $license->getMedicalCertificate()->getLevel() ? 'Oui' : '',
-                'Date certificat "Surclassement"' => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType() && MedicalCertificate::LEVEL_UPGRADE === $license->getMedicalCertificate()->getLevel() ? $license->getMedicalCertificate()->getDate()->format(' d/m/Y') : '',
+                'Attestation santé "compétition"' => $this->getAttestationValue($license, MedicalCertificate::LEVEL_COMPETITION),
+                'Date certificat "Surclassement"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_UPGRADE),
                 'Medecin certificat "Surclassement"' => '',
                 'N° Medecin du certificat "Surclassement"' => '',
                 'Entreprise' => 'Non',
@@ -131,5 +132,43 @@ class SeasonCsvGenerator
         $csv = $serializer->serialize($data, 'csv', [CsvEncoder::DELIMITER_KEY => ';', CsvEncoder::ENCLOSURE_KEY => \chr(127)]);
 
         return str_replace(\chr(127), '', $csv);
+    }
+
+    private function getMedicalCertificateDate(License $license, string $level): string
+    {
+        // Check the level
+        if ($level !== $license->getMedicalCertificate()->getLevel()) {
+            return '';
+        }
+
+        // If this is a Certificate
+        if (MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType()) {
+            return $license->getMedicalCertificate()->getDate()->format('d/m/Y');
+        }
+
+        // Else, this is an attestation: we must return the date of the latest Certificate we have
+        /** @var License|bool $latestLicenceWithCertificate */
+        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license) {
+            return MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType();
+        })->last();
+
+        // If we do not retrieve a licence with a medical certificate
+        // 1. For user over or equal to 18 years old, return a mistake
+        // 2. For user less than 18 yo, it's ok, return nothing
+        if (false === $latestLicenceWithCertificate) {
+            return 18 > $license->getUser()->getAge() ? '' : '??????';
+        }
+
+        return $latestLicenceWithCertificate->getMedicalCertificate()->getDate()->format('d/m/Y');
+    }
+
+    private function getAttestationValue(License $license, string $level): string
+    {
+        // Check the level
+        if ($level !== $license->getMedicalCertificate()->getLevel()) {
+            return '';
+        }
+
+        return MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() ? 'Oui' : 'Non';
     }
 }
