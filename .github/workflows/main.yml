@@ -63,7 +63,7 @@ jobs:
 
             - name: Lint
               run: |
-                  PHP_CS_FIXER_IGNORE_ENV=1 ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+                  ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
                   bin/console lint:yaml config --parse-tags config
                   bin/console lint:twig templates
                   bin/console lint:container
