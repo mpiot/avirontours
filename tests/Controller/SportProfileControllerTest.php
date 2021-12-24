@@ -18,13 +18,12 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Tests\Controller\Admin;
+namespace App\Tests\Controller;
 
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
-class SportsProfileControllerTest extends AppWebTestCase
+class SportProfileControllerTest extends AppWebTestCase
 {
     /**
      * @dataProvider urlProvider
@@ -38,41 +37,12 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
-    {
-        if (mb_strpos($url, '{id}')) {
-            $user = UserFactory::createOne();
-            $url = str_replace('{id}', (string) $user->getId(), $url);
-        }
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
-        $client->request($method, $url);
-
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
     public function urlProvider()
     {
-        yield ['GET', '/admin/sports-profile'];
-        yield ['GET', '/admin/sports-profile/{id}/physiology'];
-        yield ['GET', '/admin/sports-profile/{id}/anatomy'];
-        yield ['GET', '/admin/sports-profile/{id}/physical-qualities'];
-        yield ['GET', '/admin/sports-profile/{id}/workout-maximum-load'];
-    }
-
-    public function testIndexUsers(): void
-    {
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', '/admin/sports-profile');
-
-        $this->assertResponseIsSuccessful();
+        yield ['GET', '/sport-profile/physiology'];
+        yield ['GET', '/sport-profile/anatomy'];
+        yield ['GET', '/sport-profile/physical-qualities'];
+        yield ['GET', '/sport-profile/workout-maximum-load'];
     }
 
     public function testNewPhysiology(): void
@@ -81,8 +51,8 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/physiology');
+        $client->loginUser($user->object());
+        $client->request('GET', '/sport-profile/physiology');
 
         $this->assertResponseIsSuccessful();
 
@@ -113,8 +83,8 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/anatomy');
+        $client->loginUser($user->object());
+        $client->request('GET', '/sport-profile/anatomy');
 
         $this->assertResponseIsSuccessful();
 
@@ -141,8 +111,8 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/physical-qualities');
+        $client->loginUser($user->object());
+        $client->request('GET', '/sport-profile/physical-qualities');
 
         $this->assertResponseIsSuccessful();
 
@@ -177,8 +147,8 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', '/admin/sports-profile/'.$user->getId().'/workout-maximum-load');
+        $client->loginUser($user->object());
+        $client->request('GET', '/sport-profile/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
 

@@ -22,6 +22,7 @@ namespace App\Entity;
 
 use App\Repository\AnatomyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AnatomyRepository::class)
@@ -38,6 +39,7 @@ class Anatomy
     /**
      * @ORM\Column(type="integer")
      */
+    #[Assert\NotBlank]
     private ?int $height = null;
 
     /**

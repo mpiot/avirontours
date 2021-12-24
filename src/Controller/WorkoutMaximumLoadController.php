@@ -20,11 +20,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\WorkoutMaximumLoad;
-use App\Form\WorkoutMaximumLoadType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -36,25 +33,5 @@ class WorkoutMaximumLoadController extends AbstractController
     public function show(): Response
     {
         return $this->render('workout_maximum_load/show.html.twig');
-    }
-
-    #[Route(path: '/edit', name: 'workout_maximum_load_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request): Response
-    {
-        $workoutMaximumLoad = $this->getUser()->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($this->getUser());
-        $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'Vos 1RM été modifié avec succès.');
-
-            return $this->redirectToRoute('workout_maximum_load_show', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('workout_maximum_load/edit.html.twig', [
-            'form' => $form,
-        ]);
     }
 }

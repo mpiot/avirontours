@@ -41,7 +41,6 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
     public function urlProvider()
     {
         yield ['GET', '/workout-maximum-load'];
-        yield ['GET', '/workout-maximum-load/edit'];
     }
 
     public function testShowWorkoutMaximumLoad(): void
@@ -69,35 +68,5 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $client->request('GET', '/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
-    }
-
-    public function testEditWorkoutMaximumLoad(): void
-    {
-        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $workoutMaximumLoad = WorkoutMaximumLoadFactory::createOne([
-            'user' => $user,
-        ]);
-
-        self::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->loginUser($user);
-        $client->request('GET', '/workout-maximum-load/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Sauver', [
-            'workout_maximum_load[rowingTirage]' => 1,
-            'workout_maximum_load[benchPress]' => 2,
-            'workout_maximum_load[squat]' => 3,
-            'workout_maximum_load[legPress]' => 4,
-            'workout_maximum_load[clean]' => 5,
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertSame(1, $workoutMaximumLoad->getRowingTirage());
-        $this->assertSame(2, $workoutMaximumLoad->getBenchPress());
-        $this->assertSame(3, $workoutMaximumLoad->getSquat());
-        $this->assertSame(4, $workoutMaximumLoad->getLegPress());
-        $this->assertSame(5, $workoutMaximumLoad->getClean());
     }
 }

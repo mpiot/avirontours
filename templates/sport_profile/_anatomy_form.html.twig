@@ -1,0 +1,16 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_row(form.height) }}
+            {{ form_row(form.weight) }}
+        </div>
+
+        <div class="col-sm-6">
+            {{ form_row(form.armSpan) }}
+            {{ form_row(form.bustLength) }}
+            {{ form_row(form.legLength) }}
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3">Sauver</button>
+{{ form_end(form) }}
