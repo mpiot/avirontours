@@ -124,8 +124,9 @@ jobs:
               with:
                   name: phpunit-reports
 
+
             - name: Change Paths from PHPUnit reports
-              run: sed -i 's/\/home\/runner\/work\/apps\/apps/\/github\/workspace/g' coverage-report.xml
+              run: sed -i 's/\/home\/runner\/work\/avirontours\/avirontours/\/github\/workspace/g' coverage-report.xml
 
             - name: SonarCloud Scan
               uses: SonarSource/sonarcloud-github-action@master
