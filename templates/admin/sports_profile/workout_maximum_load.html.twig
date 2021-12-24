@@ -15,15 +15,7 @@
 
     <div class="card border-0 shadow">
         <div class="card-body">
-            {{ form_start(form) }}
-            {{ form_row(form.rowingTirage) }}
-            {{ form_row(form.benchPress) }}
-            {{ form_row(form.squat) }}
-            {{ form_row(form.legPress) }}
-            {{ form_row(form.clean) }}
-
-            <button class="btn btn-primary mt-3">Sauver</button>
-            {{ form_end(form) }}
+            {{ include('sport_profile/_workout_maximum_load_form.html.twig') }}
         </div>
     </div>
 {% endblock %}

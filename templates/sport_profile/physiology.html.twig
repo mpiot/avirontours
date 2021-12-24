@@ -1,0 +1,15 @@
+{% extends 'sport_profile/base.html.twig' %}
+
+{% block title %}Ma physiologie{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Mon profil sportif</li>
+    <li class="breadcrumb-item active">Physiologie</li>
+{% endblock %}
+
+{% block main %}
+    <h2>Ma physiologie</h2>
+
+    {{ include('sport_profile/_physiology_form.html.twig') }}
+{% endblock %}

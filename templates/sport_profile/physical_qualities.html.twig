@@ -1,0 +1,15 @@
+{% extends 'sport_profile/base.html.twig' %}
+
+{% block title %}Mes qualités physique{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Mon profil sportif</li>
+    <li class="breadcrumb-item active">Qualités physique</li>
+{% endblock %}
+
+{% block main %}
+    <h2>Mes qualités physique</h2>
+
+    {{ include('sport_profile/_physical_qualities_form.html.twig') }}
+{% endblock %}

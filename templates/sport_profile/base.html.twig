@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="card border-0 shadow mb-3 d-xl-none">
+        <div class="card-body">
+            <nav class="nav nav-pills nav-justified">
+                <a class="nav-link{{ 'sport_profile_physiology' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physiology') }}">
+                    <span class="fas fa-heartbeat" aria-hidden="true"></span> Physiologie
+                </a>
+                <a class="nav-link{{ 'sport_profile_anatomy' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_anatomy') }}">
+                    <span class="fas fa-child" aria-hidden="true"></span> Anatomie
+                </a>
+                <a class="nav-link{{ 'sport_profile_physical_qualities' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physical_qualities') }}">
+                    <span class="fas fa-balance-scale" aria-hidden="true"></span> Qualités physiques
+                </a>
+                <a class="nav-link{{ 'sport_profile_workout_maximum_load' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_workout_maximum_load') }}">
+                    <span class="fas fa-dumbbell" aria-hidden="true"></span> 1RM
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 d-none d-xl-block">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="nav flex-column nav-pills" role="tablist">
+                        <a class="nav-link{{ 'sport_profile_physiology' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physiology') }}">
+                            <span class="fas fa-heartbeat" aria-hidden="true"></span> Physiologie
+                        </a>
+                        <a class="nav-link{{ 'sport_profile_anatomy' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_anatomy') }}">
+                            <span class="fas fa-child" aria-hidden="true"></span> Anatomie
+                        </a>
+                        <a class="nav-link{{ 'sport_profile_physical_qualities' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physical_qualities') }}">
+                            <span class="fas fa-balance-scale" aria-hidden="true"></span> Qualités physiques
+                        </a>
+                        <a class="nav-link{{ 'sport_profile_workout_maximum_load' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_workout_maximum_load') }}">
+                            <span class="fas fa-dumbbell" aria-hidden="true"></span> 1RM
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-9">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    {% block main %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

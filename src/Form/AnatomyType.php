@@ -35,7 +35,6 @@ class AnatomyType extends AbstractType
             ->add('height', IntegerType::class, [
                 'label' => 'Taille',
                 'help' => 'En cm',
-                'required' => false,
             ])
             ->add('weight', NumberType::class, [
                 'label' => 'Poids',

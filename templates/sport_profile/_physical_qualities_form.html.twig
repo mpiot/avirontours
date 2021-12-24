@@ -1,0 +1,19 @@
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_row(form.proprioception) }}
+            {{ form_row(form.weightPowerRatio) }}
+            {{ form_row(form.explosiveStrength) }}
+            {{ form_row(form.enduranceStrength) }}
+            {{ form_row(form.maximumStrength) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_row(form.stressResistance) }}
+            {{ form_row(form.coreStrength) }}
+            {{ form_row(form.flexibility) }}
+            {{ form_row(form.recovery) }}
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3">Sauver</button>
+{{ form_end(form) }}

@@ -1,0 +1,15 @@
+{% extends 'sport_profile/base.html.twig' %}
+
+{% block title %}Mes 1RM{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Mon profil sportif</li>
+    <li class="breadcrumb-item active">1RM</li>
+{% endblock %}
+
+{% block main %}
+    <h2>Mes 1RM</h2>
+
+    {{ include('sport_profile/_workout_maximum_load_form.html.twig') }}
+{% endblock %}
