@@ -62,7 +62,11 @@
                     <tbody>
                     {% for user in users %}
                         <tr>
-                            <td>{{ user.fullname }}</td>
+                            <td>
+                                <a href="{{ path('admin_training_list', { user_id: user.id }) }}">
+                                    {{ user.fullname }}
+                                </a>
+                            </td>
                             <td>{{ user.trainings|length }}</td>
                             <td>
                                 {% set sum = 0 %}

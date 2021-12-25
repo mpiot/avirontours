@@ -1,0 +1,32 @@
+ <div class="card border-0 shadow">
+    <div class="card-body">
+        <div class="card-deck h2">
+            <div class="card border-0">
+                <div class="card-body">
+                    <span class="far fa-clock text-info"></span> {{ training.formattedDuration }}
+                </div>
+            </div>
+            <div class="card border-0">
+                <div class="card-body">
+                    <span class="fas fa-ruler text-info"></span> {{ training.distance ? training.distance|format_number : '-' }} km
+                </div>
+            </div>
+            <div class="card border-0">
+                <div class="card-body">
+                    <span class="fas fa-spa text-info"></span> {{ training.feeling ?? '-'}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if training.comment is not null %}
+    <div class="card border-0 shadow mt-3">
+        <div class="card-body">
+            <span class="h4">Commentaire</span>
+            <blockquote class="blockquote">
+                <p class="mb-0">{{ training.comment|nl2br }}</p>
+            </blockquote>
+        </div>
+    </div>
+{% endif %}
