@@ -20,8 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\Training;
+use App\Entity\User;
 use App\Repository\GroupRepository;
+use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +55,26 @@ class TrainingController extends AbstractController
             'to' => $to,
             'group' => $group,
             'groups' => $groupRepository->findBy([], ['name' => 'asc']),
+        ]);
+    }
+
+    #[Route(path: '/{user_id}', name: 'admin_training_list', methods: ['GET'])]
+    #[Entity(data: 'user', expr: 'repository.find(user_id)')]
+    public function list(Request $request, User $user, TrainingRepository $trainingRepository): Response
+    {
+        return $this->render('admin/training/list.html.twig', [
+            'user' => $user,
+            'trainings' => $trainingRepository->findUserPaginated($user, $request->query->getInt('page', 1)),
+        ]);
+    }
+
+    #[Route(path: '/{user_id}/{id}', name: 'admin_training_show', methods: ['GET'])]
+    #[Entity(data: 'user', expr: 'repository.find(user_id)')]
+    public function show(User $user, Training $training): Response
+    {
+        return $this->render('admin/training/show.html.twig', [
+            'user' => $user,
+            'training' => $training,
         ]);
     }
 }

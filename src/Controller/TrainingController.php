@@ -34,10 +34,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
-    public function index(TrainingRepository $trainingRepository): Response
+    public function index(Request $request, TrainingRepository $trainingRepository): Response
     {
         return $this->render('training/index.html.twig', [
-            'trainings' => $trainingRepository->findUserPaginated($this->getUser()),
+            'trainings' => $trainingRepository->findUserPaginated($this->getUser(), $request->query->getInt('page', 1)),
         ]);
     }
 

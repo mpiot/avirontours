@@ -1,20 +1,15 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
-{% block title %}Carnet d'entraînements{% endblock %}
+{% block title %}Carnet d'entraînements de {{ user.fullname }}{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item active">Carnet d'entraînements</li>
+    <li class="breadcrumb-item"><a href="{{ path('admin_training_index') }}">Suivi des entraînements</a></li>
+    <li class="breadcrumb-item active">{{ user.fullname }}</li>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Carnet d'entraînements</h1>
-
-        <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un entraînement
-        </a>
-    </div>
+    <h1>Carnet d'entraînements de {{ user.fullname }}</h1>
 
     <div class="card border-0 shadow">
         <div class="card-body">
@@ -28,7 +23,6 @@
                         <th>Durée</th>
                         <th>Distance</th>
                         <th>Commentaire</th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,22 +30,16 @@
                         <tr>
                             <td>{{ training.trainedAt|date('d/m/Y - H:i') }}</td>
                             <td>
-                                <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.textSport }}</a>
+                                <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}">{{ training.textSport }}</a>
                             </td>
                             <td>{{ training.textType ?? '-' }}</td>
                             <td>{{ training.formattedDuration }}</td>
                             <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
                             <td>{{ training.comment|u.truncate(25, '...') }}</td>
-                            <td class="text-end">
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('training_edit', {'id': training.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="6" class="text-center">Pas d'entraînements</td>
+                            <td colspan="5" class="text-center">Pas d'entraînements</td>
                         </tr>
                     {% endfor %}
                     </tbody>

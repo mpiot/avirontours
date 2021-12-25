@@ -52,6 +52,6 @@ abstract class AppWebTestCase extends WebTestCase
 
     protected static function getEntityManager(): EntityManagerInterface
     {
-        return self::$container->get('doctrine')->getManager();
+        return static::getContainer()->get('doctrine')->getManager();
     }
 }

@@ -44,9 +44,14 @@ class TrainingControllerTest extends AppWebTestCase
      */
     public function testAccessDeniedForRegularUser($method, $url): void
     {
-        if (mb_strpos($url, '{id}')) {
+        if (mb_strpos($url, '{user_id}')) {
             $user = UserFactory::createOne();
             $url = str_replace('{id}', (string) $user->getId(), $url);
+
+            if (mb_strpos($url, '{id}')) {
+                $training = TrainingFactory::createOne(['user' => $user]);
+                $url = str_replace('{id}', (string) $training->getId(), $url);
+            }
         }
 
         static::ensureKernelShutdown();
@@ -60,6 +65,8 @@ class TrainingControllerTest extends AppWebTestCase
     public function urlProvider()
     {
         yield ['GET', '/admin/training'];
+        yield ['GET', '/admin/training/{user-id}'];
+        yield ['GET', '/admin/training/{user-id}/{id}'];
     }
 
     public function testIndexTrainings(): void
@@ -70,6 +77,34 @@ class TrainingControllerTest extends AppWebTestCase
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/training');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testListUserTrainings(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createMany(6, ['user' => $user]);
+        TrainingFactory::createMany(3);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $crawler = $client->request('GET', "/admin/training/{$user->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(6, $crawler->filter('table > tbody > tr'));
+    }
+
+    public function testShowTraining(): void
+    {
+        $user = UserFactory::createOne();
+        $training = TrainingFactory::createOne(['user' => $user]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $client->request('GET', "/admin/training/{$user->getId()}/{$training->getId()}");
 
         $this->assertResponseIsSuccessful();
     }
