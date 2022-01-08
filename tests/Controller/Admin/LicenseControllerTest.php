@@ -229,7 +229,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidateMedicalCertificate(): void
     {
-        $license = LicenseFactory::createOne(['marking' => null]);
+        $license = LicenseFactory::createOne(['marking' => []]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -249,7 +249,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testRejectMedicalCertificate(): void
     {
-        $license = LicenseFactory::createOne(['marking' => null]);
+        $license = LicenseFactory::createOne(['marking' => []]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -289,7 +289,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidatePayment(): void
     {
-        $license = LicenseFactory::createOne(['marking' => null]);
+        $license = LicenseFactory::createOne(['marking' => []]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();

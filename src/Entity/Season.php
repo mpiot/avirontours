@@ -22,42 +22,29 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SeasonRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\SeasonRepository')]
 class Season
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotBlank]
     #[Assert\Length(min: 4, max: 4)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\SeasonCategory", mappedBy="season", cascade={"persist", "remove"})
-     */
     #[Assert\Count(min: 1)]
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: 'App\Entity\SeasonCategory', cascade: ['persist', 'remove'])]
     private Collection $seasonCategories;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $subscriptionEnabled = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $active = null;
 
     public function __construct()

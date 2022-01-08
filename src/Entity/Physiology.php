@@ -21,70 +21,51 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PhysiologyRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=PhysiologyRepository::class)
- */
+#[ORM\Entity(repositoryClass: PhysiologyRepository::class)]
 class Physiology
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\LessThan(propertyPath: 'heavyAerobicHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $lightAerobicHeartRateMin = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\LessThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'lightAerobicHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $heavyAerobicHeartRateMin = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\LessThan(propertyPath: 'oxygenTransportationHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'heavyAerobicHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $anaerobicThresholdHeartRateMin = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\LessThan(propertyPath: 'anaerobicHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $oxygenTransportationHeartRateMin = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\LessThanOrEqual(propertyPath: 'maximumHeartRate')]
     #[Assert\GreaterThan(propertyPath: 'oxygenTransportationHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $anaerobicHeartRateMin = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
     #[Assert\GreaterThanOrEqual(value: 100)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $maximumHeartRate = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $maximumOxygenConsumption = null;
 
     public function __construct(User $user)

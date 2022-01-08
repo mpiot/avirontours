@@ -22,17 +22,15 @@ namespace App\Entity;
 
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Entity(repositoryClass=TrainingRepository::class)
- */
+#[ORM\Entity(repositoryClass: TrainingRepository::class)]
 class Training
 {
     public const NUM_ITEMS = 25;
-
     public const TYPE_B1 = 'b1';
     public const TYPE_B2 = 'b2';
     public const TYPE_B3 = 'b3';
@@ -47,12 +45,10 @@ class Training
     public const TYPE_GENERALIZED_ENDURANCE = 'generalized_endurance';
     public const TYPE_SPLIT_SHORT = 'split_short';
     public const TYPE_SPLIT_LONG = 'split_long';
-
     public const ENERGY_PATHWAY_AEROBIC = 'aerobic';
     public const ENERGY_PATHWAY_THRESHOLD = 'threshold';
     public const ENERGY_PATHWAY_LACTIC_ANAEROBIC = 'lactic_aerobic';
     public const ENERGY_PATHWAY_ALACTIC_ANAEROBIC = 'alactic_aerobic';
-
     public const SPORT_OTHER = 'other';
     public const SPORT_ROWING = 'rowing';
     public const SPORT_RUNNING = 'running';
@@ -65,59 +61,39 @@ class Training
     public const SPORT_CYCLING = 'cycling';
     public const SPORT_YOGA = 'yoga';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trainings")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'trainings')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
     #[Assert\NotNull]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $trainedAt;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: Types::INTEGER)]
     private int $duration = 0;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
     #[Assert\LessThanOrEqual(400, message: 'Un entraînement doit faire 400km maximum.')]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $distance = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotNull]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $sport = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     #[Assert\NotNull]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $type = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
     #[Assert\NotNull]
     #[Assert\GreaterThanOrEqual(0)]
     #[Assert\LessThanOrEqual(1)]
+    #[ORM\Column(type: Types::FLOAT)]
     private ?float $feeling = 0.5;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
     public function __construct(User $user)

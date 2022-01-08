@@ -90,7 +90,7 @@ final class LicenseFactory extends ModelFactory
     public function withInvalidLicense(): self
     {
         return $this->addState([
-            'marking' => null,
+            'marking' => [],
         ]);
     }
 
@@ -101,7 +101,7 @@ final class LicenseFactory extends ModelFactory
             'user' => UserFactory::new(),
             'medicalCertificate' => MedicalCertificateFactory::new(),
             'marking' => self::faker()->randomElement([
-                null,
+                [],
                 ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
                 ['wait_medical_certificate_validation' => 1, 'payment_validated' => 1],
                 ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1],

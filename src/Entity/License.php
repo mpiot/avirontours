@@ -21,15 +21,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\LicenseRepository")
- */
 #[UniqueEntity(fields: ['seasonCategory', 'user'], message: 'Déjà inscrit pour cette saison.')]
+#[ORM\Entity(repositoryClass: 'App\Repository\LicenseRepository')]
 class License
 {
     use BlameableEntity;
@@ -37,54 +36,36 @@ class License
 
     public const NUM_ITEMS = 20;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SeasonCategory", inversedBy="licenses")
-     * @ORM\JoinColumn(nullable=false)
-     */
     #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\SeasonCategory', inversedBy: 'licenses')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?SeasonCategory $seasonCategory;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="licenses")
-     * @ORM\JoinColumn(name="app_user", nullable=false)
-     */
     #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\User', inversedBy: 'licenses')]
+    #[ORM\JoinColumn(name: 'app_user', nullable: false)]
     private ?User $user;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\MedicalCertificate", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
     #[Assert\NotNull]
     #[Assert\Valid]
+    #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
     private ?MedicalCertificate $medicalCertificate = null;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $marking;
+    #[ORM\Column(type: Types::JSON)]
+    private array $marking = [];
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private array $transitionContexts;
+    #[ORM\Column(type: Types::JSON)]
+    private array $transitionContexts = [];
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $federationEmailAllowed;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
     #[Assert\Positive]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $logbookEntryLimit = null;
 
     public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
@@ -162,7 +143,7 @@ class License
         ];
     }
 
-    public function getTransitionContexts()
+    public function getTransitionContexts(): array
     {
         return $this->transitionContexts;
     }

@@ -21,45 +21,30 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\AnatomyRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=AnatomyRepository::class)
- */
+#[ORM\Entity(repositoryClass: AnatomyRepository::class)]
 class Anatomy
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $height = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $weight = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $armSpan = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $bustLength = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $legLength = null;
 
     public function __construct(User $user)

@@ -23,76 +23,55 @@ namespace App\Entity;
 use App\Validator as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\LogbookEntryRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\LogbookEntryRepository')]
+#[ORM\HasLifecycleCallbacks]
 class LogbookEntry
 {
     public const NUM_ITEMS = 20;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="logbookEntries")
-     * @ORM\JoinColumn(nullable=false)
-     */
     #[Assert\NotNull(groups: ['start', 'edit'])]
     #[AppAssert\ShellAvailable(groups: ['start'])]
     #[AppAssert\ShellNotDamaged(groups: ['start'])]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Shell', inversedBy: 'logbookEntries')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Shell $shell = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="logbookEntries")
-     */
     #[Assert\NotNull(groups: ['start', 'edit'])]
     #[AppAssert\CrewAvailable(groups: ['start'])]
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\User', inversedBy: 'logbookEntries')]
     private Collection $crewMembers;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[ORM\Column(type: Types::JSON)]
     private ?array $nonUserCrewMembers = [];
 
-    /**
-     * @ORM\Column(type="date")
-     */
     #[Assert\NotNull(groups: ['start', 'edit'])]
-    private $date;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $date;
 
-    /**
-     * @ORM\Column(type="time")
-     */
     #[Assert\NotBlank(groups: ['start', 'edit'])]
-    private $startAt;
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTime $startAt;
 
-    /**
-     * @ORM\Column(type="time", nullable=true)
-     */
     #[Assert\NotBlank(groups: ['finish'])]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endAt = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
     #[Assert\NotBlank(groups: ['finish'])]
     #[Assert\LessThanOrEqual(value: 30, groups: ['finish'])]
     #[Assert\GreaterThanOrEqual(value: 1, groups: ['finish'])]
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $coveredDistance = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="logbookEntry", cascade={"persist", "remove"})
-     */
     #[Assert\Valid]
+    #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: 'App\Entity\ShellDamage', cascade: ['persist', 'remove'])]
     private Collection $shellDamages;
 
     public function __construct()
