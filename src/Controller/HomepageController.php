@@ -70,24 +70,20 @@ class HomepageController extends AbstractController
         ]);
         $logbookChart->setOptions([
             'scales' => [
-                'yAxes' => [
-                    [
-                        'id' => 'distances',
-                        'type' => 'linear',
-                        'position' => 'left',
-                        'ticks' => [
-                            'beginAtZero' => true,
-                            'precision' => 0,
-                        ],
+                'distances' => [
+                    'type' => 'linear',
+                    'position' => 'left',
+                    'ticks' => [
+                        'beginAtZero' => true,
+                        'precision' => 0,
                     ],
-                    [
-                        'id' => 'sessions',
-                        'type' => 'linear',
-                        'position' => 'right',
-                        'ticks' => [
-                            'beginAtZero' => true,
-                            'precision' => 0,
-                        ],
+                ],
+                'sessions' => [
+                    'type' => 'linear',
+                    'position' => 'right',
+                    'ticks' => [
+                        'beginAtZero' => true,
+                        'precision' => 0,
                     ],
                 ],
             ],
