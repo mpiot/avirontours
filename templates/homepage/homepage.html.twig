@@ -46,8 +46,9 @@
                     <img
                         class="d-block w-100"
                         src="{{ asset('build/images/hobby_1920x480_blur.jpg') }}"
-                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                        data-hd-src="{{ asset('build/images/hobby_1920x480.jpg') }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: asset('build/images/hobby_1920x480.jpg')
+                        }) }}
                         width="1920"
                         height="480"
                         alt="Loisir"
@@ -60,8 +61,9 @@
                     <img
                         class="d-block w-100"
                         src="{{ asset('build/images/competition_blur.webp') }}"
-                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                        data-hd-src="{{ asset('build/images/competition.webp') }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: asset('build/images/competition.webp')
+                        }) }}
                         width="550"
                         height="250"
                         alt="Compétition"
@@ -74,8 +76,9 @@
                     <img
                         class="d-block w-100"
                         src="{{ asset('build/images/indoor_blur.webp') }}"
-                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                        data-hd-src="{{ asset('build/images/indoor.webp') }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: asset('build/images/indoor.webp')
+                        }) }}
                         width="550"
                         height="250"
                         alt="Indoor"
@@ -88,8 +91,9 @@
                     <img
                         class="d-block w-100"
                         src="{{ asset('build/images/discovery_blur.webp') }}"
-                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                        data-hd-src="{{ asset('build/images/discovery.webp') }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: asset('build/images/discovery.webp')
+                        }) }}
                         width="550"
                         height="250"
                         alt="Découverte"
@@ -102,8 +106,9 @@
                     <img
                         class="d-block w-100"
                         src="{{ asset('build/images/avifit_1920x480_blur.jpg') }}"
-                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                        data-hd-src="{{ asset('build/images/avifit_1920x480.jpg') }}"
+                        {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                            src: asset('build/images/avifit_1920x480.jpg')
+                        }) }}
                         width="1920"
                         height="480"
                         alt="Avifit"
@@ -153,8 +158,9 @@
                         <img
                             class="img-fluid mx-auto shadow-lg"
                             src="{{ asset('build/images/hobby_550x250_blur.jpg') }}"
-                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                            data-hd-src="{{ asset('build/images/hobby_550x250.jpg') }}"
+                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                                src: asset('build/images/hobby_550x250.jpg')
+                            }) }}
                             width="550"
                             height="250"
                             alt="Loisir"
@@ -184,8 +190,9 @@
                         <img
                             class="img-fluid mx-auto shadow-lg"
                             src="{{ asset('build/images/competition_blur.webp') }}"
-                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                            data-hd-src="{{ asset('build/images/competition.webp') }}"
+                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                                src: asset('build/images/competition.webp')
+                            }) }}
                             width="550"
                             height="250"
                             alt="Compétition"
@@ -212,8 +219,9 @@
                         <img
                             class="img-fluid mx-auto shadow-lg"
                             src="{{ asset('build/images/indoor_blur.webp') }}"
-                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                            data-hd-src="{{ asset('build/images/indoor.webp') }}"
+                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                                src: asset('build/images/indoor.webp')
+                            }) }}
                             width="550"
                             height="250"
                             alt="Indoor"
@@ -239,8 +247,9 @@
                         <img
                             class="img-fluid mx-auto shadow-lg"
                             src="{{ asset('build/images/avifit_550x250_blur.jpg') }}"
-                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image') }}
-                            data-hd-src="{{ asset('build/images/avifit_550x250.jpg') }}"
+                            {{ stimulus_controller('symfony/ux-lazy-image/lazy-image', {
+                                src: asset('build/images/avifit_550x250.jpg')
+                            }) }}
                             width="550"
                             height="250"
                             alt="Avifit"

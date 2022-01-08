@@ -23,6 +23,7 @@ namespace App\Controller\Admin;
 use App\Entity\ShellDamageCategory;
 use App\Form\ShellDamageCategoryType;
 use App\Repository\ShellDamageCategoryRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,14 +43,14 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'shell_damage_category_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $shellDamageCategory = new ShellDamageCategory();
         $form = $this->createForm(ShellDamageCategoryType::class, $shellDamageCategory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($shellDamageCategory);
             $entityManager->flush();
 
@@ -64,13 +65,13 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ShellDamageCategory $shellDamageCategory): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, ShellDamageCategory $shellDamageCategory): Response
     {
         $form = $this->createForm(ShellDamageCategoryType::class, $shellDamageCategory);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La catégorie d\'avarie  a été modifiée avec succès.');
 
@@ -84,10 +85,10 @@ class ShellDamageCategoryController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['POST'])]
-    public function delete(Request $request, ShellDamageCategory $shellDamageCategory): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, ShellDamageCategory $shellDamageCategory): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shellDamageCategory->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($shellDamageCategory);
             $entityManager->flush();
 

@@ -30,6 +30,7 @@ use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
 use App\Form\WorkoutMaximumLoadType;
 use App\Repository\UserRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,14 +53,14 @@ class SportsProfileController extends AbstractController
     }
 
     #[Route(path: '/{id}/physiology', name: 'sports_profile_physiology', methods: ['GET', 'POST'])]
-    public function physiology(Request $request, User $user): Response
+    public function physiology(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $physiology = $user->getPhysiology() ?? new Physiology($user);
         $form = $this->createForm(PhysiologyType::class, $physiology);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La physiologie a été modifiée avec succès.');
 
@@ -73,14 +74,14 @@ class SportsProfileController extends AbstractController
     }
 
     #[Route(path: '/{id}/anatomy', name: 'sports_profile_anatomy', methods: ['GET', 'POST'])]
-    public function anatomy(Request $request, User $user): Response
+    public function anatomy(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $anatomy = $user->getAnatomy() ?? new Anatomy($user);
         $form = $this->createForm(AnatomyType::class, $anatomy);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'L\'anatomie a été modifiée avec succès.');
 
@@ -94,14 +95,14 @@ class SportsProfileController extends AbstractController
     }
 
     #[Route(path: '/{id}/physical-qualities', name: 'sports_profile_physical_qualities', methods: ['GET', 'POST'])]
-    public function physicalQualities(Request $request, User $user): Response
+    public function physicalQualities(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $physicalQualities = $user->getPhysicalQualities() ?? new PhysicalQualities($user);
         $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'Les qualités physiques ont été modifiées avec succès.');
 
@@ -115,14 +116,14 @@ class SportsProfileController extends AbstractController
     }
 
     #[Route(path: '/{id}/workout-maximum-load', name: 'sports_profile_workout_maximum_load', methods: ['GET', 'POST'])]
-    public function workoutMaximumLoad(Request $request, User $user): Response
+    public function workoutMaximumLoad(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $workoutMaximumLoad = $user->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($user);
         $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'Les 1RM on été modifiées avec succès.');
 

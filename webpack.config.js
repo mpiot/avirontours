@@ -63,7 +63,7 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     .configureDevServerOptions(options => {
-        options.allowedHosts = 'apps.vermon.wip'
+        options.allowedHosts = 'avirontours.wip'
         options.https = {
             pfx: path.join(process.env.HOME, '.symfony/certs/default.p12'),
         }
