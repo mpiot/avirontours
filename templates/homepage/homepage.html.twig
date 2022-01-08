@@ -265,19 +265,6 @@
 
             <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-3">
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/christmas.webp') }}); background-position: center;">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Christmas party</h2>
-                            <ul class="d-flex list-unstyled mt-auto">
-                                <li class="me-auto">
-                                    <a href="https://www.aviron-tours-metropole.com/coupedenoel" class="btn btn-danger stretched-link">S'inscrire</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col">
                     <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/avifit.jpg') }}); background-position: center;">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Avifit</h2>
@@ -296,7 +283,7 @@
                             <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Entreprises</h2>
                             <ul class="d-flex list-unstyled mt-auto">
                                 <li class="me-auto">
-                                    <a href="https://www.aviron-tours-metropole.com/s%C3%A9minaire" class="btn btn-primary stretched-link">S'inscrire</a>
+                                    <a href="mailto:contact@avirontours.fr" class="btn btn-primary stretched-link">Nous contacter</a>
                                 </li>
                             </ul>
                         </div>
@@ -310,7 +297,7 @@
             <h2 class="pb-2 border-bottom">Encadrants</h2>
 
             <div class="row mt-5 mx-3">
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     {% embed 'homepage/_staff_card.html.twig' with {
                         image: asset('build/images/t_cadoret.webp'),
                         name: 'Thierry Cadoret',
@@ -329,7 +316,7 @@
                     {% endembed %}
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     {% embed 'homepage/_staff_card.html.twig' with {
                         image: asset('build/images/r_girault.webp'),
                         name: 'Raphaël Girault',
@@ -347,27 +334,6 @@
                             </p>
                             <p>
                                 Sympathique et plutôt blagueur, je serai la pour vous guider !
-                            </p>
-                        {% endblock %}
-                    {% endembed %}
-                </div>
-
-                <div class="col-lg-4">
-                    {% embed 'homepage/_staff_card.html.twig' with {
-                        image: asset('build/images/j_bellard.webp'),
-                        name: 'Jules Bellard',
-                        role: 'Chargé de développement',
-                    } %}
-                        {% block description %}
-                            <p>
-                                Chargé de développement à l'ATM c'est un objectif clair et concret.
-                            </p>
-                            <p>
-                                Rendre à tout moment l'ATM un meilleur lieu de vie, de sport et de partage pour tous.
-                            </p>
-                            <p>
-                                Un objectif qui me touche particulièrement, dans mes valeurs et dans ma passion de l'aviron,
-                                que je partage avec tous les supers membres de l'ATM.
                             </p>
                         {% endblock %}
                     {% endembed %}
