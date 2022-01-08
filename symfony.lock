@@ -283,12 +283,12 @@
         "version": "1.1.2"
     },
     "scheb/2fa-bundle": {
-        "version": "5.0",
+        "version": "6.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "5.0",
-            "ref": "62660e7d21b8b5295c5a6f8ca17dc7099881f267"
+            "version": "6.0",
+            "ref": "1e6f68089146853a790b5da9946fc5974f6fcd49"
         },
         "files": [
             "config/packages/scheb_2fa.yaml",
