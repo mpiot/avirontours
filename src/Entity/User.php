@@ -174,9 +174,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->username;
     }
 
-    public function getUserIdentifier(): ?string
+    public function getUserIdentifier(): string
     {
-        return $this->getUsername();
+        return (string) $this->getUsername();
     }
 
     public function getEmail(): ?string
