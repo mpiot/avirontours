@@ -144,7 +144,7 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer): RedirectResponse
+    private function processSendingPasswordResetEmail(string $usernameFormData, ManagerRegistry $managerRegistry, MailerInterface $mailer): RedirectResponse
     {
         $user = $managerRegistry->getRepository(User::class)->findOneBy([
             'username' => $usernameFormData,
