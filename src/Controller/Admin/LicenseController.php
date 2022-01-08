@@ -25,6 +25,7 @@ use App\Entity\Season;
 use App\Form\LicenseEditType;
 use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -40,14 +41,14 @@ class LicenseController extends AbstractController
 {
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
     #[Entity(data: 'season', expr: 'repository.find(seasonId)')]
-    public function new(Request $request, Season $season): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($license);
             $entityManager->flush();
 
@@ -65,13 +66,13 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, License $license): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {
         $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
@@ -87,10 +88,10 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
-    public function delete(Request $request, License $license): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($license);
             $entityManager->flush();
 
@@ -102,7 +103,7 @@ class LicenseController extends AbstractController
 
     #[Route(path: '/{id}/apply-transition', name: 'license_apply_transition', methods: ['POST'])]
     #[Route(path: '/{id}/chain-validation-apply-transition', name: 'license_chain_validation_apply_transition', methods: ['POST'])]
-    public function applyTransition(Request $request, WorkflowInterface $licenseWorkflow, License $license, int $seasonId): Response
+    public function applyTransition(Request $request, ManagerRegistry $managerRegistry, WorkflowInterface $licenseWorkflow, License $license, int $seasonId): Response
     {
         try {
             $licenseWorkflow
@@ -110,7 +111,7 @@ class LicenseController extends AbstractController
                     'time' => date('y-m-d H:i:s'),
                 ])
             ;
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
         } catch (ExceptionInterface $error) {

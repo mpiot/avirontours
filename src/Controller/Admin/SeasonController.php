@@ -25,6 +25,7 @@ use App\Form\SeasonType;
 use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
 use App\Service\SeasonCsvGenerator;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -46,14 +47,14 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'season_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $season = new Season();
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($season);
             $entityManager->flush();
 
@@ -82,13 +83,13 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Season $season): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         $form = $this->createForm(SeasonType::class, $season);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La saison a été modifiée avec succès.');
 
@@ -102,10 +103,10 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
-    public function delete(Request $request, Season $season): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($season);
             $entityManager->flush();
 

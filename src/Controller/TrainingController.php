@@ -23,6 +23,7 @@ namespace App\Controller;
 use App\Entity\Training;
 use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,14 +43,14 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'training_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $training = new Training($this->getUser());
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($training);
             $entityManager->flush();
 
@@ -74,13 +75,13 @@ class TrainingController extends AbstractController
 
     #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
     #[Security('training.getUser() == user')]
-    public function edit(Request $request, Training $training): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
 
@@ -95,10 +96,10 @@ class TrainingController extends AbstractController
 
     #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
     #[Security('training.getUser() == user')]
-    public function delete(Request $request, Training $training): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
         if ($this->isCsrfTokenValid('delete'.$training->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($training);
             $entityManager->flush();
 

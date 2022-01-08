@@ -26,6 +26,7 @@ use App\Form\Model\RegistrationModel;
 use App\Form\RegistrationFormType;
 use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -41,7 +42,7 @@ class RegistrationController extends AbstractController
 {
     #[Route(path: '/register/{slug}', name: 'app_register')]
     #[Entity(data: 'seasonCategory', expr: 'repository.findSubscriptionSeasonCategory(slug)')]
-    public function register(SeasonCategory $seasonCategory, Request $request, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
+    public function register(SeasonCategory $seasonCategory, Request $request, ManagerRegistry $managerRegistry, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
@@ -55,7 +56,7 @@ class RegistrationController extends AbstractController
             $user = $registrationModel->generateUser($seasonCategory, $passwordHasher);
 
             // Persist user
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -83,7 +84,7 @@ class RegistrationController extends AbstractController
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
     #[Security('is_granted("ROLE_USER")')]
-    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, MailerInterface $mailer): Response
+    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, ManagerRegistry $managerRegistry, MailerInterface $mailer): Response
     {
         $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {
@@ -96,7 +97,7 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Persist user
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($license);
             $entityManager->flush();
 

@@ -23,6 +23,7 @@ namespace App\Controller\Admin;
 use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,14 +43,14 @@ class GroupController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'group_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $group = new Group();
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($group);
             $entityManager->flush();
 
@@ -72,13 +73,13 @@ class GroupController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'group_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Group $group): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, Group $group): Response
     {
         $form = $this->createForm(GroupType::class, $group);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'Le groupe a été modifié avec succès.');
 
@@ -92,10 +93,10 @@ class GroupController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'group_delete', methods: ['POST'])]
-    public function delete(Request $request, Group $group): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, Group $group): Response
     {
         if ($this->isCsrfTokenValid('delete'.$group->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($group);
             $entityManager->flush();
 

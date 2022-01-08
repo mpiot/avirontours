@@ -24,6 +24,7 @@ use App\Entity\Shell;
 use App\Form\ShellEditType;
 use App\Form\ShellType;
 use App\Repository\ShellRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,14 +44,14 @@ class ShellController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'shell_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $shell = new Shell();
         $form = $this->createForm(ShellType::class, $shell);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($shell);
             $entityManager->flush();
 
@@ -73,13 +74,13 @@ class ShellController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Shell $shell): Response
+    public function edit(Request $request, ManagerRegistry $managerRegistry, Shell $shell): Response
     {
         $form = $this->createForm(ShellEditType::class, $shell);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'Le bâteau a été modifié avec succès.');
 
@@ -93,10 +94,10 @@ class ShellController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
-    public function delete(Request $request, Shell $shell): Response
+    public function delete(Request $request, ManagerRegistry $managerRegistry, Shell $shell): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shell->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($shell);
             $entityManager->flush();
 
