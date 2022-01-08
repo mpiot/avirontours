@@ -22,6 +22,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -32,179 +33,120 @@ use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="app_user")
- * @ORM\HasLifecycleCallbacks
- */
 #[UniqueEntity(fields: ['firstName', 'lastName'], message: 'Un compte existe déjà avec ce nom et prénom.', repositoryMethod: 'findForUniqueness')]
+#[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
+#[ORM\Table(name: 'app_user')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, \Stringable
 {
     public const NUM_ITEMS = 20;
     public const GENDER_FEMALE = 'f';
     public const GENDER_MALE = 'm';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     private ?string $username = null;
 
-    /**
-     * @ORM\Column(type="string", length=180)
-     */
     #[Assert\NotBlank]
     #[Assert\Email]
+    #[ORM\Column(type: Types::STRING, length: 180)]
     private ?string $email = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $phoneNumber = null;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string", nullable=true)
      */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $password = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $gender = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $firstName = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $lastName = null;
 
-    /**
-     * @ORM\Column(type="date")
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthday = null;
 
-    /**
-     * @ORM\Column(type="date")
-     */
     #[Assert\NotBlank]
-    private $subscriptionDate;
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $subscriptionDate;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $laneNumber = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     #[Assert\NotNull]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $laneType = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank]
-    private $laneName = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $laneName = null;
 
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 5, nullable: true)]
     private ?string $postalCode = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
     #[Assert\NotBlank]
-    private $city;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $city = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="crewMembers")
-     */
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\LogbookEntry', mappedBy: 'crewMembers')]
     private Collection $logbookEntries;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="user", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"id": "ASC"})
-     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $authCode = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $clubEmailAllowed;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $partnersEmailAllowed;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Physiology::class, cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToOne(targetEntity: Physiology::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Physiology $physiology = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Anatomy::class, cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: Anatomy::class, cascade: ['persist', 'remove'])]
     private ?Anatomy $anatomy = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=PhysicalQualities::class, cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: PhysicalQualities::class, cascade: ['persist', 'remove'])]
     private ?PhysicalQualities $physicalQualities = null;
 
-    /**
-     * @ORM\OneToOne(targetEntity=WorkoutMaximumLoad::class, cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(targetEntity: WorkoutMaximumLoad::class, cascade: ['persist', 'remove'])]
     private ?WorkoutMaximumLoad $workoutMaximumLoad = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Training::class, mappedBy="user")
-     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Training::class)]
     private Collection $trainings;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="members")
-     */
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private Collection $groups;
 
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
         $this->logbookEntries = new ArrayCollection();
-        $this->subscriptionDate = new \DateTimeImmutable();
         $this->licenses = new ArrayCollection();
         $this->clubEmailAllowed = true;
         $this->partnersEmailAllowed = false;
@@ -726,16 +668,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function defineUsername(): void
     {
         $slugger = new AsciiSlugger('fr');
         $firstName = $slugger->slug($this->firstName)->lower();
         $lastName = $slugger->slug($this->lastName)->lower();
-
         $this->username = "{$firstName}.{$lastName}";
     }
 

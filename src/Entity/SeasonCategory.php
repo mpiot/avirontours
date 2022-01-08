@@ -22,13 +22,12 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SeasonCategoryRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\SeasonCategoryRepository')]
 class SeasonCategory
 {
     public const LICENSE_TYPE_ANNUAL = 'A';
@@ -38,45 +37,29 @@ class SeasonCategory
     public const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
     public const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="seasonCategories")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Season', inversedBy: 'seasonCategories')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Season $season = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::FLOAT)]
     private ?float $price = null;
 
-    /**
-     * @ORM\Column(type="string", length=5)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 5)]
     private ?string $licenseType = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\License", mappedBy="seasonCategory")
-     */
+    #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: 'App\Entity\License')]
     private Collection $licenses;
 
     /**
@@ -88,13 +71,11 @@ class SeasonCategory
      *         @Gedmo\SlugHandlerOption(name="urilize", value=true)
      *     })
      * }, fields={"name"})
-     * @ORM\Column(length=128, unique=true)
      */
+    #[ORM\Column(length: 128, unique: true)]
     private string $slug;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $displayed = null;
 
     public function __construct()

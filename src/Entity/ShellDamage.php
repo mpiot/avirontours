@@ -21,61 +21,42 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ShellDamageRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\ShellDamageRepository')]
 class ShellDamage
 {
     use TimestampableEntity;
     public const NUM_ITEMS = 20;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ShellDamageCategory")
-     * @ORM\JoinColumn(nullable=false)
-     */
     #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\ShellDamageCategory')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?ShellDamageCategory $category = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $repairStartAt = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $repairEndAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Shell", inversedBy="shellDamages")
-     * @ORM\JoinColumn(nullable=false)
-     */
     #[Assert\NotNull]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Shell', inversedBy: 'shellDamages')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Shell $shell = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\LogbookEntry", inversedBy="shellDamages")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\LogbookEntry', inversedBy: 'shellDamages')]
     private ?LogbookEntry $logbookEntry = null;
 
     public function getId(): ?int

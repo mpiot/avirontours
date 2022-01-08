@@ -21,49 +21,34 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\WorkoutMaximumLoadRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=WorkoutMaximumLoadRepository::class)
- */
+#[ORM\Entity(repositoryClass: WorkoutMaximumLoadRepository::class)]
 class WorkoutMaximumLoad
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\PositiveOrZero]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $rowingTirage = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\PositiveOrZero]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $benchPress = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\PositiveOrZero]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $squat = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\PositiveOrZero]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $legPress = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\PositiveOrZero]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $clean = null;
 
     public function __construct(User $user)

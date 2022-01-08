@@ -20,34 +20,25 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ShellDamageCategoryRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\ShellDamageCategoryRepository')]
 class ShellDamageCategory
 {
     public const PRIORITY_HIGH = 0;
     public const PRIORITY_MEDIUM = 1;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotNull]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $priority = null;
 
     public function getId(): ?int

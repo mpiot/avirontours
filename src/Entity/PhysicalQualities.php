@@ -21,82 +21,59 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PhysicalQualitiesRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=PhysicalQualitiesRepository::class)
- */
+#[ORM\Entity(repositoryClass: PhysicalQualitiesRepository::class)]
 class PhysicalQualities
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $proprioception = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $weightPowerRatio = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $explosiveStrength = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $enduranceStrength = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $maximumStrength = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $stressResistance = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $coreStrength = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $flexibility = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\GreaterThanOrEqual(value: '0')]
     #[Assert\LessThanOrEqual(value: '20')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $recovery = null;
 
     public function __construct(User $user)

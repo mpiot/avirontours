@@ -22,135 +22,90 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\ShellRepository")
- */
+#[ORM\Entity(repositoryClass: 'App\Repository\ShellRepository')]
 class Shell
 {
     public const ROWING_TYPE_BOTH = 'both';
     public const ROWING_TYPE_SCULL = 'scull';
     public const ROWING_TYPE_SWEEP = 'sweep';
-
     public const WEIGHT_CATEGORY_50 = 50;
     public const WEIGHT_CATEGORY_60 = 60;
     public const WEIGHT_CATEGORY_70 = 70;
     public const WEIGHT_CATEGORY_80 = 80;
     public const WEIGHT_CATEGORY_90 = 90;
-
     public const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
     public const RIGGER_MATERIAL_CARBON = 'carbon';
-
     public const RIGGER_POSITION_BACK = 'back';
     public const RIGGER_POSITION_FRONT = 'front';
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
     #[Assert\NotBlank]
     #[Assert\Regex(pattern: '/1|2|4|8/', message: 'Le nombre de rameur doit être: 1, 2, 4 ou 8.')]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $numberRowers = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
     #[Assert\NotNull]
-    private ?bool $coxed = null;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $coxed = false;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\NotNull]
-    private ?string $rowingType = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $rowingType = self::ROWING_TYPE_BOTH;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
     #[Assert\NotNull]
-    private ?bool $yolette = null;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $yolette = false;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     #[Assert\DisableAutoMapping]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $abbreviation = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\LogbookEntry", mappedBy="shell")
-     */
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\LogbookEntry')]
     private Collection $logbookEntries;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $productionYear = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $weightCategory = null;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $newPrice = null;
 
-    /**
-     * @ORM\Column(type="float")
-     */
     #[Assert\NotBlank]
     #[Assert\GreaterThanOrEqual(value: 0)]
-    private $mileage;
+    #[ORM\Column(type: Types::FLOAT)]
+    private ?float $mileage = 0.0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $riggerMaterial = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $riggerPosition = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $usageFrequency = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private ?bool $personalBoat = null;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $personalBoat = false;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ShellDamage", mappedBy="shell")
-     */
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\ShellDamage')]
     private Collection $shellDamages;
 
     public function __construct()
     {
-        $this->coxed = false;
-        $this->yolette = false;
         $this->logbookEntries = new ArrayCollection();
-        $this->personalBoat = false;
         $this->shellDamages = new ArrayCollection();
-        $this->rowingType = self::ROWING_TYPE_BOTH;
-        $this->mileage = 0;
     }
 
     public function getId(): ?int
