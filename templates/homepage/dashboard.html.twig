@@ -2,57 +2,55 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-xl-6 mb-3">
-            <div class="card border-0 shadow">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow mb-3">
                 <div class="card-body">
                     <span class="h4">Mes sorties</span>
                     {{ render_chart(logbookChart) }}
                 </div>
             </div>
+
+            {% if app.user.physiology is not null %}
+                <div class="card border-0 shadow mb-3">
+                    <div class="card-body">
+                        <span class="h4">Ma physiologie</span>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    B0 - UT2
+                                    <span>{{ app.user.physiology.lightAerobicHeartRateRange ?? '-' }} bpm</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    B1 - UT1
+                                    <span>{{ app.user.physiology.heavyAerobicHeartRateRange ?? '-' }} bpm</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    B2 - AT
+                                    <span>{{ app.user.physiology.anaerobicThresholdHeartRateRange ?? '-' }} bpm</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    B3 - TR
+                                    <span>{{ app.user.physiology.oxygenTransportationHeartRateRange ?? '-' }} bpm</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    B5 - AN
+                                    <span>{{ app.user.physiology.anaerobicHeartRateRange ?? '-' }} bpm</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    VO2max
+                                    <span>{{ app.user.physiology.maximumOxygenConsumption ?? '-' }} ml/min/kg</span>
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         {% if physicalQualitiesChart is not null %}
-            <div class="col-xl-6 mb-3">
-                <div class="card border-0 shadow">
+            <div class="col-xl-6">
+                <div class="card border-0 shadow mb-3">
                     <div class="card-body">
                         <span class="h4">Mes qualités physiques</span>
                         {{ render_chart(physicalQualitiesChart) }}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if app.user.physiology is not null %}
-            <div class="col-xl-6 mb-3">
-                <div class="card border-0 shadow">
-                    <div class="card-body">
-                        <span class="h4">Ma physiologie</span>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                B0 - UT2
-                                <span>{{ app.user.physiology.lightAerobicHeartRateRange ?? '-' }} bpm</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                B1 - UT1
-                                <span>{{ app.user.physiology.heavyAerobicHeartRateRange ?? '-' }} bpm</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                B2 - AT
-                                <span>{{ app.user.physiology.anaerobicThresholdHeartRateRange ?? '-' }} bpm</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                B3 - TR
-                                <span>{{ app.user.physiology.oxygenTransportationHeartRateRange ?? '-' }} bpm</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                B5 - AN
-                                <span>{{ app.user.physiology.anaerobicHeartRateRange ?? '-' }} bpm</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                VO2max
-                                <span>{{ app.user.physiology.maximumOxygenConsumption ?? '-' }} ml/min/kg</span>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
