@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Tests
 
 on:
     push:
@@ -10,15 +10,20 @@ on:
             - synchronize
             - ready_for_review
 
+env:
+    fail-fast: true
+    PHPUNIT_FLAGS: "-v --coverage-clover coverage-report.xml --log-junit tests-report.xml"
+    FOUNDRY_RESET_MODE: "migrate"
+
 jobs:
-    tests:
+    test:
         name: Tests
         runs-on: ubuntu-latest
+        continue-on-error: false
 
         if: github.event.pull_request.draft == false
 
         env:
-            APP_ENV: "test"
             DATABASE_URL: "pgsql://user:password@localhost:5432/main"
 
         services:
@@ -32,47 +37,30 @@ jobs:
                     - 5432:5432
 
         steps:
-            - name: Checkout
-              uses: actions/checkout@v2
+            - name: Checkout code
+              uses: actions/checkout@v2.3.3
 
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
+            - name: Install PHP
+              uses: shivammathur/setup-php@2.7.0
               with:
-                  php-version: '8.1'
-                  ini-values: date.timezone = Europe/Paris
                   coverage: pcov
+                  ini-values: date.timezone = Europe/Paris
+                  php-version: '8.1'
+                  tools: composer:v2
 
-            - name: Composer validate
-              run: composer validate
-
-            - name: Get Composer cache directory
+            - name: Set composer cache directory
               id: composer-cache
-              run: |
-                  echo "::set-output name=dir::$(composer config cache-files-dir)"
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-            - name: Get Composer cache
-              uses: actions/cache@v2
+            - name: Cache composer
+              uses: actions/cache@v2.1.2
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-composer-
+                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
+                  restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
 
-            - name: Install Composer dependencies
-              run: composer install --no-progress --no-interaction
-
-            - name: Lint
-              run: |
-                  ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
-                  bin/console lint:yaml config --parse-tags config
-                  bin/console lint:twig templates
-                  bin/console lint:container
-
-            - name: Verify schema
-              run: bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
-
-            - name: Check vulnerabilities
-              uses: symfonycorp/security-checker-action@v2
+            - name: Composer install
+              run: composer install --no-interaction --no-progress
 
             - name: Get Yarn cache directory path
               id: yarn-cache-dir-path
@@ -88,15 +76,13 @@ jobs:
                       ${{ runner.os }}-yarn-
 
             - name: Install node modules
-              run: |
-                  yarn install
+              run: yarn install
 
             - name: Build assets
-              run: |
-                  yarn build
+              run: yarn build
 
-            - name: Run test suite
-              run: SYMFONY_DEPRECATIONS_HELPER=disabled FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+            - name: Run tests
+              run: bin/phpunit ${{ env.PHPUNIT_FLAGS }}
 
             - name: Upload PHPUnit Reports
               uses: actions/upload-artifact@v2
@@ -112,7 +98,7 @@ jobs:
         runs-on: ubuntu-latest
 
         if: github.event.pull_request.draft == false
-        needs: tests
+        needs: test
 
         steps:
             - uses: actions/checkout@v2

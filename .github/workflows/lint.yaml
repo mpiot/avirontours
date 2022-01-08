@@ -1,0 +1,64 @@
+name: Lint
+
+on:
+    push:
+        branches: [ master, develop ]
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - ready_for_review
+
+jobs:
+    linters:
+        name: Linters
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2.3.3
+
+            - name: Install PHP
+              uses: shivammathur/setup-php@2.7.0
+              with:
+                  coverage: none
+                  php-version: 8.1
+
+            - name: Set composer cache directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: Cache composer
+              uses: actions/cache@v2.1.2
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+                  restore-keys: ${{ runner.os }}-${{ matrix.php-version }}-composer-
+
+            - name: Composer install
+              run: composer install --no-interaction --no-progress
+
+            - name: Lint YAML files
+              run: ./bin/console lint:yaml config --parse-tags
+
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint XLIFF translations
+              run: ./bin/console lint:xliff translations
+
+            - name: Lint Parameters and Services
+              run: ./bin/console lint:container --no-debug
+
+            - name: Lint Doctrine entities
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            - name: Lint Composer config
+              run: composer validate
+
+            - name: Check if any dependencies are compromised
+              uses: symfonycorp/security-checker-action@v2
+
+            - name: Run PHP-CS-Fixer
+              run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
