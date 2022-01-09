@@ -27,6 +27,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StaticController extends AbstractController
 {
+    #[Route(path: '/descente-du-cher')]
+    public function descenteDuCher(): Response
+    {
+        return $this->render('static/descente_du_cher.html.twig');
+    }
+
     #[Route(path: '/mentions-legales', name: 'legal_notice')]
     public function legalNotice(): Response
     {

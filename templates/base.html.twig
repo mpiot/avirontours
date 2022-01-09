@@ -59,31 +59,33 @@
         <div class="d-flex vh-100">
             <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
-                    </li>
-
-                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
+                    {% block left_menu %}
                         <li class="nav-item">
-                            <a class="nav-link link-light" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
-                        </li>
-                    {% endif %}
-
-                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
-                        <li class="nav-item">
-                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements</a>
+                            <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM</a>
-                        </li>
-                    {% endif %}
+                        {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
+                            <li class="nav-item">
+                                <a class="nav-link link-light" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
+                            </li>
+                        {% endif %}
 
-                    {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
-                        <li class="nav-item">
-                            <a class="nav-link link-light" href="{{ path('admin_home') }}">Administration</a>
-                        </li>
-                    {% endif %}
+                        {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item">
+                                <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Carnet d'entrainements</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('workout_maximum_load_show') }}">1RM</a>
+                            </li>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') %}
+                            <li class="nav-item">
+                                <a class="nav-link link-light" href="{{ path('admin_home') }}">Administration</a>
+                            </li>
+                        {% endif %}
+                    {% endblock %}
                 </ul>
 
                 <hr class="mt-auto">
