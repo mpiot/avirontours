@@ -24,6 +24,14 @@ use App\Tests\AppWebTestCase;
 
 class StaticControllerTest extends AppWebTestCase
 {
+    public function testDescenteDuCher(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/descente-du-cher');
+
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testLegalNotice(): void
     {
         $client = static::createClient();

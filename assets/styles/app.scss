@@ -1,4 +1,5 @@
 @import "custom";
+@import "background";
 @import "~bootstrap/scss/bootstrap";
 @import "~@fortawesome/fontawesome-free/css/all.css";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
@@ -184,4 +185,18 @@ li {
       }
     }
   }
+}
+
+/**
+ * Parallax
+ */
+.parallax {
+    @media only screen and (max-device-width: 991.98px) {
+        background-attachment: scroll;
+    }
+
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }

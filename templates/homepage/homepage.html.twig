@@ -11,6 +11,9 @@
             <a class="nav-link" href="#events">Réservations</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_static_descenteducher') }}">Descente du Cher</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="#staff">Encadrants</a>
         </li>
         <li class="nav-item">
@@ -20,6 +23,16 @@
             <a class="nav-link" href="#find-us">Nous trouver</a>
         </li>
     </ul>
+{% endblock %}
+
+{% block left_menu %}
+    <li class="nav-item">
+        <a class="nav-link text-light" href="{{ path('homepage') }}">Accueil</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link text-light" href="{{ path('app_static_descenteducher') }}">Descente du Cher</a>
+    </li>
 {% endblock %}
 
 {% block breadcrumb_block %}
@@ -289,6 +302,19 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/descente_du_cher.jpg') }}); background-position: center;">
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
+                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Descente du Cher</h2>
+                            <ul class="d-flex list-unstyled mt-auto">
+                                <li class="me-auto">
+                                    <a href="{{ path('app_static_descenteducher') }}" class="btn btn-primary stretched-link">Informations</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -383,6 +409,7 @@
                         <div class="d-flex">
                             <span class="fas fa-map-marker-alt me-3 pt-1"></span>
                             <span>
+                                Pôle nautique du Cher<br>
                                 5 Avenue de Florence<br>
                                 37000 Tours
                             </span>
