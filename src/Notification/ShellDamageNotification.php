@@ -22,6 +22,7 @@ namespace App\Notification;
 
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
 use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
 use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordFieldEmbedObject;
@@ -77,7 +78,9 @@ class ShellDamageNotification extends Notification implements ChatNotificationIn
     public function asEmailMessage(RecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $message = EmailMessage::fromNotification($this, $recipient);
-        $message->getMessage()
+        /** @var TemplatedEmail $rawMessage */
+        $rawMessage = $message->getMessage();
+        $rawMessage
             ->htmlTemplate('emails/shell_damage_notification.html.twig')
             ->context(['shellDamage' => $this->shellDamage])
         ;

@@ -20,12 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -95,7 +95,7 @@ class GroupController extends AbstractController
     #[Route(path: '/{id}', name: 'group_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Group $group): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$group->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$group->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($group);
             $entityManager->flush();

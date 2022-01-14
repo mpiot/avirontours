@@ -24,7 +24,6 @@ use App\Entity\PhysicalQualities;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\SeasonCategoryRepository;
 use App\Service\ArrayNormalizer;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;

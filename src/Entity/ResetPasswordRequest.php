@@ -49,8 +49,12 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
         return $this->id;
     }
 
-    public function getUser(): object
+    public function getUser(): User
     {
+        if (null === $this->user) {
+            throw new \Exception('The user attribute should not be null');
+        }
+
         return $this->user;
     }
 }

@@ -25,7 +25,6 @@ use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -98,7 +97,7 @@ class TrainingController extends AbstractController
     #[Security('training.getUser() == user')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$training->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$training->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($training);
             $entityManager->flush();

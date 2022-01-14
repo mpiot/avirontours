@@ -31,6 +31,9 @@ use Knp\Component\Pager\PaginatorInterface;
  * @method ShellDamage|null findOneBy(array $criteria, array $orderBy = null)
  * @method ShellDamage[]    findAll()
  * @method ShellDamage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<ShellDamage>
+ * @psalm-method list<ShellDamage> findAll()
+ * @psalm-method list<ShellDamage> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ShellDamageRepository extends ServiceEntityRepository
 {

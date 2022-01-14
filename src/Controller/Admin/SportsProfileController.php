@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\Anatomy;
 use App\Entity\PhysicalQualities;
 use App\Entity\Physiology;
@@ -32,7 +33,6 @@ use App\Form\WorkoutMaximumLoadType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

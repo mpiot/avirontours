@@ -36,6 +36,9 @@ use function Symfony\Component\String\u;
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
  * @method User|null findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<User>
+ * @psalm-method list<User> findAll()
+ * @psalm-method list<User> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
@@ -47,13 +50,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newEncodedPassword): void
+    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
-        $user->setPassword($newEncodedPassword);
+        $user->setPassword($newHashedPassword);
         $this->_em->persist($user);
         $this->_em->flush();
     }
@@ -66,8 +69,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('seasonCategory.season', 'season')->addSelect('season')
             ->leftJoin('license.medicalCertificate', 'medicalCertificate')->addSelect('medicalCertificate')
             ->orderBy('season.name', 'DESC')
-            ->where('user = :user')
-            ->setParameter('user', $user)
+            ->where('user.id = :user')
+            ->setParameter('user', $user->getId())
             ->getQuery()
         ;
 
@@ -112,9 +115,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if (null !== $group) {
             $qb
-                ->innerJoin('app_user.groups', 'groups')
-                ->andWhere('groups = :group')
-                ->setParameter('group', $group)
+                ->innerJoin('app_user.groups', 'group')
+                ->andWhere('group.id = :group')
+                ->setParameter('group', $group->getId())
             ;
         }
 

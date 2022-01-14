@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\Shell;
 use App\Form\ShellEditType;
 use App\Form\ShellType;
 use App\Repository\ShellRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -96,7 +96,7 @@ class ShellController extends AbstractController
     #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Shell $shell): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shell->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$shell->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($shell);
             $entityManager->flush();

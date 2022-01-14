@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\Season;
 use App\Form\SeasonType;
 use App\Repository\LicenseRepository;
@@ -27,7 +28,6 @@ use App\Repository\SeasonRepository;
 use App\Service\SeasonCsvGenerator;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,7 +105,7 @@ class SeasonController extends AbstractController
     #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$season->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($season);
             $entityManager->flush();
