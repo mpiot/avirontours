@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
+use App\Repository\LicenseRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
@@ -28,7 +29,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity(fields: ['seasonCategory', 'user'], message: 'Déjà inscrit pour cette saison.')]
-#[ORM\Entity(repositoryClass: 'App\Repository\LicenseRepository')]
+#[ORM\Entity(repositoryClass: LicenseRepository::class)]
 class License
 {
     use BlameableEntity;

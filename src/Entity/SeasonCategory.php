@@ -20,14 +20,16 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\SeasonCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\SeasonCategoryRepository')]
+#[ORM\Entity(repositoryClass: SeasonCategoryRepository::class)]
 class SeasonCategory
 {
     public const LICENSE_TYPE_ANNUAL = 'A';
@@ -62,16 +64,14 @@ class SeasonCategory
     #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: 'App\Entity\License')]
     private Collection $licenses;
 
-    /**
-     * @Gedmo\Slug(handlers={
-     *     @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *         @Gedmo\SlugHandlerOption(name="relationField", value="season"),
-     *         @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
-     *         @Gedmo\SlugHandlerOption(name="separator", value="-"),
-     *         @Gedmo\SlugHandlerOption(name="urilize", value=true)
-     *     })
-     * }, fields={"name"})
-     */
+    #[Gedmo\Slug([
+        new Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
+            new Gedmo\SlugHandlerOption(name: 'relationField', value: 'season'),
+            new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'name'),
+            new Gedmo\SlugHandlerOption(name: 'separator', value: '-'),
+            new Gedmo\SlugHandlerOption(name: 'urilize', value: true),
+        ]),
+    ], fields: ['name'])]
     #[ORM\Column(length: 128, unique: true)]
     private string $slug;
 

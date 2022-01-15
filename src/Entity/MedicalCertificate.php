@@ -20,16 +20,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\MedicalCertificateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-/**
- * @Vich\Uploadable
- */
-#[ORM\Entity(repositoryClass: 'App\Repository\MedicalCertificateRepository')]
+#[Vich\Uploadable]
+#[ORM\Entity(repositoryClass: MedicalCertificateRepository::class)]
 class MedicalCertificate
 {
     public const TYPE_CERTIFICATE = 'certificate';
@@ -56,8 +55,6 @@ class MedicalCertificate
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     *
-     * @Vich\UploadableField(mapping="medical_certificate", fileNameProperty="fileName", size="fileSize", mimeType="fileMimeType")
      */
     #[Assert\NotNull(groups: ['new'])]
     #[Assert\File(
@@ -65,7 +62,8 @@ class MedicalCertificate
         mimeTypes: ['application/pdf', 'application/x-pdf', 'image/*'],
         mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image.'
     )]
-    private ?\Symfony\Component\HttpFoundation\File\File $file = null;
+    #[Vich\UploadableField(mapping: 'medical_certificate', fileNameProperty: 'fileName', size: 'fileSize', mimeType: 'fileMimeType')]
+    private ?File $file = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $fileName = null;
