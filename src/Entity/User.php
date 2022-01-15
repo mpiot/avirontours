@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -34,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[UniqueEntity(fields: ['firstName', 'lastName'], message: 'Un compte existe déjà avec ce nom et prénom.', repositoryMethod: 'findForUniqueness')]
-#[ORM\Entity(repositoryClass: 'App\Repository\UserRepository')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'app_user')]
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, \Stringable

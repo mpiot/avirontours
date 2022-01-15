@@ -20,11 +20,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\ShellDamageCategoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: 'App\Repository\ShellDamageCategoryRepository')]
+#[ORM\Entity(repositoryClass: ShellDamageCategoryRepository::class)]
 class ShellDamageCategory
 {
     public const PRIORITY_HIGH = 0;
