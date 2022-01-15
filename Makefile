@@ -82,9 +82,9 @@ tests-weak:                                                                     
 	$(CONSOLE) cache:clear --env test
 	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
 
-test-all: lint validate-schema security-check tests                                                    ## Lint all, check vulnerable dependencies, run PHP tests
+test-all: lint validate-schema tests                                                                   ## Lint all, run PHP tests
 
-test-all-weak: lint validate-schema security-check tests-weak                                          ## Lint all, check vulnerable dependencies, run PHP tests without Deprecations helper
+test-all-weak: lint validate-schema tests-weak                                                         ## Lint all, run PHP tests without Deprecations helper
 
 lint: lint-symfony php-cs                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
 
