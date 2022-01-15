@@ -31,6 +31,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Season|null findOneBy(array $criteria, array $orderBy = null)
  * @method Season[]    findAll()
  * @method Season[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Season>
+ * @psalm-method list<Season> findAll()
+ * @psalm-method list<Season> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SeasonRepository extends ServiceEntityRepository
 {
@@ -69,8 +72,8 @@ class SeasonRepository extends ServiceEntityRepository
             ->innerJoin('unavailable_season.seasonCategories', 'season_categories')
             ->innerJoin('season_categories.licenses', 'licenses')
             ->innerJoin('licenses.user', 'user')
-            ->where('user = :user')
-            ->setParameter('user', $user)
+            ->where('user.id = :user')
+            ->setParameter('user', $user->getId())
             ->getQuery()
         ;
 

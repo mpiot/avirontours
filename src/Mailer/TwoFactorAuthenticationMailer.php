@@ -36,7 +36,7 @@ class TwoFactorAuthenticationMailer implements AuthCodeMailerInterface
     {
         // Send email
         $email = (new TemplatedEmail())
-            ->to($user->getEmail())
+            ->to($user->getEmailAuthRecipient())
             ->subject('Code d\'authentification')
             ->htmlTemplate('emails/2fa.html.twig')
             ->context([

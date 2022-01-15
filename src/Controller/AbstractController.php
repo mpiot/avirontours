@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -18,19 +16,13 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Controller\Admin;
+namespace App\Controller;
 
-use App\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
 
-#[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
-class HomepageController extends AbstractController
+/**
+ * @method User getUser()
+ */
+abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    #[Route(path: '/admin', name: 'admin_home')]
-    public function homepage(): Response
-    {
-        return $this->render('admin/homepage/homepage.twig');
-    }
 }

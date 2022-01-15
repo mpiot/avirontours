@@ -20,12 +20,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\ShellDamage;
 use App\Form\ShellDamageType;
 use App\Repository\ShellDamageRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -87,7 +87,7 @@ class ShellDamageController extends AbstractController
     #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, ShellDamage $shellDamage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($shellDamage);
             $entityManager->flush();

@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\String\AbstractString;
 use function Symfony\Component\String\u;
 
 class NonUserCrewMemberArrayToStringTransformer implements DataTransformerInterface
@@ -43,6 +44,8 @@ class NonUserCrewMemberArrayToStringTransformer implements DataTransformerInterf
             return [];
         }
 
-        return array_filter(array_unique(array_map('trim', u($string)->split(','))));
+        return array_filter(array_unique(array_map(function (AbstractString $value) {
+            return trim($value->toString());
+        }, u($string)->split(','))));
     }
 }

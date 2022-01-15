@@ -44,7 +44,7 @@ trait TimestampableEntity
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -56,7 +56,7 @@ trait TimestampableEntity
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }

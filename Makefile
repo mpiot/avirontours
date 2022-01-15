@@ -86,7 +86,7 @@ test-all: lint validate-schema tests                                            
 
 test-all-weak: lint validate-schema tests-weak                                                         ## Lint all, run PHP tests without Deprecations helper
 
-lint: lint-symfony php-cs                                                                              ## Run lint on Twig, YAML, PHP and Javascript files
+lint: lint-symfony php-cs psalm                                                                        ## Run lint on Twig, YAML, PHP and Javascript files
 
 lint-symfony: lint-yaml lint-twig lint-container                                                       ## Lint Symfony (Twig, YAML, and container)
 
@@ -102,8 +102,8 @@ lint-container:                                                                 
 php-cs:                                                                                                ## Lint PHP code
 	$(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 
-security-check:                                                                                        ## Check for vulnerable dependencies
-	$(SYMFONY) security:check
+psalm:                                                                                                 ## Run Psalm code analysis
+	$(SYMFONY) php vendor/bin/psalm
 
 validate-schema:                                                                                       ## Test the doctrine Schema
 	$(CONSOLE) doctrine:schema:validate

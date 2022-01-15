@@ -29,6 +29,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ShellDamageCategory|null findOneBy(array $criteria, array $orderBy = null)
  * @method ShellDamageCategory[]    findAll()
  * @method ShellDamageCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<ShellDamageCategory>
+ * @psalm-method list<ShellDamageCategory> findAll()
+ * @psalm-method list<ShellDamageCategory> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ShellDamageCategoryRepository extends ServiceEntityRepository
 {

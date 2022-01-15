@@ -32,6 +32,9 @@ use Knp\Component\Pager\PaginatorInterface;
  * @method Training|null findOneBy(array $criteria, array $orderBy = null)
  * @method Training[]    findAll()
  * @method Training[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<Training>
+ * @psalm-method list<Training> findAll()
+ * @psalm-method list<Training> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TrainingRepository extends ServiceEntityRepository
 {
@@ -44,9 +47,9 @@ class TrainingRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('training')
             ->innerJoin('training.user', 'user')
-            ->where('user = :user')
+            ->where('user.id = :user')
             ->orderBy('training.trainedAt', 'DESC')
-            ->setParameter('user', $user)
+            ->setParameter('user', $user->getId())
             ->getQuery()
         ;
 

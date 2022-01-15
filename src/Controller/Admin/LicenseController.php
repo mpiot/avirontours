@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Entity\License;
 use App\Entity\Season;
 use App\Form\LicenseEditType;
@@ -29,7 +30,6 @@ use Doctrine\Persistence\ManagerRegistry;
 use ProxyManager\Exception\ExceptionInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -90,7 +90,7 @@ class LicenseController extends AbstractController
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$license->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
             $entityManager = $managerRegistry->getManager();
             $entityManager->remove($license);
             $entityManager->flush();
@@ -107,7 +107,7 @@ class LicenseController extends AbstractController
     {
         try {
             $licenseWorkflow
-                ->apply($license, $request->request->get('transition'), [
+                ->apply($license, (string) $request->request->get('transition'), [
                     'time' => date('y-m-d H:i:s'),
                 ])
             ;

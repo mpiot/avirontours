@@ -197,7 +197,7 @@ class Shell
 
     public function getCrewSize(): int
     {
-        $crewSize = $this->numberRowers;
+        $crewSize = $this->getNumberRowers() ?? 0;
 
         if (true === $this->coxed) {
             ++$crewSize;

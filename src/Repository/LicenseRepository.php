@@ -34,6 +34,9 @@ use function Symfony\Component\String\u;
  * @method License|null findOneBy(array $criteria, array $orderBy = null)
  * @method License[]    findAll()
  * @method License[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends ServiceEntityRepository<License>
+ * @psalm-method list<License> findAll()
+ * @psalm-method list<License> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LicenseRepository extends ServiceEntityRepository
 {
@@ -48,9 +51,9 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.user', 'user')
             ->innerJoin('license.seasonCategory', 'seasonCategory')->addSelect('seasonCategory')
             ->innerJoin('seasonCategory.season', 'season')->addSelect('season')
-            ->where('user = :user')
+            ->where('user.id = :user')
             ->orderBy('season.name', 'DESC')
-            ->setParameter('user', $user)
+            ->setParameter('user', $user->getId())
             ->getQuery()
             ->setMaxResults(1)
         ;
@@ -65,10 +68,10 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
             ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
             ->innerJoin('season_category.season', 'season')
-            ->andWhere('season = :season')
+            ->andWhere('season.id = :season')
             ->orderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
-            ->setParameter('season', $season)
+            ->setParameter('season', $season->getId())
         ;
 
         if (true === $statusReadyToLicense) {
@@ -97,11 +100,11 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
             ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
             ->innerJoin('season_category.season', 'season')
-            ->where('season = :season')
+            ->where('season.id = :season')
             ->addOrderBy('mainSort', 'ASC')
             ->addOrderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
-            ->setParameter('season', $season)
+            ->setParameter('season', $season->getId())
         ;
 
         if ($query) {
@@ -188,10 +191,10 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
             ->innerJoin('license.seasonCategory', 'season_category')
             ->innerJoin('season_category.season', 'season')
-            ->where('season = :season')
+            ->where('season.id = :season')
             ->andWhere('license.marking IS NULL OR JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
             ->orderBy('license.id', 'ASC')
-            ->setParameter('season', $season)
+            ->setParameter('season', $season->getId())
             ->setMaxResults(1)
             ->getQuery()
         ;
@@ -205,9 +208,9 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.user', 'user')->addSelect('user')
             ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
             ->innerJoin('season_category.season', 'season')->addSelect('season')
-            ->andWhere('user = :user')
+            ->andWhere('user.id = :user')
             ->orderBy('season.name', 'ASC')
-            ->setParameter('user', $user)
+            ->setParameter('user', $user->getId())
         ;
 
         if (null !== $minYear) {

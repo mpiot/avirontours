@@ -493,12 +493,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getEmailAuthRecipient(): string
     {
-        return $this->getEmail();
+        return $this->getEmail() ?? '';
     }
 
     public function getEmailAuthCode(): string
     {
-        return $this->authCode;
+        return $this->authCode ?? '';
     }
 
     public function setEmailAuthCode(string $authCode): void
