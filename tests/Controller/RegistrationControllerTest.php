@@ -64,9 +64,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $client->submit($form);
 
         $this->assertResponseRedirects();
-
+        $this->assertQueuedEmailCount(1);
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
-
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
         $this->assertSame('m', $user->getGender());
@@ -315,6 +314,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $client->submit($form);
 
         $this->assertResponseRedirects();
+        $this->assertQueuedEmailCount(1);
         $this->assertCount(1, $user->getLicenses());
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());

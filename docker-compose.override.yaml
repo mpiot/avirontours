@@ -7,8 +7,8 @@ services:
       - "5432:5432"
 ###< doctrine/doctrine-bundle ###
 
-  mailcatcher:
+###> symfony/mailer ###
+  mailer:
     image: schickling/mailcatcher
-    ports:
-      - "1025:1025"
-      - "1080:1080"
+    ports: [1025, 1080]
+###< symfony/mailer ###
