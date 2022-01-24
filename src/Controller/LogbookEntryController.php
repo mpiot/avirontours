@@ -24,6 +24,7 @@ use App\Entity\LogbookEntry;
 use App\Form\LogbookEntryFinishType;
 use App\Form\LogbookEntryStartType;
 use App\Form\LogbookEntryType;
+use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\ShellRepository;
 use App\Repository\UserRepository;
@@ -31,6 +32,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -80,6 +82,12 @@ class LogbookEntryController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $managerRegistry->getManager()->flush();
+
+            // send an email to admins if there is damage
+            foreach ($logbookEntry->getShellDamages() as $shellDamage) {
+                /** @var Notifier $notifier */
+                $notifier->send(new ShellDamageNotification($shellDamage), ...$notifier->getAdminRecipients());
+            }
 
             $this->addFlash('success', 'Votre sortie a été terminée avec succès.');
 
