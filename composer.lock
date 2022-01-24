@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ee4c6478e763e2ba534b70eef23989cc",
+    "content-hash": "f6c85add56943d1e232396a05f0ab6b4",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -3908,77 +3908,6 @@
                 }
             ],
             "time": "2021-11-01T23:48:49+00:00"
-        },
-        {
-            "name": "symfony/discord-notifier",
-            "version": "v6.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/discord-notifier.git",
-                "reference": "55a65fcef117614492b97b0d70ccdeff1e1ca381"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/discord-notifier/zipball/55a65fcef117614492b97b0d70ccdeff1e1ca381",
-                "reference": "55a65fcef117614492b97b0d70ccdeff1e1ca381",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.0.2",
-                "symfony/http-client": "^5.4|^6.0",
-                "symfony/notifier": "^5.4|^6.0",
-                "symfony/polyfill-mbstring": "^1.0"
-            },
-            "require-dev": {
-                "symfony/event-dispatcher": "^5.4|^6.0"
-            },
-            "type": "symfony-notifier-bridge",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Component\\Notifier\\Bridge\\Discord\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Discord Notifier Bridge",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "discord",
-                "notifier"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/discord-notifier/tree/v6.0.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-11-12T11:44:21+00:00"
         },
         {
             "name": "symfony/doctrine-bridge",
