@@ -66,6 +66,8 @@ task('deploy', [
     'deploy:clear_paths',
     'deploy:migrate',
     'deploy:symlink',
+    'php:restart',
+    'workers:restart',
     'deploy:unlock',
     'cleanup',
     'success',
@@ -98,13 +100,13 @@ task('deploy:migrate', function (): void {
     run('cd {{release_path}} && {{bin/php}} {{bin/console}} doctrine:migration:migrate -n');
 });
 
-// Sub tasks
 task('php:restart', function (): void {
     run('sudo systemctl restart php8.1-fpm');
 });
 
-// Restart PHP (opcache preload) after deployment
-after('deploy:symlink', 'php:restart');
+task('workers:restart', function (): void {
+    run('cd {{release_path}} && {{bin/php}} {{bin/console}} messenger:stop-workers');
+});
 
 // If deploy fails, automatically unlock.
 after('deploy:failed', 'deploy:unlock');
