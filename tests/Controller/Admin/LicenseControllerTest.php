@@ -261,6 +261,7 @@ class LicenseControllerTest extends AppWebTestCase
         $client->submitForm('Rejeter le certificat médical');
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertQueuedEmailCount(1);
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_rejected' => 1,

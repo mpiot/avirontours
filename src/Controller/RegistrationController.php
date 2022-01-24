@@ -65,7 +65,8 @@ class RegistrationController extends AbstractController
                 ->subject('Inscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/registration.html.twig')
                 ->context([
-                    'user' => $user,
+                    'fullName' => $user->getFullName(),
+                    'userIdenfitier' => $user->getUserIdentifier(),
                 ])
             ;
             $mailer->send($email);
