@@ -64,19 +64,20 @@ class LogbookEntryRepository extends ServiceEntityRepository
 
     public function findStatsByMonth(User $user, int $nbMonths = 12)
     {
-        $today = new \DateTime();
+        $lastDay = new \DateTimeImmutable();
+        $firstDay = $lastDay->modify('-'.($nbMonths - 1).' months')->modify('first day of this month');
 
         $query = $this->createQueryBuilder('logbook_entry')
             ->select('DATE_PART(\'month\', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session')
             ->leftJoin('logbook_entry.crewMembers', 'crew_members')
             ->andWhere('crew_members = :user')
-            ->andWhere('logbook_entry.date BETWEEN :lastDay AND :today')
+            ->andWhere('logbook_entry.date BETWEEN :firstDay AND :lastDay')
             ->andWhere('logbook_entry.endAt IS NOT NULL')
             ->groupBy('month')
             ->setParameters([
                 'user' => $user,
-                'today' => $today->format('Y-m-d'),
-                'lastDay' => $today->modify('-'.$nbMonths.' months')->modify('first day of this month')->format('Y-m-d'),
+                'firstDay' => $firstDay->format('Y-m-d'),
+                'lastDay' => $lastDay->format('Y-m-d'),
             ])
             ->getQuery()
         ;
