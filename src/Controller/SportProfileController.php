@@ -27,6 +27,7 @@ use App\Entity\WorkoutMaximumLoad;
 use App\Form\AnatomyType;
 use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
+use App\Form\SportProfileConfirurationType;
 use App\Form\WorkoutMaximumLoadType;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -114,6 +115,25 @@ class SportProfileController extends AbstractController
         }
 
         return $this->renderForm('sport_profile/workout_maximum_load.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route(path: '/configuration', name: 'sport_profile_configuration', methods: ['GET', 'POST'])]
+    public function configuration(Request $request, ManagerRegistry $managerRegistry): Response
+    {
+        $form = $this->createForm(SportProfileConfirurationType::class, $this->getUser());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $managerRegistry->getManager()->flush();
+
+            $this->addFlash('success', 'La configuration du profil sportif a été modifiée avec succès.');
+
+            return $this->redirectToRoute('sport_profile_configuration', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('sport_profile/configuration.html.twig', [
             'form' => $form,
         ]);
     }

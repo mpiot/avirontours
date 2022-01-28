@@ -103,6 +103,7 @@ final class LogbookEntryFactory extends ModelFactory
 
         return [
             'shell' => $shell,
+            'crewMembers' => UserFactory::new()->many(2),
             'endAt' => $finished ? new \DateTime('+1 hour') : null,
             'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
             'shellDamages' => ShellDamageFactory::new()->many(0, 3),

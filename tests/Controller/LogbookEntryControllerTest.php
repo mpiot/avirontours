@@ -20,11 +20,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Training;
 use App\Factory\LicenseFactory;
 use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellDamageCategoryFactory;
 use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
+use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -200,6 +202,43 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertNull($logBookEntry->getEndAt());
         $this->assertNull($logBookEntry->getCoveredDistance());
         $this->assertEmpty($logBookEntry->getShellDamages());
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testNewLogbookEntryWithAutomaticTraining(): void
+    {
+        $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
+        $licences = LicenseFactory::new([
+            'user' => UserFactory::new([
+                'automaticTraining' => true,
+            ]),
+        ])->annualActive()->withValidLicense()->many(2)->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($licences[0]->getUser());
+        $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
+            'logbook_entry_start[startAt]' => '09:00',
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+
+        $this->assertSame($shell->getId(), $logBookEntry->getShell()->getId());
+        $this->assertCount(2, $logBookEntry->getCrewMembers());
+        $this->assertSame((new \DateTime())->format('d/m/Y'), $logBookEntry->getDate()->format('d/m/Y'));
+        $this->assertSame('09:00', $logBookEntry->getStartAt()->format('H:i'));
+        $this->assertNull($logBookEntry->getEndAt());
+        $this->assertNull($logBookEntry->getCoveredDistance());
+        $this->assertEmpty($logBookEntry->getShellDamages());
+        TrainingFactory::repository()->assert()->count(0);
     }
 
     public function testNewLogbookEntryWithoutData(): void
@@ -375,36 +414,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assert()->count(1);
     }
 
-    public function testUserListLogbookEntryFormAsAdmin(): void
-    {
-        LicenseFactory::new()->annualActive()->many(2)->create();
-        LicenseFactory::new()->annualInactive()->many(3)->create();
-        UserFactory::createMany(4);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $crawler = $client->request('GET', '/logbook-entry/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(10, $crawler->filter('#logbook_entry_start_crewMembers > option'));
-    }
-
-    public function testUserListLogbookEntryFormAsUser(): void
-    {
-        $users = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create();
-        LicenseFactory::new()->annualInactive()->many(3)->create();
-        UserFactory::createMany(4);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->loginUser($users[0]->getUser());
-        $crawler = $client->request('GET', '/logbook-entry/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(2, $crawler->filter('#logbook_entry_start_crewMembers > option'));
-    }
-
     public function testNewLogbookEntryWithNonUserCrewMember(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
@@ -469,6 +478,36 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(2, $logBookEntry->getNonUserCrewMembers());
     }
 
+    public function testUserListLogbookEntryFormAsAdmin(): void
+    {
+        LicenseFactory::new()->annualActive()->many(2)->create();
+        LicenseFactory::new()->annualInactive()->many(3)->create();
+        UserFactory::createMany(4);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $crawler = $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(10, $crawler->filter('#logbook_entry_start_crewMembers > option'));
+    }
+
+    public function testUserListLogbookEntryFormAsUser(): void
+    {
+        $users = LicenseFactory::new()->annualActive()->withValidLicense()->many(2)->create();
+        LicenseFactory::new()->annualInactive()->many(3)->create();
+        UserFactory::createMany(4);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($users[0]->getUser());
+        $crawler = $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(2, $crawler->filter('#logbook_entry_start_crewMembers > option'));
+    }
+
     public function testEditLogbookEntry(): void
     {
         $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
@@ -499,6 +538,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame(12.2, $entry->getCoveredDistance());
         $this->assertEmpty($entry->getShellDamages());
         $this->assertSame(12.2, $entry->getShell()->getMileage());
+        TrainingFactory::repository()->assert()->count(0);
     }
 
     public function testEditLogbookEntryWithCrewMemberOnWater(): void
@@ -627,6 +667,46 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertSame('16:00', $entry->getEndAt()->format('H:i'));
         $this->assertSame(12.2, $entry->getCoveredDistance());
         $this->assertSame(12.2, $entry->getShell()->getMileage());
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testFinishLogbookEntryWithAutomaticTraining(): void
+    {
+        $entry = LogbookEntryFactory::new([
+            'crewMembers' => UserFactory::new(['automaticTraining' => true])->many(2),
+            'startAt' => new \DateTime('14:30'),
+        ])->notFinished()->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Terminer la sortie', [
+            'logbook_entry_finish[endAt]' => '16:00',
+            'logbook_entry_finish[coveredDistance]' => 12.22,
+        ]);
+
+        $this->assertResponseRedirects();
+        $this->assertSame('16:00', $entry->getEndAt()->format('H:i'));
+        $this->assertSame(12.2, $entry->getCoveredDistance());
+        $this->assertSame(12.2, $entry->getShell()->getMileage());
+        TrainingFactory::repository()->assert()->count(2);
+        /** @var Training $training */
+        $training = TrainingFactory::repository()->first();
+        $this->assertSame($entry->getCrewMembers()->first(), $training->getUser());
+        $this->assertSame(12.2, $training->getDistance());
+        $this->assertSame(5400, $training->getDuration());
+        $this->assertSame(Training::SPORT_ROWING, $training->getSport());
+        $this->assertSame(Training::TYPE_B1, $training->getType());
+        $training = TrainingFactory::repository()->last();
+        $this->assertSame($entry->getCrewMembers()->last(), $training->getUser());
+        $this->assertSame(12.2, $training->getDistance());
+        $this->assertSame(5400, $training->getDuration());
+        $this->assertSame(Training::SPORT_ROWING, $training->getSport());
+        $this->assertSame(Training::TYPE_B1, $training->getType());
     }
 
     public function testFinishLogbookWithDamageEntry(): void

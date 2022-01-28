@@ -1,0 +1,19 @@
+{% extends 'sport_profile/base.html.twig' %}
+
+{% block title %}Configuration{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Mon profil sportif</li>
+    <li class="breadcrumb-item active">Configuration</li>
+{% endblock %}
+
+{% block main %}
+    <h2>Configuration</h2>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <button class="btn btn-primary mt-3">Sauver</button>
+    {{ form_end(form) }}
+{% endblock %}
