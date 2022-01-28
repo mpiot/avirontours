@@ -144,6 +144,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private Collection $groups;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private $automaticTraining = false;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -677,6 +680,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $firstName = $slugger->slug($this->firstName)->lower();
         $lastName = $slugger->slug($this->lastName)->lower();
         $this->username = "{$firstName}.{$lastName}";
+    }
+
+    public function getAutomaticTraining(): ?bool
+    {
+        return $this->automaticTraining;
+    }
+
+    public function setAutomaticTraining(bool $automaticTraining): self
+    {
+        $this->automaticTraining = $automaticTraining;
+
+        return $this;
     }
 
     public static function getAvailableCivilities(): array

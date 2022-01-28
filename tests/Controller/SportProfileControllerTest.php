@@ -43,6 +43,7 @@ class SportProfileControllerTest extends AppWebTestCase
         yield ['GET', '/sport-profile/anatomy'];
         yield ['GET', '/sport-profile/physical-qualities'];
         yield ['GET', '/sport-profile/workout-maximum-load'];
+        yield ['GET', '/sport-profile/configuration'];
     }
 
     public function testNewPhysiology(): void
@@ -167,5 +168,24 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertSame(3, $user->getWorkoutMaximumLoad()->getSquat());
         $this->assertSame(4, $user->getWorkoutMaximumLoad()->getLegPress());
         $this->assertSame(5, $user->getWorkoutMaximumLoad()->getClean());
+    }
+
+    public function testConfiguration(): void
+    {
+        $user = UserFactory::createOne();
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user->object());
+        $client->request('GET', '/sport-profile/configuration');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Sauver', [
+            'sport_profile_confiruration[automaticTraining]' => 1,
+        ]);
+
+        $this->assertResponseRedirects();
+        $this->assertTrue($user->getAutomaticTraining());
     }
 }

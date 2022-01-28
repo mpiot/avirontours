@@ -1,0 +1,15 @@
+<a class="nav-link{{ 'sport_profile_physiology' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physiology') }}">
+    <span class="fas fa-heartbeat" aria-hidden="true"></span> Physiologie
+</a>
+<a class="nav-link{{ 'sport_profile_anatomy' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_anatomy') }}">
+    <span class="fas fa-child" aria-hidden="true"></span> Anatomie
+</a>
+<a class="nav-link{{ 'sport_profile_physical_qualities' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_physical_qualities') }}">
+    <span class="fas fa-balance-scale" aria-hidden="true"></span> Qualités physiques
+</a>
+<a class="nav-link{{ 'sport_profile_workout_maximum_load' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_workout_maximum_load') }}">
+    <span class="fas fa-dumbbell" aria-hidden="true"></span> 1RM
+</a>
+<a class="nav-link{{ 'sport_profile_configuration' == app.request.get('_route') ? ' active' }}" href="{{ path('sport_profile_configuration') }}">
+    <span class="fas fa-cog" aria-hidden="true"></span> Configuration
+</a>
