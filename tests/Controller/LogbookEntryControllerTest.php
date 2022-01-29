@@ -674,6 +674,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         $entry = LogbookEntryFactory::new([
             'crewMembers' => UserFactory::new(['automaticTraining' => true])->many(2),
+            'date' => new \DateTime('2022-01-15'),
             'startAt' => new \DateTime('14:30'),
         ])->notFinished()->create();
 
@@ -697,12 +698,14 @@ class LogbookEntryControllerTest extends AppWebTestCase
         /** @var Training $training */
         $training = TrainingFactory::repository()->first();
         $this->assertSame($entry->getCrewMembers()->first(), $training->getUser());
+        $this->assertSame('2022-01-15 14:30:00', $training->getTrainedAt()->format('Y-m-d H:i:s'));
         $this->assertSame(12.2, $training->getDistance());
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
         $this->assertSame(Training::TYPE_B1, $training->getType());
         $training = TrainingFactory::repository()->last();
         $this->assertSame($entry->getCrewMembers()->last(), $training->getUser());
+        $this->assertSame('2022-01-15 14:30:00', $training->getTrainedAt()->format('Y-m-d H:i:s'));
         $this->assertSame(12.2, $training->getDistance());
         $this->assertSame(5400, $training->getDuration());
         $this->assertSame(Training::SPORT_ROWING, $training->getSport());
