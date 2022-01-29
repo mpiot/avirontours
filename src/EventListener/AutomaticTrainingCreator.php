@@ -70,9 +70,10 @@ class AutomaticTrainingCreator
                 continue;
             }
 
+            $date = new \DateTime(sprintf('%s %s', $logbookEntry->getDate()->format('Y-m-d'), $logbookEntry->getStartAt()->format('H:i:s')));
             $training = new Training($user);
             $training
-                ->setTrainedAt($logbookEntry->getStartAt())
+                ->setTrainedAt($date)
                 ->setDuration($duration)
                 ->setDistance($logbookEntry->getCoveredDistance())
                 ->setSport(Training::SPORT_ROWING)
