@@ -21,7 +21,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         logbook:
-            host: '%env(APP_LOGBOOK_URI)%'
+            host: '%logbook_host%'
             pattern: ^/logbook-entry
             provider: logbook_users
             http_basic: ~
