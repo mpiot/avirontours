@@ -23,7 +23,7 @@
     {% endif %}
     <body class="min-vh-100" {{ stimulus_controller(body_controllers) }}>
         <header>
-            <nav id="navbar" class="navbar navbar-expand navbar-dark fixed-top bg-dark">
+            <nav id="navbar" class="navbar navbar-expand navbar-dark fixed-top bg-dark" aria-label="Navbar">
                 <div class="container-fluid d-flex flex-row">
                     <a class="navbar-brand order-1 order-sm-0" href="{{ path('homepage') }}">
                         <img src="{{ asset('build/images/logo_white.svg') }}" height="50px" alt="Aviron Tours Métropole">
@@ -57,7 +57,7 @@
         </header>
 
         <div class="d-flex vh-100">
-            <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark">
+            <nav id="nav-app-menu" class="d-flex flex-column p-3 text-white bg-dark" aria-label="Sidebar">
                 <ul class="nav flex-column">
                     {% block left_menu %}
                         <li class="nav-item">
