@@ -86,7 +86,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
+            ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
@@ -113,7 +113,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
+            ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -140,7 +140,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
             $url,
             [],
             [],
-            ['HTTP_HOST' => $client->getContainer()->getParameter('logbook_uri')]
+            ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']
         );
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);

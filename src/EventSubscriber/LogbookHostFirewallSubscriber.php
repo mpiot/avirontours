@@ -29,13 +29,13 @@ use function Symfony\Component\String\u;
 
 class LogbookHostFirewallSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private string $logbookUri, private RouterInterface $router)
+    public function __construct(private string $logbookHost, private RouterInterface $router)
     {
     }
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        if ($this->logbookUri !== $event->getRequest()->getHost()) {
+        if ($this->logbookHost !== $event->getRequest()->getHost()) {
             return;
         }
 
