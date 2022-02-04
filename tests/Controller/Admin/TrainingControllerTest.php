@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Factory\GroupFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
@@ -77,6 +78,20 @@ class TrainingControllerTest extends AppWebTestCase
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/training');
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testFilterIndexTrainings(): void
+    {
+        $user = UserFactory::createOne();
+        $group = GroupFactory::createOne(['members' => [$user]]);
+        TrainingFactory::createMany(20, ['user' => $user]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $client->request('GET', sprintf('/admin/training?group=%s', $group->getId()));
 
         $this->assertResponseIsSuccessful();
     }
