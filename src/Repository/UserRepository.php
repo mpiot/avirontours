@@ -115,8 +115,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if (null !== $group) {
             $qb
-                ->innerJoin('app_user.groups', 'group')
-                ->andWhere('group.id = :group')
+                ->innerJoin('app_user.groups', 'user_group')
+                ->andWhere('user_group.id = :group')
                 ->setParameter('group', $group->getId())
             ;
         }
