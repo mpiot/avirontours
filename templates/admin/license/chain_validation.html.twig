@@ -20,7 +20,7 @@
                         {% if license.medicalCertificate.fileMimeType|u.containsAny('image/') %}
                             <img src="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" alt="Certificat médical" class="w-100">
                         {% else %}
-                            <object data="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" type="application/pdf" class="w-100 h-100"></object>
+                            <object data="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" type="application/pdf" class="w-100 h-100">Certificat médical</object>
                         {% endif %}
                     </div>
 

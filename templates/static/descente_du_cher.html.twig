@@ -22,11 +22,11 @@
 {% block body %}
     <div class="mx-n3">
         <div class="container-fluid pt-3 pb-5">
-            <img class="d-block mx-auto mb-4" src="{{ asset('build/images/logo_colored.svg') }}" alt="" height="72">
+            <img class="d-block mx-auto mb-4" src="{{ asset('build/images/logo_colored.svg') }}" height="72" alt="Logo Aviron Tours">
             <h1 class="display-4 fw-bold text-center">Descente du Cher</h1>
         </div>
 
-        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/1.jpg') }}); min-height: 550px;"></div>
+        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/1.jpg') }}); min-height: 550px"></div>
 
         <div class="container py-5 fs-3">
             <p>
@@ -39,24 +39,24 @@
 
             <p class="text-center mt-5">
                 <a href="{{ asset('files/formulaire-inscription-2022.xlsx') }}" class="btn btn-lg btn-primary fs-3" data-turbo="false">
-                    <i class="far fa-file-excel"></i>
+                    <span class="far fa-file-excel"></span>
                     Formulaire d'inscription
                 </a>
                 <a href="{{ asset('files/descente-du-cher-2022.pdf') }}" class="btn btn-lg btn-outline-secondary fs-3 ms-3 mt-3 mt-md-0" data-turbo="false">
-                    <i class="far fa-file-pdf"></i>
+                    <span class="far fa-file-pdf"></span>
                     Avant programme
                 </a>
             </p>
         </div>
 
-        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/2.jpg') }}); min-height: 500px;"></div>
+        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/2.jpg') }}); min-height: 500px"></div>
 
         <div class="container-fluid py-5 text-center bg-blue-800">
             <p class="fs-1 text-white">Le parcours</p>
-            <img src="{{ asset('build/images/descente_cher/route.png') }}" class="img-fluid">
+            <img src="{{ asset('build/images/descente_cher/route.png') }}" class="img-fluid" alt="Parcours de la randonnée">
         </div>
 
-        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/3.jpg') }}); min-height: 500px;"></div>
+        <div class="parallax" style="background-image: url({{ asset('build/images/descente_cher/3.jpg') }}); min-height: 500px"></div>
 
         <div class="container pt-5 pb-3">
             <span class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" aria-label="Aviron Tours Métropole">

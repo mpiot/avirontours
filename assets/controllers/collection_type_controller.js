@@ -116,7 +116,7 @@ export default class extends Controller {
             legend.remove();
         }
 
-        if (null !== legend && legend.innerText.match(/^[0-9]+$/)) {
+        if (null !== legend && legend.innerText.match(/^\d+$/)) {
             legend.innerText = `${this.labelValue} ${parseInt(legend.innerText) + 1}`;
         }
 

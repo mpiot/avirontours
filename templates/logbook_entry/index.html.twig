@@ -49,14 +49,14 @@
                                         {% if not loop.first and logbook_entry.crewMembers is empty %}
                                             {%- if loop.last %} et {% else %}, {% endif -%}
                                         {% endif %}
-                                        <b title="Non utilisateur">{{- member -}}</b>
+                                        <span class="fw-bold" title="Non utilisateur">{{- member -}}</span>
                                     {%- endfor -%}
                                 {% else %}
                                     {{- logbook_entry.crewMembers|join(', ') -}}
 
                                     {%- for member in logbook_entry.nonUserCrewMembers -%}
                                         {%- if loop.last %} et {% else %}, {% endif -%}
-                                        <b title="Non utilisateur">{{- member -}}</b>
+                                        <span class="fw-bold" title="Non utilisateur">{{- member -}}</span>
                                     {%- endfor -%}
                                 {% endif %}
                             </td>
