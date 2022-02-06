@@ -11,9 +11,37 @@
 {% block main %}
     <h2>Configuration</h2>
 
+    <h5>Paramétres liés aux entrainements</h5>
     {{ form_start(form) }}
         {{ form_widget(form) }}
 
-        <button class="btn btn-primary mt-3">Sauver</button>
+        <button class="btn btn-primary mt-2">Sauver</button>
     {{ form_end(form) }}
+
+    <h5 class="mt-5">Services connectés</h5>
+    <div class="row">
+        <div class="col-8">
+            <h6>Compte Concept2</h6>
+            <p>
+                Lier mon compte Log Concept2 (<a href="https://log.concept2.com/">https://log.concept2.com/</a>) pour
+                importer automatiquement mes séances d'ergomètre via l'application ErgData.<br>
+                {% if app.user.concept2RefreshToken is null %}
+                    <span class="text-muted">Aucun compte connecté</span>
+                {% else %}
+                    <span class="text-success">Compte connecté</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-4 text-center">
+            {% if app.user.concept2RefreshToken is null %}
+                <a href="{{ path('oauth_concept2_connect') }}" class="btn btn-sm btn-primary">
+                    Se connecter
+                </a>
+            {% else %}
+                <a href="{{ path('oauth_concept2_unconnect') }}" class="btn btn-sm btn-outline-secondary">
+                    Se déconnecter
+                </a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
