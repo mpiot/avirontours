@@ -1,134 +1,138 @@
-CONSOLE=$(SYMFONY) console
-DOCKER_COMPOSE?=docker-compose
-SYMFONY?=symfony
+# Executables (local)
+DOCKER_COMPOSE = docker-compose
 
-.DEFAULT_GOAL := help
-.PHONY: help
-.PHONY: start stop install uninstall
-.PHONY: db-reset db-fixtures
-.PHONY: assets-server assets-watch assets-dev assets-build assets-analyze
-.PHONY: tests tests-weak tets-all test-all-weak lint lint-symfony lint-yaml lint-twig lint-container php-cs security-check validate-schema
-.PHONY: deps
+# Docker containers
+PHP_CONTAINER = $(DOCKER_COMPOSE) exec $(EXTRA_OPTIONS) php
 
+# Executables
+PHP      = $(PHP_CONTAINER) php
+PHPUNIT  = $(PHP_CONTAINER) bin/phpunit
+COMPOSER = $(PHP_CONTAINER) composer
+CONSOLE  = $(PHP_CONTAINER) bin/console
+YARN     = $(PHP_CONTAINER) yarn
+
+# Arguments
+SERVER_NAME = avirontours.localhost
+
+# Misc
+.DEFAULT_GOAL = help
+.PHONY        = help
+.PHONY        = composer vendor
+.PHONY        = db-reset db-fixtures
+.PHONY        = start stop build up down logs sh open
+.PHONY        = symfony
+.PHONY        = yarn node-modules yarn-dev-server yarn-watch yarn-dev yarn-build yarn-analyze
+
+# Help display
 help:
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 
+
 ##
-## Project setup
+## Composer 🧙
+##-------------------------------------------------------------------------------
+composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
+	@$(eval c ?=)
+	@$(COMPOSER) $(c)
+
+vendor: ## Install vendors according to the current composer.lock file
+vendor: c=install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
+vendor: composer
+
+
+##
+## Database 🛢️
 ##---------------------------------------------------------------------------
+db-reset: ## Reset the database
+	@$(CONSOLE) doctrine:database:drop --force --if-exists
+	@$(CONSOLE) doctrine:database:create --if-not-exists
+	@$(CONSOLE) doctrine:migrations:migrate -n
 
-start:                                                                                                 ## Start project
-	$(SYMFONY) proxy:start
-	$(DOCKER_COMPOSE) start
-	$(SYMFONY) server:start -d
+db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
+	@$(CONSOLE) doctrine:fixtures:load -n
 
-stop:                                                                                                  ## Stop project
-	$(SYMFONY) server:stop
-	$(DOCKER_COMPOSE) stop
-	$(SYMFONY) proxy:stop
-
-install:                                                                                               ## Install the project
-	$(DOCKER_COMPOSE) up -d --remove-orphans
-	$(MAKE) deps
-	$(MAKE) db-fixtures
-
-uninstall:                                                                                             ## Uninstall the project
-	$(DOCKER_COMPOSE) down -v
-	rm -R node_modules/  var/ vendor/
 
 ##
-## Database
+## Docker 🐳
+##-------------------------------------------------------------------------------
+start: ## Start project
+	@SERVER_NAME=$(SERVER_NAME) $(DOCKER_COMPOSE) start
+
+stop: ## Stop project
+	@$(DOCKER_COMPOSE) stop
+
+build: ## Builds the Docker images
+	@$(DOCKER_COMPOSE) build --pull --no-cache
+
+up: ## Up docker's containers in detached mode (no logs)
+	@SERVER_NAME=$(SERVER_NAME) $(DOCKER_COMPOSE) up --detach
+
+down: ## Remove containers
+	@$(DOCKER_COMPOSE) down --remove-orphans
+
+logs: ## Show live logs
+	@$(DOCKER_COMPOSE) logs --tail=0 --follow
+
+sh: ## Connect to the PHP FPM container
+	@$(PHP_CONTAINER) sh
+
+open: ## Open the project in your favorite browser
+	@xdg-open https://$(SERVER_NAME) >/dev/null 2>&1
+
+
+##
+## Symfony 🎵
+##-------------------------------------------------------------------------------
+symfony: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
+	@$(eval c ?=)
+	@$(CONSOLE) $(c)
+
+
+##
+## Tests 🚦️
 ##---------------------------------------------------------------------------
+test: lint validate-schema ## Lint all, run PHP tests
+	@$(CONSOLE) cache:clear --env test
+	@$(DOCKER_COMPOSE) exec --env FOUNDRY_RESET_MODE=migrate php bin/phpunit
 
-db-reset:                                                                                              ## Reset the database
-	$(CONSOLE) doctrine:database:drop --force --if-exists
-	$(CONSOLE) doctrine:database:create --if-not-exists
-	$(CONSOLE) doctrine:migrations:migrate -n
+test-weak: lint validate-schema ## Lint all, run PHP tests without Deprecations helper
+	@$(CONSOLE) cache:clear --env test
+	@$(DOCKER_COMPOSE) exec --env SYMFONY_DEPRECATIONS_HELPER=weak --env FOUNDRY_RESET_MODE=migrate php bin/phpunit
 
-db-fixtures: db-reset                                                                                  ## Apply doctrine fixtures
-	$(CONSOLE) doctrine:fixtures:load -n
+lint: ## Run lint on Yaml, Twig, Container, and PHP files
+	@$(CONSOLE) lint:yaml --parse-tags config
+	@$(CONSOLE) lint:twig templates --env=prod
+	@$(CONSOLE) lint:container
+	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+	@$(PHP) vendor/bin/psalm
+
+validate-schema: ## Test the doctrine schema
+	@$(CONSOLE) doctrine:schema:validate
 
 
 ##
-## Assets
+## Yarn 🐈️
 ##---------------------------------------------------------------------------
+yarn: ## Run yarn, pass the parameter "c=" to run a given command
+	@$(eval c ?=)
+	@$(YARN) $(c)
 
-assets-server: node_modules                                                                            ## Run assets server
-	yarn dev-server
+node-modules: ## Install node_modules according to the current yarn.lock file
+node-modules: c=install
+node-modules: yarn
 
-assets-watch: node_modules                                                                             ## Watch the assets and build their development version on change
-	yarn watch
+yarn-dev-server: ## Run development server
+	@$(YARN) dev-server
 
-assets-dev: node_modules                                                                               ## Build the development version of the assets
-	yarn dev
+yarn-watch: ## Watch the assets and build their development version on change
+	@$(YARN) watch
 
-assets-build: node_modules                                                                             ## Build the production version of the assets
-	yarn build
+yarn-dev: ## Build the development version of the assets
+	@$(YARN) dev
 
-assets-analyze:                                                                                       ## Analyze generated assets files
-	yarn run --silent build --json > webpack-stats.json
-	yarn webpack-bundle-analyzer webpack-stats.json public/build
+yarn-build: ## Build the production version of the assets
+	@$(YARN) build
 
-
-##
-## Tests
-##---------------------------------------------------------------------------
-
-tests:                                                                                                 ## Run all the PHP tests
-	$(CONSOLE) cache:clear --env test
-	FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
-
-tests-weak:                                                                                            ## Run all the PHP tests without Deprecations helper
-	$(CONSOLE) cache:clear --env test
-	SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(SYMFONY) php bin/phpunit
-
-test-all: lint validate-schema tests                                                                   ## Lint all, run PHP tests
-
-test-all-weak: lint validate-schema tests-weak                                                         ## Lint all, run PHP tests without Deprecations helper
-
-lint: lint-symfony php-cs psalm                                                                        ## Run lint on Twig, YAML, PHP and Javascript files
-
-lint-symfony: lint-yaml lint-twig lint-container                                                       ## Lint Symfony (Twig, YAML, and container)
-
-lint-yaml:                                                                                             ## Lint YAML files
-	$(CONSOLE) lint:yaml --parse-tags config
-
-lint-twig:                                                                                             ## Lint Twig files
-	$(CONSOLE) lint:twig templates
-
-lint-container:                                                                                        ## Lint Symfony Container
-	$(CONSOLE) lint:container
-
-php-cs:                                                                                                ## Lint PHP code
-	$(SYMFONY) php vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
-
-psalm:                                                                                                 ## Run Psalm code analysis
-	$(SYMFONY) php vendor/bin/psalm
-
-validate-schema:                                                                                       ## Test the doctrine Schema
-	$(CONSOLE) doctrine:schema:validate
-
-
-##
-## Dependencies
-##---------------------------------------------------------------------------
-
-deps: vendor assets-dev                                                                                ## Install the project dependencies
-
-
-##
-
-
-# Rules from files
-
-vendor: composer.lock
-	$(SYNFONY) composer install -n
-
-composer.lock: composer.json
-	@echo compose.lock is not up to date.
-
-node_modules: yarn.lock
-	$(SYMFONY) run -d yarn install
-
-yarn.lock: package.json
-	@echo yarn.lock is not up to date.
+yarn-analyze: ## Analyze generated assets files
+	@$(YARN) run --silent build --json > webpack-stats.json
+	@$(YARN) webpack-bundle-analyzer webpack-stats.json public/build
