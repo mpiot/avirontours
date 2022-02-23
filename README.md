@@ -2,6 +2,7 @@
 
 [![Lint](https://github.com/mpiot/avirontours/actions/workflows/lint.yaml/badge.svg)](https://github.com/mpiot/avirontours/actions/workflows/lint.yaml)
 [![Tests](https://github.com/mpiot/avirontours/actions/workflows/tests.yaml/badge.svg)](https://github.com/mpiot/avirontours/actions/workflows/tests.yaml)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/mpiot/avirontours/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/mpiot/avirontours/?branch=develop)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mpiot_avirontours&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mpiot_avirontours)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mpiot_avirontours&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mpiot_avirontours)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mpiot_avirontours&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mpiot_avirontours)
