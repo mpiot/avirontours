@@ -5,10 +5,10 @@ DOCKER_COMPOSE = docker-compose
 PHP_CONTAINER = $(DOCKER_COMPOSE) exec $(EXTRA_OPTIONS) php
 
 # Executables
-PHP      = $(PHP_CONTAINER) php
-PHPUNIT  = $(PHP_CONTAINER) bin/phpunit
+PHP      = $(PHP_CONTAINER) php -d memory_limit=-1
+PHPUNIT  = $(PHP) bin/phpunit
 COMPOSER = $(PHP_CONTAINER) composer
-CONSOLE  = $(PHP_CONTAINER) bin/console
+CONSOLE  = $(PHP) bin/console
 YARN     = $(PHP_CONTAINER) yarn
 
 # Arguments
@@ -21,6 +21,7 @@ SERVER_NAME = avirontours.localhost
 .PHONY        = db-reset db-fixtures
 .PHONY        = start stop build up down logs sh open
 .PHONY        = symfony
+.PHONY        = tests tests-weak lint validate-schema
 .PHONY        = yarn node-modules yarn-dev-server yarn-watch yarn-dev yarn-build yarn-analyze
 
 # Help display
@@ -62,7 +63,7 @@ stop: ## Stop project
 	@$(DOCKER_COMPOSE) stop
 
 build: ## Builds the Docker images
-	@$(DOCKER_COMPOSE) build --pull --no-cache
+	@$(DOCKER_COMPOSE) build --pull
 
 up: ## Up docker's containers in detached mode (no logs)
 	@SERVER_NAME=$(SERVER_NAME) $(DOCKER_COMPOSE) up --detach
@@ -77,7 +78,7 @@ sh: ## Connect to the PHP FPM container
 	@$(PHP_CONTAINER) sh
 
 open: ## Open the project in your favorite browser
-	@xdg-open https://$(SERVER_NAME) >/dev/null 2>&1
+	@xdg-open https://$(SERVER_NAME)
 
 
 ##
@@ -91,13 +92,13 @@ symfony: ## List all Symfony commands or pass the parameter "c=" to run a given 
 ##
 ## Tests 🚦️
 ##---------------------------------------------------------------------------
-test: lint validate-schema ## Lint all, run PHP tests
+tests: lint validate-schema ## Lint all, run PHP tests
 	@$(CONSOLE) cache:clear --env test
-	@$(DOCKER_COMPOSE) exec --env FOUNDRY_RESET_MODE=migrate php bin/phpunit
+	@$(DOCKER_COMPOSE) exec --env FOUNDRY_RESET_MODE=migrate php php -d memory_limit=-1 bin/phpunit
 
-test-weak: lint validate-schema ## Lint all, run PHP tests without Deprecations helper
+tests-weak: lint validate-schema ## Lint all, run PHP tests without Deprecations helper
 	@$(CONSOLE) cache:clear --env test
-	@$(DOCKER_COMPOSE) exec --env SYMFONY_DEPRECATIONS_HELPER=weak --env FOUNDRY_RESET_MODE=migrate php bin/phpunit
+	@$(DOCKER_COMPOSE) exec --env SYMFONY_DEPRECATIONS_HELPER=weak --env FOUNDRY_RESET_MODE=migrate php php -d memory_limit=-1 bin/phpunit
 
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(CONSOLE) lint:yaml --parse-tags config

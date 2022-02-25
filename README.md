@@ -27,6 +27,9 @@ The app use docker and docker-compose, before continue to follow the guide, plea
 * https://docs.docker.com/install/
 * https://docs.docker.com/compose/install/
 
+There is a requirement when running Elasticsearch in Docker:
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_set_vm_max_map_count_to_at_least_262144
+
 ### Install the application
 ```shell
 make build
@@ -39,13 +42,13 @@ And voilà !!! Your app is installed and ready to use.
 ### SSL configuration
 To avoid TLS trust issues, copy the self-signed certificate from Caddy and add it to the trusted certificates :
 ```ssh
-# Mac (system)
+# Mac
 docker cp $(docker-compose ps -q caddy):/data/caddy/pki/authorities/local/root.crt /tmp/root.crt && sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /tmp/root.crt
-# Linux (system)
+# Linux
 docker cp $(docker-compose ps -q caddy):/data/caddy/pki/authorities/local/root.crt /usr/local/share/ca-certificates/root.crt && sudo update-ca-certificates
-# Google Chrome (browser)
+# Windows
 docker cp $(docker-compose ps -q caddy):/data/caddy/pki/authorities/local/root.crt .
-# Then add the certificate in Chrome: Cettificates/Authority, then Import
+# Add the certificate in Computer certificates/Trusted Root Certification Athorities
 ```
 
 ## Follow the best practice
@@ -68,7 +71,7 @@ make lint
 
 You can run a set of tests: testing, linting, security check, database sync check, etc... by running a single command:
 ```shell
-make test
+make tests
 ```
 
 ## Shortcuts
