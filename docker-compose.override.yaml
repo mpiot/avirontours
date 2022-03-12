@@ -8,8 +8,10 @@ services:
             - ./:/srv/app:rw,cached
             - ./docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini
             # If you develop on Mac you can remove the var/ directory from the bind-mount
-            # for better performance by enabling the next line
+            # for better performance by enabling this line:
             # - /srv/app/var
+            # and disabled the next line
+            - ./var:/srv/app/var:rw,cached
         environment:
             APP_ENV: dev
 

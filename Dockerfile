@@ -33,7 +33,6 @@ RUN set -eux; \
         libpng-dev \
 		libzip-dev \
         libxslt-dev \
-    	postgresql-dev \
 		zlib-dev \
 	; \
 	\
@@ -43,7 +42,6 @@ RUN set -eux; \
         calendar \
         gd \
 		intl \
-        pdo_pgsql \
         xsl \
 		zip \
 	; \
