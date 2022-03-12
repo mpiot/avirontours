@@ -22,6 +22,8 @@ namespace App\Entity;
 
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -96,10 +98,14 @@ class Training
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingPhase::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private $trainingPhases;
+
     public function __construct(User $user)
     {
         $this->user = $user;
         $this->trainedAt = new \DateTime((new \DateTime())->format('Y-m-d H:i'));
+        $this->trainingPhases = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,7 +144,7 @@ class Training
 
     public function getFormattedDuration(): string
     {
-        return DurationManipulator::formatDuration($this->duration, false);
+        return DurationManipulator::formatSeconds($this->duration);
     }
 
     public function setDuration(int $duration): self
@@ -225,6 +231,124 @@ class Training
         $this->comment = $comment;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TrainingPhase>
+     */
+    public function getTrainingPhases(): Collection
+    {
+        return $this->trainingPhases;
+    }
+
+    public function addTrainingPhase(TrainingPhase $trainingPhase): self
+    {
+        if (!$this->trainingPhases->contains($trainingPhase)) {
+            $this->trainingPhases[] = $trainingPhase;
+            $trainingPhase->setTraining($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrainingPhase(TrainingPhase $trainingPhase): self
+    {
+        if ($this->trainingPhases->removeElement($trainingPhase)) {
+            // set the owning side to null (unless already changed)
+            if ($trainingPhase->getTraining() === $this) {
+                $trainingPhase->setTraining(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPhasesDuration(): ?int
+    {
+        $duration = 0;
+        foreach ($this->getTrainingPhases() as $trainingPhase) {
+            $duration += $trainingPhase->getDuration();
+        }
+
+        return $duration;
+    }
+
+    public function getFormattedPhasesDuration(): string
+    {
+        return DurationManipulator::formatTenthSeconds($this->getPhasesDuration());
+    }
+
+    public function getPhasesDistance(): ?int
+    {
+        $distance = 0;
+        foreach ($this->getTrainingPhases() as $trainingPhase) {
+            $distance += $trainingPhase->getDistance();
+        }
+
+        return $distance;
+    }
+
+    public function getPhasesAveragePace(): ?int
+    {
+        $paces = [];
+        foreach ($this->getTrainingPhases() as $trainingPhase) {
+            $paces = array_merge($paces, $trainingPhase->getPaces());
+        }
+
+        if (empty($paces)) {
+            return null;
+        }
+
+        return (int) round(array_sum($paces) / \count($paces), 0);
+    }
+
+    public function getPhasesFormattedAveragePace(): ?string
+    {
+        if (null === $this->getPhasesAveragePace()) {
+            return null;
+        }
+
+        return DurationManipulator::formatTenthSeconds($this->getPhasesAveragePace());
+    }
+
+    public function getPhasesAverageWatt(): ?int
+    {
+        if (null === $this->getPhasesAveragePace()) {
+            return null;
+        }
+
+        $paceInSeconds = $this->getPhasesAveragePace() / 10;
+
+        // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
+        return (int) round(2.8 / ($paceInSeconds / 500) ** 3, 0);
+    }
+
+    public function getPhasesAverageStrokeRate(): ?int
+    {
+        $strokeRates = [];
+        foreach ($this->getTrainingPhases() as $trainingPhase) {
+            $strokeRates = array_merge($strokeRates, $trainingPhase->getStrokeRates());
+        }
+
+        if (empty($strokeRates)) {
+            return null;
+        }
+
+        return (int) round(array_sum($strokeRates) / \count($strokeRates), 0);
+    }
+
+    public function getPhasesAverageHeartRate(): ?int
+    {
+        $heartRates = [];
+        foreach ($this->getTrainingPhases() as $trainingPhase) {
+            $heartRates = array_merge($heartRates, $trainingPhase->getHeartRates() ?? []);
+        }
+
+        if (empty($heartRates)) {
+            return null;
+        }
+
+        return (int) round(array_sum($heartRates) / \count($heartRates), 0);
     }
 
     #[Assert\Callback]

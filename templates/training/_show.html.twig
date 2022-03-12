@@ -30,3 +30,10 @@
         </div>
     </div>
 {% endif %}
+
+{% if not training.trainingPhases.empty %}
+     <div class="card border-0 shadow mt-3">
+         <turbo-frame id="training-phases" src="{{ path('training_show_phase', { training_id: training.id, id:training.trainingPhases.first.id }) }}">
+         </turbo-frame>
+     </div>
+{% endif %}

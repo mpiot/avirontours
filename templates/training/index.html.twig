@@ -11,9 +11,15 @@
     <div class="d-flex">
         <h1>Carnet d'entraînements</h1>
 
-        <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un entraînement
-        </a>
+        <div class="ms-auto align-self-center">
+            <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm">
+                <span class="fas fa-plus"></span> Ajouter un entraînement
+            </a>
+
+            <a href="{{ path('training_import_concept_logbook') }}" class="btn btn-outline-secondary btn-sm {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}">
+                <span class="fa fa-sync"></span> Sync ErgData
+            </a>
+        </div>
     </div>
 
     <div class="card border-0 shadow">
@@ -51,7 +57,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="6" class="text-center">Pas d'entraînements</td>
+                            <td colspan="7" class="text-center">Pas d'entraînements</td>
                         </tr>
                     {% endfor %}
                     </tbody>

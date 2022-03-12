@@ -76,7 +76,7 @@ class LicenseRepository extends ServiceEntityRepository
 
         if (true === $statusReadyToLicense) {
             $qb
-                ->andWhere('JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\'')
+                ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\'')
             ;
         }
 
@@ -88,11 +88,11 @@ class LicenseRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('license')
             ->addSelect(
                 '(
-                    CASE WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN 2
-                         WHEN JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN 3
-                         WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' THEN 4
-                         WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN 5
-                         WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN 6
+                    CASE WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN 2
+                         WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN 3
+                         WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\' THEN 4
+                         WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN 5
+                         WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'validated\') = \'1\' THEN 6
                          ELSE 1
                     END) AS HIDDEN mainSort'
             )
@@ -129,11 +129,11 @@ class LicenseRepository extends ServiceEntityRepository
                 SELECT
                     COUNT(license.id) as number,
                     (CASE
-                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN \'waitPaymentValidation\'
-                        WHEN JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN \'waitMedicalCertificateValidation\'
-                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_TEXT(license.marking, \'payment_validated\') = \'1\' THEN \'waitValidation\'
-                        WHEN JSON_GET_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN \'medicalCertificateRejected\'
-                        WHEN JSON_GET_TEXT(license.marking, \'validated\') = \'1\' THEN \'validated\'
+                        WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_payment_validation\') = \'1\' THEN \'waitPaymentValidation\'
+                        WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\' THEN \'waitMedicalCertificateValidation\'
+                        WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\' THEN \'waitValidation\'
+                        WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_rejected\') = \'1\' THEN \'medicalCertificateRejected\'
+                        WHEN JSON_GET_FIELD_AS_TEXT(license.marking, \'validated\') = \'1\' THEN \'validated\'
                         ELSE \'waitAll\'
                     END) AS state
                 FROM App\Entity\License license
@@ -192,7 +192,7 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.seasonCategory', 'season_category')
             ->innerJoin('season_category.season', 'season')
             ->where('season.id = :season')
-            ->andWhere('license.marking IS NULL OR JSON_GET_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
+            ->andWhere('license.marking IS NULL OR JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
             ->orderBy('license.id', 'ASC')
             ->setParameter('season', $season->getId())
             ->setMaxResults(1)

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e37289d773abd64da23a6179dfa6a4ec",
+    "content-hash": "6d1b25c09ba42b2e3ff0786e8a669879",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -1904,16 +1904,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.4.1",
+            "version": "7.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "ee0a041b1760e6a53d2a39c8c34115adc2af2c79"
+                "reference": "ac1ec1cd9b5624694c3a40be801d94137afb12b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ee0a041b1760e6a53d2a39c8c34115adc2af2c79",
-                "reference": "ee0a041b1760e6a53d2a39c8c34115adc2af2c79",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ac1ec1cd9b5624694c3a40be801d94137afb12b4",
+                "reference": "ac1ec1cd9b5624694c3a40be801d94137afb12b4",
                 "shasum": ""
             },
             "require": {
@@ -2008,7 +2008,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.4.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.2"
             },
             "funding": [
                 {
@@ -2024,7 +2024,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-12-06T18:43:05+00:00"
+            "time": "2022-03-20T14:16:28+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -2112,16 +2112,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.1.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "089edd38f5b8abba6cb01567c2a8aaa47cec4c72"
+                "reference": "c94a94f120803a18554c1805ef2e539f8285f9a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/089edd38f5b8abba6cb01567c2a8aaa47cec4c72",
-                "reference": "089edd38f5b8abba6cb01567c2a8aaa47cec4c72",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/c94a94f120803a18554c1805ef2e539f8285f9a2",
+                "reference": "c94a94f120803a18554c1805ef2e539f8285f9a2",
                 "shasum": ""
             },
             "require": {
@@ -2145,7 +2145,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.2-dev"
                 }
             },
             "autoload": {
@@ -2207,7 +2207,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.1.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.2.1"
             },
             "funding": [
                 {
@@ -2223,7 +2223,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-06T17:43:30+00:00"
+            "time": "2022-03-20T21:55:58+00:00"
         },
         {
             "name": "jms/metadata",
@@ -2531,16 +2531,16 @@
         },
         {
             "name": "knpuniversity/oauth2-client-bundle",
-            "version": "v2.9.0",
+            "version": "v2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/knpuniversity/oauth2-client-bundle.git",
-                "reference": "2c925911cca6ed16b0695000bf927d405815dc36"
+                "reference": "eb260409723a7bf204c2aa842b3488980372e874"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/2c925911cca6ed16b0695000bf927d405815dc36",
-                "reference": "2c925911cca6ed16b0695000bf927d405815dc36",
+                "url": "https://api.github.com/repos/knpuniversity/oauth2-client-bundle/zipball/eb260409723a7bf204c2aa842b3488980372e874",
+                "reference": "eb260409723a7bf204c2aa842b3488980372e874",
                 "shasum": ""
             },
             "require": {
@@ -2585,9 +2585,9 @@
             ],
             "support": {
                 "issues": "https://github.com/knpuniversity/oauth2-client-bundle/issues",
-                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.9.0"
+                "source": "https://github.com/knpuniversity/oauth2-client-bundle/tree/v2.10.0"
             },
-            "time": "2021-11-22T01:40:58+00:00"
+            "time": "2022-02-23T15:00:49+00:00"
         },
         {
             "name": "kornrunner/blurhash",
@@ -2824,6 +2824,83 @@
                 "source": "https://github.com/lorenzo/pinky/tree/1.0.6"
             },
             "time": "2022-03-17T12:11:56+00:00"
+        },
+        {
+            "name": "martin-georgiev/postgresql-for-doctrine",
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/martin-georgiev/postgresql-for-doctrine.git",
+                "reference": "6b515bf979d9cfec23af1bf6ca93aa75ef79d58c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/martin-georgiev/postgresql-for-doctrine/zipball/6b515bf979d9cfec23af1bf6ca93aa75ef79d58c",
+                "reference": "6b515bf979d9cfec23af1bf6ca93aa75ef79d58c",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "~2.5||~3.0",
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "php": "^7.2||^8.0"
+            },
+            "require-dev": {
+                "doctrine/orm": "~2.5||~3.0",
+                "friendsofphp/php-cs-fixer": "^3.2",
+                "php-coveralls/php-coveralls": "^2.5",
+                "phpstan/phpstan": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^8.5||^9.5",
+                "qossmic/deptrac-shim": "^0.14",
+                "symfony/cache": "^4.0||^5.0||^6.0"
+            },
+            "suggest": {
+                "doctrine/orm": "~2.5||~3.0",
+                "php": "^7.4||^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MartinGeorgiev\\": "src/MartinGeorgiev/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Georgiev",
+                    "email": "martin.georgiev@gmail.com",
+                    "role": "author"
+                }
+            ],
+            "description": "Adds PostgreSQL enhancements to Doctrine. Provides support for JSON, JSONB and some array data types. Provides functions, operators and common expressions used when working with JSON data, arrays and features related to text search.",
+            "keywords": [
+                "array data types",
+                "dbal",
+                "doctrine",
+                "json",
+                "jsonb",
+                "martin georgiev",
+                "postgres",
+                "postgresql",
+                "text search",
+                "tsvector"
+            ],
+            "support": {
+                "issues": "https://github.com/martin-georgiev/postgresql-for-doctrine/issues",
+                "source": "https://github.com/martin-georgiev/postgresql-for-doctrine/tree/v1.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/martin-georgiev",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-02-10T17:41:35+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3755,74 +3832,6 @@
                 "source": "https://github.com/scheb/2fa-email/tree/v6.0.1"
             },
             "time": "2022-01-03T10:16:52+00:00"
-        },
-        {
-            "name": "scienta/doctrine-json-functions",
-            "version": "5.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ScientaNL/DoctrineJsonFunctions.git",
-                "reference": "a5a2309844cbb7fbf60d2aabcc6fb27418a431c5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ScientaNL/DoctrineJsonFunctions/zipball/a5a2309844cbb7fbf60d2aabcc6fb27418a431c5",
-                "reference": "a5a2309844cbb7fbf60d2aabcc6fb27418a431c5",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/dbal": "^3.0",
-                "doctrine/orm": "^2.0",
-                "ext-pdo": "*",
-                "php": "^7.3 || ^8.0"
-            },
-            "require-dev": {
-                "doctrine/annotations": "^1.13",
-                "doctrine/coding-standard": "^8.0 || ^9.0",
-                "phpunit/phpunit": "^8.0 || ^9.0"
-            },
-            "suggest": {
-                "dunglas/doctrine-json-odm": "To serialize / deserialize objects as JSON documents."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Scienta\\DoctrineJsonFunctions\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Doctrine Json Functions Contributors",
-                    "homepage": "https://github.com/ScientaNL/DoctrineJsonFunctions/contributors"
-                }
-            ],
-            "description": "A set of extensions to Doctrine 2 that add support for json query functions.",
-            "keywords": [
-                "database",
-                "doctrine",
-                "dql",
-                "json",
-                "mariadb",
-                "mysql",
-                "orm",
-                "postgres",
-                "postgresql",
-                "sqlite"
-            ],
-            "support": {
-                "issues": "https://github.com/ScientaNL/DoctrineJsonFunctions/issues",
-                "source": "https://github.com/ScientaNL/DoctrineJsonFunctions/tree/5.0.0"
-            },
-            "time": "2022-01-12T10:14:59+00:00"
         },
         {
             "name": "sensio/framework-extra-bundle",

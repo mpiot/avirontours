@@ -230,6 +230,9 @@
     "lorenzo/pinky": {
         "version": "1.0.5"
     },
+    "martin-georgiev/postgresql-for-doctrine": {
+        "version": "v1.7.0"
+    },
     "monolog/monolog": {
         "version": "2.3.5"
     },
@@ -346,9 +349,6 @@
     },
     "scheb/2fa-email": {
         "version": "v6.0.1"
-    },
-    "scienta/doctrine-json-functions": {
-        "version": "5.0.0"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"
