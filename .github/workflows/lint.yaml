@@ -2,7 +2,7 @@ name: Lint
 
 on:
     push:
-        branches: [ master, develop ]
+        branches: [ main, develop ]
     pull_request:
         types:
             - opened
@@ -28,24 +28,26 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2.3.3
+              uses: actions/checkout@v2
 
             - name: Install PHP
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: 8.1
+                  php-version: '8.1'
+                  tools: composer:v2
 
-            - name: Set composer cache directory
+            - name: Get Composer Cache Directory
               id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+              run: |
+                  echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-            - name: Cache composer
-              uses: actions/cache@v2.1.2
+            - uses: actions/cache@v2
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: ${{ runner.os }}-composer-
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
 
             - name: Composer install
               run: composer install --no-interaction --no-progress

@@ -11,6 +11,9 @@
     "behat/transliterator": {
         "version": "v1.3.0"
     },
+    "brianium/paratest": {
+        "version": "v6.4.3"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },

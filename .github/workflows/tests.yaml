@@ -2,7 +2,7 @@ name: Tests
 
 on:
     push:
-        branches: [ master, develop ]
+        branches: [ main, develop ]
     pull_request:
         types:
             - opened
@@ -35,53 +35,57 @@ jobs:
                     POSTGRES_DB: main
                 ports:
                     - 5432:5432
+                options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=10
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2.3.3
+              uses: actions/checkout@v2
 
             - name: Install PHP
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: pcov
                   ini-values: date.timezone = Europe/Paris
                   php-version: '8.1'
                   tools: composer:v2
+                  extensions: curl, intl, mbstring, pdo_pgsql, xml, zip
 
-            - name: Set composer cache directory
+            - name: Get Composer Cache Directory
               id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+              run: |
+                  echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-            - name: Cache composer
-              uses: actions/cache@v2.1.2
+            - uses: actions/cache@v2
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
-                  restore-keys: ${{ runner.os }}-composer-
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
 
             - name: Composer install
               run: composer install --no-interaction --no-progress
 
-            - uses: actions/setup-node@v2
+            - name: Install Node
+              uses: actions/setup-node@v2
               with:
                   node-version: '16'
 
-            - name: NPM Cache
-              uses: actions/cache@v2
+            - name: Install Yarn
+              run: npm install -g yarn
+
+            - name: Setup Yarn cache
+              uses: actions/setup-node@v2
               with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-
+                  cache: 'yarn'
 
             - name: Install node modules
-              run: npm install
+              run: yarn install
 
             - name: Build assets
-              run: npm run build
+              run: yarn build
 
             - name: Run tests
-              run: bin/phpunit ${{ env.PHPUNIT_FLAGS }}
+              run: vendor/bin/paratest --runner WrapperRunner ${{ env.PHPUNIT_FLAGS }}
 
             - name: Upload PHPUnit Reports
               uses: actions/upload-artifact@v2

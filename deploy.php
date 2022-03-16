@@ -85,8 +85,8 @@ task('deploy:assets', function (): void {
         }
     }
 
-    run('cd {{release_path}} && npm install');
-    run('cd {{release_path}} && npm run build');
+    run('cd {{release_path}} && yarn install');
+    run('cd {{release_path}} && yarn build');
 });
 
 task('deploy:optimize', function (): void {
