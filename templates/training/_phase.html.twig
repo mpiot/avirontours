@@ -15,6 +15,7 @@
                             <th>Watts</th>
                             <th>S/M</th>
                             <th><span class="fas fa-heart"></span></th>
+                            <th></th>
                         </tr>
                         <tr>
                             <td>{{ training.formattedPhasesDuration}}</td>
@@ -23,25 +24,23 @@
                             <td>{{ training.phasesAverageWatt }}</td>
                             <td>{{ training.phasesAverageStrokeRate }}</td>
                             <td>{{ training.phasesAverageHeartRate ?? '-' }}</td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody>
                         {% for trainingPhase in training.trainingPhases %}
-                            {% if active_phase == trainingPhase %}
-                                <tr class="bg-blue-100" style="transform: rotate(0);">
-                            {% else %}
-                                <tr style="transform: rotate(0);">
-                            {% endif %}
-                            <td>
-                                <a href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}" class="text-decoration-none link-dark stretched-link">
-                                    {{ trainingPhase.formattedDuration}}
-                                </a>
-                            </td>
-                            <td>{{ trainingPhase.distance }}m</td>
-                            <td>{{ trainingPhase.formattedAveragePace }}</td>
-                            <td>{{ trainingPhase.averageWatt }}</td>
-                            <td>{{ trainingPhase.averageStrokeRate }}</td>
-                            <td>{{ trainingPhase.averageHeartRate ?? '-' }}</td>
+                            <tr {%- if active_phase == trainingPhase %} class="bg-blue-100"{% endif %}>
+                                <td>{{ trainingPhase.formattedDuration}}</td>
+                                <td>{{ trainingPhase.distance }}m</td>
+                                <td>{{ trainingPhase.formattedAveragePace }}</td>
+                                <td>{{ trainingPhase.averageWatt }}</td>
+                                <td>{{ trainingPhase.averageStrokeRate }}</td>
+                                <td>{{ trainingPhase.averageHeartRate ?? '-' }}</td>
+                                <td>
+                                    <a href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}" class="link-dark">
+                                        <span class="fas fa-eye"></span>
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
