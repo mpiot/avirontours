@@ -12,13 +12,15 @@
         <h1>Carnet d'entraînements</h1>
 
         <div class="ms-auto align-self-center">
-            <a href="{{ path('training_new') }}" class="btn btn-outline-primary btn-sm">
-                <span class="fas fa-plus"></span> Ajouter un entraînement
-            </a>
+            <div class="btn-group" role="group">
+                <a href="{{ path('training_new') }}" class="btn btn-outline-primary">
+                    <span class="fas fa-plus"></span> Ajouter un entraînement
+                </a>
 
-            <a href="{{ path('training_import_concept_logbook') }}" class="btn btn-outline-secondary btn-sm {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}">
-                <span class="fa fa-sync"></span> Sync ErgData
-            </a>
+                <a href="{{ path('training_import_concept_logbook') }}" class="btn btn-outline-secondary {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}">
+                    <span class="fa fa-sync"></span> Sync ErgData
+                </a>
+            </div>
         </div>
     </div>
 
