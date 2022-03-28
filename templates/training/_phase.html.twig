@@ -1,0 +1,52 @@
+<turbo-frame id="training-phases">
+    <div class="row">
+        <div class="col-lg-8 order-lg-0 order-1">
+            {{ render_chart(chart, {'data-controller': 'ergometer-chart'}) }}
+        </div>
+
+        <div class="col-lg-4 order-lg-1 order-0">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Durée</th>
+                            <th>Distance</th>
+                            <th>Pace</th>
+                            <th>Watts</th>
+                            <th>S/M</th>
+                            <th><span class="fas fa-heart"></span></th>
+                        </tr>
+                        <tr>
+                            <td>{{ training.formattedPhasesDuration}}</td>
+                            <td>{{ training.phasesDistance }}m</td>
+                            <td>{{ training.phasesFormattedAveragePace }}</td>
+                            <td>{{ training.phasesAverageWatt }}</td>
+                            <td>{{ training.phasesAverageStrokeRate }}</td>
+                            <td>{{ training.phasesAverageHeartRate ?? '-' }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trainingPhase in training.trainingPhases %}
+                            {% if active_phase == trainingPhase %}
+                                <tr class="bg-blue-100" style="transform: rotate(0);">
+                            {% else %}
+                                <tr style="transform: rotate(0);">
+                            {% endif %}
+                            <td>
+                                <a href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}" class="text-decoration-none link-dark stretched-link">
+                                    {{ trainingPhase.formattedDuration}}
+                                </a>
+                            </td>
+                            <td>{{ trainingPhase.distance }}m</td>
+                            <td>{{ trainingPhase.formattedAveragePace }}</td>
+                            <td>{{ trainingPhase.averageWatt }}</td>
+                            <td>{{ trainingPhase.averageStrokeRate }}</td>
+                            <td>{{ trainingPhase.averageHeartRate ?? '-' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</turbo-frame>

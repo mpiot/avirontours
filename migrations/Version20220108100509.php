@@ -29,7 +29,6 @@ final class Version20220108100509 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE logbook_entry ALTER non_user_crew_members DROP NOT NULL');
         $this->addSql('ALTER TABLE license ALTER marking DROP NOT NULL');
         $this->addSql('ALTER TABLE license ALTER transition_contexts DROP NOT NULL');

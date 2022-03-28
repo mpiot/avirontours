@@ -147,6 +147,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::BOOLEAN)]
     private $automaticTraining = false;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $concept2RefreshToken;
+
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private $concept2LastImportAt = null;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -690,6 +696,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setAutomaticTraining(bool $automaticTraining): self
     {
         $this->automaticTraining = $automaticTraining;
+
+        return $this;
+    }
+
+    public function getConcept2RefreshToken(): ?string
+    {
+        return $this->concept2RefreshToken;
+    }
+
+    public function setConcept2RefreshToken(?string $concept2RefreshToken): self
+    {
+        $this->concept2RefreshToken = $concept2RefreshToken;
+
+        return $this;
+    }
+
+    public function getConcept2LastImportAt(): ?\DateTimeImmutable
+    {
+        return $this->concept2LastImportAt;
+    }
+
+    public function setConcept2LastImportAt(?\DateTimeImmutable $concept2LastImportAt): self
+    {
+        $this->concept2LastImportAt = $concept2LastImportAt;
 
         return $this;
     }

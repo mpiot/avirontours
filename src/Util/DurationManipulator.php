@@ -36,20 +36,28 @@ class DurationManipulator
         return $dateInterval->h * 3600 + $dateInterval->i * 60 + $dateInterval->s;
     }
 
-    public static function formatDuration(int $seconds, bool $displaySeconds = true): string
+    public static function formatSeconds(int $seconds): string
     {
         $splitDuration = self::splitDuration($seconds);
         $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
         $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
+
+        return sprintf('%s:%s', $hours, $minutes);
+    }
+
+    public static function formatTenthSeconds(int $tenthSeconds): string
+    {
+        $splitDuration = self::splitDuration((int) ($tenthSeconds / 10));
+        $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
+        $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
         $seconds = u((string) $splitDuration['seconds'])->padStart(2, '0')->toString();
+        $tenthSeconds = $seconds % 10;
 
-        $duration = sprintf('%s:%s', $hours, $minutes);
-
-        if (true === $displaySeconds) {
-            $duration .= ':'.$seconds;
+        if (0 === $splitDuration['hours']) {
+            return sprintf('%s:%s.%s', $minutes, $seconds, $tenthSeconds);
         }
 
-        return $duration;
+        return sprintf('%s:%s:%s.%s', $hours, $minutes, $seconds, $tenthSeconds);
     }
 
     private static function splitDuration(int $seconds): array
