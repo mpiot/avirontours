@@ -116,7 +116,7 @@ class Concept2ApiConsumer
     {
         $query = ['type' => 'rower'];
         if (null !== $startAt) {
-            $query['from'] = $startAt->format('Y-m-d');
+            $query['from'] = $startAt->format('Y-m-d H:i:s');
         }
 
         $response = $this->httpClient->request('GET', sprintf('%s/users/me/results', self::API_URL), [
