@@ -22,6 +22,7 @@ namespace App\Controller;
 
 use App\Chart\LogbookChart;
 use App\Chart\PhysicalQualitiesChart;
+use App\Chart\TrainingChart;
 use App\Repository\SeasonCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +30,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomepageController extends AbstractController
 {
     #[Route(path: '', name: 'homepage')]
-    public function homepage(SeasonCategoryRepository $seasonCategoryRepository, LogbookChart $logbookChart, PhysicalQualitiesChart $physicalQualitiesChart): Response
+    public function homepage(SeasonCategoryRepository $seasonCategoryRepository, LogbookChart $logbookChart, PhysicalQualitiesChart $physicalQualitiesChart, TrainingChart $trainingsChart): Response
     {
         if (null === $this->getUser()) {
             return $this->render('homepage/homepage.html.twig', [
@@ -40,6 +41,8 @@ class HomepageController extends AbstractController
         return $this->render('homepage/dashboard.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),
             'physicalQualitiesChart' => $physicalQualitiesChart->chart($this->getUser()),
+            'trainingsPathwaysChart' => $trainingsChart->pathways($this->getUser()),
+            'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);
     }
 }

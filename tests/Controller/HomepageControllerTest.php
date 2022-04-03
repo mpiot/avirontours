@@ -22,9 +22,11 @@ namespace App\Tests\Controller;
 
 use App\Factory\PhysicalQualitiesFactory;
 use App\Factory\PhysiologyFactory;
+use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
+use function Zenstruck\Foundry\faker;
 
 class HomepageControllerTest extends AppWebTestCase
 {
@@ -48,6 +50,10 @@ class HomepageControllerTest extends AppWebTestCase
         PhysicalQualitiesFactory::createOne(['user' => $user]);
         PhysiologyFactory::createOne(['user' => $user]);
         WorkoutMaximumLoadFactory::createOne(['user' => $user]);
+        TrainingFactory::createMany(20, [
+            'user' => $user,
+            'trainedAt' => faker()->dateTimeThisMonth(),
+        ]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();

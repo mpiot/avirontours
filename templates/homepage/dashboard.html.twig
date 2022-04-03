@@ -10,6 +10,24 @@
                 </div>
             </div>
 
+            {% if trainingsPathwaysChart is not null and trainingsSportsChart is not null %}
+                <div class="card border-0 shadow mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <span class="h4">Répartition des filières</span>
+                                {{ render_chart(trainingsPathwaysChart) }}
+                            </div>
+
+                            <div class="col">
+                                <span class="h4">Répartition des sports</span>
+                                {{ render_chart(trainingsSportsChart) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
             {% if app.user.physiology is not null %}
                 <div class="card border-0 shadow mb-3">
                     <div class="card-body">
