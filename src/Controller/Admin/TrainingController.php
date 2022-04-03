@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Chart\TrainingChart;
 use App\Controller\AbstractController;
 use App\Entity\Training;
 use App\Entity\User;
@@ -44,7 +45,7 @@ class TrainingController extends AbstractController
         $group = $request->query->has('group') ? $groupRepository->find($request->query->getInt('group')) : null;
 
         return $this->render('admin/training/index.html.twig', [
-            'users' => $userRepository->findTrainings(
+            'users' => $userRepository->findUsersTrainings(
                 $from,
                 $to,
                 $group,
@@ -60,11 +61,13 @@ class TrainingController extends AbstractController
 
     #[Route(path: '/{user_id}', name: 'admin_training_list', methods: ['GET'])]
     #[Entity(data: 'user', expr: 'repository.find(user_id)')]
-    public function list(Request $request, User $user, TrainingRepository $trainingRepository): Response
+    public function list(Request $request, User $user, TrainingRepository $trainingRepository, TrainingChart $trainingsChart): Response
     {
         return $this->render('admin/training/list.html.twig', [
             'user' => $user,
             'trainings' => $trainingRepository->findUserPaginated($user, $request->query->getInt('page', 1)),
+            'trainingsPathwaysChart' => $trainingsChart->pathways($this->getUser()),
+            'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);
     }
 

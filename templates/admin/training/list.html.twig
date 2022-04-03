@@ -11,6 +11,24 @@
 {% block body %}
     <h1>Carnet d'entraînements de {{ user.fullname }}</h1>
 
+    {% if trainingsPathwaysChart is not null and trainingsSportsChart is not null %}
+        <div class="card border-0 shadow mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <span class="h4">Répartition des filières</span>
+                        {{ render_chart(trainingsPathwaysChart) }}
+                    </div>
+
+                    <div class="col">
+                        <span class="h4">Répartition des sports</span>
+                        {{ render_chart(trainingsSportsChart) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card border-0 shadow">
         <div class="card-body">
             <div class="table-responsive">

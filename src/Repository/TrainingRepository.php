@@ -59,4 +59,21 @@ class TrainingRepository extends ServiceEntityRepository
             Training::NUM_ITEMS
         );
     }
+
+    public function findForUser(?User $user = null, \DateTime $from = null, \DateTime $to = null): array
+    {
+        $query = $this->createQueryBuilder('training')
+            ->innerJoin('training.user', 'user')
+            ->where('user.id = :user_id')
+            ->andWhere('training.trainedAt BETWEEN :from AND :to')
+            ->setParameters([
+                'user_id' => $user->getId(),
+                'from' => $from,
+                'to' => $to,
+            ])
+            ->getQuery()
+        ;
+
+        return $query->getResult();
+    }
 }

@@ -25,6 +25,7 @@ use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use function Zenstruck\Foundry\faker;
 
 class TrainingControllerTest extends AppWebTestCase
 {
@@ -99,7 +100,10 @@ class TrainingControllerTest extends AppWebTestCase
     public function testListUserTrainings(): void
     {
         $user = UserFactory::createOne();
-        TrainingFactory::createMany(6, ['user' => $user]);
+        TrainingFactory::createMany(6, [
+            'user' => $user,
+            'trainedAt' => faker()->dateTimeThisMonth(),
+        ]);
         TrainingFactory::createMany(3);
 
         static::ensureKernelShutdown();
