@@ -35,8 +35,8 @@ final class TrainingChart
 
     public function pathways(User $user): ?Chart
     {
-        $from = (new \DateTime())->modify('-30 days');
-        $to = (new \DateTime());
+        $from = (new \DateTime('-1 month'))->setTime(0, 0);
+        $to = (new \DateTime('now'))->setTime(23, 59);
 
         /** @var Collection|Training[] $trainings */
         $trainings = new ArrayCollection($this->trainingRepository->findForUser($user, $from, $to));
@@ -78,8 +78,8 @@ final class TrainingChart
 
     public function sports(User $user): ?Chart
     {
-        $from = (new \DateTime())->modify('-30 days');
-        $to = (new \DateTime());
+        $from = (new \DateTime('-1 month'))->setTime(0, 0);
+        $to = (new \DateTime('now'))->setTime(23, 59);
 
         /** @var Collection|Training[] $trainings */
         $trainings = new ArrayCollection($this->trainingRepository->findForUser($user, $from, $to));
@@ -91,7 +91,7 @@ final class TrainingChart
         $totalDuration = TrainingCalculator::getDuration($trainings);
         $rowingTraingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::SPORT_ROWING === $training->getSport())) / $totalDuration;
         $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::SPORT_ERGOMETER === $training->getSport())) / $totalDuration;
-        $workoutTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::SPORT_WORKOUT_ENDURANCE || Training::SPORT_WORKOUT_STRENGTH === $training->getSport())) / $totalDuration;
+        $workoutTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => \in_array($training->getSport(), [Training::SPORT_WORKOUT_ENDURANCE, Training::SPORT_WORKOUT_STRENGTH], true))) / $totalDuration;
         $otherSportTraingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [Training::SPORT_ROWING, Training::SPORT_ERGOMETER, Training::SPORT_WORKOUT_ENDURANCE, Training::SPORT_WORKOUT_STRENGTH], true))) / $totalDuration;
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
