@@ -42,6 +42,7 @@ return (new PhpCsFixer\Config())
             'method' => 'one',
             'property' => 'one',
             'trait_import' => 'none',
+            'case' => 'none',
         ]],
         'no_php4_constructor' => true,
         'ordered_class_elements' => ['order' => [
@@ -49,6 +50,7 @@ return (new PhpCsFixer\Config())
             'constant_public',
             'constant_protected',
             'constant_private',
+            'case',
             'property_public_static',
             'property_protected_static',
             'property_private_static',
@@ -69,13 +71,14 @@ return (new PhpCsFixer\Config())
         ]],
         // Comment
         'comment_to_phpdoc' => true,
-        'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
         'multiline_comment_opening_closing' => true,
         // Control Structure
         'no_superfluous_elseif' => true,
         'no_useless_else' => true,
         // Function Notation
         'no_unreachable_default_argument_value' => true,
+        // Import
+        'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
         // PHPDoc
         'align_multiline_comment' => ['comment_type' => 'all_multiline'],
         'phpdoc_order' => true,
@@ -97,8 +100,8 @@ return (new PhpCsFixer\Config())
         'simple_to_complex_string_variable' => true,
         // Whitespace
         'array_indentation' => true,
-        'blank_line_before_statement' => ['statements' => ['break', 'case', 'continue', 'declare', 'default', 'exit', 'goto', 'include', 'include_once', 'require', 'require_once', 'return', 'switch', 'throw', 'try']],
         'method_chaining_indentation' => true,
+        'no_extra_blank_lines' => ['tokens' => ['continue', 'curly_brace_block', 'default', 'extra', 'parenthesis_brace_block', 'square_brace_block', 'switch', 'throw', 'use']],
     ])
     ->setFinder($finder)
 ;

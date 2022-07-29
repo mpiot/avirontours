@@ -30,9 +30,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
-use function Symfony\Component\String\u;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
+use function Symfony\Component\String\u;
 
 #[UniqueEntity(fields: ['firstName', 'lastName'], message: 'Un compte existe déjà avec ce nom et prénom.', repositoryMethod: 'findForUniqueness')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]

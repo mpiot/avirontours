@@ -56,7 +56,7 @@ class LogbookEntryType extends AbstractType
                         ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
                         ->leftJoin('shell_damages.category', 'category')->addSelect('category')
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
-                        ;
+                    ;
                 },
                 'choice_label' => 'fullName',
                 'choice_attr' => function (Shell $shell) {
