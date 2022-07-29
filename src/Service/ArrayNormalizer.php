@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Symfony\Component\String\Inflector\EnglishInflector;
+
 use function Symfony\Component\String\u;
 
 class ArrayNormalizer

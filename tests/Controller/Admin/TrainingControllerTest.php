@@ -25,6 +25,7 @@ use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+
 use function Zenstruck\Foundry\faker;
 
 class TrainingControllerTest extends AppWebTestCase

@@ -38,8 +38,8 @@ final class LogbookChart
         $logbookCount = $this->logbookEntryRepository->findStatsByMonth($user);
         $logbookCount = $this->normalizer->fillMissingMonths(
             $logbookCount,
-            (new \DateTime('-11 months')),
-            (new \DateTime()),
+            new \DateTime('-11 months'),
+            new \DateTime(),
             ['distance' => 0, 'session' => 0]
         );
         $logbookCount = $this->normalizer->normalize($logbookCount);

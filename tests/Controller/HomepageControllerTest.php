@@ -26,6 +26,7 @@ use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
+
 use function Zenstruck\Foundry\faker;
 
 class HomepageControllerTest extends AppWebTestCase
