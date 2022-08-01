@@ -121,9 +121,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $clubEmailAllowed;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $partnersEmailAllowed;
-
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
@@ -160,7 +157,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->logbookEntries = new ArrayCollection();
         $this->licenses = new ArrayCollection();
         $this->clubEmailAllowed = true;
-        $this->partnersEmailAllowed = false;
         $this->trainings = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
@@ -525,18 +521,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setClubEmailAllowed(bool $clubEmailAllowed): self
     {
         $this->clubEmailAllowed = $clubEmailAllowed;
-
-        return $this;
-    }
-
-    public function getPartnersEmailAllowed(): ?bool
-    {
-        return $this->partnersEmailAllowed;
-    }
-
-    public function setPartnersEmailAllowed(bool $partnersEmailAllowed): self
-    {
-        $this->partnersEmailAllowed = $partnersEmailAllowed;
 
         return $this;
     }

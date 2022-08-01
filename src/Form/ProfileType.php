@@ -56,12 +56,6 @@ class ProfileType extends AbstractType
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
-            ->add('partnersEmailAllowed', CheckboxType::class, [
-                'label' => 'Recevoir les emails à propos lié aux partenariats du club',
-                'help' => 'Recevoir de la part du club des emails de partenaires.',
-                'label_attr' => ['class' => 'checkbox-custom'],
-                'required' => false,
-            ])
         ;
     }
 

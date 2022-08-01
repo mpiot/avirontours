@@ -47,7 +47,6 @@ class SeasonCsvGenerator
                 'fullName' => $license->getUser()->getFullName(),
                 'email' => $license->getUser()->getEmail(),
                 'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
-                'partnerEmailAllowed' => $license->getUser()->getPartnersEmailAllowed() ? 'Oui' : 'Non',
             ];
         }
 

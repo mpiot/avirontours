@@ -75,7 +75,6 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][postalCode]' => '01000',
             'profile[address][city]' => 'One City',
             'profile[clubEmailAllowed]' => 1,
-            'profile[partnersEmailAllowed]' => 1,
         ]);
 
         $this->assertResponseRedirects();
@@ -90,7 +89,6 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertTrue($user->getClubEmailAllowed());
-        $this->assertTrue($user->getPartnersEmailAllowed());
     }
 
     public function testEditProfileWithoutData(): void
