@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220801172205 extends AbstractMigration
+final class Version20220801173700 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,14 +20,14 @@ final class Version20220801172205 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE app_user DROP partners_email_allowed');
-        $this->addSql('ALTER TABLE messenger_messages ALTER queue_name TYPE VARCHAR(190)');
+        $this->addSql('ALTER TABLE license ADD optional_insurance BOOLEAN DEFAULT NULL');
+        $this->addSql('UPDATE license SET optional_insurance = false');
+        $this->addSql('ALTER TABLE license ALTER optional_insurance SET NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE app_user ADD partners_email_allowed BOOLEAN NOT NULL');
-        $this->addSql('ALTER TABLE messenger_messages ALTER queue_name TYPE VARCHAR(255)');
+        $this->addSql('ALTER TABLE license DROP optional_insurance');
     }
 }

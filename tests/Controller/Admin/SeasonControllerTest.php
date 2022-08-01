@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\SeasonCategory;
+use App\Factory\LicenseFactory;
 use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,6 +67,8 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}'];
+        yield ['GET', '/admin/season/{id}/export/contact'];
+        yield ['GET', '/admin/season/{id}/export/license'];
     }
 
     public function testIndexSeasons(): void
@@ -180,5 +183,38 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season');
         SeasonFactory::repository()->assert()->notExists($season);
+    }
+
+    public function testExportSeasonContacts(): void
+    {
+        $season = SeasonFactory::createOne();
+        $license = LicenseFactory::createOne([
+            'seasonCategory' => $season->getSeasonCategories()->first(),
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
+    }
+
+    public function testExportSeasonLicenses(): void
+    {
+        $season = SeasonFactory::createOne();
+        $license = LicenseFactory::createOne([
+            'seasonCategory' => $season->getSeasonCategories()->first(),
+            'marking' => ['medical_certificate_validated' => 1, 'payment_validated' => 1],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/export/license');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
     }
 }

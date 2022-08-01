@@ -159,6 +159,7 @@
                                 <th>Level</th>
                                 <th>Status de la licence</th>
                                 <th>Certificat</th>
+                                <th>Option I.A.</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -184,6 +185,7 @@
                                             <span class="far fa-file-pdf"></span> Certificat
                                         </a>
                                     </td>
+                                    <td>{{ license.optionalInsurance ? 'Oui' : 'Non' }}</td>
                                     <td>
                                         <div class="d-flex justify-content-end align-items-center">
                                             <form action="{{ path('license_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">

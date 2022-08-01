@@ -50,20 +50,23 @@ class License
     #[ORM\JoinColumn(name: 'app_user', nullable: false)]
     private ?User $user;
 
-    #[Assert\NotNull]
-    #[Assert\Valid]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?MedicalCertificate $medicalCertificate = null;
-
     #[ORM\Column(type: Types::JSON)]
     private array $marking = [];
 
     #[ORM\Column(type: Types::JSON)]
     private array $transitionContexts = [];
 
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?MedicalCertificate $medicalCertificate = null;
+
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $federationEmailAllowed;
+    private bool $optionalInsurance = false;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $federationEmailAllowed = false;
 
     #[Assert\Positive]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -73,8 +76,6 @@ class License
     {
         $this->seasonCategory = $seasonCategory;
         $this->user = $user;
-        $this->transitionContexts = [];
-        $this->federationEmailAllowed = false;
     }
 
     public function getId(): ?int
@@ -102,18 +103,6 @@ class License
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getMedicalCertificate(): ?MedicalCertificate
-    {
-        return $this->medicalCertificate;
-    }
-
-    public function setMedicalCertificate(MedicalCertificate $medicalCertificate): self
-    {
-        $this->medicalCertificate = $medicalCertificate;
 
         return $this;
     }
@@ -154,7 +143,31 @@ class License
         $this->transitionContexts = $transitionContexts;
     }
 
-    public function getFederationEmailAllowed(): ?bool
+    public function getMedicalCertificate(): ?MedicalCertificate
+    {
+        return $this->medicalCertificate;
+    }
+
+    public function setMedicalCertificate(MedicalCertificate $medicalCertificate): self
+    {
+        $this->medicalCertificate = $medicalCertificate;
+
+        return $this;
+    }
+
+    public function getOptionalInsurance(): bool
+    {
+        return $this->optionalInsurance;
+    }
+
+    public function setOptionalInsurance(bool $optionalInsurance): self
+    {
+        $this->optionalInsurance = $optionalInsurance;
+
+        return $this;
+    }
+
+    public function getFederationEmailAllowed(): bool
     {
         return $this->federationEmailAllowed;
     }

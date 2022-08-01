@@ -70,7 +70,8 @@
                 </div>
             </div>
             <div class="card-body">
-                {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}
+                {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
+                Option I.A. Sport: {{ license.optionalInsurance ? 'Oui' : 'Non' }}
             </div>
         </div>
     {% endfor %}
