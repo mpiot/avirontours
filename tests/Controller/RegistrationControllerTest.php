@@ -39,7 +39,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
@@ -55,9 +55,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
-            'registration_form[agreeSwim]' => 1,
-            'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[optionalInsurance]' => 1,
+            'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -85,6 +86,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
         $this->assertTrue($user->getLicenses()->first()->getFederationEmailAllowed());
+        $this->assertTrue($user->getLicenses()->first()->getOptionalInsurance());
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
     }
@@ -99,7 +101,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('S\'inscrire', [
             'registration_form[firstName]' => '',
             'registration_form[lastName]' => '',
             'registration_form[email]' => '',
@@ -146,7 +148,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
@@ -162,9 +164,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
-            'registration_form[agreeSwim]' => 1,
-            'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[optionalInsurance]' => 1,
+            'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $crawler = $client->submit($form);
@@ -186,7 +189,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
@@ -202,9 +205,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
-            'registration_form[agreeSwim]' => 1,
-            'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[optionalInsurance]' => 1,
+            'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -225,7 +229,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
             'registration_form[firstName]' => $license->getUser()->getFirstName(),
             'registration_form[lastName]' => $license->getUser()->getLastName(),
@@ -241,6 +245,9 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][city]' => 'One City',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration_form[clubEmailAllowed]' => 1,
+            'registration_form[federationEmailAllowed]' => 1,
+            'registration_form[optionalInsurance]' => 1,
             'registration_form[agreeSwim]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
@@ -302,8 +309,9 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
             'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'renew[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
-            'renew[agreeSwim]' => 1,
             'renew[federationEmailAllowed]' => 1,
+            'renew[optionalInsurance]' => 1,
+            'renew[agreeSwim]' => 1,
         ]);
 
         $form['renew[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
@@ -316,6 +324,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
+        $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());
     }
 
     public function testNonDisplayedCategoryRenew(): void

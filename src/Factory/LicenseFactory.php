@@ -99,7 +99,6 @@ final class LicenseFactory extends ModelFactory
         return [
             'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
             'user' => UserFactory::new(),
-            'medicalCertificate' => MedicalCertificateFactory::new(),
             'marking' => self::faker()->randomElement([
                 [],
                 ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
@@ -110,6 +109,8 @@ final class LicenseFactory extends ModelFactory
                 ['medical_certificate_validated' => 1, 'payment_validated' => 1],
                 ['validated' => 1],
             ]),
+            'medicalCertificate' => MedicalCertificateFactory::new(),
+            'optionalInsurance' => self::faker()->boolean(),
         ];
     }
 

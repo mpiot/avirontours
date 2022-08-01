@@ -105,6 +105,11 @@ class RegistrationFormType extends AbstractType
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
+            ->add('optionalInsurance', CheckboxType::class, [
+                'label' => 'Souscrire l\'Option I.A. Sport (+11,34 €)',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
             ->add('agreeSwim', CheckboxType::class, [
                 'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
                 'label_attr' => ['class' => 'checkbox-custom'],

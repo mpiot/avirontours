@@ -72,14 +72,17 @@ class RegistrationModel
     #[Assert\Valid]
     public ?MedicalCertificate $medicalCertificate = null;
 
-    public ?bool $federationEmailAllowed = false;
+    public bool $optionalInsurance = false;
 
-    public ?bool $clubEmailAllowed = true;
+    public bool $federationEmailAllowed = false;
+
+    public bool $clubEmailAllowed = true;
 
     public function generateUser(SeasonCategory $seasonCategory, UserPasswordHasherInterface $passwordHasher)
     {
         $license = (new License($seasonCategory))
             ->setMedicalCertificate($this->medicalCertificate)
+            ->setOptionalInsurance($this->optionalInsurance)
             ->setFederationEmailAllowed($this->federationEmailAllowed)
         ;
 
