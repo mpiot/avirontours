@@ -58,7 +58,6 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[agreeSwim]' => 1,
             'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
-            'registration_form[partnersEmailAllowed]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
@@ -81,7 +80,6 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertTrue($user->getClubEmailAllowed());
-        $this->assertTrue($user->getPartnersEmailAllowed());
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
@@ -167,7 +165,6 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[agreeSwim]' => 1,
             'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
-            'registration_form[partnersEmailAllowed]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $crawler = $client->submit($form);
@@ -208,7 +205,6 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[agreeSwim]' => 1,
             'registration_form[federationEmailAllowed]' => 1,
             'registration_form[clubEmailAllowed]' => 1,
-            'registration_form[partnersEmailAllowed]' => 1,
         ]);
         $form['registration_form[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);

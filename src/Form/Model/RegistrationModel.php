@@ -76,8 +76,6 @@ class RegistrationModel
 
     public ?bool $clubEmailAllowed = true;
 
-    public ?bool $partnersEmailAllowed = false;
-
     public function generateUser(SeasonCategory $seasonCategory, UserPasswordHasherInterface $passwordHasher)
     {
         $license = (new License($seasonCategory))
@@ -101,7 +99,6 @@ class RegistrationModel
             ->setCity($this->city)
             ->addLicense($license)
             ->setClubEmailAllowed($this->clubEmailAllowed)
-            ->setPartnersEmailAllowed($this->partnersEmailAllowed)
         ;
 
         return $user;
