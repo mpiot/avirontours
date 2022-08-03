@@ -92,6 +92,14 @@ class RegistrationFormType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['autocomplete' => 'bday'],
             ])
+            ->add('firstLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
+            ->add('secondLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
             ->add('medicalCertificate', RegistrationMedicalCertificateType::class, [
                 'label' => false,
             ])

@@ -51,6 +51,14 @@ class ProfileType extends AbstractType
             ->add('address', AddressType::class, [
                 'label' => false,
             ])
+            ->add('firstLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
+            ->add('secondLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
             ->add('clubEmailAllowed', CheckboxType::class, [
                 'label' => 'Recevoir les emails du club',
                 'label_attr' => ['class' => 'checkbox-custom'],

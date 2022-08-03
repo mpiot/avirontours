@@ -82,6 +82,68 @@
                 </div>
             </div>
 
+            <div class="row mt-3">
+                <div class="col-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            Responsable légal 1
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Rôle
+                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.role.label : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Prénom
+                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.firstName : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Nom
+                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.lastName : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Email
+                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.email : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Numéro de téléphone
+                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.phoneNumber : '-' }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-xl mt-3 mt-xl-0">
+                    <div class="card">
+                        <div class="card-header">
+                            Responsable légal 2
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between">
+                                Rôle
+                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.role.label : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Prénom
+                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.firstName : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Nom
+                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.lastName : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Email
+                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.email : '-' }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                Numéro de téléphone
+                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.phoneNumber : '-' }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <div class="card mt-3">
                 <div class="card-header">
                     Licences

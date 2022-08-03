@@ -108,12 +108,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $city = null;
 
-    #[ORM\ManyToMany(targetEntity: 'App\Entity\LogbookEntry', mappedBy: 'crewMembers')]
-    private Collection $logbookEntries;
+    #[Assert\Valid]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?LegalGuardian $firstLegalGuardian = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['persist', 'remove'])]
-    #[ORM\OrderBy(value: ['id' => 'ASC'])]
-    private Collection $licenses;
+    #[Assert\Valid]
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?LegalGuardian $secondLegalGuardian = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $authCode = null;
@@ -123,6 +124,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(value: ['id' => 'ASC'])]
+    private Collection $licenses;
+
+    #[ORM\ManyToMany(targetEntity: 'App\Entity\LogbookEntry', mappedBy: 'crewMembers')]
+    private Collection $logbookEntries;
 
     #[ORM\OneToOne(targetEntity: Physiology::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Physiology $physiology = null;
@@ -437,54 +445,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $address;
     }
 
-    /**
-     * @return Collection|LogbookEntry[]
-     */
-    public function getLogbookEntries(): Collection
+    public function getFirstLegalGuardian(): ?LegalGuardian
     {
-        return $this->logbookEntries;
+        return $this->firstLegalGuardian;
     }
 
-    /**
-     * @return Collection|License[]
-     */
-    public function getLicenses(): Collection
+    public function setFirstLegalGuardian(?LegalGuardian $firstLegalGuardian): self
     {
-        return $this->licenses;
-    }
-
-    public function addLicense(License $license): self
-    {
-        if (!$this->licenses->contains($license)) {
-            $this->licenses[] = $license;
-            $license->setUser($this);
-        }
+        $this->firstLegalGuardian = $firstLegalGuardian;
 
         return $this;
     }
 
-    public function removeLicense(License $license): self
+    public function getSecondLegalGuardian(): ?LegalGuardian
     {
-        if ($this->licenses->contains($license)) {
-            $this->licenses->removeElement($license);
-            // set the owning side to null (unless already changed)
-            if ($license->getUser() === $this) {
-                $license->setUser(null);
-            }
-        }
-
-        return $this;
+        return $this->secondLegalGuardian;
     }
 
-    public function hasValidLicense(): bool
+    public function setSecondLegalGuardian(?LegalGuardian $secondLegalGuardian): self
     {
-        foreach ($this->licenses as $license) {
-            if ($license->isValid() && $license->getSeasonCategory()->getSeason()->getActive()) {
-                return true;
-            }
-        }
+        $this->secondLegalGuardian = $secondLegalGuardian;
 
-        return false;
+        return $this;
     }
 
     public function isEmailAuthEnabled(): bool
@@ -535,6 +517,56 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->licenseNumber = $licenseNumber;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|LogbookEntry[]
+     */
+    public function getLogbookEntries(): Collection
+    {
+        return $this->logbookEntries;
+    }
+
+    /**
+     * @return Collection|License[]
+     */
+    public function getLicenses(): Collection
+    {
+        return $this->licenses;
+    }
+
+    public function addLicense(License $license): self
+    {
+        if (!$this->licenses->contains($license)) {
+            $this->licenses[] = $license;
+            $license->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLicense(License $license): self
+    {
+        if ($this->licenses->contains($license)) {
+            $this->licenses->removeElement($license);
+            // set the owning side to null (unless already changed)
+            if ($license->getUser() === $this) {
+                $license->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasValidLicense(): bool
+    {
+        foreach ($this->licenses as $license) {
+            if ($license->isValid() && $license->getSeasonCategory()->getSeason()->getActive()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getPhysiology(): ?Physiology
@@ -648,31 +680,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    #[Assert\Callback]
-    public function validatePhoneNumber(ExecutionContextInterface $context)
-    {
-        if (null === $this->birthday) {
-            return;
-        }
-
-        if ($this->getAge() < 18 && empty($this->phoneNumber)) {
-            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
-                ->atPath('phoneNumber')
-                ->addViolation()
-            ;
-        }
-    }
-
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function defineUsername(): void
-    {
-        $slugger = new AsciiSlugger('fr');
-        $firstName = $slugger->slug($this->firstName)->lower();
-        $lastName = $slugger->slug($this->lastName)->lower();
-        $this->username = "{$firstName}.{$lastName}";
-    }
-
     public function getAutomaticTraining(): ?bool
     {
         return $this->automaticTraining;
@@ -707,6 +714,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->concept2LastImportAt = $concept2LastImportAt;
 
         return $this;
+    }
+
+    #[Assert\Callback]
+    public function validateFirstLegalGuardians(ExecutionContextInterface $context)
+    {
+        if (null === $this->birthday) {
+            return;
+        }
+
+        if ($this->getAge() < 18 && null === $this->firstLegalGuardian) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
+                ->addViolation()
+            ;
+        }
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function defineUsername(): void
+    {
+        $slugger = new AsciiSlugger('fr');
+        $firstName = $slugger->slug($this->firstName)->lower();
+        $lastName = $slugger->slug($this->lastName)->lower();
+        $this->username = "{$firstName}.{$lastName}";
     }
 
     public static function getAvailableCivilities(): array

@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Form\Model;
 
+use App\Entity\LegalGuardian;
 use App\Entity\License;
 use App\Entity\MedicalCertificate;
 use App\Entity\SeasonCategory;
@@ -70,6 +71,12 @@ class RegistrationModel
     public ?string $city = null;
 
     #[Assert\Valid]
+    public ?LegalGuardian $firstLegalGuardian = null;
+
+    #[Assert\Valid]
+    public ?LegalGuardian $secondLegalGuardian = null;
+
+    #[Assert\Valid]
     public ?MedicalCertificate $medicalCertificate = null;
 
     public bool $optionalInsurance = false;
@@ -100,6 +107,8 @@ class RegistrationModel
             ->setLaneName($this->laneName)
             ->setPostalCode($this->postalCode)
             ->setCity($this->city)
+            ->setFirstLegalGuardian($this->firstLegalGuardian)
+            ->setSecondLegalGuardian($this->secondLegalGuardian)
             ->addLicense($license)
             ->setClubEmailAllowed($this->clubEmailAllowed)
         ;
@@ -108,16 +117,15 @@ class RegistrationModel
     }
 
     #[Assert\Callback]
-    public function validatePhoneNumber(ExecutionContextInterface $context)
+    public function validateFirstLegalGuardians(ExecutionContextInterface $context)
     {
         if (null === $this->birthday) {
             return;
         }
 
         $age = $this->birthday->diff(new \DateTime())->y;
-        if ($age < 18 && empty($this->phoneNumber)) {
-            $context->buildViolation('Le membre est mineur, merci de renseigner un numéro de téléphone.')
-                ->atPath('phoneNumber')
+        if ($age < 18 && null === $this->firstLegalGuardian) {
+            $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
                 ->addViolation()
             ;
         }
