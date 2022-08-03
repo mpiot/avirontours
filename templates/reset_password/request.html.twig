@@ -5,17 +5,17 @@
 {% block body %}
     <div class="fs-4 mb-3">Réinitialiser mon mot de passe</div>
 
-    {% for flashError in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
 
-    {{ form_start(form) }}
-        {{ form_row(form.username, {
+    {{ form_start(requestForm) }}
+        {{ form_row(requestForm.username, {
             'help': 'Nom utilisateur: prenom.nom'
         }) }}
 
         <div class="d-grid gap-2">
             <button class="btn btn-lg btn-primary">Envoyer un email de récupération</button>
         </div>
-    {{ form_end(form) }}
+    {{ form_end(requestForm) }}
 {% endblock %}

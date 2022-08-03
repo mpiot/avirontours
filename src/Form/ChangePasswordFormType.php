@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -39,9 +37,12 @@ class ChangePasswordFormType extends AbstractType
                 'first_options' => [
                     'attr' => ['autocomplete' => 'new-password'],
                     'constraints' => [
-                        new NotBlank(),
+                        new NotBlank([
+                            'message' => 'Merci de renseigner un mot de passe',
+                        ]),
                         new Length([
                             'min' => 6,
+                            'minMessage' => 'Votre mot de passe doit contenir au minimum {{ limit }} caratères',
                             // max length allowed by Symfony for security reasons
                             'max' => 4096,
                         ]),

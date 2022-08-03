@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -23,14 +21,17 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
@@ -42,15 +43,17 @@ class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;
 
-    public function __construct(private ResetPasswordHelperInterface $resetPasswordHelper)
-    {
+    public function __construct(
+        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        private readonly EntityManagerInterface $entityManager
+    ) {
     }
 
     /**
      * Display & process form to request a password reset.
      */
     #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, ManagerRegistry $managerRegistry, MailerInterface $mailer): Response
+    public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -60,13 +63,13 @@ class ResetPasswordController extends AbstractController
 
             return $this->processSendingPasswordResetEmail(
                 $username,
-                $managerRegistry,
-                $mailer
+                $mailer,
+                $translator
             );
         }
 
         return $this->renderForm('reset_password/request.html.twig', [
-            'form' => $form,
+            'requestForm' => $form,
         ]);
     }
 
@@ -91,7 +94,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, ManagerRegistry $managerRegistry, UserPasswordHasherInterface $passwordHasher, string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -110,8 +113,9 @@ class ResetPasswordController extends AbstractController
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('reset_password_error', sprintf(
-                'There was a problem validating your reset request - %s',
-                $e->getReason()
+                '%s - %s',
+                $translator->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_VALIDATE, [], 'ResetPasswordBundle'),
+                $translator->trans($e->getReason(), [], 'ResetPasswordBundle')
             ));
 
             return $this->redirectToRoute('app_forgot_password_request');
@@ -125,29 +129,29 @@ class ResetPasswordController extends AbstractController
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            // Encode the plain password, and set it.
-            $hashedPassword = $passwordHasher->hashPassword(
+            // Encode(hash) the plain password, and set it.
+            $encodedPassword = $passwordHasher->hashPassword(
                 $user,
                 $form->get('plainPassword')->getData()
             );
 
-            $user->setPassword($hashedPassword);
-            $managerRegistry->getManager()->flush();
+            $user->setPassword($encodedPassword);
+            $this->entityManager->flush();
 
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->renderForm('reset_password/reset.html.twig', [
-            'form' => $form,
+            'resetForm' => $form,
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $usernameFormData, ManagerRegistry $managerRegistry, MailerInterface $mailer): RedirectResponse
+    private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse
     {
-        $user = $managerRegistry->getRepository(User::class)->findOneBy([
+        $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'username' => $usernameFormData,
         ]);
 
@@ -164,8 +168,9 @@ class ResetPasswordController extends AbstractController
             // Caution: This may reveal if a user is registered or not.
             //
             // $this->addFlash('reset_password_error', sprintf(
-            //     'There was a problem handling your password reset request - %s',
-            //     $e->getReason()
+            //     '%s - %s',
+            //     $translator->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_HANDLE, [], 'ResetPasswordBundle'),
+            //     $translator->trans($e->getReason(), [], 'ResetPasswordBundle')
             // ));
 
             return $this->redirectToRoute('app_check_email');

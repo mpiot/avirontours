@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -21,7 +19,6 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\ResetPasswordRequestRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
@@ -31,10 +28,10 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
 {
     use ResetPasswordRequestTrait;
 
-    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
+    #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -49,7 +46,7 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): object
     {
         if (null === $this->user) {
             throw new \Exception('The user attribute should not be null');
