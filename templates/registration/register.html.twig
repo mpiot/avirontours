@@ -35,8 +35,10 @@
                     <hr>
 
                     {{ form_start(form) }}
+                        {{ form_errors(form) }}
+
                         <div class="row">
-                            <div class="col-xl">
+                            <div class="col-lg-6 mb-3">
                                 <div class="card">
                                     <div class="card-header">
                                         Membre
@@ -59,31 +61,13 @@
                                 </div>
                             </div>
 
-                            <div class="col-xl mt-3 mt-xl-0">
+                            <div class="col-lg-6 mb-3">
                                 <div class="card">
                                     <div class="card-header">
                                         Adresse
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                {{ form_row(form.address.laneNumber) }}
-                                            </div>
-                                            <div class="col">
-                                                {{ form_row(form.address.laneType) }}
-                                            </div>
-                                            <div class="col">
-                                                {{ form_row(form.address.laneName) }}
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">
-                                                {{ form_row(form.address.postalCode) }}
-                                            </div>
-                                            <div class="col">
-                                                {{ form_row(form.address.city) }}
-                                            </div>
-                                        </div>
+                                        {{ include('admin/user/_address_form.html.twig') }}
                                     </div>
                                 </div>
 
@@ -117,6 +101,30 @@
                                         </div>
 
                                         {{ form_row(form.medicalCertificate) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Responsable légal 1
+                                    </div>
+                                    <div class="card-body">
+                                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.firstLegalGuardian } %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Responsable légal 2
+                                    </div>
+                                    <div class="card-body">
+                                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.secondLegalGuardian } %}
                                     </div>
                                 </div>
                             </div>

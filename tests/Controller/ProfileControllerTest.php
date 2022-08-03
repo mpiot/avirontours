@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Enum\LegalGuardianRole;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,7 +67,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'profile[email]' => 'john.doe@avirontours.fr',
-            'profile[phoneNumber]' => '0123456789',
+            'profile[phoneNumber]' => '0123456777',
             'profile[firstName]' => 'John',
             'profile[lastName]' => 'Doe',
             'profile[address][laneNumber]' => '2',
@@ -74,12 +75,22 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][laneName]' => 'du test',
             'profile[address][postalCode]' => '01000',
             'profile[address][city]' => 'One City',
+            'profile[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'profile[firstLegalGuardian][firstName]' => 'Gandalf',
+            'profile[firstLegalGuardian][lastName]' => 'Le Blanc',
+            'profile[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'profile[firstLegalGuardian][phoneNumber]' => '0123456788',
+            'profile[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'profile[secondLegalGuardian][firstName]' => 'Galadriel',
+            'profile[secondLegalGuardian][lastName]' => 'Artanis',
+            'profile[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'profile[secondLegalGuardian][phoneNumber]' => '0123456799',
             'profile[clubEmailAllowed]' => 1,
         ]);
 
         $this->assertResponseRedirects();
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
-        $this->assertSame('0123456789', $user->getPhoneNumber());
+        $this->assertSame('0123456777', $user->getPhoneNumber());
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
@@ -88,6 +99,16 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
+        $this->assertSame(LegalGuardianRole::Father, $user->getFirstLegalGuardian()->getRole());
+        $this->assertSame('Gandalf', $user->getFirstLegalGuardian()->getFirstName());
+        $this->assertSame('Le Blanc', $user->getFirstLegalGuardian()->getLastName());
+        $this->assertSame('g.le-blanc@avirontours.fr', $user->getFirstLegalGuardian()->getEmail());
+        $this->assertSame('0123456788', $user->getFirstLegalGuardian()->getPhoneNumber());
+        $this->assertSame(LegalGuardianRole::Mother, $user->getSecondLegalGuardian()->getRole());
+        $this->assertSame('Galadriel', $user->getSecondLegalGuardian()->getFirstName());
+        $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
+        $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
+        $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
         $this->assertTrue($user->getClubEmailAllowed());
     }
 
@@ -110,6 +131,16 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[address][laneName]' => '',
             'profile[address][postalCode]' => '',
             'profile[address][city]' => '',
+            'profile[firstLegalGuardian][role]' => '',
+            'profile[firstLegalGuardian][firstName]' => '',
+            'profile[firstLegalGuardian][lastName]' => '',
+            'profile[firstLegalGuardian][email]' => '',
+            'profile[firstLegalGuardian][phoneNumber]' => '',
+            'profile[secondLegalGuardian][role]' => '',
+            'profile[secondLegalGuardian][firstName]' => '',
+            'profile[secondLegalGuardian][lastName]' => '',
+            'profile[secondLegalGuardian][email]' => '',
+            'profile[secondLegalGuardian][phoneNumber]' => '',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -124,7 +155,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertCount(8, $crawler->filter('.invalid-feedback'));
     }
 
-    public function testEditProfileWithoutPhoneNumberForUnderEighteen(): void
+    public function testEditProfileWithoutLegalGuardianForUnderEighteen(): void
     {
         $user = UserFactory::new()->minor()->create();
 
@@ -137,11 +168,20 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('Modifier', [
-            'profile[phoneNumber]' => '',
+            'profile[firstLegalGuardian][role]' => '',
+            'profile[firstLegalGuardian][firstName]' => '',
+            'profile[firstLegalGuardian][lastName]' => '',
+            'profile[firstLegalGuardian][email]' => '',
+            'profile[firstLegalGuardian][phoneNumber]' => '',
+            'profile[secondLegalGuardian][role]' => '',
+            'profile[secondLegalGuardian][firstName]' => '',
+            'profile[secondLegalGuardian][lastName]' => '',
+            'profile[secondLegalGuardian][email]' => '',
+            'profile[secondLegalGuardian][phoneNumber]' => '',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un numéro de téléphone.', $crawler->filter('#profile_phoneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('form > div.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
     }
 

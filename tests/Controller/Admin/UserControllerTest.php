@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Enum\LegalGuardianRole;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -112,6 +113,16 @@ class UserControllerTest extends AppWebTestCase
             'user[address][postalCode]' => '01000',
             'user[address][city]' => 'One City',
             'user[licenseNumber]' => '0123456789',
+            'user[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'user[firstLegalGuardian][firstName]' => 'Gandalf',
+            'user[firstLegalGuardian][lastName]' => 'Le Blanc',
+            'user[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'user[firstLegalGuardian][phoneNumber]' => '0123456788',
+            'user[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'user[secondLegalGuardian][firstName]' => 'Galadriel',
+            'user[secondLegalGuardian][lastName]' => 'Artanis',
+            'user[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'user[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
 
         $this->assertResponseRedirects();
@@ -132,6 +143,16 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
         $this->assertSame('0123456789', $user->getLicenseNumber());
+        $this->assertSame(LegalGuardianRole::Father, $user->getFirstLegalGuardian()->getRole());
+        $this->assertSame('Gandalf', $user->getFirstLegalGuardian()->getFirstName());
+        $this->assertSame('Le Blanc', $user->getFirstLegalGuardian()->getLastName());
+        $this->assertSame('g.le-blanc@avirontours.fr', $user->getFirstLegalGuardian()->getEmail());
+        $this->assertSame('0123456788', $user->getFirstLegalGuardian()->getPhoneNumber());
+        $this->assertSame(LegalGuardianRole::Mother, $user->getSecondLegalGuardian()->getRole());
+        $this->assertSame('Galadriel', $user->getSecondLegalGuardian()->getFirstName());
+        $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
+        $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
+        $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
     }
 
     public function testNewUserWithoutData(): void
@@ -155,6 +176,16 @@ class UserControllerTest extends AppWebTestCase
             'user[address][laneName]' => '',
             'user[address][postalCode]' => '',
             'user[address][city]' => '',
+            'user[firstLegalGuardian][role]' => '',
+            'user[firstLegalGuardian][firstName]' => '',
+            'user[firstLegalGuardian][lastName]' => '',
+            'user[firstLegalGuardian][email]' => '',
+            'user[firstLegalGuardian][phoneNumber]' => '',
+            'user[secondLegalGuardian][role]' => '',
+            'user[secondLegalGuardian][firstName]' => '',
+            'user[secondLegalGuardian][lastName]' => '',
+            'user[secondLegalGuardian][email]' => '',
+            'user[secondLegalGuardian][phoneNumber]' => '',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -196,6 +227,16 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[address][postalCode]' => '01000',
             'user_edit[address][city]' => 'One City',
             'user_edit[licenseNumber]' => '0123456789',
+            'user_edit[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'user_edit[firstLegalGuardian][firstName]' => 'Gandalf',
+            'user_edit[firstLegalGuardian][lastName]' => 'Le Blanc',
+            'user_edit[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'user_edit[firstLegalGuardian][phoneNumber]' => '0123456788',
+            'user_edit[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'user_edit[secondLegalGuardian][firstName]' => 'Galadriel',
+            'user_edit[secondLegalGuardian][lastName]' => 'Artanis',
+            'user_edit[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'user_edit[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
 
         $this->assertResponseRedirects();
@@ -214,6 +255,16 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('One City', $user->getCity());
         $this->assertCount(0, $user->getLicenses());
         $this->assertSame('0123456789', $user->getLicenseNumber());
+        $this->assertSame(LegalGuardianRole::Father, $user->getFirstLegalGuardian()->getRole());
+        $this->assertSame('Gandalf', $user->getFirstLegalGuardian()->getFirstName());
+        $this->assertSame('Le Blanc', $user->getFirstLegalGuardian()->getLastName());
+        $this->assertSame('g.le-blanc@avirontours.fr', $user->getFirstLegalGuardian()->getEmail());
+        $this->assertSame('0123456788', $user->getFirstLegalGuardian()->getPhoneNumber());
+        $this->assertSame(LegalGuardianRole::Mother, $user->getSecondLegalGuardian()->getRole());
+        $this->assertSame('Galadriel', $user->getSecondLegalGuardian()->getFirstName());
+        $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
+        $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
+        $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
     }
 
     public function testDeleteUser(): void

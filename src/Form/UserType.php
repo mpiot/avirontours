@@ -74,6 +74,14 @@ class UserType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['autocomplete' => 'bday'],
             ])
+            ->add('firstLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
+            ->add('secondLegalGuardian', LegalGuardianType::class, [
+                'label' => false,
+                'required' => false,
+            ])
             ->add('licenseNumber', TextType::class, [
                 'label' => 'Numéro de licence',
                 'required' => false,

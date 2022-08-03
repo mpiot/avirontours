@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\LegalGuardianRole;
 use App\Factory\LicenseFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
@@ -53,6 +54,16 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][laneName]' => 'du test',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
+            'registration_form[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'registration_form[firstLegalGuardian][firstName]' => 'Gandalf',
+            'registration_form[firstLegalGuardian][lastName]' => 'Le Blanc',
+            'registration_form[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'registration_form[firstLegalGuardian][phoneNumber]' => '0123456788',
+            'registration_form[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'registration_form[secondLegalGuardian][firstName]' => 'Galadriel',
+            'registration_form[secondLegalGuardian][lastName]' => 'Artanis',
+            'registration_form[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'registration_form[secondLegalGuardian][phoneNumber]' => '0123456799',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'registration_form[clubEmailAllowed]' => 1,
@@ -80,6 +91,16 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('Du Test', $user->getLaneName());
         $this->assertSame('01000', $user->getPostalCode());
         $this->assertSame('One City', $user->getCity());
+        $this->assertSame(LegalGuardianRole::Father, $user->getFirstLegalGuardian()->getRole());
+        $this->assertSame('Gandalf', $user->getFirstLegalGuardian()->getFirstName());
+        $this->assertSame('Le Blanc', $user->getFirstLegalGuardian()->getLastName());
+        $this->assertSame('g.le-blanc@avirontours.fr', $user->getFirstLegalGuardian()->getEmail());
+        $this->assertSame('0123456788', $user->getFirstLegalGuardian()->getPhoneNumber());
+        $this->assertSame(LegalGuardianRole::Mother, $user->getSecondLegalGuardian()->getRole());
+        $this->assertSame('Galadriel', $user->getSecondLegalGuardian()->getFirstName());
+        $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
+        $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
+        $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
         $this->assertTrue($user->getClubEmailAllowed());
         $this->assertCount(1, $user->getLicenses());
         $this->assertNotNull($user->getLicenses()->first()->getSeasonCategory());
@@ -114,6 +135,16 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][laneName]' => '',
             'registration_form[address][postalCode]' => '',
             'registration_form[address][city]' => '',
+            'registration_form[firstLegalGuardian][role]' => '',
+            'registration_form[firstLegalGuardian][firstName]' => '',
+            'registration_form[firstLegalGuardian][lastName]' => '',
+            'registration_form[firstLegalGuardian][email]' => '',
+            'registration_form[firstLegalGuardian][phoneNumber]' => '',
+            'registration_form[secondLegalGuardian][role]' => '',
+            'registration_form[secondLegalGuardian][firstName]' => '',
+            'registration_form[secondLegalGuardian][lastName]' => '',
+            'registration_form[secondLegalGuardian][email]' => '',
+            'registration_form[secondLegalGuardian][phoneNumber]' => '',
             'registration_form[medicalCertificate][date]' => '',
         ]);
 
@@ -138,7 +169,7 @@ class RegistrationControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assert()->count(0);
     }
 
-    public function testRegistrationWithoutPhoneNumberForUnderEighteen(): void
+    public function testRegistrationWithoutLegalGuardianForUnderEighteen(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -153,7 +184,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
             'registration_form[email]' => 'john.doe@avirontours.fr',
-            'registration_form[phoneNumber]' => '',
+            'registration_form[phoneNumber]' => '0123456789',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
@@ -162,6 +193,16 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][laneName]' => 'du test',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
+            'registration_form[firstLegalGuardian][role]' => '',
+            'registration_form[firstLegalGuardian][firstName]' => '',
+            'registration_form[firstLegalGuardian][lastName]' => '',
+            'registration_form[firstLegalGuardian][email]' => '',
+            'registration_form[firstLegalGuardian][phoneNumber]' => '',
+            'registration_form[secondLegalGuardian][role]' => '',
+            'registration_form[secondLegalGuardian][firstName]' => '',
+            'registration_form[secondLegalGuardian][lastName]' => '',
+            'registration_form[secondLegalGuardian][email]' => '',
+            'registration_form[secondLegalGuardian][phoneNumber]' => '',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration_form[clubEmailAllowed]' => 1,
@@ -173,13 +214,13 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un numéro de téléphone.', $crawler->filter('#registration_form_phoneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('form > div.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
     }
 
-    public function testRegistrationWithoutPhoneNumberOverEighteen(): void
+    public function testRegistrationWithoutLegalGuardianOverEighteen(): void
     {
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
@@ -194,7 +235,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[firstName]' => 'John',
             'registration_form[lastName]' => 'Doe',
             'registration_form[email]' => 'john.doe@avirontours.fr',
-            'registration_form[phoneNumber]' => '',
+            'registration_form[phoneNumber]' => '0123456789',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
@@ -203,6 +244,16 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][laneName]' => 'du test',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
+            'registration_form[firstLegalGuardian][role]' => '',
+            'registration_form[firstLegalGuardian][firstName]' => '',
+            'registration_form[firstLegalGuardian][lastName]' => '',
+            'registration_form[firstLegalGuardian][email]' => '',
+            'registration_form[firstLegalGuardian][phoneNumber]' => '',
+            'registration_form[secondLegalGuardian][role]' => '',
+            'registration_form[secondLegalGuardian][firstName]' => '',
+            'registration_form[secondLegalGuardian][lastName]' => '',
+            'registration_form[secondLegalGuardian][email]' => '',
+            'registration_form[secondLegalGuardian][phoneNumber]' => '',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'registration_form[clubEmailAllowed]' => 1,
@@ -243,6 +294,16 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[address][laneName]' => 'du test',
             'registration_form[address][postalCode]' => '01000',
             'registration_form[address][city]' => 'One City',
+            'registration_form[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'registration_form[firstLegalGuardian][firstName]' => 'Gandalf',
+            'registration_form[firstLegalGuardian][lastName]' => 'Le Blanc',
+            'registration_form[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'registration_form[firstLegalGuardian][phoneNumber]' => '0123456788',
+            'registration_form[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'registration_form[secondLegalGuardian][firstName]' => 'Galadriel',
+            'registration_form[secondLegalGuardian][lastName]' => 'Artanis',
+            'registration_form[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'registration_form[secondLegalGuardian][phoneNumber]' => '0123456799',
             'registration_form[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'registration_form[medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration_form[clubEmailAllowed]' => 1,
