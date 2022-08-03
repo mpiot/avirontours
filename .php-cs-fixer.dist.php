@@ -71,6 +71,7 @@ return (new PhpCsFixer\Config())
         ]],
         // Comment
         'comment_to_phpdoc' => true,
+        'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],
         'multiline_comment_opening_closing' => true,
         // Control Structure
         'no_superfluous_elseif' => true,
