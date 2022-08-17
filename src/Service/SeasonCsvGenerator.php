@@ -107,7 +107,7 @@ class SeasonCsvGenerator
                 'DateSouscription' => (new \DateTime())->format('d/m/Y'),
                 'TypeLicence' => $license->getSeasonCategory()->getLicenseType(),
                 'code manifestation' => '',
-                'AssuranceIASportPlus' => $license->getFederationEmailAllowed() ? 'Oui' : 'Non',
+                'AssuranceIASportPlus' => $license->getOptionalInsurance() ? 'Oui' : 'Non',
                 'Date certificat "Pratique"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_PRACTICE),
                 'Medecin certificat "Pratique"' => '',
                 'N° Medecin du certificat "Pratique"' => '',
