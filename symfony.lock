@@ -5,9 +5,6 @@
     "amphp/byte-stream": {
         "version": "v1.8.1"
     },
-    "beberlei/doctrineextensions": {
-        "version": "v1.3.0"
-    },
     "behat/transliterator": {
         "version": "v1.3.0"
     },
@@ -229,9 +226,6 @@
     },
     "lorenzo/pinky": {
         "version": "1.0.5"
-    },
-    "martin-georgiev/postgresql-for-doctrine": {
-        "version": "v1.7.0"
     },
     "monolog/monolog": {
         "version": "2.3.5"

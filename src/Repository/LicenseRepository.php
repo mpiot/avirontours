@@ -193,7 +193,7 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.seasonCategory', 'season_category')
             ->innerJoin('season_category.season', 'season')
             ->where('season.id = :season')
-            ->andWhere('license.marking IS NULL OR JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
+            ->andWhere('JSON_TYPEOF(license.marking) = \'array\' OR JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
             ->orderBy('license.id', 'ASC')
             ->setParameter('season', $season->getId())
             ->setMaxResults(1)
