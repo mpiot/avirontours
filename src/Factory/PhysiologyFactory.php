@@ -27,15 +27,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static           Physiology|Proxy createOne(array $attributes = [])
- * @method static           Physiology[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static           Physiology|Proxy findOrCreate(array $attributes)
- * @method static           Physiology|Proxy random(array $attributes = [])
- * @method static           Physiology|Proxy randomOrCreate(array $attributes = [])
- * @method static           Physiology[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static           Physiology[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static           PhysiologyRepository|RepositoryProxy repository()
- * @method Physiology|Proxy create($attributes = [])
+ * @method static Physiology|Proxy                     createOne(array $attributes = [])
+ * @method static Physiology[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Physiology|Proxy                     findOrCreate(array $attributes)
+ * @method static Physiology|Proxy                     random(array $attributes = [])
+ * @method static Physiology|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Physiology[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Physiology[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static PhysiologyRepository|RepositoryProxy repository()
+ * @method        Physiology|Proxy                     create($attributes = [])
  */
 final class PhysiologyFactory extends ModelFactory
 {

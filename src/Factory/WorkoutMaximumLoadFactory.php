@@ -27,15 +27,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                   WorkoutMaximumLoad|Proxy createOne(array $attributes = [])
- * @method static                   WorkoutMaximumLoad[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static                   WorkoutMaximumLoad|Proxy findOrCreate(array $attributes)
- * @method static                   WorkoutMaximumLoad|Proxy random(array $attributes = [])
- * @method static                   WorkoutMaximumLoad|Proxy randomOrCreate(array $attributes = [])
- * @method static                   WorkoutMaximumLoad[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static                   WorkoutMaximumLoad[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static                   WorkoutMaximumLoadRepository|RepositoryProxy repository()
- * @method WorkoutMaximumLoad|Proxy create($attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                     createOne(array $attributes = [])
+ * @method static WorkoutMaximumLoad[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                     findOrCreate(array $attributes)
+ * @method static WorkoutMaximumLoad|Proxy                     random(array $attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static WorkoutMaximumLoad[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static WorkoutMaximumLoad[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static WorkoutMaximumLoadRepository|RepositoryProxy repository()
+ * @method        WorkoutMaximumLoad|Proxy                     create($attributes = [])
  */
 final class WorkoutMaximumLoadFactory extends ModelFactory
 {

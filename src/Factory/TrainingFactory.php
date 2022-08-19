@@ -27,15 +27,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static         Training|Proxy createOne(array $attributes = [])
- * @method static         Training[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static         Training|Proxy findOrCreate(array $attributes)
- * @method static         Training|Proxy random(array $attributes = [])
- * @method static         Training|Proxy randomOrCreate(array $attributes = [])
- * @method static         Training[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static         Training[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static         TrainingRepository|RepositoryProxy repository()
- * @method Training|Proxy create($attributes = [])
+ * @method static Training|Proxy                     createOne(array $attributes = [])
+ * @method static Training[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Training|Proxy                     findOrCreate(array $attributes)
+ * @method static Training|Proxy                     random(array $attributes = [])
+ * @method static Training|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Training[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Training[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static TrainingRepository|RepositoryProxy repository()
+ * @method        Training|Proxy                     create($attributes = [])
  */
 final class TrainingFactory extends ModelFactory
 {

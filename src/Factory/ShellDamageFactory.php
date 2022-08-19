@@ -28,15 +28,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static            ShellDamage|Proxy createOne(array $attributes = [])
- * @method static            ShellDamage[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static            ShellDamage|Proxy findOrCreate(array $attributes)
- * @method static            ShellDamage|Proxy random(array $attributes = [])
- * @method static            ShellDamage|Proxy randomOrCreate(array $attributes = [])
- * @method static            ShellDamage[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static            ShellDamage[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static            ShellDamageRepository|RepositoryProxy repository()
- * @method ShellDamage|Proxy create($attributes = [])
+ * @method static ShellDamage|Proxy                     createOne(array $attributes = [])
+ * @method static ShellDamage[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static ShellDamage|Proxy                     findOrCreate(array $attributes)
+ * @method static ShellDamage|Proxy                     random(array $attributes = [])
+ * @method static ShellDamage|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static ShellDamage[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static ShellDamage[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static ShellDamageRepository|RepositoryProxy repository()
+ * @method        ShellDamage|Proxy                     create($attributes = [])
  */
 final class ShellDamageFactory extends ModelFactory
 {

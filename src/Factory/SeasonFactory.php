@@ -27,15 +27,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static       Season|Proxy createOne(array $attributes = [])
- * @method static       Season[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static       Season|Proxy findOrCreate(array $attributes)
- * @method static       Season|Proxy random(array $attributes = [])
- * @method static       Season|Proxy randomOrCreate(array $attributes = [])
- * @method static       Season[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static       Season[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static       SeasonRepository|RepositoryProxy repository()
- * @method Season|Proxy create($attributes = [])
+ * @method static Season|Proxy                     createOne(array $attributes = [])
+ * @method static Season[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Season|Proxy                     findOrCreate(array $attributes)
+ * @method static Season|Proxy                     random(array $attributes = [])
+ * @method static Season|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Season[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Season[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static SeasonRepository|RepositoryProxy repository()
+ * @method        Season|Proxy                     create($attributes = [])
  */
 final class SeasonFactory extends ModelFactory
 {

@@ -28,15 +28,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static        License|Proxy createOne(array $attributes = [])
- * @method static        License[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static        License|Proxy findOrCreate(array $attributes)
- * @method static        License|Proxy random(array $attributes = [])
- * @method static        License|Proxy randomOrCreate(array $attributes = [])
- * @method static        License[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static        License[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static        LicenseRepository|RepositoryProxy repository()
- * @method License|Proxy create($attributes = [])
+ * @method static License|Proxy                     createOne(array $attributes = [])
+ * @method static License[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static License|Proxy                     findOrCreate(array $attributes)
+ * @method static License|Proxy                     random(array $attributes = [])
+ * @method static License|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static License[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static License[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static LicenseRepository|RepositoryProxy repository()
+ * @method        License|Proxy                     create($attributes = [])
  */
 final class LicenseFactory extends ModelFactory
 {
