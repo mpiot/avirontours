@@ -23,36 +23,34 @@
                         {{ form_row(form.medicalCertificate.level) }}
                         {{ form_row(form.medicalCertificate.date) }}
 
-                        {{ form_row(form.medicalCertificate.file) }}
-
-                        <div>
-                            <div class="alert alert-info" role="alert">
-                                <span class="fas fa-info-circle"></span>
-                                Document à fournir:
-                                <ul>
-                                    <li>Un <strong>certificat médical</strong> d'aptitude à la pratique de l'aviron de moins d'1an</li>
-                                    <li>Une <strong>attestation</strong> questionnaire santé (non pas le questionnaire santé lui même)</li>
-                                </ul>
-                            </div>
-
+                        <div class="alert alert-info" role="alert">
+                            <span class="fas fa-info-circle"></span>
+                            Document à fournir:
                             <ul>
-                                <li>
-                                    <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
-                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
-                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
-                                        <span class="far fa-file-pdf"></span> Attestation questionnaire santé (majeurs et mineurs)
-                                    </a>
-                                </li>
+                                <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
+                                <li><u>Majeur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport (si le précédent certificat médical date de moins de 3 ans).</li>
                             </ul>
                         </div>
+
+                        <ul>
+                            <li>
+                                <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé (majeurs et mineurs)
+                                </a>
+                            </li>
+                        </ul>
+
+                        {{ form_row(form.medicalCertificate.file) }}
                     </div>
                 </div>
 
