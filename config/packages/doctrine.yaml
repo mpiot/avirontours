@@ -26,10 +26,10 @@ doctrine:
         dql:
             string_functions:
                 COLLATE: App\DQL\Collate
-                JSON_GET_FIELD_AS_TEXT: MartinGeorgiev\Doctrine\ORM\Query\AST\Functions\JsonGetFieldAsText
+                JSON_GET_FIELD_AS_TEXT: App\DQL\JsonGetFieldAsText
+                JSON_TYPEOF: App\DQL\JsonTypeof
             datetime_functions:
-                DATE_PART: DoctrineExtensions\Query\Postgresql\DatePart
-                JSON_GET_TEXT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Postgresql\JsonGetText
+                DATE_PART: App\DQL\DatePart
 
 when@test:
     doctrine:

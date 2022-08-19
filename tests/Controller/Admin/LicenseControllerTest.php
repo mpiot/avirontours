@@ -207,7 +207,27 @@ class LicenseControllerTest extends AppWebTestCase
         LicenseFactory::repository()->assert()->notExists($license);
     }
 
-    public function testChainMedicalCertificateValidation(): void
+    public function testChainMedicalCertificateValidationWithEmptyArray(): void
+    {
+        $license = LicenseFactory::createOne(['marking' => []]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Valider le certificat médical');
+
+        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
+        $this->assertSame([
+            'wait_payment_validation' => 1,
+            'medical_certificate_validated' => 1,
+        ], $license->getMarking());
+    }
+
+    public function testChainMedicalCertificateValidationWithMarkingFilled(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1]]);
 
