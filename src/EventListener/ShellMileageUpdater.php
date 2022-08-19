@@ -23,8 +23,40 @@ namespace App\EventListener;
 use App\Entity\LogbookEntry;
 use App\Entity\Shell;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
+#[Autoconfigure(tags: [
+    [
+        'doctrine.orm.entity_listener' => [
+            'event' => Events::prePersist,
+            'entity' => LogbookEntry::class,
+            'lazy' => true,
+        ],
+    ],
+    [
+        'doctrine.orm.entity_listener' => [
+            'event' => Events::preUpdate,
+            'entity' => LogbookEntry::class,
+            'lazy' => true,
+        ],
+    ],
+    [
+        'doctrine.orm.entity_listener' => [
+            'event' => Events::postUpdate,
+            'entity' => LogbookEntry::class,
+            'lazy' => true,
+        ],
+    ],
+    [
+        'doctrine.orm.entity_listener' => [
+            'event' => Events::preRemove,
+            'entity' => LogbookEntry::class,
+            'lazy' => true,
+        ],
+    ],
+])]
 class ShellMileageUpdater
 {
     private ?Shell $oldShell = null;

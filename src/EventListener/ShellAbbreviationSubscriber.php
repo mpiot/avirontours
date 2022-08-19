@@ -25,10 +25,12 @@ use App\Service\ShellAbbreviationGenerator;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
+#[AutoconfigureTag('doctrine.event_subscriber')]
 class ShellAbbreviationSubscriber implements EventSubscriber
 {
-    public function __construct(private ShellAbbreviationGenerator $abbreviationGenerator)
+    public function __construct(private readonly ShellAbbreviationGenerator $abbreviationGenerator)
     {
     }
 
