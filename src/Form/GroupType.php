@@ -43,9 +43,7 @@ class GroupType extends AbstractType
                     ->addOrderBy('app_user.lastName', 'ASC'),
                 'choice_label' => 'fullName',
                 'multiple' => true,
-                'attr' => [
-                    'data-controller' => 'select2',
-                ],
+                'autocomplete' => true,
             ])
         ;
     }
