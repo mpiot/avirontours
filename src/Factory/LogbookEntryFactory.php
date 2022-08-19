@@ -28,15 +28,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static             LogbookEntry|Proxy createOne(array $attributes = [])
- * @method static             LogbookEntry[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static             LogbookEntry|Proxy findOrCreate(array $attributes)
- * @method static             LogbookEntry|Proxy random(array $attributes = [])
- * @method static             LogbookEntry|Proxy randomOrCreate(array $attributes = [])
- * @method static             LogbookEntry[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static             LogbookEntry[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static             LogbookEntryRepository|RepositoryProxy repository()
- * @method LogbookEntry|Proxy create($attributes = [])
+ * @method static LogbookEntry|Proxy                     createOne(array $attributes = [])
+ * @method static LogbookEntry[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static LogbookEntry|Proxy                     findOrCreate(array $attributes)
+ * @method static LogbookEntry|Proxy                     random(array $attributes = [])
+ * @method static LogbookEntry|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static LogbookEntry[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static LogbookEntry[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static LogbookEntryRepository|RepositoryProxy repository()
+ * @method        LogbookEntry|Proxy                     create($attributes = [])
  */
 final class LogbookEntryFactory extends ModelFactory
 {

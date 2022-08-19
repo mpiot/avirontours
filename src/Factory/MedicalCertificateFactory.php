@@ -29,15 +29,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static                   MedicalCertificate|Proxy createOne(array $attributes = [])
- * @method static                   MedicalCertificate[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static                   MedicalCertificate|Proxy findOrCreate(array $attributes)
- * @method static                   MedicalCertificate|Proxy random(array $attributes = [])
- * @method static                   MedicalCertificate|Proxy randomOrCreate(array $attributes = [])
- * @method static                   MedicalCertificate[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static                   MedicalCertificate[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static                   MedicalCertificateRepository|RepositoryProxy repository()
- * @method MedicalCertificate|Proxy create($attributes = [])
+ * @method static MedicalCertificate|Proxy                     createOne(array $attributes = [])
+ * @method static MedicalCertificate[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static MedicalCertificate|Proxy                     findOrCreate(array $attributes)
+ * @method static MedicalCertificate|Proxy                     random(array $attributes = [])
+ * @method static MedicalCertificate|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static MedicalCertificate[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static MedicalCertificate[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static MedicalCertificateRepository|RepositoryProxy repository()
+ * @method        MedicalCertificate|Proxy                     create($attributes = [])
  */
 final class MedicalCertificateFactory extends ModelFactory
 {

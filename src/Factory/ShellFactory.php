@@ -27,15 +27,15 @@ use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static      Shell|Proxy createOne(array $attributes = [])
- * @method static      Shell[]|Proxy[] createMany(int $number, $attributes = [])
- * @method static      Shell|Proxy findOrCreate(array $attributes)
- * @method static      Shell|Proxy random(array $attributes = [])
- * @method static      Shell|Proxy randomOrCreate(array $attributes = [])
- * @method static      Shell[]|Proxy[] randomSet(int $number, array $attributes = [])
- * @method static      Shell[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static      ShellRepository|RepositoryProxy repository()
- * @method Shell|Proxy create($attributes = [])
+ * @method static Shell|Proxy                     createOne(array $attributes = [])
+ * @method static Shell[]|Proxy[]                 createMany(int $number, $attributes = [])
+ * @method static Shell|Proxy                     findOrCreate(array $attributes)
+ * @method static Shell|Proxy                     random(array $attributes = [])
+ * @method static Shell|Proxy                     randomOrCreate(array $attributes = [])
+ * @method static Shell[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Shell[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static ShellRepository|RepositoryProxy repository()
+ * @method        Shell|Proxy                     create($attributes = [])
  */
 final class ShellFactory extends ModelFactory
 {
