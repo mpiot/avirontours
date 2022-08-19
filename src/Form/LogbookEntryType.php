@@ -58,21 +58,12 @@ class LogbookEntryType extends AbstractType
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
                     ;
                 },
-                'choice_label' => 'fullName',
-                'choice_attr' => function (Shell $shell) {
-                    $suffix = $this->shellSuffixes($shell);
-                    if ('' !== $suffix) {
-                        return [
-                            'data-select2-suffix' => $suffix,
-                        ];
-                    }
-
-                    return [];
+                'choice_label' => function (Shell $shell) {
+                    return $shell->getFullName().$this->shellSuffixes($shell);
                 },
+                'options_as_html' => true,
                 'placeholder' => '--- Sélectionner un bâteau ---',
-                'attr' => [
-                    'data-controller' => 'select2',
-                ],
+                'autocomplete' => true,
             ])
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
@@ -98,23 +89,14 @@ class LogbookEntryType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => 'fullName',
-                'choice_attr' => function (User $user) {
-                    $suffix = $this->crewSuffixes($user);
-                    if ('' !== $suffix) {
-                        return [
-                            'data-select2-suffix' => $suffix,
-                        ];
-                    }
-
-                    return [];
+                'choice_label' => function (User $user) {
+                    return $user->getFullName().$this->crewSuffixes($user);
                 },
+                'options_as_html' => true,
                 'multiple' => true,
                 'help' => '<div class="text-info"><span class="fa fa-info-circle"> Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.</span></div>',
                 'help_html' => true,
-                'attr' => [
-                    'data-controller' => 'select2',
-                ],
+                'autocomplete' => true,
             ])
             ->add('startAt', TimeType::class, [
                 'label' => 'Heure de départ',
