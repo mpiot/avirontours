@@ -76,29 +76,27 @@
                                         Certificat médical
                                     </div>
                                     <div class="card-body">
-                                        <div>
-                                            <div class="alert alert-info" role="alert">
-                                                <span class="fas fa-info-circle"></span>
-                                                Document à fournir:
-                                                <ul>
-                                                    <li><u>Mineur</u>: certificat médical, ou <span class="fw-bold">attestation</span> QS sport</li>
-                                                    <li><u>Majeur</u>: certificat médical de moins d'un an. Les questionnaires santés ne sont valables que lors du renouvellement de licence au sein du club.</li>
-                                                </ul>
-                                            </div>
-
+                                        <div class="alert alert-info" role="alert">
+                                            <span class="fas fa-info-circle"></span>
+                                            Document à fournir:
                                             <ul>
-                                                <li>
-                                                    <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
-                                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
-                                                        <span class="far fa-file-pdf"></span> Attestation questionnaire santé
-                                                    </a>
-                                                </li>
+                                                <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
+                                                <li><u>Majeur</u>: certificat médical de moins d'un an. Les attestation QS sport ne sont valables que lors du renouvellement d'une licence au sein du club.</li>
                                             </ul>
                                         </div>
+
+                                        <ul>
+                                            <li>
+                                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
+                                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
+                                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                                </a>
+                                            </li>
+                                        </ul>
 
                                         {{ form_row(form.medicalCertificate) }}
                                     </div>
