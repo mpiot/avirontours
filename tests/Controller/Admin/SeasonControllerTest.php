@@ -42,6 +42,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     /**
      * @dataProvider urlProvider
+     * @dataProvider adminUrlProvider
      */
     public function testAccessDeniedForRegularUser($method, $url): void
     {
@@ -58,24 +59,46 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    /**
+     * @dataProvider adminUrlProvider
+     */
+    public function testAccessDeniedForSeasonModerator($method, $url): void
+    {
+        if (mb_strpos($url, '{id}')) {
+            $season = SeasonFactory::createOne();
+            $url = str_replace('{id}', (string) $season->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function urlProvider()
     {
         yield ['GET', '/admin/season'];
         yield ['GET', '/admin/season/{id}'];
+        yield ['GET', '/admin/season/{id}/export/contact'];
+        yield ['GET', '/admin/season/{id}/export/license'];
+    }
+
+    public function adminUrlProvider()
+    {
         yield ['GET', '/admin/season/new'];
         yield ['POST', '/admin/season/new'];
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}'];
-        yield ['GET', '/admin/season/{id}/export/contact'];
-        yield ['GET', '/admin/season/{id}/export/license'];
     }
 
     public function testIndexSeasons(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
@@ -87,7 +110,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
@@ -97,7 +120,7 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $crawler = $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -133,7 +156,7 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -155,7 +178,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -174,7 +197,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -194,7 +217,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
 
         $this->assertResponseIsSuccessful();
@@ -211,7 +234,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/license');
 
         $this->assertResponseIsSuccessful();
