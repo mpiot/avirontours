@@ -31,7 +31,7 @@ class Concept2ApiConsumer
 {
     public const API_URL = 'https://log.concept2.com/api';
 
-    public function __construct(private ClientRegistry $clientRegistry, private ManagerRegistry $managerRegistry, private HttpClientInterface $httpClient)
+    public function __construct(private readonly ClientRegistry $clientRegistry, private readonly ManagerRegistry $managerRegistry, private readonly HttpClientInterface $httpClient)
     {
     }
 
@@ -41,7 +41,7 @@ class Concept2ApiConsumer
         $results = $this->getResults($accessToken, $startAt);
         $trainings = [];
 
-        foreach ($results as $key => $result) {
+        foreach ($results as $result) {
             $trainings[] = $this->createTraining($accessToken, $user, $result);
         }
 
