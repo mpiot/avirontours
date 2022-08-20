@@ -471,8 +471,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function isEmailAuthEnabled(): bool
     {
-        foreach ($this->roles as $role) {
-            if (null !== u($role)->indexOf('ADMIN')) {
+        foreach ($this->getRoles() as $role) {
+            if ('ROLE_USER' !== $role) {
                 return true;
             }
         }
