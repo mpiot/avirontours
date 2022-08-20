@@ -11,9 +11,11 @@
     <div class="d-flex">
         <h1>Gestion des saisons</h1>
 
-        <a href="{{ path('season_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter une saison
-        </a>
+        {% if is_granted('ROLE_SEASON_ADMIN') %}
+            <a href="{{ path('season_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
+                <span class="fas fa-plus"></span> Ajouter une saison
+            </a>
+        {% endif %}
     </div>
 
     <div class="card border-0 shadow">
@@ -25,7 +27,9 @@
                         <th>Nom</th>
                         <th>Active</th>
                         <th>Inscriptions</th>
-                        <th></th>
+                        {% if is_granted('ROLE_SEASON_ADMIN') %}
+                            <th></th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -46,16 +50,18 @@
                                     <span class="badge rounded-pill bg-danger">Fermées</span>
                                 {% endif %}
                             </td>
-                            <td class="text-end">
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('season_edit', {'id': season.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
+                            {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                <td class="text-end">
+                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                       href="{{ path('season_edit', {'id': season.id}) }}">
+                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="3" class="text-center">Pas  de catégorie</td>
+                            <td colspan="{{ is_granted('ROLE_SEASON_ADMIN') ? '4' : '3' }}" class="text-center">Pas  de catégorie</td>
                         </tr>
                     {% endfor %}
                     </tbody>

@@ -78,11 +78,11 @@
         </div>
     {% endif %}
 
-    {% if is_granted('ROLE_USER_ADMIN') %}
-        <div class="card border-0 shadow mb-3">
-            <div class="card-body">
-                <div class="fs-4 mb-3">Gestion des utilisateurs</div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
+    <div class="card border-0 shadow mb-3">
+        <div class="card-body">
+            <div class="fs-4 mb-3">Gestion des utilisateurs</div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 app-list">
+                {% if is_granted('ROLE_USER_ADMIN') %}
                     <div class="col">
                         <a href="{{ path('user_index') }}">
                             <div class="card">
@@ -93,7 +93,9 @@
                             </div>
                         </a>
                     </div>
+                {% endif %}
 
+                {% if is_granted('ROLE_SEASON_MODERATOR') %}
                     <div class="col">
                         <a href="{{ path('season_index') }}">
                             <div class="card">
@@ -104,20 +106,21 @@
                             </div>
                         </a>
                     </div>
+                {% endif %}
 
+                {% if is_granted('ROLE_USER_ADMIN') %}
                     <div class="col">
                         <a href="{{ path('group_index') }}">
                             <div class="card">
-                                <div class="card-body text-center position-relative">
-                                    <span class="badge bg-success position-absolute top-0 end-0 m-2">Nouveau</span>
+                                <div class="card-body text-center">
                                     <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
                                     <h4 class="card-title fw-normal fs-5">Groupes</h4>
                                 </div>
                             </div>
                         </a>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
-    {% endif %}
+    </div>
 {% endblock %}

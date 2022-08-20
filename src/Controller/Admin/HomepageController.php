@@ -25,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
+#[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SEASON_MODERATOR") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
 class HomepageController extends AbstractController
 {
     #[Route(path: '/admin', name: 'admin_home')]

@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/admin/season')]
-#[Security('is_granted("ROLE_USER_ADMIN")')]
+#[Security('is_granted("ROLE_SEASON_MODERATOR")')]
 class SeasonController extends AbstractController
 {
     #[Route(path: '', name: 'season_index', methods: ['GET'])]
@@ -47,6 +47,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'season_new', methods: ['GET', 'POST'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $season = new Season();
@@ -83,6 +84,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         $form = $this->createForm(SeasonType::class, $season);
@@ -103,6 +105,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         if ($this->isCsrfTokenValid('delete'.$season->getId(), (string) $request->request->get('_token'))) {

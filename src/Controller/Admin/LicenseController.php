@@ -36,7 +36,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[Route(path: '/admin/season/{seasonId}/license')]
-#[Security('is_granted("ROLE_USER_ADMIN")')]
+#[Security('is_granted("ROLE_SEASON_MODERATOR")')]
 class LicenseController extends AbstractController
 {
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
