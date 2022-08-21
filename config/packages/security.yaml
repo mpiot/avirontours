@@ -12,7 +12,7 @@ security:
         logbook_users:
             memory:
                 users:
-                    logbook:
+                    logbook@avirontours.fr:
                         password: '%env(APP_LOGBOOK_USER_PASSWORD)%'
                         roles: 'ROLE_LOGBOOK_USER'
     firewalls:
@@ -24,6 +24,7 @@ security:
             pattern: ^/logbook-entry
             provider: logbook_users
             http_basic: ~
+            x509: ~
         main:
             lazy: true
             provider: app_users
