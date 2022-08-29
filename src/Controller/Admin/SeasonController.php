@@ -120,6 +120,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/export/contact', name: 'season_export_contact', methods: ['GET'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportContacts($season);
@@ -143,6 +144,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/export/license', name: 'season_export_license', methods: ['GET'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportLicenses($season);

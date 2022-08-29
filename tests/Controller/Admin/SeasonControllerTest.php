@@ -81,8 +81,6 @@ class SeasonControllerTest extends AppWebTestCase
     {
         yield ['GET', '/admin/season'];
         yield ['GET', '/admin/season/{id}'];
-        yield ['GET', '/admin/season/{id}/export/contact'];
-        yield ['GET', '/admin/season/{id}/export/license'];
     }
 
     public function adminUrlProvider()
@@ -92,6 +90,8 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}'];
+        yield ['GET', '/admin/season/{id}/export/contact'];
+        yield ['GET', '/admin/season/{id}/export/license'];
     }
 
     public function testIndexSeasons(): void
@@ -217,7 +217,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
 
         $this->assertResponseIsSuccessful();
@@ -234,7 +234,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/license');
 
         $this->assertResponseIsSuccessful();
