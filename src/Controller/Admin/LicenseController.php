@@ -33,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[Route(path: '/admin/season/{seasonId}/license')]
@@ -88,6 +89,7 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
+    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
@@ -106,17 +108,18 @@ class LicenseController extends AbstractController
     public function applyTransition(Request $request, ManagerRegistry $managerRegistry, WorkflowInterface $licenseWorkflow, License $license, int $seasonId): Response
     {
         try {
-            $licenseWorkflow
-                ->apply($license, (string) $request->request->get('transition'), [
-                    'time' => date('y-m-d H:i:s'),
-                ])
-            ;
+            $licenseWorkflow->apply($license, (string) $request->request->get('transition'), [
+                'time' => date('y-m-d H:i:s'),
+            ]);
             $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
+        } catch (NotEnabledTransitionException $error) {
+            throw $this->createAccessDeniedException();
         } catch (ExceptionInterface $error) {
             $this->addFlash('error', $error->getMessage());
         }
+
         if ('license_chain_validation_apply_transition' === $request->get('_route')) {
             return $this->redirectToRoute('license_validate_medical_certificate', ['seasonId' => $seasonId]);
         }

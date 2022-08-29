@@ -60,6 +60,7 @@ framework:
                         title: Valider le paiement
                         button: primary
                 validate_license:
+                    guard: "is_granted('ROLE_SEASON_ADMIN')"
                     from:
                         - medical_certificate_validated
                         - payment_validated

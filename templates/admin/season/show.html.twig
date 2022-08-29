@@ -135,13 +135,15 @@
                                 <span class="fas fa-file-medical-alt"></span> Valider les certificats
                             </a>
 
-                            <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                <span class="fas fa-file-export"></span> Exporter les contacts
-                            </a>
+                            {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                                    <span class="fas fa-file-export"></span> Exporter les contacts
+                                </a>
 
-                            <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                <span class="fas fa-file-export"></span> Exporter les licences
-                            </a>
+                                <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
+                                    <span class="fas fa-file-export"></span> Exporter les licences
+                                </a>
+                            {% endif %}
                         </div>
 
                         <form method="get" class="ms-auto">
