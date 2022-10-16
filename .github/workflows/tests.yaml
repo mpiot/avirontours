@@ -102,7 +102,7 @@ jobs:
             - name: Download Paratest Coverage Reports
               uses: actions/download-artifact@v2
               with:
-                  name: paratest-coverage-report.xml
+                  name: paratest-reports
 
             - name: Change Paths from PHPUnit & Paratest reports
               run: |
