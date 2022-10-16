@@ -29,7 +29,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Physiology|null findOneBy(array $criteria, array $orderBy = null)
  * @method Physiology[]    findAll()
  * @method Physiology[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
  * @extends ServiceEntityRepository<Physiology>
+ *
  * @psalm-method list<Physiology> findAll()
  * @psalm-method list<Physiology> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

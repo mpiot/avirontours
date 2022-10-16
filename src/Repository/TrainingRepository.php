@@ -32,7 +32,9 @@ use Knp\Component\Pager\PaginatorInterface;
  * @method Training|null findOneBy(array $criteria, array $orderBy = null)
  * @method Training[]    findAll()
  * @method Training[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
  * @extends ServiceEntityRepository<Training>
+ *
  * @psalm-method list<Training> findAll()
  * @psalm-method list<Training> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
