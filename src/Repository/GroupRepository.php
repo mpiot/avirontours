@@ -27,7 +27,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Group|null findOneBy(array $criteria, array $orderBy = null)
  * @method Group[]    findAll()
  * @method Group[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
  * @extends ServiceEntityRepository<Group>
+ *
  * @psalm-method list<Group> findAll()
  * @psalm-method list<Group> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

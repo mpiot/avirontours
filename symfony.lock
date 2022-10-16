@@ -95,9 +95,9 @@
         "version": "3.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "3.1",
-            "ref": "ee609429c9ee23e22d6fa5728211768f51ed2818"
+            "ref": "1d01ec03c6ecbd67c3375c5478c9a423ae5d6a33"
         },
         "files": [
             "config/packages/doctrine_migrations.yaml",
@@ -262,9 +262,6 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.6.0"
-    },
-    "phpspec/prophecy": {
-        "version": "v1.15.0"
     },
     "phpstan/phpdoc-parser": {
         "version": "1.2.0"
@@ -832,7 +829,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "1.10",
-            "ref": "2e458cc7e6f1df1dad890eb104b81e4f302c9bd4"
+            "ref": "5878c7c28468ca0fdce2497a04cfc66bab0dc3ef"
         },
         "files": [
             "assets/app.js",

@@ -56,6 +56,20 @@ final class UserFactory extends ModelFactory
         ]);
     }
 
+    public function withAnnualActiveLicense(): self
+    {
+        return $this->addState([
+            'licenses' => LicenseFactory::new()->annualActive()->many(1),
+        ]);
+    }
+
+    public function withAnnualInactiveLicense(): self
+    {
+        return $this->addState([
+            'licenses' => LicenseFactory::new()->annualInactive()->many(1),
+        ]);
+    }
+
     protected function getDefaults(): array
     {
         return [

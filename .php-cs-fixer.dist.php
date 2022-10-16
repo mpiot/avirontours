@@ -44,13 +44,12 @@ return (new PhpCsFixer\Config())
             'trait_import' => 'none',
             'case' => 'none',
         ]],
-        'no_php4_constructor' => true,
         'ordered_class_elements' => ['order' => [
             'use_trait',
+            'case',
             'constant_public',
             'constant_protected',
             'constant_private',
-            'case',
             'property_public_static',
             'property_protected_static',
             'property_private_static',
@@ -76,10 +75,8 @@ return (new PhpCsFixer\Config())
         // Control Structure
         'no_superfluous_elseif' => true,
         'no_useless_else' => true,
-        // Function Notation
-        'no_unreachable_default_argument_value' => true,
         // Import
-        'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
+        'ordered_imports' => ['imports_order' => ['class', 'function', 'const']],
         // PHPDoc
         'align_multiline_comment' => ['comment_type' => 'all_multiline'],
         'phpdoc_order' => true,
@@ -98,11 +95,9 @@ return (new PhpCsFixer\Config())
         'strict_param' => true,
         // String Notation
         'heredoc_to_nowdoc' => true,
-        'simple_to_complex_string_variable' => true,
         // Whitespace
         'array_indentation' => true,
         'method_chaining_indentation' => true,
-        'no_extra_blank_lines' => ['tokens' => ['continue', 'curly_brace_block', 'default', 'extra', 'parenthesis_brace_block', 'square_brace_block', 'switch', 'throw', 'use']],
     ])
     ->setFinder($finder)
 ;
