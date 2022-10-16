@@ -20,92 +20,78 @@ declare(strict_types=1);
 
 namespace Deployer;
 
+require 'contrib/yarn.php';
+require 'contrib/webpack_encore.php';
 require 'recipe/common.php';
 
-// Project name
-set('application', 'avirontours');
+// Config
 
-// Project repository
 set('repository', 'git@github.com:mpiot/avirontours.git');
 
-// [Optional] Allocate tty for git clone. Default value is false.
-set('git_tty', true);
-
-// Shared files/dirs between deploys
-set('shared_files', ['config/secrets/prod/prod.decrypt.private.php']);
-set('shared_dirs', ['var/log', 'var/sessions', 'protected_files']);
-
-// Writable dirs by web server
-set('writable_dirs', ['var']);
-set('allow_anonymous_stats', false);
-
-// Console access
-set('bin/console', fn () => parse('{{release_path}}/bin/console'));
-
-// Hosts
-host('rhea.avirontours.fr')
-    ->set('deploy_path', '/var/www/{{application}}')
-    ->roles('app')
-    ->stage('prod')
-    ->set('branch', 'develop')
-;
-
-// Tasks
-desc('Deploy your project');
-task('deploy', [
-    'deploy:info',
-    'deploy:prepare',
-    'deploy:lock',
-    'deploy:release',
-    'deploy:update_code',
-    'deploy:shared',
-    'deploy:writable',
-    'deploy:vendors',
-    'deploy:assets',
-    'deploy:optimize',
-    'deploy:clear_paths',
-    'deploy:migrate',
-    'deploy:symlink',
-    'php:restart',
-    'workers:restart',
-    'deploy:unlock',
-    'cleanup',
-    'success',
+set('shared_files', [
+    'config/secrets/prod/prod.decrypt.private.php',
+]);
+set('shared_dirs', [
+    'var/log',
+    'var/sessions',
+    'protected_files',
+]);
+set('writable_dirs', [
+    'var',
+    'var/cache',
+    'var/log',
+    'var/sessions',
 ]);
 
-// Custom deploy
-task('deploy:vendors', function (): void {
-    run('cd {{release_path}} && APP_ENV={{stage}} {{bin/composer}} {{composer_options}}');
+set('bin/console', '{{bin/php}} {{release_or_current_path}}/bin/console');
+
+// Hosts
+
+host('rhea.avirontours.fr')
+    ->set('deploy_path', '/var/www/avirontours')
+    ->set('branch', 'develop')
+    ->set('symfony_env', 'prod')
+;
+
+// Hooks
+
+after('deploy:symlink', 'database:migrate');
+after('deploy:symlink', 'php:restart');
+after('deploy:failed', 'deploy:unlock');
+
+// Tasks
+
+desc('Migrates database');
+task('database:migrate', function () {
+    run('cd {{release_or_current_path}} && {{bin/console}} doctrine:migrations:migrate --allow-no-migration --all-or-nothing --no-interaction');
 });
 
-task('deploy:assets', function (): void {
-    if (has('previous_release')) {
-        if (test('[ -d {{previous_release}}/node_modules ]')) {
-            run('cp -R {{previous_release}}/node_modules {{release_path}}');
-        }
+desc('Installs vendors');
+task('deploy:vendors', function () {
+    if (!commandExist('unzip')) {
+        warning('To speed up composer installation setup "unzip" command with PHP zip extension.');
     }
-
-    run('cd {{release_path}} && yarn install');
-    run('cd {{release_path}} && yarn build');
+    run('cd {{release_or_current_path}} && APP_ENV={{symfony_env}} {{bin/composer}} {{composer_action}} {{composer_options}} 2>&1');
 });
 
-task('deploy:optimize', function (): void {
-    run('cd {{release_path}} && {{bin/php}} {{bin/console}} secrets:decrypt-to-local --force --env={{stage}}');
-    run('cd {{release_path}} && composer dump-env {{stage}}');
-    run('cd {{release_path}} && rm .env .env.prod .env.test .env.{{stage}}.local');
-});
-
-task('deploy:migrate', function (): void {
-    run('cd {{release_path}} && {{bin/php}} {{bin/console}} doctrine:migration:migrate -n');
-});
-
+desc('Restart PHP');
 task('php:restart', function (): void {
     run('sudo systemctl restart php8.1-fpm');
 });
 
-task('workers:restart', function (): void {
-    run('cd {{release_path}} && {{bin/php}} {{bin/console}} messenger:stop-workers');
+desc('Optimize symfony environment files');
+task('symfony:optimize_env_files', function (): void {
+    run('cd {{release_or_current_path}} && {{bin/console}} secrets:decrypt-to-local --force --env={{symfony_env}}');
+    run('cd {{release_or_current_path}} && composer dump-env {{symfony_env}}');
+    run('cd {{release_or_current_path}} && rm .env .env.prod .env.test .env.{{symfony_env}}.local');
 });
 
-// If deploy fails, automatically unlock.
-after('deploy:failed', 'deploy:unlock');
+desc('Deploys project');
+task('deploy', [
+    'deploy:prepare',
+    'deploy:vendors',
+    'yarn:install',
+    'webpack_encore:build',
+    'symfony:optimize_env_files',
+    'deploy:publish',
+]);
