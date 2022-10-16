@@ -1,0 +1,12 @@
+name: Continuous Integration
+
+on:
+    push:
+        branches: [ develop ]
+
+jobs:
+    tests:
+        name: Tests
+
+        uses: ./.github/workflows/tests.yaml
+        secrets: inherit

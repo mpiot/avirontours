@@ -1,0 +1,178 @@
+name: Continuous Integration
+
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - ready_for_review
+
+jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  coverage: none
+                  php-version: "8.1"
+                  tools: composer:v2
+
+            - name: Get Composer Cache Directory
+              id: composer-cache
+              run: |
+                  echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - uses: actions/cache@v2
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
+
+            - name: Composer install
+              run: composer install --no-interaction --no-progress
+
+            - name: Lint YAML files
+              run: ./bin/console lint:yaml config --parse-tags
+
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint XLIFF translations
+              run: ./bin/console lint:xliff translations
+
+            - name: Lint Parameters and Services
+              run: ./bin/console lint:container --no-debug
+
+            - name: Lint Doctrine entities
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            - name: Lint Composer config
+              run: composer validate
+
+            - name: Run PHP-CS-Fixer
+              run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+
+            - name: Run Psalm
+              run: ./vendor/bin/psalm
+
+    security-checker:
+        name: Security Checker
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Security checker
+              uses: symfonycorp/security-checker-action@v3
+
+    migrations-and-fixtures:
+        name: Migrations & Fixtures
+        runs-on: ubuntu-latest
+
+        needs: [ lint, security-checker ]
+
+        services:
+            postgres:
+                image: postgres
+                env:
+                    POSTGRES_USER: app
+                    POSTGRES_PASSWORD: "!ChangeMe!"
+                    POSTGRES_DB: app
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Checkout develop branch code
+              uses: actions/checkout@v3
+              with:
+                  ref: develop
+
+            - name: Install PHP with extensions
+              uses: shivammathur/setup-php@2.7.0
+              with:
+                  coverage: "none"
+                  php-version: 8.1
+                  tools: composer:v2
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: 'npm'
+
+            - name: Set composer cache directory
+              id: composer-cache
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            - name: Cache composer
+              uses: actions/cache@v3
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
+                  restore-keys: |
+                    ${{ runner.os }}-composer-
+
+            - name: Install vendors
+              run: composer install --no-interaction --optimize-autoloader
+
+            - name: Set yarn cache directory
+              id: yarn-cache
+              run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+            - name: Cache yarn
+              uses: actions/cache@v3
+              with:
+                path: ${{ steps.yarn-cache.outputs.dir }}
+                key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-yarn-
+
+            - name: Install node_modules
+              run: yarn install
+
+            - name: Build assets
+              run: yarn build
+
+            - name: Apply develop migrations
+              run: bin/console doctrine:migrations:migrate --no-interaction
+
+            - name: Load develop fixtures
+              run: bin/console doctrine:fixtures:load --no-interaction
+
+            - name: Switch to the PR branch
+              run: |
+                  git fetch
+                  git switch ${{ github.head_ref }}
+
+            - name: Install vendors
+              run: composer update --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Apply migrations
+              run: bin/console doctrine:migrations:migrate --no-interaction
+
+            - name: Validate schema
+              run: bin/console doctrine:schema:validate -vvv --no-interaction
+
+            - name: Load fixtures
+              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate
+
+    tests:
+        name: Tests
+
+        needs: [ lint, security-checker ]
+
+        uses: ./.github/workflows/tests.yaml
+        secrets: inherit
