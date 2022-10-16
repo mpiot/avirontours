@@ -1,123 +1,115 @@
-name: Tests
-
 on:
-    push:
-        branches: [ main, develop ]
-    pull_request:
-        types:
-            - opened
-            - reopened
-            - synchronize
-            - ready_for_review
-
-env:
-    PHPUNIT_FLAGS: "-v --coverage-clover coverage-report.xml --log-junit tests-report.xml"
-    FOUNDRY_RESET_MODE: "migrate"
-    SYMFONY_DEPRECATIONS_HELPER: "disabled"
+    workflow_call:
+        secrets:
+            SONAR_TOKEN:
+                required: true
 
 jobs:
-    test:
-        name: Tests
+    paratest:
+        name: Paratest
         runs-on: ubuntu-latest
-        continue-on-error: false
-
-        if: github.event.pull_request.draft == false
-
-        env:
-            DATABASE_URL: "pgsql://user:password@localhost:5432/main"
 
         services:
             postgres:
-                image: postgres:14
+                image: postgres
                 env:
-                    POSTGRES_USER: user
-                    POSTGRES_PASSWORD: password
-                    POSTGRES_DB: main
+                    POSTGRES_USER: app
+                    POSTGRES_PASSWORD: "!ChangeMe!"
+                    POSTGRES_DB: app
                 ports:
                     - 5432:5432
-                options: --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=10
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
-            - name: Install PHP
+            - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
               with:
                   coverage: pcov
-                  ini-values: date.timezone = Europe/Paris
-                  php-version: '8.1'
+                  php-version: 8.1
                   tools: composer:v2
-                  extensions: curl, intl, mbstring, pdo_pgsql, xml, zip
 
-            - name: Get Composer Cache Directory
+            - name: Set composer cache directory
               id: composer-cache
-              run: |
-                  echo "::set-output name=dir::$(composer config cache-files-dir)"
+              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-            - uses: actions/cache@v2
+            - name: Cache composer
+              uses: actions/cache@v3
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
                   restore-keys: |
                       ${{ runner.os }}-composer-
 
-            - name: Composer install
-              run: composer install --no-interaction --no-progress
+            - name: Install vendors
+              run: composer install --no-interaction --optimize-autoloader
 
             - name: Install Node
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
-                  node-version: '16'
+                  node-version: 18
 
             - name: Install Yarn
               run: npm install -g yarn
 
-            - name: Setup Yarn cache
-              uses: actions/setup-node@v2
-              with:
-                  cache: 'yarn'
+            - name: Set yarn cache directory
+              id: yarn-cache
+              run: echo "::set-output name=dir::$(yarn cache dir)"
 
-            - name: Install node modules
+            - name: Cache yarn
+              uses: actions/cache@v3
+              with:
+                  path: ${{ steps.yarn-cache.outputs.dir }}
+                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-yarn-
+
+            - name: Install node_modules
               run: yarn install
 
             - name: Build assets
               run: yarn build
 
-            - name: Run tests
-              run: vendor/bin/paratest --runner WrapperRunner ${{ env.PHPUNIT_FLAGS }}
+            - name: Run tests with Paratest
+              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --processes 8 --exclude-group phpunit,e2e --coverage-clover paratest-coverage-report.xml --log-junit paratest-tests-report.xml
 
-            - name: Upload PHPUnit Reports
+            - name: Upload Reports
               uses: actions/upload-artifact@v2
               with:
-                  name: phpunit-reports
+                  name: paratest-reports
                   path: |
-                      coverage-report.xml
-                      tests-report.xml
+                      paratest-coverage-report.xml
+                      paratest-tests-report.xml
                   retention-days: 1
 
     sonarcloud:
         name: SonarCloud
         runs-on: ubuntu-latest
 
-        if: github.event.pull_request.draft == false
-        needs: test
+        needs: paratest
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
-                  fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+                  fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-            - name: Download PHPUnit Reports
+            - name: Download Paratest Coverage Reports
               uses: actions/download-artifact@v2
               with:
-                  name: phpunit-reports
+                  name: paratest-coverage-report.xml
 
-            - name: Change Paths from PHPUnit reports
-              run: sed -i 's/\/home\/runner\/work\/avirontours\/avirontours/\/github\/workspace/g' coverage-report.xml
+            - name: Change Paths from PHPUnit & Paratest reports
+              run: |
+                  sed -i 's#/home/runner/work/avirontours/avirontours#/github/workspace#g' paratest-coverage-report.xml
 
             - name: SonarCloud Scan
               uses: SonarSource/sonarcloud-github-action@master
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
