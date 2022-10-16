@@ -42,27 +42,15 @@ final class LogbookEntryFactory extends ModelFactory
 {
     public function withActiveCrew(int $number): self
     {
-        $licences = LicenseFactory::new()->annualActive()->many($number);
-        $crew = [];
-        foreach ($licences as $license) {
-            $crew[] = $license->getUser();
-        }
-
         return $this->addState([
-            'crewMembers' => $crew,
+            'crewMembers' => UserFactory::new()->withAnnualActiveLicense()->many($number),
         ]);
     }
 
     public function withInactiveCrew(int $number): self
     {
-        $licences = LicenseFactory::new()->annualInactive()->many($number);
-        $crew = [];
-        foreach ($licences as $license) {
-            $crew[] = $license->getUser();
-        }
-
         return $this->addState([
-            'crewMembers' => $crew,
+            'crewMembers' => UserFactory::new()->withAnnualInactiveLicense()->many($number),
         ]);
     }
 
