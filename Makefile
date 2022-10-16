@@ -1,28 +1,20 @@
 # Executables (local)
-DOCKER_COMPOSE = docker-compose
-
-# Docker containers
-PHP_CONTAINER = $(DOCKER_COMPOSE) exec $(EXTRA_OPTIONS) php
+DOCKER_COMPOSE = docker-compose -f docker-compose.yaml -f docker-compose.override.yaml
 
 # Executables
-PHP      = $(PHP_CONTAINER) php -d memory_limit=-1
-PHPUNIT  = $(PHP) bin/phpunit
-COMPOSER = $(PHP_CONTAINER) composer
-CONSOLE  = $(PHP) bin/console
-YARN     = $(PHP_CONTAINER) yarn
-
-# Arguments
-SERVER_NAME = avirontours.localhost
+SYMFONY  = symfony
+PHP      = $(SYMFONY) php
+COMPOSER = $(SYMFONY) composer
+CONSOLE  = $(SYMFONY) console
+YARN     = yarn
 
 # Misc
-.DEFAULT_GOAL = help
-.PHONY        = help
-.PHONY        = composer vendor
-.PHONY        = db-reset db-fixtures
-.PHONY        = start stop build up down logs sh open
-.PHONY        = symfony
-.PHONY        = tests tests-weak lint validate-schema
-.PHONY        = yarn node-modules yarn-dev-server yarn-watch yarn-dev yarn-build yarn-analyze
+.DEFAULT_GOAL : help
+.PHONY        : help
+.PHONY        : start stop restart
+.PHONY        : docker-start docker-stop docker-up docker-down docker-logs
+.PHONY        : db-reset db-fixtures
+.PHONY        : test-all test-all-weak lint validate-schema tests tests-weak tests-phpunit tests-phpunit-weak tests-paratest tests-paratest-weak
 
 # Help display
 help:
@@ -30,15 +22,36 @@ help:
 
 
 ##
-## Composer 🧙
+## Project 🧙
 ##-------------------------------------------------------------------------------
-composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req symfony/orm-pack'
-	@$(eval c ?=)
-	@$(COMPOSER) $(c)
+start: docker-start ## Start Project
+	@$(SYMFONY) proxy:start
+	@$(SYMFONY) server:start -d
 
-vendor: ## Install vendors according to the current composer.lock file
-vendor: c=install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
-vendor: composer
+stop: docker-stop ## Stop Project
+	@$(SYMFONY) server:stop
+	@$(SYMFONY) proxy:stop
+
+restart: stop start ## Restart Project
+
+
+##
+## Docker 🐳
+##-------------------------------------------------------------------------------
+docker-start: ## Start services
+	@$(DOCKER_COMPOSE) start
+
+docker-stop: ## Stop services
+	@$(DOCKER_COMPOSE) stop
+
+docker-up: ## Create and start containers
+	@$(DOCKER_COMPOSE) up --detach
+
+docker-down: ## Stop and remove resources
+	@$(DOCKER_COMPOSE) down -v --remove-orphans
+
+docker-logs: ## View output from containers
+	@$(DOCKER_COMPOSE) logs --tail=0 --follow
 
 
 ##
@@ -50,55 +63,16 @@ db-reset: ## Reset the database
 	@$(CONSOLE) doctrine:migrations:migrate -n
 
 db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
+	rm -Rf var/ftp public/uploads
 	@$(CONSOLE) doctrine:fixtures:load -n
-
-
-##
-## Docker 🐳
-##-------------------------------------------------------------------------------
-start: ## Start project
-	@SERVER_NAME=$(SERVER_NAME) $(DOCKER_COMPOSE) start
-
-stop: ## Stop project
-	@$(DOCKER_COMPOSE) stop
-
-build: ## Builds the Docker images
-	@$(DOCKER_COMPOSE) build --pull
-
-up: ## Up docker's containers in detached mode (no logs)
-	@SERVER_NAME=$(SERVER_NAME) $(DOCKER_COMPOSE) up --detach
-
-down: ## Remove containers
-	@$(DOCKER_COMPOSE) down --remove-orphans
-
-logs: ## Show live logs
-	@$(DOCKER_COMPOSE) logs --tail=0 --follow
-
-sh: ## Connect to the PHP FPM container
-	@$(PHP_CONTAINER) sh
-
-open: ## Open the project in your favorite browser
-	@xdg-open https://$(SERVER_NAME)
-
-
-##
-## Symfony 🎵
-##-------------------------------------------------------------------------------
-symfony: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
-	@$(eval c ?=)
-	@$(CONSOLE) $(c)
 
 
 ##
 ## Tests 🚦️
 ##---------------------------------------------------------------------------
-tests: lint validate-schema ## Lint all, run PHP tests
-	@$(CONSOLE) cache:clear --env test
-	@$(DOCKER_COMPOSE) exec --env FOUNDRY_RESET_MODE=migrate php php -d memory_limit=-1 bin/phpunit
+test-all: lint validate-schema tests# # Lint all, run PHP tests
 
-tests-weak: lint validate-schema ## Lint all, run PHP tests without Deprecations helper
-	@$(CONSOLE) cache:clear --env test
-	@$(DOCKER_COMPOSE) exec --env SYMFONY_DEPRECATIONS_HELPER=weak --env FOUNDRY_RESET_MODE=migrate php php -d memory_limit=-1 bin/phpunit
+test-all-weak: lint validate-schema tests-weak ## Lint all, run PHP tests without Deprecations helper
 
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(CONSOLE) lint:yaml --parse-tags config
@@ -110,30 +84,18 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
+tests: tests-paratest tests-phpunit ## Run tests
 
-##
-## Yarn 🐈️
-##---------------------------------------------------------------------------
-yarn: ## Run yarn, pass the parameter "c=" to run a given command
-	@$(eval c ?=)
-	@$(YARN) $(c)
+tests-weak: tests-paratest-weak tests-phpunit-weak ## Run tests weak
 
-node-modules: ## Install node_modules according to the current yarn.lock file
-node-modules: c=install
-node-modules: yarn
+tests-paratest: ## Run Paratest tests
+	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/paratest --runner WrapperRunner
 
-yarn-dev-server: ## Run development server
-	@$(YARN) dev-server
+tests-paratest-weak: ## Run Paratest tests weak
+	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/paratest --runner WrapperRunner
 
-yarn-watch: ## Watch the assets and build their development version on change
-	@$(YARN) watch
+tests-phpunit: ## Run PHPUnit tests
+	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
 
-yarn-dev: ## Build the development version of the assets
-	@$(YARN) dev
-
-yarn-build: ## Build the production version of the assets
-	@$(YARN) build
-
-yarn-analyze: ## Analyze generated assets files
-	@$(YARN) run --silent build --json > webpack-stats.json
-	@$(YARN) webpack-bundle-analyzer webpack-stats.json public/build
+tests-phpunit-weak: ## Run PHPUnit tests weak
+	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit

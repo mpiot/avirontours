@@ -1,36 +1,20 @@
-version: "3.4"
+version: "3.8"
 
 # Development environment override
 services:
-    php:
-        volumes:
-            # The "cached" option has no effect on Linux but improves performance on Mac
-            - ./:/srv/app:rw,cached
-            - ./docker/php/conf.d/symfony.dev.ini:/usr/local/etc/php/conf.d/symfony.ini
-            # If you develop on Mac you can remove the var/ directory from the bind-mount
-            # for better performance by enabling this line:
-            # - /srv/app/var
-            # and disabled the next line
-            - ./var:/srv/app/var:rw,cached
-        environment:
-            APP_ENV: dev
-
-    caddy:
-        volumes:
-            - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-            - ./public:/srv/app/public:ro
-
-    ###> symfony/mercure-bundle ###
-    ###< symfony/mercure-bundle ###
-
-    ###> doctrine/doctrine-bundle ###
+###> doctrine/doctrine-bundle ###
     database:
         ports:
-            - "5432"
-    ###< doctrine/doctrine-bundle ###
+            - "5432:5432"
+###< doctrine/doctrine-bundle ###
 
-    ###> symfony/mailer ###
+###> symfony/mailer ###
     mailer:
         image: schickling/mailcatcher
-        ports: [ 1025, 1080 ]
-    ###< symfony/mailer ###
+        ports:
+            - "1025:1025"
+            - "1080:1080"
+###< symfony/mailer ###
+
+###> symfony/mercure-bundle ###
+###< symfony/mercure-bundle ###
