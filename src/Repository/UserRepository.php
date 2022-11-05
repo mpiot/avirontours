@@ -92,7 +92,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 ->orWhere('LOWER(app_user.firstName) LIKE :query')
                 ->orWhere('LOWER(app_user.lastName) LIKE :query')
                 ->orWhere('LOWER(app_user.email) LIKE :query')
-                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+                ->setParameter('query', '%'.u($query)->trim()->lower()->toString().'%')
             ;
         }
 
@@ -127,7 +127,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($query) {
             $qb
                 ->andWhere('LOWER(app_user.firstName) LIKE :query OR LOWER(app_user.lastName) LIKE :query OR LOWER(app_user.email) LIKE :query')
-                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+                ->setParameter('query', '%'.u($query)->trim()->lower()->toString().'%')
             ;
         }
 
