@@ -113,7 +113,7 @@ class LicenseRepository extends ServiceEntityRepository
         if ($query) {
             $qb
                 ->andWhere('LOWER(user.firstName) LIKE :query OR LOWER(user.lastName) LIKE :query OR LOWER(user.email) LIKE :query')
-                ->setParameter('query', '%'.u($query)->lower()->toString().'%')
+                ->setParameter('query', '%'.u($query)->trim()->lower()->toString().'%')
             ;
         }
 
