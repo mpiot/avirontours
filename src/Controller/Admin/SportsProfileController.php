@@ -32,13 +32,13 @@ use App\Form\PhysiologyType;
 use App\Form\WorkoutMaximumLoadType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/sports-profile')]
-#[Security('is_granted("ROLE_SPORT_ADMIN")')]
+#[IsGranted('ROLE_SPORT_ADMIN')]
 class SportsProfileController extends AbstractController
 {
     #[Route(path: '', name: 'sports_profile_index', methods: ['GET'])]
@@ -67,7 +67,7 @@ class SportsProfileController extends AbstractController
             return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/sports_profile/physiology.html.twig', [
+        return $this->render('admin/sports_profile/physiology.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);
@@ -88,7 +88,7 @@ class SportsProfileController extends AbstractController
             return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/sports_profile/anatomy.html.twig', [
+        return $this->render('admin/sports_profile/anatomy.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);
@@ -109,7 +109,7 @@ class SportsProfileController extends AbstractController
             return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/sports_profile/physical_qualities.html.twig', [
+        return $this->render('admin/sports_profile/physical_qualities.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);
@@ -130,7 +130,7 @@ class SportsProfileController extends AbstractController
             return $this->redirectToRoute('sports_profile_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/sports_profile/workout_maximum_load.html.twig', [
+        return $this->render('admin/sports_profile/workout_maximum_load.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);

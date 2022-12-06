@@ -18,35 +18,36 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\DQL;
+namespace App\Doctrine\ORM\Query\AST;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
-use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Lexer;
-use Doctrine\ORM\Query\Parser;
-use Doctrine\ORM\Query\SqlWalker;
 
-/**
- * Implementation of JSON_TYPEOF(jsonb|jsonb).
- *
- * https://www.postgresql.org/docs/14/functions-json.html
- */
-class JsonTypeof extends FunctionNode
+class Collate extends FunctionNode
 {
-    public Node $json;
+    public ?\Doctrine\ORM\Query\AST\Node $expressionToCollate = null;
 
-    public function parse(Parser $parser): void
+    public $collation;
+
+    public function parse(\Doctrine\ORM\Query\Parser $parser): void
     {
         $parser->match(Lexer::T_IDENTIFIER);
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
 
-        $this->json = $parser->StringPrimary();
+        $this->expressionToCollate = $parser->StringPrimary();
+
+        $parser->match(Lexer::T_COMMA);
+        $parser->match(Lexer::T_IDENTIFIER);
+
+        $lexer = $parser->getLexer();
+
+        $this->collation = $lexer->token['value'];
 
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
-    public function getSql(SqlWalker $sqlWalker): string
+    public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker): string
     {
-        return sprintf('JSON_TYPEOF(%s)', $this->json->dispatch($sqlWalker));
+        return sprintf('%s COLLATE %s', $sqlWalker->walkStringPrimary($this->expressionToCollate), $this->collation);
     }
 }

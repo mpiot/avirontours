@@ -20,12 +20,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/workout-maximum-load')]
-#[Security('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")')]
+#[IsGranted(new Expression('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")'))]
 class WorkoutMaximumLoadController extends AbstractController
 {
     #[Route(path: '', name: 'workout_maximum_load_show', methods: ['GET'])]

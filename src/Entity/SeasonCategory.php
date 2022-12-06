@@ -27,8 +27,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Handler\RelativeSlugHandler;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(['season', 'name'])]
 #[ORM\Entity(repositoryClass: SeasonCategoryRepository::class)]
 class SeasonCategory
 {
@@ -64,14 +66,13 @@ class SeasonCategory
     #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: 'App\Entity\License')]
     private Collection $licenses;
 
-    #[Gedmo\Slug([
-        new Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
-            new Gedmo\SlugHandlerOption(name: 'relationField', value: 'season'),
-            new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'name'),
-            new Gedmo\SlugHandlerOption(name: 'separator', value: '-'),
-            new Gedmo\SlugHandlerOption(name: 'urilize', value: true),
-        ]),
-    ], fields: ['name'])]
+    #[Gedmo\Slug(fields: ['name'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
+        'relationField' => 'season',
+        'relationSlugField' => 'name',
+        'separator' => '-',
+        'urilize' => true,
+    ])]
     #[ORM\Column(length: 128, unique: true)]
     private string $slug;
 

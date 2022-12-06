@@ -28,22 +28,24 @@ use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use ProxyManager\Exception\ExceptionInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[Route(path: '/admin/season/{seasonId}/license')]
-#[Security('is_granted("ROLE_SEASON_MODERATOR")')]
+#[IsGranted('ROLE_SEASON_MODERATOR')]
 class LicenseController extends AbstractController
 {
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
-    #[Entity(data: 'season', expr: 'repository.find(seasonId)')]
-    public function new(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
-    {
+    public function new(
+        Request $request,
+        ManagerRegistry $managerRegistry,
+        #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season
+    ): Response {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
         $form->handleRequest($request);
@@ -60,7 +62,7 @@ class LicenseController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/license/new.html.twig', [
+        return $this->render('admin/license/new.html.twig', [
             'form' => $form,
             'season' => $season,
         ]);
@@ -82,14 +84,14 @@ class LicenseController extends AbstractController
             ], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/license/edit.html.twig', [
+        return $this->render('admin/license/edit.html.twig', [
             'form' => $form,
             'license' => $license,
         ]);
     }
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
@@ -130,10 +132,10 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/chain-medical-certificate-validation', name: 'license_validate_medical_certificate', methods: ['GET'])]
-    #[Entity(data: 'season', expr: 'repository.find(seasonId)')]
-    #[Entity(data: 'license', expr: 'repository.findOneForValidation(season)')]
-    public function chainValidation(Season $season, LicenseRepository $repository): Response
-    {
+    public function chainValidation(
+        #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
+        LicenseRepository $repository
+    ): Response {
         $license = $repository->findOneForValidation($season);
         if (null !== $license) {
             $previousLicenses = $repository->findUserLicences($license->getUser(), (int) (new \DateTime('-3 years'))->format('Y'), $season->getName() - 1);

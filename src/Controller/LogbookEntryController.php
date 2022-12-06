@@ -29,15 +29,16 @@ use App\Repository\LogbookEntryRepository;
 use App\Repository\ShellRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Notifier\Notifier;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/logbook-entry')]
-#[Security('is_granted("ROLE_LOGBOOK_USER") or (is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_LOGBOOK_ADMIN")')]
+#[IsGranted(new Expression('is_granted("ROLE_LOGBOOK_USER") or (is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_LOGBOOK_ADMIN")'))]
 class LogbookEntryController extends AbstractController
 {
     #[Route(path: '', name: 'logbook_entry_index', methods: ['GET'])]
@@ -65,7 +66,7 @@ class LogbookEntryController extends AbstractController
             return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('logbook_entry/new.html.twig', [
+        return $this->render('logbook_entry/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -94,14 +95,14 @@ class LogbookEntryController extends AbstractController
             return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('logbook_entry/finish.html.twig', [
+        return $this->render('logbook_entry/finish.html.twig', [
             'form' => $form,
             'logbook_entry' => $logbookEntry,
         ]);
     }
 
     #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
-    #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
+    #[IsGranted('ROLE_LOGBOOK_ADMIN')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
     {
         $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
@@ -115,14 +116,14 @@ class LogbookEntryController extends AbstractController
             return $this->redirectToRoute('logbook_entry_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('logbook_entry/edit.html.twig', [
+        return $this->render('logbook_entry/edit.html.twig', [
             'form' => $form,
             'logbook_entry' => $logbookEntry,
         ]);
     }
 
     #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['POST'])]
-    #[Security('is_granted("ROLE_LOGBOOK_ADMIN")')]
+    #[IsGranted('ROLE_LOGBOOK_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), (string) $request->request->get('_token'))) {

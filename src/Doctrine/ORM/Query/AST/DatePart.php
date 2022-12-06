@@ -18,7 +18,7 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\DQL;
+namespace App\Doctrine\ORM\Query\AST;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Node;

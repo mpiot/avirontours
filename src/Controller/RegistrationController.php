@@ -27,8 +27,7 @@ use App\Form\RegistrationFormType;
 use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,13 +35,18 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RegistrationController extends AbstractController
 {
     #[Route(path: '/register/{slug}', name: 'app_register')]
-    #[Entity(data: 'seasonCategory', expr: 'repository.findSubscriptionSeasonCategory(slug)')]
-    public function register(SeasonCategory $seasonCategory, Request $request, ManagerRegistry $managerRegistry, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer): Response
-    {
+    public function register(
+        #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
+        Request $request,
+        ManagerRegistry $managerRegistry,
+        UserPasswordHasherInterface $passwordHasher,
+        MailerInterface $mailer
+    ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
@@ -77,13 +81,13 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('registration/register.html.twig', [
+        return $this->render('registration/register.html.twig', [
             'form' => $form,
         ]);
     }
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
-    #[Security('is_granted("ROLE_USER")')]
+    #[IsGranted('ROLE_USER')]
     public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, ManagerRegistry $managerRegistry, MailerInterface $mailer): Response
     {
         $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
@@ -118,7 +122,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('registration/renew.html.twig', [
+        return $this->render('registration/renew.html.twig', [
             'form' => $form,
             'season_category' => $seasonCategory,
         ]);

@@ -25,13 +25,13 @@ use App\Entity\Group;
 use App\Form\GroupType;
 use App\Repository\GroupRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/group')]
-#[Security('is_granted("ROLE_USER_ADMIN")')]
+#[IsGranted('ROLE_USER_ADMIN')]
 class GroupController extends AbstractController
 {
     #[Route(path: '', name: 'group_index', methods: ['GET'])]
@@ -59,7 +59,7 @@ class GroupController extends AbstractController
             return $this->redirectToRoute('group_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/group/new.html.twig', [
+        return $this->render('admin/group/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -86,7 +86,7 @@ class GroupController extends AbstractController
             return $this->redirectToRoute('group_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/group/edit.html.twig', [
+        return $this->render('admin/group/edit.html.twig', [
             'form' => $form,
             'group' => $group,
         ]);

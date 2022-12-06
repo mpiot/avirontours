@@ -71,7 +71,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.4",
-            "ref": "da713d006953b90d1c085c1be480ecdd6c4a95e0"
+            "ref": "d562b46dd8075ab2de3d58bf7895cf6b8365cb72"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -389,18 +389,6 @@
     "sebastian/version": {
         "version": "3.0.2"
     },
-    "sensio/framework-extra-bundle": {
-        "version": "6.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.2",
-            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
-        },
-        "files": [
-            "config/packages/sensio_framework_extra.yaml"
-        ]
-    },
     "stof/doctrine-extensions-bundle": {
         "version": "1.7",
         "recipe": {
@@ -507,12 +495,12 @@
         "version": "v6.0.3"
     },
     "symfony/framework-bundle": {
-        "version": "6.0",
+        "version": "6.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.4",
-            "ref": "3cd216a4d007b78d8554d44a5b1c0a446dab24fb"
+            "branch": "main",
+            "version": "6.2",
+            "ref": "af47254c5e4cd543e6af3e4508298ffebbdaddd3"
         },
         "files": [
             "config/packages/cache.yaml",
@@ -539,18 +527,6 @@
     },
     "symfony/intl": {
         "version": "v6.0.3"
-    },
-    "symfony/lock": {
-        "version": "6.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.2",
-            "ref": "a1c8800e40ae735206bb14586fdd6c4630a51b8d"
-        },
-        "files": [
-            "config/packages/lock.yaml"
-        ]
     },
     "symfony/mailer": {
         "version": "6.1",
@@ -676,12 +652,12 @@
         "version": "v6.0.3"
     },
     "symfony/routing": {
-        "version": "6.1",
+        "version": "6.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "6.1",
-            "ref": "a44010c0d06989bd4f154aa07d2542d47caf5b83"
+            "version": "6.2",
+            "ref": "e0a11b4ccb8c9e70b574ff5ad3dfdcd41dec5aa6"
         },
         "files": [
             "config/packages/routing.yaml",
@@ -757,12 +733,12 @@
         ]
     },
     "symfony/ux-autocomplete": {
-        "version": "2.3",
+        "version": "2.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "2.2",
-            "ref": "f8fa49e4547904ab278c100564ae1102df774243"
+            "version": "2.6",
+            "ref": "07d9602b7231ba355f484305d6cea58310c01741"
         },
         "files": [
             "config/routes/ux_autocomplete.yaml"
