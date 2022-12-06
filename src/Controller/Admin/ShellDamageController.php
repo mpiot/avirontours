@@ -25,13 +25,13 @@ use App\Entity\ShellDamage;
 use App\Form\ShellDamageType;
 use App\Repository\ShellDamageRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/shell-damage')]
-#[Security('is_granted("ROLE_MATERIAL_ADMIN")')]
+#[IsGranted('ROLE_MATERIAL_ADMIN')]
 class ShellDamageController extends AbstractController
 {
     #[Route(path: '', name: 'shell_damage_index', methods: ['GET'])]
@@ -59,7 +59,7 @@ class ShellDamageController extends AbstractController
             return $this->redirectToRoute('shell_damage_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell_damage/new.html.twig', [
+        return $this->render('admin/shell_damage/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -78,7 +78,7 @@ class ShellDamageController extends AbstractController
             return $this->redirectToRoute('shell_damage_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell_damage/edit.html.twig', [
+        return $this->render('admin/shell_damage/edit.html.twig', [
             'form' => $form,
             'shell_damage' => $shellDamage,
         ]);

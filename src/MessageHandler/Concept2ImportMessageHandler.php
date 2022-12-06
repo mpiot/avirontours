@@ -22,12 +22,16 @@ use App\Message\Concept2ImportMessage;
 use App\Repository\UserRepository;
 use App\Service\Concept2ApiConsumer;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class Concept2ImportMessageHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class Concept2ImportMessageHandler
 {
-    public function __construct(private EntityManagerInterface $entityManager, private Concept2ApiConsumer $apiConsumer, private UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly Concept2ApiConsumer $apiConsumer,
+        private readonly UserRepository $userRepository
+    ) {
     }
 
     public function __invoke(Concept2ImportMessage $message)

@@ -25,13 +25,13 @@ use App\Entity\ShellDamageCategory;
 use App\Form\ShellDamageCategoryType;
 use App\Repository\ShellDamageCategoryRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/shell-damage-category')]
-#[Security('is_granted("ROLE_MATERIAL_ADMIN")')]
+#[IsGranted('ROLE_MATERIAL_ADMIN')]
 class ShellDamageCategoryController extends AbstractController
 {
     #[Route(path: '', name: 'shell_damage_category_index', methods: ['GET'])]
@@ -59,7 +59,7 @@ class ShellDamageCategoryController extends AbstractController
             return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell_damage_category/new.html.twig', [
+        return $this->render('admin/shell_damage_category/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -78,7 +78,7 @@ class ShellDamageCategoryController extends AbstractController
             return $this->redirectToRoute('shell_damage_category_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell_damage_category/edit.html.twig', [
+        return $this->render('admin/shell_damage_category/edit.html.twig', [
             'form' => $form,
             'shell_damage_category' => $shellDamageCategory,
         ]);

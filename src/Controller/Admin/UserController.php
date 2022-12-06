@@ -26,13 +26,13 @@ use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/user')]
-#[Security('is_granted("ROLE_USER_ADMIN")')]
+#[IsGranted('ROLE_USER_ADMIN')]
 class UserController extends AbstractController
 {
     #[Route(path: '', name: 'user_index', methods: ['GET'])]
@@ -63,7 +63,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/user/new.html.twig', [
+        return $this->render('admin/user/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -90,7 +90,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/user/edit.html.twig', [
+        return $this->render('admin/user/edit.html.twig', [
             'form' => $form,
             'user' => $user,
         ]);

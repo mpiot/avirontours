@@ -63,7 +63,7 @@ db-reset: ## Reset the database
 	@$(CONSOLE) doctrine:migrations:migrate -n
 
 db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
-	rm -Rf var/ftp public/uploads
+	rm -Rf protected_files
 	@$(CONSOLE) doctrine:fixtures:load -n
 
 

@@ -21,11 +21,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Security('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SEASON_MODERATOR") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")')]
+#[IsGranted(new Expression('is_granted("ROLE_MATERIAL_ADMIN") or is_granted("ROLE_SEASON_MODERATOR") or is_granted("ROLE_SPORT_ADMIN") or is_granted("ROLE_USER_ADMIN")'))]
 class HomepageController extends AbstractController
 {
     #[Route(path: '/admin', name: 'admin_home')]

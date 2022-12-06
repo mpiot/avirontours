@@ -27,15 +27,16 @@ use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
 use App\Repository\TrainingRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/training')]
-#[Security('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")')]
+#[IsGranted(new Expression('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")'))]
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
@@ -63,7 +64,7 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('training_index');
         }
 
-        return $this->renderForm('training/new.html.twig', [
+        return $this->render('training/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -79,7 +80,7 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
-    #[Security('training.getUser() == user')]
+    #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function show(Training $training): Response
     {
         return $this->render('training/show.html.twig', [
@@ -88,10 +89,12 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/{training_id}/phase/{id}', name: 'training_show_phase', methods: ['GET'])]
-    #[Entity('training', expr: 'repository.find(training_id)')]
-    #[Security('training.getUser() == user or is_granted("ROLE_SPORT_ADMIN")')]
-    public function showPhase(Training $training, TrainingPhase $trainingPhase, TrainingPhaseChart $trainingPhaseChart): Response
-    {
+    #[IsGranted(new Expression('object.getUser() === user or is_granted("ROLE_SPORT_ADMIN")'), 'training')]
+    public function showPhase(
+        #[MapEntity(mapping: ['training_id' => 'id'])] Training $training,
+        TrainingPhase $trainingPhase,
+        TrainingPhaseChart $trainingPhaseChart
+    ): Response {
         return $this->render('training/_phase.html.twig', [
             'training' => $training,
             'active_phase' => $trainingPhase,
@@ -100,7 +103,7 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
-    #[Security('training.getUser() == user')]
+    #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
@@ -114,14 +117,14 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('training_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('training/edit.html.twig', [
+        return $this->render('training/edit.html.twig', [
             'form' => $form,
             'training' => $training,
         ]);
     }
 
     #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
-    #[Security('training.getUser() == user')]
+    #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
         if ($this->isCsrfTokenValid('delete'.$training->getId(), (string) $request->request->get('_token'))) {

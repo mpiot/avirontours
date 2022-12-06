@@ -30,13 +30,13 @@ use App\Form\PhysiologyType;
 use App\Form\SportProfileConfirurationType;
 use App\Form\WorkoutMaximumLoadType;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/sport-profile')]
-#[Security('is_granted("ROLE_USER")')]
+#[IsGranted('ROLE_USER')]
 class SportProfileController extends AbstractController
 {
     #[Route(path: '/physiology', name: 'sport_profile_physiology', methods: ['GET', 'POST'])]
@@ -54,7 +54,7 @@ class SportProfileController extends AbstractController
             return $this->redirectToRoute('sport_profile_physiology', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sport_profile/physiology.html.twig', [
+        return $this->render('sport_profile/physiology.html.twig', [
             'form' => $form,
         ]);
     }
@@ -74,7 +74,7 @@ class SportProfileController extends AbstractController
             return $this->redirectToRoute('sport_profile_anatomy', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sport_profile/anatomy.html.twig', [
+        return $this->render('sport_profile/anatomy.html.twig', [
             'form' => $form,
         ]);
     }
@@ -94,7 +94,7 @@ class SportProfileController extends AbstractController
             return $this->redirectToRoute('sport_profile_physical_qualities', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sport_profile/physical_qualities.html.twig', [
+        return $this->render('sport_profile/physical_qualities.html.twig', [
             'form' => $form,
         ]);
     }
@@ -114,7 +114,7 @@ class SportProfileController extends AbstractController
             return $this->redirectToRoute('sport_profile_workout_maximum_load', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sport_profile/workout_maximum_load.html.twig', [
+        return $this->render('sport_profile/workout_maximum_load.html.twig', [
             'form' => $form,
         ]);
     }
@@ -133,7 +133,7 @@ class SportProfileController extends AbstractController
             return $this->redirectToRoute('sport_profile_configuration', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sport_profile/configuration.html.twig', [
+        return $this->render('sport_profile/configuration.html.twig', [
             'form' => $form,
         ]);
     }

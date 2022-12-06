@@ -27,15 +27,15 @@ use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
 use App\Service\SeasonCsvGenerator;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/season')]
-#[Security('is_granted("ROLE_SEASON_MODERATOR")')]
+#[IsGranted('ROLE_SEASON_MODERATOR')]
 class SeasonController extends AbstractController
 {
     #[Route(path: '', name: 'season_index', methods: ['GET'])]
@@ -47,7 +47,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'season_new', methods: ['GET', 'POST'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function new(Request $request, ManagerRegistry $managerRegistry): Response
     {
         $season = new Season();
@@ -64,7 +64,7 @@ class SeasonController extends AbstractController
             return $this->redirectToRoute('season_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/season/new.html.twig', [
+        return $this->render('admin/season/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -84,7 +84,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         $form = $this->createForm(SeasonType::class, $season);
@@ -98,14 +98,14 @@ class SeasonController extends AbstractController
             return $this->redirectToRoute('season_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/season/edit.html.twig', [
+        return $this->render('admin/season/edit.html.twig', [
             'form' => $form,
             'season' => $season,
         ]);
     }
 
     #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
         if ($this->isCsrfTokenValid('delete'.$season->getId(), (string) $request->request->get('_token'))) {
@@ -120,7 +120,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/export/contact', name: 'season_export_contact', methods: ['GET'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportContacts($season);
@@ -144,7 +144,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/export/license', name: 'season_export_license', methods: ['GET'])]
-    #[Security('is_granted("ROLE_SEASON_ADMIN")')]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
     public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportLicenses($season);

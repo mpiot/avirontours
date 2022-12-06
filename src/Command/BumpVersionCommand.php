@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +31,10 @@ use Symfony\Component\Filesystem\Filesystem;
 
 use function Symfony\Component\String\u;
 
+#[AsCommand(
+    name: 'app:bump-version',
+    description: 'Bump project version',
+)]
 class BumpVersionCommand extends Command
 {
     protected static $defaultName = 'app:bump-version';
@@ -49,23 +54,25 @@ class BumpVersionCommand extends Command
         $filesystem = new Filesystem();
 
         $version = $input->getArgument('version');
-        $fileContent = file_get_contents('.env');
+        $filenames = ['.env', 'sonar-project.properties'];
 
-        if ($input->getOption('meta')) {
-            $fileContent = u($fileContent)
-                ->replaceMatches('#(APP_VERSION=)([0-9a-z\.\-]+)(\+?[0-9a-z\.\-]*)#', '${1}${2}+'.$version)
-            ;
+        foreach ($filenames as $filename) {
+            $fileContent = file_get_contents($filename);
 
-            $message = sprintf('The meta %s has been successfully added after the version.', $version);
-        } else {
-            $fileContent = u($fileContent)
-                ->replaceMatches('#(APP_VERSION=)([0-9a-z\.\-\+]+)#', '${1}'.$version)
-            ;
+            if ($input->getOption('meta')) {
+                $fileContent = u($fileContent)->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-]+)(\+?[0-9a-z\.\-]*)#', '${1}${2}+'.$version);
+            } else {
+                $fileContent = u($fileContent)->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-\+]+)#', '${1}'.$version);
+            }
 
-            $message = sprintf('The version has been successfully updated to %s.', $version);
+            $filesystem->dumpFile($filename, $fileContent);
         }
 
-        $filesystem->dumpFile('.env', $fileContent);
+        if ($input->getOption('meta')) {
+            $message = sprintf('The meta %s has been successfully added after the version.', $version);
+        } else {
+            $message = sprintf('The version has been successfully updated to %s.', $version);
+        }
 
         $io->success($message);
 

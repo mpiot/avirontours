@@ -27,14 +27,14 @@ use App\Entity\User;
 use App\Repository\GroupRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\UserRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/training')]
-#[Security('is_granted("ROLE_SPORT_ADMIN")')]
+#[IsGranted('ROLE_SPORT_ADMIN')]
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'admin_training_index', methods: ['GET'])]
@@ -60,9 +60,12 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/{user_id}', name: 'admin_training_list', methods: ['GET'])]
-    #[Entity(data: 'user', expr: 'repository.find(user_id)')]
-    public function list(Request $request, User $user, TrainingRepository $trainingRepository, TrainingChart $trainingsChart): Response
-    {
+    public function list(
+        Request $request,
+        #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
+        TrainingRepository $trainingRepository,
+        TrainingChart $trainingsChart
+    ): Response {
         return $this->render('admin/training/list.html.twig', [
             'user' => $user,
             'trainings' => $trainingRepository->findUserPaginated($user, $request->query->getInt('page', 1)),
@@ -72,9 +75,10 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/{user_id}/{id}', name: 'admin_training_show', methods: ['GET'])]
-    #[Entity(data: 'user', expr: 'repository.find(user_id)')]
-    public function show(User $user, Training $training): Response
-    {
+    public function show(
+        #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
+        Training $training
+    ): Response {
         return $this->render('admin/training/show.html.twig', [
             'user' => $user,
             'training' => $training,

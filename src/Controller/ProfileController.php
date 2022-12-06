@@ -25,14 +25,14 @@ use App\Form\ProfileType;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/profile')]
-#[Security('is_granted("ROLE_USER")')]
+#[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
     #[Route(path: '', name: 'profile_show', methods: ['GET'])]
@@ -60,7 +60,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('profile/edit.html.twig', [
+        return $this->render('profile/edit.html.twig', [
             'form' => $form,
         ]);
     }
@@ -84,7 +84,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('profile/edit_password.html.twig', [
+        return $this->render('profile/edit_password.html.twig', [
             'form' => $form,
         ]);
     }

@@ -22,13 +22,13 @@ namespace App\Controller\Admin;
 
 use App\Controller\AbstractController;
 use App\Entity\MedicalCertificate;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 #[Route(path: '/admin/medical-certificate')]
-#[Security('is_granted("ROLE_SEASON_MODERATOR")')]
+#[IsGranted('ROLE_SEASON_MODERATOR')]
 class MedicalCertificateController extends AbstractController
 {
     #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]

@@ -17,11 +17,14 @@
         {% endblock %}
     </head>
 
-    {% set body_controllers = { 'app-menu': { 'autoOpen': appMenuAutoOpen ?? true }, 'account-menu': {} } %}
-    {% if scrollspy is defined and scrollspy is same as(true) %}
-        {% set body_controllers = body_controllers|merge({ 'scrollspy': { 'target': '#navbar', 'offset': '76' } }) %}
-    {% endif %}
-    <body class="min-vh-100" {{ stimulus_controller(body_controllers) }}>
+    <body
+        class="min-vh-100"
+        {% if scrollspy is defined and scrollspy is same as(true) %}
+            {{ stimulus_controller('app-menu', { 'autoOpen': appMenuAutoOpen ?? true })|stimulus_controller('account-menu')|stimulus_controller('scrollspy', { 'target': '#navbar', 'offset': '76' }) }}
+        {% else %}
+            {{ stimulus_controller('app-menu', { 'autoOpen': appMenuAutoOpen ?? true })|stimulus_controller('account-menu') }}
+        {% endif %}
+    >
         <header>
             <nav id="navbar" class="navbar navbar-expand navbar-dark fixed-top bg-dark" aria-label="Navbar">
                 <div class="container-fluid d-flex flex-row">

@@ -26,13 +26,13 @@ use App\Form\ShellEditType;
 use App\Form\ShellType;
 use App\Repository\ShellRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/shell')]
-#[Security('is_granted("ROLE_MATERIAL_ADMIN")')]
+#[IsGranted('ROLE_MATERIAL_ADMIN')]
 class ShellController extends AbstractController
 {
     #[Route(path: '', name: 'shell_index', methods: ['GET'])]
@@ -60,7 +60,7 @@ class ShellController extends AbstractController
             return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell/new.html.twig', [
+        return $this->render('admin/shell/new.html.twig', [
             'form' => $form,
         ]);
     }
@@ -87,7 +87,7 @@ class ShellController extends AbstractController
             return $this->redirectToRoute('shell_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/shell/edit.html.twig', [
+        return $this->render('admin/shell/edit.html.twig', [
             'form' => $form,
             'shell' => $shell,
         ]);
