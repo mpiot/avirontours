@@ -1,5 +1,5 @@
 # Executables (local)
-DOCKER_COMPOSE = docker-compose -f docker-compose.yaml -f docker-compose.override.yaml
+DOCKER_COMPOSE = docker compose -f docker-compose.yaml -f docker-compose.override.yaml
 
 # Executables
 SYMFONY  = symfony
