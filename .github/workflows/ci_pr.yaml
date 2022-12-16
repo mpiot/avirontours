@@ -60,8 +60,8 @@ jobs:
             - name: Run PHP-CS-Fixer
               run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 
-            - name: Run Psalm
-              run: ./vendor/bin/psalm
+            - name: Run phpStan
+              run: ./vendor/bin/phpstan
 
     security-checker:
         name: Security Checker

@@ -18,20 +18,18 @@
 
 namespace App\Chart;
 
-use App\Entity\PhysicalQualities;
 use App\Entity\User;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 final class PhysicalQualitiesChart
 {
-    public function __construct(private ChartBuilderInterface $chartBuilder)
+    public function __construct(private readonly ChartBuilderInterface $chartBuilder)
     {
     }
 
-    public function chart(User $user)
+    public function chart(User $user): ?Chart
     {
-        /** @var PhysicalQualities $physicalQualities */
         $physicalQualities = $user->getPhysicalQualities();
 
         if (null === $physicalQualities) {

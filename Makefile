@@ -79,7 +79,7 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(CONSOLE) lint:twig templates --env=prod
 	@$(CONSOLE) lint:container
 	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
-	@$(PHP) vendor/bin/psalm
+	@$(PHP) vendor/bin/phpstan
 
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate

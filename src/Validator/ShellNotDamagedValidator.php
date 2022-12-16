@@ -25,16 +25,19 @@ use App\Entity\ShellDamageCategory;
 use App\Repository\ShellRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class ShellNotDamagedValidator extends ConstraintValidator
 {
-    public function __construct(private ShellRepository $shellRepository)
+    public function __construct(private readonly ShellRepository $shellRepository)
     {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        /* @var $constraint ShellAvailable */
+        if (!$constraint instanceof ShellNotDamaged) {
+            throw new UnexpectedTypeException($constraint, ShellNotDamaged::class);
+        }
 
         if (null === $value || '' === $value) {
             return;

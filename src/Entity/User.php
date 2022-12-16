@@ -62,9 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $password = null;
 
@@ -82,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $birthday = null;
+    private ?\DateTime $birthday = null;
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -151,13 +148,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private Collection $groups;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private $automaticTraining = false;
+    private bool $automaticTraining = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $concept2RefreshToken;
+    private ?string $concept2RefreshToken = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private $concept2LastImportAt = null;
+    private ?\DateTimeImmutable $concept2LastImportAt = null;
 
     public function __construct()
     {
@@ -332,12 +329,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->getFirstName().' '.$this->getLastName();
     }
 
-    public function getBirthday(): ?\DateTimeInterface
+    public function getBirthday(): ?\DateTime
     {
         return $this->birthday;
     }
 
-    public function setBirthday(?\DateTimeInterface $birthday): self
+    public function setBirthday(?\DateTime $birthday): self
     {
         $this->birthday = $birthday;
 
@@ -357,12 +354,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $interval->y;
     }
 
-    public function getSubscriptionDate(): ?\DateTimeInterface
+    public function getSubscriptionDate(): ?\DateTime
     {
         return $this->subscriptionDate;
     }
 
-    public function setSubscriptionDate(?\DateTimeInterface $subscriptionDate): self
+    public function setSubscriptionDate(?\DateTime $subscriptionDate): self
     {
         $this->subscriptionDate = $subscriptionDate;
 

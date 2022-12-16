@@ -24,7 +24,7 @@ use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Concept2ApiConsumer
@@ -48,7 +48,7 @@ class Concept2ApiConsumer
         return $trainings;
     }
 
-    private function createTraining(AccessToken $accessToken, User $user, array $result): Training
+    private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
     {
         $training = new Training($user);
         $training
@@ -112,7 +112,7 @@ class Concept2ApiConsumer
         return $trainingPhase;
     }
 
-    private function getResults(AccessToken $accessToken, ?\DateTimeInterface $startAt): array
+    private function getResults(AccessTokenInterface $accessToken, ?\DateTimeInterface $startAt): array
     {
         $query = ['type' => 'rower'];
         if (null !== $startAt) {
@@ -134,7 +134,7 @@ class Concept2ApiConsumer
         return $response->toArray()['data'];
     }
 
-    private function getStrokeData(AccessToken $accessToken, int $resultIdentifier): array
+    private function getStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
     {
         $response = $this->httpClient->request('GET', sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
             'headers' => [
@@ -149,6 +149,7 @@ class Concept2ApiConsumer
 
         $phaseKey = 0;
         $maxTime = 0;
+        $strokeData = [];
         foreach ($response->toArray()['data'] as $datum) {
             if ($maxTime > $datum['t']) {
                 ++$phaseKey;
@@ -166,7 +167,7 @@ class Concept2ApiConsumer
         return $strokeData;
     }
 
-    private function getAccessToken(User $user): AccessToken
+    private function getAccessToken(User $user): AccessTokenInterface
     {
         /** @var OAuth2Client $client */
         $client = $this->clientRegistry->getClient('concept2');
