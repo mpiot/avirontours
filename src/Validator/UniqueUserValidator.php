@@ -23,15 +23,20 @@ namespace App\Validator;
 use App\Repository\UserRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueUserValidator extends ConstraintValidator
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
+        if (!$constraint instanceof UniqueUser) {
+            throw new UnexpectedTypeException($constraint, UniqueUser::class);
+        }
+
         $users = $this->userRepository->findForUniqueness(['firstName' => $value->firstName, 'lastName' => $value->lastName]);
 
         if (!empty($users)) {

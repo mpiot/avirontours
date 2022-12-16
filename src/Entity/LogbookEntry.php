@@ -63,7 +63,7 @@ class LogbookEntry
 
     #[Assert\NotBlank(groups: ['finish'])]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $endAt = null;
+    private ?\DateTime $endAt = null;
 
     #[Assert\NotBlank(groups: ['finish'])]
     #[Assert\LessThanOrEqual(value: 30, groups: ['finish'])]
@@ -145,36 +145,36 @@ class LogbookEntry
         return array_merge($crewMembers, $this->nonUserCrewMembers);
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(\DateTime $date): self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getStartAt(): ?\DateTimeInterface
+    public function getStartAt(): ?\DateTime
     {
         return $this->startAt;
     }
 
-    public function setStartAt(?\DateTimeInterface $startAt): self
+    public function setStartAt(?\DateTime $startAt): self
     {
         $this->startAt = $startAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeInterface
+    public function getEndAt(): ?\DateTime
     {
         return $this->endAt;
     }
 
-    public function setEndAt(?\DateTimeInterface $endAt): self
+    public function setEndAt(?\DateTime $endAt): self
     {
         $this->endAt = $endAt;
 

@@ -67,6 +67,6 @@ class Concept2Provider extends AbstractProvider
 
     protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
     {
-        return new Concept2ResourceOwner($response, $token);
+        return new Concept2ResourceOwner($response);
     }
 }

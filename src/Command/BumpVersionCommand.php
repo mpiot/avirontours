@@ -60,9 +60,15 @@ class BumpVersionCommand extends Command
             $fileContent = file_get_contents($filename);
 
             if ($input->getOption('meta')) {
-                $fileContent = u($fileContent)->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-]+)(\+?[0-9a-z\.\-]*)#', '${1}${2}+'.$version);
+                $fileContent = u($fileContent)
+                    ->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-]+)(\+?[0-9a-z\.\-]*)#', '${1}${2}+'.$version)
+                    ->toString()
+                ;
             } else {
-                $fileContent = u($fileContent)->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-\+]+)#', '${1}'.$version);
+                $fileContent = u($fileContent)
+                    ->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-\+]+)#', '${1}'.$version)
+                    ->toString()
+                ;
             }
 
             $filesystem->dumpFile($filename, $fileContent);

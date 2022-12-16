@@ -74,9 +74,6 @@ class MedicalCertificate
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $fileMimeType = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $updatedAt = null;
 

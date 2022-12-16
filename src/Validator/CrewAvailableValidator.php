@@ -25,16 +25,19 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class CrewAvailableValidator extends ConstraintValidator
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        /* @var $constraint CrewAvailable */
+        if (!$constraint instanceof CrewAvailable) {
+            throw new UnexpectedTypeException($constraint, CrewAvailable::class);
+        }
 
         if (!$value instanceof Collection) {
             throw new \Exception('The CrewAvailableValidator must be used on a User ArrayCollection.');

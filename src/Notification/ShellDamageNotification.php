@@ -26,18 +26,19 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
 use Symfony\Component\Notifier\Notification\Notification;
+use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 class ShellDamageNotification extends Notification implements EmailNotificationInterface
 {
-    public function __construct(private ShellDamage $shellDamage)
+    public function __construct(private readonly ShellDamage $shellDamage)
     {
         $this->importance(ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM);
 
         parent::__construct('Nouvelle avarie');
     }
 
-    public function asEmailMessage(RecipientInterface $recipient, string $transport = null): ?EmailMessage
+    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
     {
         $message = EmailMessage::fromNotification($this, $recipient);
         /** @var TemplatedEmail $rawMessage */
