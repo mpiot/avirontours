@@ -21,7 +21,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: "8.1"
+                  php-version: 8.1.13
                   tools: composer:v2
 
             - name: Get Composer Cache Directory
@@ -102,10 +102,10 @@ jobs:
                   ref: develop
 
             - name: Install PHP with extensions
-              uses: shivammathur/setup-php@2.7.0
+              uses: shivammathur/setup-php@v2
               with:
                   coverage: "none"
-                  php-version: 8.1
+                  php-version: 8.1.13
                   tools: composer:v2
 
             - uses: actions/setup-node@v3
