@@ -142,6 +142,7 @@
         ]
     },
     "conflict": {
+        "symfony/expression-language": "v6.2.2",
         "symfony/symfony": "*"
     },
     "extra": {
