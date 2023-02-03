@@ -26,18 +26,25 @@ use App\Chart\TrainingChart;
 use App\Repository\SeasonCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class HomepageController extends AbstractController
 {
     #[Route(path: '', name: 'homepage')]
-    public function homepage(SeasonCategoryRepository $seasonCategoryRepository, LogbookChart $logbookChart, PhysicalQualitiesChart $physicalQualitiesChart, TrainingChart $trainingsChart): Response
+    public function homepage(SeasonCategoryRepository $seasonCategoryRepository): Response
     {
-        if (null === $this->getUser()) {
-            return $this->render('homepage/homepage.html.twig', [
-                'season_categories' => $seasonCategoryRepository->findAvailableForSubscription(),
-            ]);
-        }
+        return $this->render('homepage/homepage.html.twig', [
+            'season_categories' => $seasonCategoryRepository->findAvailableForSubscription(),
+        ]);
+    }
 
+    #[Route(path: '/dashboard', name: 'dashboard')]
+    #[IsGranted('ROLE_USER')]
+    public function dashboard(
+        LogbookChart $logbookChart,
+        PhysicalQualitiesChart $physicalQualitiesChart,
+        TrainingChart $trainingsChart
+    ): Response {
         return $this->render('homepage/dashboard.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),
             'physicalQualitiesChart' => $physicalQualitiesChart->chart($this->getUser()),
