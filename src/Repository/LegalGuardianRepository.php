@@ -29,9 +29,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method LegalGuardian|null findOneBy(array $criteria, array $orderBy = null)
  * @method LegalGuardian[]    findAll()
  * @method LegalGuardian[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- *
- * @psalm-method list<LegalGuardian> findAll()
- * @psalm-method list<LegalGuardian> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LegalGuardianRepository extends ServiceEntityRepository
 {

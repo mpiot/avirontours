@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Shell[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Shell>
- *
- * @psalm-method list<Shell> findAll()
- * @psalm-method list<Shell> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ShellRepository extends ServiceEntityRepository
 {

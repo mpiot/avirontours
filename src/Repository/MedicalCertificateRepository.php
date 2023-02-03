@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MedicalCertificate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<MedicalCertificate>
- *
- * @psalm-method list<MedicalCertificate> findAll()
- * @psalm-method list<MedicalCertificate> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MedicalCertificateRepository extends ServiceEntityRepository
 {

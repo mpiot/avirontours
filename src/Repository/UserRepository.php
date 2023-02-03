@@ -39,9 +39,6 @@ use function Symfony\Component\String\u;
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<User>
- *
- * @psalm-method list<User> findAll()
- * @psalm-method list<User> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {

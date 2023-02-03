@@ -34,9 +34,6 @@ use Knp\Component\Pager\PaginatorInterface;
  * @method LogbookEntry[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<LogbookEntry>
- *
- * @psalm-method list<LogbookEntry> findAll()
- * @psalm-method list<LogbookEntry> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LogbookEntryRepository extends ServiceEntityRepository
 {
