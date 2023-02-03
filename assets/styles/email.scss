@@ -1,0 +1,22 @@
+@import "~foundation-emails";
+
+body {
+    background-color: #f8f8f8;
+    color: #3c3c3b;
+}
+
+.header {
+    border-top: 2px solid #1a3996;
+}
+
+.social a {
+    color: #3c3c3b;
+}
+
+.footer {
+    background-color: #1a3996;
+
+    p, a {
+        color: #ffffff;
+    }
+}

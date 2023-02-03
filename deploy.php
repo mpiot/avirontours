@@ -57,6 +57,7 @@ host('rhea.avirontours.fr')
 
 after('deploy:symlink', 'database:migrate');
 after('deploy:symlink', 'php:restart');
+after('deploy:symlink', 'app:stop-workers');
 after('deploy:failed', 'deploy:unlock');
 
 // Tasks
@@ -72,6 +73,11 @@ task('deploy:vendors', function () {
         warning('To speed up composer installation setup "unzip" command with PHP zip extension.');
     }
     run('cd {{release_or_current_path}} && APP_ENV={{symfony_env}} {{bin/composer}} {{composer_action}} {{composer_options}} 2>&1');
+});
+
+desc('Stop workers');
+task('app:stop-workers', function (): void {
+    run('cd {{release_or_current_path}} && {{bin/console}} messenger:stop-workers');
 });
 
 desc('Restart PHP');
