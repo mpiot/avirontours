@@ -33,9 +33,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Season[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Season>
- *
- * @psalm-method list<Season> findAll()
- * @psalm-method list<Season> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class SeasonRepository extends ServiceEntityRepository
 {

@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Anatomy[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<Anatomy>
- *
- * @psalm-method list<Anatomy> findAll()
- * @psalm-method list<Anatomy> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class AnatomyRepository extends ServiceEntityRepository
 {

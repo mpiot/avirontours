@@ -77,7 +77,7 @@ jobs:
               run: yarn build
 
             - name: Run tests with Paratest
-              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --processes 8 --exclude-group phpunit,e2e --coverage-clover paratest-coverage-report.xml --log-junit paratest-tests-report.xml
+              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --processes 8 --coverage-clover paratest-coverage-report.xml --log-junit paratest-tests-report.xml
 
             - name: Upload Reports
               uses: actions/upload-artifact@v2

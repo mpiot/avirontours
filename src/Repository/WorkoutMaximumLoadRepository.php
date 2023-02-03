@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method WorkoutMaximumLoad[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<WorkoutMaximumLoad>
- *
- * @psalm-method list<WorkoutMaximumLoad> findAll()
- * @psalm-method list<WorkoutMaximumLoad> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class WorkoutMaximumLoadRepository extends ServiceEntityRepository
 {

@@ -37,9 +37,6 @@ use function Symfony\Component\String\u;
  * @method License[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<License>
- *
- * @psalm-method list<License> findAll()
- * @psalm-method list<License> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class LicenseRepository extends ServiceEntityRepository
 {

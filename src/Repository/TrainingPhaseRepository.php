@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method TrainingPhase[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<TrainingPhase>
- *
- * @psalm-method list<TrainingPhase> findAll()
- * @psalm-method list<TrainingPhase> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class TrainingPhaseRepository extends ServiceEntityRepository
 {

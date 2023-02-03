@@ -31,9 +31,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method PhysicalQualities[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  *
  * @extends ServiceEntityRepository<PhysicalQualities>
- *
- * @psalm-method list<PhysicalQualities> findAll()
- * @psalm-method list<PhysicalQualities> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PhysicalQualitiesRepository extends ServiceEntityRepository
 {
