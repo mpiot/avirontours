@@ -1,0 +1,14 @@
+{
+    "name": "vendor_name/assets",
+    "description": "description",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "mpiot",
+            "email": "email@example.com"
+        }
+    ],
+    "require": {
+    }
+}

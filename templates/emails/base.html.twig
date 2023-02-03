@@ -1,93 +1,84 @@
-{% apply inky_to_html|inline_css(source('@styles/foundation-emails.css')) %}
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <style>
-            body {
-                background-color: #f8f8f8;
-            }
+{% apply inky_to_html|inline_css(encore_entry_css_source('email')) %}
+    <spacer size="24"></spacer>
 
-            .social a {
-              color: #000000;
-            }
+    <container class="header">
+        <spacer size="48"></spacer>
+    </container>
 
-            .footer {
-                background-color: #1a3996;
-                color: #ffffff;
-            }
-        </style>
-    </head>
+    {% block body %}
+    {% endblock %}
 
-    <body>
+    <container>
         <spacer size="16"></spacer>
-        <container>
-            <row class="header">
-                <columns>
-                    <spacer size="16"></spacer>
-                    <center>
-                        <img class="text-center" src="{{ email.image('@images/logo_colored.png') }}" alt="Logo">
-                    </center>
-                    <spacer size="16"></spacer>
-                </columns>
-            </row>
-        </container>
 
-        {% block body %}
-        {% endblock %}
+        <row>
+            <columns>
+                <small>Cet email a été envoyé automatiquement, merci de ne pas y répondre.<small>
+            </columns>
+        </row>
 
-        <container>
-            <spacer size="75"></spacer>
-            <row class="social">
-                <columns>
-                    <row>
-                        <columns>
-                            <img class="text-center" src="{{ email.image('@images/facebook.png') }}" alt="Logo Facebook" height="24">
-                        </columns>
-                        <columns>
-                            <p style="padding-top: 0.1rem">
-                                <a href="https://fr-fr.facebook.com/avironTM/">Facebook</a>
-                            </p>
-                        </columns>
-                    </row>
-                </columns>
-                <columns>
-                    <row>
-                        <columns>
-                            <img class="text-center" src="{{ email.image('@images/instagram.png') }}" alt="Logo Instagram" height="24">
-                        </columns>
-                        <columns>
-                            <p style="padding-top: 0.1rem">
-                                <a href="https://www.instagram.com/avirontours/">Instagram</a>
-                            </p>
-                        </columns>
-                    </row>
-                </columns>
-                <columns>
-                    <row>
-                        <columns>
-                            <img class="text-center" src="{{ email.image('@images/youtube.png') }}" alt="Logo Youtube" height="24">
-                        </columns>
-                        <columns>
-                            <p style="padding-top: 0.1rem;">
-                                <a href="https://www.youtube.com/channel/UCWfxykhdj-8gWj4SDa6fJoQ">Youtube</a>
-                            </p>
-                        </columns>
-                    </row>
-                </columns>
-            </row>
-            <row class="footer">
-                <columns>
-                    <spacer size="40"></spacer>
-                    <p class="text-center" style="color: #ffffff;">
-                        Aviron Tours Métropole<br/>
-                        5 Avenue de Florence, 37000 Tours<br/>
-                        02 47 44 30 44
-                    </p>
-                    <spacer size="20"></spacer>
-                </columns>
-            </row>
-        </container>
-        <spacer size="16"></spacer>
-    </body>
-</html>
+        <row class="social">
+            <columns>
+                <row>
+                    <columns>
+                        <img class="text-center" src="{{ email.image('@images/facebook.png') }}" alt="Logo Facebook" height="24">
+                    </columns>
+
+                    <columns>
+                        <p style="padding-top: 0.1rem">
+                            <a href="https://fr-fr.facebook.com/avironTM/">Facebook</a>
+                        </p>
+                    </columns>
+                </row>
+            </columns>
+
+            <columns>
+                <row>
+                    <columns>
+                        <img class="text-center" src="{{ email.image('@images/instagram.png') }}" alt="Logo Instagram" height="24">
+                    </columns>
+
+                    <columns>
+                        <p style="padding-top: 0.1rem">
+                            <a href="https://www.instagram.com/avirontours/">Instagram</a>
+                        </p>
+                    </columns>
+                </row>
+            </columns>
+
+            <columns>
+                <row>
+                    <columns>
+                        <img class="text-center" src="{{ email.image('@images/youtube.png') }}" alt="Logo Youtube" height="24">
+                    </columns>
+
+                    <columns>
+                        <p style="padding-top: 0.1rem;">
+                            <a href="https://www.youtube.com/channel/UCWfxykhdj-8gWj4SDa6fJoQ">Youtube</a>
+                        </p>
+                    </columns>
+                </row>
+            </columns>
+        </row>
+
+        <row class="footer">
+            <columns>
+                <spacer size="24"></spacer>
+
+                <img class="text-center" src="{{ email.image('@images/logo_white.svg') }}" height="70px" alt="Logo">
+            </columns>
+
+            <columns>
+                <spacer size="15"></spacer>
+                <p>
+                    Aviron Tours Métropole<br/>
+                    5 Avenue de Florence<br>
+                    37000 Tours<br/>
+                    02 47 44 30 44
+                </p>
+            </columns>
+        </row>
+    </container>
+
+    <spacer size="16"></spacer>
 {% endapply %}
