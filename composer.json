@@ -140,7 +140,7 @@
         ]
     },
     "conflict": {
-        "symfony/expression-language": "v6.2.2",
+        "symfony/security-bundle": "v6.2.6",
         "symfony/symfony": "*"
     },
     "extra": {
