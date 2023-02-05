@@ -10,6 +10,8 @@
     {% endfor %}
 
     {{ form_start(requestForm) }}
+        {{ form_errors(form) }}
+
         {{ form_row(requestForm.username, {
             'help': 'Nom utilisateur: prenom.nom'
         }) }}
