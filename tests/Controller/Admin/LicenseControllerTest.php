@@ -92,7 +92,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/season/{season_id}/license/new'];
         yield ['POST', '/admin/season/{season_id}/license/new'];
@@ -102,7 +102,7 @@ class LicenseControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
     }
 
-    public function adminUrlProvider()
+    public function adminUrlProvider(): \Generator
     {
         yield ['POST', '/admin/season/{season_id}/license/{id}'];
     }

@@ -38,7 +38,7 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/workout-maximum-load'];
     }

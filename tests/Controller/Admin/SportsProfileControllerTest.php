@@ -56,7 +56,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/sports-profile'];
         yield ['GET', '/admin/sports-profile/{id}/physiology'];

@@ -57,7 +57,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/shell-damage-category'];
         yield ['GET', '/admin/shell-damage-category/new'];

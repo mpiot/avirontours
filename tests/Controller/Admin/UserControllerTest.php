@@ -57,7 +57,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/user'];
         yield ['GET', '/admin/user/{id}'];

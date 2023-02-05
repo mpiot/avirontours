@@ -57,7 +57,7 @@ class GroupControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/group'];
         yield ['GET', '/admin/group/{id}'];

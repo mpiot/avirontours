@@ -39,7 +39,7 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/profile'];
         yield ['GET', '/profile/edit'];
