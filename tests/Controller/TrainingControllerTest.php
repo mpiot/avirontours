@@ -66,7 +66,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/training'];
         yield ['GET', '/training/{id}'];

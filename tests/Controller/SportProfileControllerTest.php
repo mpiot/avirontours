@@ -37,7 +37,7 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/sport-profile/physiology'];
         yield ['GET', '/sport-profile/anatomy'];

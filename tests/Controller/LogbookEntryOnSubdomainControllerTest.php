@@ -29,15 +29,14 @@ use App\Factory\ShellFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogbookEntryControllerTest extends AppWebTestCase
+class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 {
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessUnauthorizedForAnonymousUser($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
@@ -46,15 +45,15 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->request($method, $url);
+        $client->request($method, $url, server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForUnlicensedUser($method, $url): void
+    public function testAccessForbidden($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
@@ -63,20 +62,17 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
-        $client->request($method, $url);
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request($method, $url, server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function urlProvider(): \Generator
     {
-        yield ['GET', '/logbook-entry'];
-        yield ['GET', '/logbook-entry/new'];
-        yield ['POST', '/logbook-entry/new'];
-        yield ['GET', '/logbook-entry/{id}/finish'];
-        yield ['POST', '/logbook-entry/{id}/finish'];
-        yield ['GET', '/logbook-entry/statistics'];
         yield ['GET', '/logbook-entry/{id}/edit'];
         yield ['POST', '/logbook-entry/{id}/edit'];
         yield ['POST', '/logbook-entry/{id}'];
@@ -86,8 +82,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
     }
@@ -99,8 +98,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($licences[0]->getUser());
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -135,8 +137,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($licences[0]->getUser());
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -164,8 +169,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -188,8 +196,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -216,8 +227,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -240,8 +254,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -267,8 +284,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -293,8 +313,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -318,8 +341,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -333,71 +359,23 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assert()->count(1);
     }
 
-    public function testNewLogbookEntryWithNonUserCrewMember(): void
-    {
-        $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
-        $license = LicenseFactory::new()->annualInactive()->withInvalidLicense()->create();
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
-
-        $client->submitForm('Sauver', [
-            'logbook_entry_start[shell]' => $shell->getId(),
-            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
-            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe',
-            'logbook_entry_start[startAt]' => '09:00',
-        ]);
-
-        $this->assertResponseRedirects();
-
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
-
-        $this->assertCount(1, $logBookEntry->getCrewMembers());
-        $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
-    }
-
     public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser(): void
     {
-        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+        LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($license->getUser());
-        $crawler = $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $crawler = $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
         $this->assertCount(0, $crawler->filter('#logbook_entry_start_nonUserCrewMembers'));
     }
 
-    public function testNewLogbookEntryWithOnlyNonUserCrewMembers(): void
-    {
-        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/new');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Sauver', [
-            'logbook_entry_start[shell]' => $shell->getId(),
-            'logbook_entry_start[crewMembers]' => [],
-            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe, Foo Bar',
-            'logbook_entry_start[startAt]' => '09:00',
-        ]);
-
-        $this->assertResponseRedirects();
-
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
-
-        $this->assertCount(0, $logBookEntry->getCrewMembers());
-        $this->assertCount(2, $logBookEntry->getNonUserCrewMembers());
-    }
-
-    public function testUserListLogbookEntryFormAsAdmin(): void
+    public function testUserListLogbookEntryForm(): void
     {
         LicenseFactory::new()->annualActive()->withValidLicense()->many(1)->create();
         LicenseFactory::new()->annualActive()->withInvalidLicense()->many(2)->create();
@@ -406,166 +384,14 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $crawler = $client->request('GET', '/logbook-entry/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(16, $crawler->filter('#logbook_entry_start_crewMembers > option'));
-    }
-
-    public function testUserListLogbookEntryFormAsUser(): void
-    {
-        $users = LicenseFactory::new()->annualActive()->withValidLicense()->many(1)->create();
-        LicenseFactory::new()->annualActive()->withInvalidLicense()->many(2)->create();
-        LicenseFactory::new()->annualInactive()->many(4)->create();
-        UserFactory::createMany(8);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->loginUser($users[0]->getUser());
-        $crawler = $client->request('GET', '/logbook-entry/new');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $crawler = $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
         $this->assertCount(1, $crawler->filter('#logbook_entry_start_crewMembers > option'));
-    }
-
-    public function testEditLogbookEntry(): void
-    {
-        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
-        $users = UserFactory::createMany(2);
-        $entry = LogbookEntryFactory::createOne(['shellDamages' => new ArrayCollection()]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Modifier', [
-            'logbook_entry[shell]' => $shell->getId(),
-            'logbook_entry[crewMembers]' => [$users[0]->getId(), $users[1]->getId()],
-            'logbook_entry[startAt]' => '15:00',
-            'logbook_entry[endAt]' => '16:00',
-            'logbook_entry[coveredDistance]' => 12.22,
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertSame($shell->getId(), $entry->getShell()->getId());
-        $this->assertCount(2, $entry->getCrewMembers());
-        $this->assertSame((new \DateTime())->format('d/m/Y'), $entry->getDate()->format('d/m/Y'));
-        $this->assertSame('15:00', $entry->getStartAt()->format('H:i'));
-        $this->assertSame('16:00', $entry->getEndAt()->format('H:i'));
-        $this->assertSame(12.2, $entry->getCoveredDistance());
-        $this->assertEmpty($entry->getShellDamages());
-        $this->assertSame(12.2, $entry->getShell()->getMileage());
-        TrainingFactory::repository()->assert()->count(0);
-    }
-
-    public function testEditLogbookEntryWithCrewMemberOnWater(): void
-    {
-        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
-        LogbookEntryFactory::new()->notFinished()->create([
-            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false])->create(),
-            'crewMembers' => [$license->getUser()],
-        ]);
-        $entry = LogbookEntryFactory::new()->notFinished()->create([
-            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false])->create(),
-            'nonUserCrewMembers' => ['John Doe'],
-        ]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Modifier', [
-            'logbook_entry[crewMembers]' => [$license->getUser()->getId()],
-            'logbook_entry[nonUserCrewMembers]' => '',
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertCount(1, $entry->getCrewMembers());
-        $this->assertSame($license->getUser()->getId(), $entry->getCrewMembers()->first()->getId());
-        $this->assertCount(0, $entry->getNonUserCrewMembers());
-    }
-
-    public function testEditLogbookEntryWithShellOnWater(): void
-    {
-        $entries = LogbookEntryFactory::new()->notFinished()->many(2)->create([
-            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false])->create(),
-            'nonUserCrewMembers' => ['John Doe'],
-        ]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entries[0]->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Modifier', [
-            'logbook_entry[shell]' => $entries[1]->getShell()->getId(),
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertSame($entries[1]->getShell()->getId(), $entries[0]->getShell()->getId());
-    }
-
-    public function testEditLogbookEntryWithDamagedShell(): void
-    {
-        $shellDamage = ShellDamageFactory::new()->highlyDamaged()->create();
-        $entry = LogbookEntryFactory::new()->notFinished()->create([
-            'shell' => ShellFactory::new(['numberRowers' => 1, 'coxed' => false])->create(),
-            'nonUserCrewMembers' => ['John Doe'],
-        ]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Modifier', [
-            'logbook_entry[shell]' => $shellDamage->getShell()->getId(),
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertSame($shellDamage->getShell()->getId(), $entry->getShell()->getId());
-    }
-
-    public function testEditShellLogbookEntry(): void
-    {
-        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
-        $entryShell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
-        $entry = LogbookEntryFactory::createOne([
-            'shellDamages' => new ArrayCollection(),
-            'shell' => $entryShell,
-            'crewMembers' => UserFactory::new()->many($entryShell->getCrewSize()),
-        ]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Modifier', [
-            'logbook_entry[shell]' => $shell->getId(),
-            'logbook_entry[crewMembers]' => [$entry->getCrewMembers()->get(0)->getId(), $entry->getCrewMembers()->get(1)->getId()],
-            'logbook_entry[startAt]' => '15:00',
-            'logbook_entry[endAt]' => '16:00',
-            'logbook_entry[coveredDistance]' => 10,
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertSame($shell->getId(), $entry->getShell()->getId());
-        $this->assertSame(10.0, $entry->getShell()->getMileage());
-        $this->assertSame(0.0, $entryShell->getMileage());
     }
 
     public function testFinishLogbookEntry(): void
@@ -574,8 +400,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -601,8 +430,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -640,8 +472,11 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $crawler = $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $crawler = $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
 
@@ -654,7 +489,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $values['logbook_entry_finish']['shellDamages'][0]['description'] = '';
         $values['logbook_entry_finish']['shellDamages'][1]['category'] = $categories[1]->getId();
         $values['logbook_entry_finish']['shellDamages'][1]['description'] = 'A little description';
-        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles(), server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseRedirects();
         $this->assertCount(2, $entry->getShellDamages());
@@ -662,28 +497,5 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertNull($entry->getShellDamages()->first()->getDescription());
         $this->assertSame($categories[1]->getId(), $entry->getShellDamages()->last()->getCategory()->getId());
         $this->assertSame('A little description', $entry->getShellDamages()->last()->getDescription());
-    }
-
-    public function testDeleteLogbookEntry(): void
-    {
-        $shell = ShellFactory::createOne();
-        $entry = LogbookEntryFactory::createOne([
-            'shell' => $shell,
-        ])->disableAutoRefresh();
-        $shell->save();
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
-        $client->request('GET', '/logbook-entry/'.$entry->getId().'/edit');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Supprimer');
-
-        $this->assertResponseRedirects('/logbook-entry');
-
-        LogbookEntryFactory::repository()->assert()->notExists($entry);
-        $this->assertSame(0.0, $shell->getMileage());
     }
 }

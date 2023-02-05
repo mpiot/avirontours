@@ -77,13 +77,13 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider()
+    public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/season'];
         yield ['GET', '/admin/season/{id}'];
     }
 
-    public function adminUrlProvider()
+    public function adminUrlProvider(): \Generator
     {
         yield ['GET', '/admin/season/new'];
         yield ['POST', '/admin/season/new'];
