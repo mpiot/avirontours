@@ -153,12 +153,12 @@
                 </div>
 
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/building.jpg') }}); background-position: center;">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/internship.jpg') }}); background-position: center;">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Entreprises</h2>
+                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Stages</h2>
                             <ul class="d-flex list-unstyled mt-auto">
                                 <li class="me-auto">
-                                    <a href="mailto:contact@avirontours.fr" class="btn btn-primary stretched-link">Nous contacter</a>
+                                    <a href="https://www.helloasso.com/associations/aviron-tours-metropole" class="btn btn-primary stretched-link">S'inscrire</a>
                                 </li>
                             </ul>
                         </div>
@@ -166,12 +166,12 @@
                 </div>
 
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/descente_du_cher.jpg') }}); background-position: center;">
+                    <div class="card card-cover h-100 overflow-hidden text-white bg-dark border-0 rounded-5 shadow-lg" style="background-image: url({{ asset('build/images/building.jpg') }}); background-position: center;">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-shadow-1">
-                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Descente du Cher</h2>
+                            <h2 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Entreprises</h2>
                             <ul class="d-flex list-unstyled mt-auto">
                                 <li class="me-auto">
-                                    <a href="{{ path('app_static_descenteducher') }}" class="btn btn-primary stretched-link">Informations</a>
+                                    <a href="mailto:contact@avirontours.fr" class="btn btn-primary stretched-link">Nous contacter</a>
                                 </li>
                             </ul>
                         </div>
@@ -229,63 +229,61 @@
             </div>
         </div>
 
-        <div class="mb-n3 pb-3" style="background: linear-gradient(165deg, transparent 55%, #eefff9 55%);">
-            <div class="container mt-5 px-4">
-                <span id="licenses" class="anchor"></span>
-                <h2 class="pb-2 border-bottom">Nos licences</h2>
+        <div class="container mt-5 px-4">
+            <span id="licenses" class="anchor"></span>
+            <h2 class="pb-2 border-bottom">Nos licences</h2>
 
-                <div class="row row-cols-1 row-cols-md-{{ season_categories|length }} mt-5 mx-3 text-center align-items-stretch">
-                    {% for season_category in season_categories %}
-                        <div class="col">
-                            <div class="card mb-4 rounded-3 shadow-sm">
-                                <div class="card-header py-3">
-                                    <h4 class="my-0 fw-normal">{{ season_category.name }}</h4>
-                                </div>
-                                <div class="card-body">
-                                    <h1 class="card-title pricing-card-title">{{ season_category.price }} €<small
-                                                class="text-muted fw-light">/an</small></h1>
-                                    {% if season_category.description is not null %}
-                                        <p class="card-text text-start">{{ season_category.description|markdown_to_html }}</p>
-                                    {% endif %}
-                                    <a class="w-100 btn btn-lg btn-outline-primary"
-                                       href="{{ path('app_register', { 'slug': season_category.slug }) }}">
-                                        S'inscrire
-                                    </a>
-                                </div>
+            <div class="row row-cols-1 row-cols-md-{{ season_categories|length }} mt-5 mx-3 text-center align-items-stretch">
+                {% for season_category in season_categories %}
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm">
+                            <div class="card-header py-3">
+                                <h4 class="my-0 fw-normal">{{ season_category.name }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ season_category.price }} €<small
+                                            class="text-muted fw-light">/an</small></h1>
+                                {% if season_category.description is not null %}
+                                    <p class="card-text text-start">{{ season_category.description|markdown_to_html }}</p>
+                                {% endif %}
+                                <a class="w-100 btn btn-lg btn-outline-primary"
+                                   href="{{ path('app_register', { 'slug': season_category.slug }) }}">
+                                    S'inscrire
+                                </a>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="container mt-5 px-4">
-                <span id="find-us" class="anchor"></span>
-                <h2 class="pb-2 border-bottom">Nous trouver</h2>
-
-                <div class="row mt-5 mx-3">
-                    <div class="col-md-6 mb-3" {{ stimulus_controller('map', { 'lat': 47.374061602795926, 'lng': 0.7252358447121187, 'zoom': 13, 'marker': true }) }}>
-                        <div data-map-target="container" style="height: 360px;"></div>
                     </div>
+                {% endfor %}
+            </div>
+        </div>
 
-                    <address class="col-md-6">
-                        <div class="d-flex">
-                            <span class="fas fa-map-marker-alt me-3 pt-1"></span>
-                            <span>
-                                Pôle nautique du Cher<br>
-                                5 Avenue de Florence<br>
-                                37000 Tours
-                            </span>
-                        </div>
-                        <div class="d-flex">
-                            <span class="fas fa-phone me-3 pt-1"></span>
-                            <a href="tel:+33247443044">02 47 44 30 44</a>
-                        </div>
-                        <div class="d-flex">
-                            <span class="fas fa-at me-3 pt-1"></span>
-                            <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
-                        </div>
-                    </address>
+        <div class="container mt-5 px-4">
+            <span id="find-us" class="anchor"></span>
+            <h2 class="pb-2 border-bottom">Nous trouver</h2>
+
+            <div class="row mt-5 mx-3">
+                <div class="col-md-6 mb-3" {{ stimulus_controller('map', { 'lat': 47.374061602795926, 'lng': 0.7252358447121187, 'zoom': 13, 'marker': true }) }}>
+                    <div data-map-target="container" style="height: 360px;"></div>
                 </div>
+
+                <address class="col-md-6">
+                    <div class="d-flex">
+                        <span class="fas fa-map-marker-alt me-3 pt-1"></span>
+                        <span>
+                            Pôle nautique du Cher<br>
+                            5 Avenue de Florence<br>
+                            37000 Tours
+                        </span>
+                    </div>
+                    <div class="d-flex">
+                        <span class="fas fa-phone me-3 pt-1"></span>
+                        <a href="tel:+33247443044">02 47 44 30 44</a>
+                    </div>
+                    <div class="d-flex">
+                        <span class="fas fa-at me-3 pt-1"></span>
+                        <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
+                    </div>
+                </address>
             </div>
         </div>
     </div>
