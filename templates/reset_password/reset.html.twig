@@ -6,6 +6,8 @@
     <div class="fs-4 mb-3">Réinitialiser mon mot de passe</div>
 
     {{ form_start(resetForm) }}
+        {{ form_errors(form) }}
+
         {{ form_row(resetForm.plainPassword) }}
 
         <div class="d-grid gap-2">
