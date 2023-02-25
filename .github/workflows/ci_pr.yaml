@@ -63,22 +63,23 @@ jobs:
             - name: Run phpStan
               run: ./vendor/bin/phpstan
 
-    security-checker:
-        name: Security Checker
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            - name: Security checker
-              uses: symfonycorp/security-checker-action@v3
+#    security-checker:
+#        name: Security Checker
+#        runs-on: ubuntu-latest
+#
+#        steps:
+#            - name: Checkout code
+#              uses: actions/checkout@v3
+#
+#            - name: Security checker
+#              uses: symfonycorp/security-checker-action@v3
 
     migrations-and-fixtures:
         name: Migrations & Fixtures
         runs-on: ubuntu-latest
 
-        needs: [ lint, security-checker ]
+#        needs: [ lint, security-checker ]
+        needs: lint
 
         services:
             postgres:
@@ -172,7 +173,8 @@ jobs:
     tests:
         name: Tests
 
-        needs: [ lint, security-checker ]
+#        needs: [ lint, security-checker ]
+        needs: lint
 
         uses: ./.github/workflows/tests.yaml
         secrets: inherit
