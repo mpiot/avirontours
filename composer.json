@@ -139,7 +139,6 @@
         ]
     },
     "conflict": {
-        "symfony/security-bundle": "v6.2.6",
         "symfony/symfony": "*"
     },
     "extra": {
