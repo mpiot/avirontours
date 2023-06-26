@@ -32,7 +32,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: pcov
-                  php-version: 8.1.13
+                  php-version: 8.2
                   tools: composer:v2
 
             - name: Set composer cache directory
