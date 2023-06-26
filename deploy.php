@@ -82,7 +82,7 @@ task('app:stop-workers', function (): void {
 
 desc('Restart PHP');
 task('php:restart', function (): void {
-    run('sudo systemctl restart php8.1-fpm');
+    run('sudo systemctl restart php8.2-fpm');
 });
 
 desc('Optimize symfony environment files');
