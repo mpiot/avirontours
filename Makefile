@@ -14,7 +14,7 @@ YARN     = yarn
 .PHONY        : start stop restart
 .PHONY        : docker-start docker-stop docker-up docker-down docker-logs
 .PHONY        : db-reset db-fixtures
-.PHONY        : test-all test-all-weak lint validate-schema tests tests-weak tests-phpunit tests-phpunit-weak tests-paratest tests-paratest-weak
+.PHONY        : test-all test-all-weak lint validate-schema tests tests-weak
 
 # Help display
 help:
@@ -84,18 +84,8 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
-tests: tests-paratest tests-phpunit ## Run tests
-
-tests-weak: tests-paratest-weak tests-phpunit-weak ## Run tests weak
-
-tests-paratest: ## Run Paratest tests
-	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/paratest --runner WrapperRunner
-
-tests-paratest-weak: ## Run Paratest tests weak
-	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/paratest --runner WrapperRunner
-
-tests-phpunit: ## Run PHPUnit tests
+tests: ## Run tests
 	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
 
-tests-phpunit-weak: ## Run PHPUnit tests weak
+tests-weak: ## Run tests weak
 	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit

@@ -76,7 +76,6 @@
         "vich/uploader-bundle": "^1.18"
     },
     "require-dev": {
-        "brianium/paratest": "^6.10",
         "dama/doctrine-test-bundle": "^7.2",
         "deployer/deployer": "^7.3",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
