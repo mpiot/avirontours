@@ -83,9 +83,8 @@ final class ShellDamageFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(ShellDamage $shellDamage) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(ShellDamage $shellDamage) {})
     }
 
     protected static function getClass(): string

@@ -55,6 +55,7 @@ class SeasonType extends AbstractType
                 ],
                 'allow_add' => true,
                 'by_reference' => false,
+                'error_bubbling' => false,
                 'attr' => [
                     'data-controller' => 'collection-type',
                     'data-collection-type-button-text-value' => 'Ajouter une catégorie',

@@ -30,7 +30,7 @@ use function Symfony\Component\String\u;
 
 class LogbookHostFirewallSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private string $logbookHost, private RouterInterface $router)
+    public function __construct(private readonly string $logbookHost, private readonly RouterInterface $router)
     {
     }
 

@@ -117,9 +117,8 @@ final class LicenseFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(License $license) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(License $license) {})
     }
 
     protected static function getClass(): string

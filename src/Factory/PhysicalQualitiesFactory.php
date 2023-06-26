@@ -58,9 +58,8 @@ final class PhysicalQualitiesFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->afterInstantiate(function(PhysicalQualities $physicalQualities) {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(PhysicalQualities $physicalQualities) {})
     }
 
     protected static function getClass(): string

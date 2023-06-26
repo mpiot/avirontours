@@ -143,7 +143,7 @@ class MedicalCertificate
      *
      * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $file
      */
-    public function setFile(?File $file = null): self
+    public function setFile(File $file = null): self
     {
         $this->file = $file;
 

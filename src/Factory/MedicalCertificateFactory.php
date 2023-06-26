@@ -54,9 +54,8 @@ final class MedicalCertificateFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
     }
 
     private function getUploadedFile(): UploadedFile

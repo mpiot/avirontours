@@ -27,18 +27,12 @@ use function Symfony\Component\String\u;
 
 class NonUserCrewMemberArrayToStringTransformer implements DataTransformerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function transform($nonUserCrewMembers): string
     {
         /* @var string[] $nonUserCrewMembers */
         return implode(',', $nonUserCrewMembers);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function reverseTransform($string): array
     {
         if (null === $string || u($string)->isEmpty()) {

@@ -61,9 +61,8 @@ final class GroupFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-        return $this
-            // ->afterInstantiate(function(Group $group) {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(Group $group) {})
     }
 
     protected static function getClass(): string

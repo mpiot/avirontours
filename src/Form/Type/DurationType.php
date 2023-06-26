@@ -28,9 +28,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DurationType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

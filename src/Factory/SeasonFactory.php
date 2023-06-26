@@ -82,9 +82,8 @@ final class SeasonFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(Season $season) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(Season $season) {})
     }
 
     protected static function getClass(): string

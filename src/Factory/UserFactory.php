@@ -90,9 +90,8 @@ final class UserFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(User $user) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(User $user) {})
     }
 
     protected static function getClass(): string

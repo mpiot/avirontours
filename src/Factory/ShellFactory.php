@@ -58,9 +58,8 @@ final class ShellFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(Shell $shell) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(Shell $shell) {})
     }
 
     protected static function getClass(): string

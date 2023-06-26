@@ -50,9 +50,8 @@ final class ShellDamageCategoryFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(ShellDamageCategory $shellDamageCategory) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(ShellDamageCategory $shellDamageCategory) {})
     }
 
     protected static function getClass(): string
