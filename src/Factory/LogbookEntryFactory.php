@@ -101,9 +101,8 @@ final class LogbookEntryFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->beforeInstantiate(function(LogbookEntry $logbookEntry) {})
-        ;
+        return $this;
+        // ->beforeInstantiate(function(LogbookEntry $logbookEntry) {})
     }
 
     protected static function getClass(): string

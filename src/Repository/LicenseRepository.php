@@ -202,7 +202,7 @@ class LicenseRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function findUserLicences(User $user, ?int $minYear = null, ?int $maxYear = null): array
+    public function findUserLicences(User $user, int $minYear = null, int $maxYear = null): array
     {
         $qb = $this->createQueryBuilder('license')
             ->innerJoin('license.user', 'user')->addSelect('user')

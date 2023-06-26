@@ -164,6 +164,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_form_agreeSwim')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(15, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
@@ -214,8 +215,9 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('form > div.invalid-feedback')->text());
-        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        $this->assertStringContainsString('Le membre est mineur, merci de renseigner un représentant légal.', $crawler->filter('form > div.alert.alert-danger')->text());
+        $this->assertCount(1, $crawler->filter('.alert.alert-danger'));
+        $this->assertCount(0, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
     }
@@ -316,6 +318,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('#registration_form_firstName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);

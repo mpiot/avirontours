@@ -5,8 +5,8 @@ on:
                 required: true
 
 jobs:
-    paratest:
-        name: Paratest
+    phpunit:
+        name: PHPUnit
         runs-on: ubuntu-latest
 
         services:
@@ -76,37 +76,37 @@ jobs:
             - name: Build assets
               run: yarn build
 
-            - name: Run tests with Paratest
-              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/paratest --runner WrapperRunner --processes 8 --coverage-clover paratest-coverage-report.xml --log-junit paratest-tests-report.xml
+            - name: Run tests
+              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
             - name: Upload Reports
               uses: actions/upload-artifact@v2
               with:
-                  name: paratest-reports
+                  name: phpunit-reports
                   path: |
-                      paratest-coverage-report.xml
-                      paratest-tests-report.xml
+                      coverage-report.xml
+                      tests-report.xml
                   retention-days: 1
 
     sonarcloud:
         name: SonarCloud
         runs-on: ubuntu-latest
 
-        needs: paratest
+        needs: phpunit
 
         steps:
             - uses: actions/checkout@v3
               with:
                   fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
-            - name: Download Paratest Coverage Reports
+            - name: Download Coverage Reports
               uses: actions/download-artifact@v2
               with:
-                  name: paratest-reports
+                  name: phpunit-reports
 
-            - name: Change Paths from PHPUnit & Paratest reports
+            - name: Change Paths from PHPUnit reports
               run: |
-                  sed -i 's#/home/runner/work/avirontours/avirontours#/github/workspace#g' paratest-coverage-report.xml
+                  sed -i 's#/home/runner/work/avirontours/avirontours#/github/workspace#g' coverage-report.xml
 
             - name: SonarCloud Scan
               uses: SonarSource/sonarcloud-github-action@master

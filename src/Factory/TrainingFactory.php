@@ -56,9 +56,8 @@ final class TrainingFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->afterInstantiate(function(Training $training) {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(Training $training) {})
     }
 
     protected static function getClass(): string

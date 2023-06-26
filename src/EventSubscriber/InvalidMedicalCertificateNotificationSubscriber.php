@@ -28,7 +28,7 @@ use Symfony\Component\Workflow\Event\Event;
 
 class InvalidMedicalCertificateNotificationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private MailerInterface $mailer)
+    public function __construct(private readonly MailerInterface $mailer)
     {
     }
 

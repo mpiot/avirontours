@@ -54,9 +54,8 @@ final class WorkoutMaximumLoadFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->afterInstantiate(function(WorkoutMaximumLoad $workoutMaximumLoad) {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(WorkoutMaximumLoad $workoutMaximumLoad) {})
     }
 
     protected static function getClass(): string

@@ -114,6 +114,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#shell_damage_category_name')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         ShellDamageCategoryFactory::repository()->assert()->count(0);
     }

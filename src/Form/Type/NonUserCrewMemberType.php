@@ -27,9 +27,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NonUserCrewMemberType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -37,9 +34,6 @@ class NonUserCrewMemberType extends AbstractType
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getParent(): string
     {
         return TextType::class;

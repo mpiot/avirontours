@@ -164,6 +164,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_type')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(5, $crawler->filter('.invalid-feedback'));
         LicenseFactory::repository()->assert()->count(0);
     }
@@ -189,6 +190,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LicenseFactory::repository()->assert()->count(1);
     }

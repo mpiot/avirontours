@@ -58,9 +58,8 @@ final class PhysiologyFactory extends ModelFactory
     protected function initialize(): self
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this
-            // ->afterInstantiate(function(Physiology $physiology) {})
-        ;
+        return $this;
+        // ->afterInstantiate(function(Physiology $physiology) {})
     }
 
     protected static function getClass(): string
