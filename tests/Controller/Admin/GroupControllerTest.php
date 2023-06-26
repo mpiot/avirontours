@@ -134,6 +134,7 @@ class GroupControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#group_name')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('#group_members')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         GroupFactory::repository()->assert()->count(0);
     }

@@ -166,8 +166,9 @@ class SeasonControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('.invalid-feedback.d-block')->text());
+        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('#season_seasonCategories')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#season_name')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         SeasonFactory::repository()->assert()->count(0);
     }
