@@ -94,7 +94,7 @@ class LogbookEntryType extends AbstractType
                 },
                 'options_as_html' => true,
                 'multiple' => true,
-                'help' => '<div class="text-info"><span class="fa fa-info-circle"> Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.</span></div>',
+                'help' => 'Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.',
                 'help_html' => true,
                 'autocomplete' => true,
             ])
