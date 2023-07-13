@@ -212,7 +212,7 @@ class SeasonControllerTest extends AppWebTestCase
     public function testExportSeasonContacts(): void
     {
         $season = SeasonFactory::createOne();
-        $license = LicenseFactory::createOne([
+        LicenseFactory::new()->withValidLicense()->create([
             'seasonCategory' => $season->getSeasonCategories()->first(),
         ]);
 
@@ -228,7 +228,7 @@ class SeasonControllerTest extends AppWebTestCase
     public function testExportSeasonLicenses(): void
     {
         $season = SeasonFactory::createOne();
-        $license = LicenseFactory::createOne([
+        LicenseFactory::createOne([
             'seasonCategory' => $season->getSeasonCategories()->first(),
             'marking' => ['medical_certificate_validated' => 1, 'payment_validated' => 1],
         ]);

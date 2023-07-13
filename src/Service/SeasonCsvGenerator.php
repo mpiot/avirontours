@@ -29,13 +29,13 @@ use Symfony\Component\Serializer\Serializer;
 
 class SeasonCsvGenerator
 {
-    public function __construct(private LicenseRepository $licenseRepository)
+    public function __construct(private readonly LicenseRepository $licenseRepository)
     {
     }
 
     public function exportContacts(Season $season): ?string
     {
-        $licenses = $this->licenseRepository->findBySeason($season);
+        $licenses = $this->licenseRepository->findForContactExport($season);
 
         if (empty($licenses)) {
             return null;
@@ -43,11 +43,29 @@ class SeasonCsvGenerator
 
         $data = [];
         foreach ($licenses as $license) {
+            $user = $license->getUser();
+
             $data[] = [
                 'fullName' => $license->getUser()->getFullName(),
                 'email' => $license->getUser()->getEmail(),
                 'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
             ];
+
+            if (null !== $user->getFirstLegalGuardian()) {
+                $data[] = [
+                    'fullName' => $user->getFirstLegalGuardian()->getFullName(),
+                    'email' => $user->getFirstLegalGuardian()->getEmail(),
+                    'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
+                ];
+            }
+
+            if (null !== $user->getSecondLegalGuardian()) {
+                $data[] = [
+                    'fullName' => $user->getSecondLegalGuardian()->getFullName(),
+                    'email' => $user->getSecondLegalGuardian()->getEmail(),
+                    'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
+                ];
+            }
         }
 
         $serializer = new Serializer([], [new CsvEncoder()]);
@@ -57,7 +75,7 @@ class SeasonCsvGenerator
 
     public function exportLicenses(Season $season): ?string
     {
-        $licenses = $this->licenseRepository->findBySeason($season, true);
+        $licenses = $this->licenseRepository->findForLicenseExport($season);
 
         if (empty($licenses)) {
             return null;

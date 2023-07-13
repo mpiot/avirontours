@@ -24,6 +24,7 @@ use App\Entity\License;
 use App\Entity\Season;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -61,24 +62,26 @@ class LicenseRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function findBySeason(Season $season, $statusReadyToLicense = false): array
+    /** @return License[] */
+    public function findForContactExport(Season $season): array
     {
-        $qb = $this->createQueryBuilder('license')
-            ->innerJoin('license.user', 'user')->addSelect('user')
-            ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
-            ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
-            ->innerJoin('season_category.season', 'season')
-            ->andWhere('season.id = :season')
+        $qb = $this->findBySeasonQueryBuilder($season)
             ->orderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
-            ->setParameter('season', $season->getId())
+            ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'validated\') = \'1\'')
         ;
 
-        if (true === $statusReadyToLicense) {
-            $qb
-                ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\'')
-            ;
-        }
+        return $qb->getQuery()->getResult();
+    }
+
+    /** @return License[] */
+    public function findForLicenseExport(Season $season): array
+    {
+        $qb = $this->findBySeasonQueryBuilder($season)
+            ->orderBy('user.firstName', 'ASC')
+            ->addOrderBy('user.lastName', 'ASC')
+            ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\'')
+        ;
 
         return $qb->getQuery()->getResult();
     }
@@ -228,5 +231,17 @@ class LicenseRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    private function findBySeasonQueryBuilder(Season $season): QueryBuilder
+    {
+        return $this->createQueryBuilder('license')
+            ->innerJoin('license.user', 'user')->addSelect('user')
+            ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
+            ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
+            ->innerJoin('season_category.season', 'season')
+            ->andWhere('season.id = :season')
+            ->setParameter('season', $season->getId())
+        ;
     }
 }
