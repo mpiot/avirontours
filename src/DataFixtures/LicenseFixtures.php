@@ -28,7 +28,7 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class LicenseFixturesFixtures extends Fixture implements DependentFixtureInterface
+class LicenseFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {

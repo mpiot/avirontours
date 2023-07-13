@@ -425,10 +425,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function setCity(?string $city): self
     {
-        if (null !== $city) {
-            $city = u($city)->lower()->title(true)->toString();
-        }
-
         $this->city = $city;
 
         return $this;

@@ -26,6 +26,7 @@ use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,6 +64,10 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
+        }
+
         return $this->render('admin/user/new.html.twig', [
             'form' => $form,
         ]);
@@ -88,6 +93,10 @@ class UserController extends AbstractController
             $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
 
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('admin/user/edit.html.twig', [

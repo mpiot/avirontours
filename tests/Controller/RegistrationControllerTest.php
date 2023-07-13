@@ -23,6 +23,7 @@ namespace App\Tests\Controller;
 use App\Entity\MedicalCertificate;
 use App\Enum\LegalGuardianRole;
 use App\Factory\LicenseFactory;
+use App\Factory\PostalCodeFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
@@ -32,6 +33,10 @@ class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
@@ -39,6 +44,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
+
+        // Simulate AJAX call
+        $crawler = $client->submitForm('S\'inscrire', [
+            'registration_form[postalCode]' => '01000',
+        ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
@@ -49,11 +59,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => '2010-01-01',
-            'registration_form[address][laneNumber]' => '100',
-            'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'du test',
-            'registration_form[address][postalCode]' => '01000',
-            'registration_form[address][city]' => 'One City',
+            'registration_form[laneNumber]' => '100',
+            'registration_form[laneType]' => 'Rue',
+            'registration_form[laneName]' => 'du test',
+            'registration_form[city]' => 'One City',
             'registration_form[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'registration_form[firstLegalGuardian][firstName]' => 'Gandalf',
             'registration_form[firstLegalGuardian][lastName]' => 'Le Blanc',
@@ -130,11 +139,11 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => '',
             'registration_form[plainPassword][second]' => '',
             'registration_form[birthday]' => '',
-            'registration_form[address][laneNumber]' => '',
-            'registration_form[address][laneType]' => '',
-            'registration_form[address][laneName]' => '',
-            'registration_form[address][postalCode]' => '',
-            'registration_form[address][city]' => '',
+            'registration_form[laneNumber]' => '',
+            'registration_form[laneType]' => '',
+            'registration_form[laneName]' => '',
+            'registration_form[postalCode]' => '',
+            'registration_form[city]' => '',
             'registration_form[firstLegalGuardian][role]' => '',
             'registration_form[firstLegalGuardian][firstName]' => '',
             'registration_form[firstLegalGuardian][lastName]' => '',
@@ -155,11 +164,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_email')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_birthday')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_address_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#registration_form_address_laneType')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_address_laneName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_address_postalCode')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_address_city')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#registration_form_laneType')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_laneName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_postalCode')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
@@ -172,6 +181,10 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRegistrationWithoutLegalGuardianForUnderEighteen(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
@@ -179,6 +192,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
+
+        // Simulate AJAX call
+        $crawler = $client->submitForm('S\'inscrire', [
+            'registration_form[postalCode]' => '01000',
+        ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
@@ -189,11 +207,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
-            'registration_form[address][laneNumber]' => '100',
-            'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'du test',
-            'registration_form[address][postalCode]' => '01000',
-            'registration_form[address][city]' => 'One City',
+            'registration_form[laneNumber]' => '100',
+            'registration_form[laneType]' => 'Rue',
+            'registration_form[laneName]' => 'du test',
+            'registration_form[city]' => 'One City',
             'registration_form[firstLegalGuardian][role]' => '',
             'registration_form[firstLegalGuardian][firstName]' => '',
             'registration_form[firstLegalGuardian][lastName]' => '',
@@ -224,6 +241,10 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRegistrationWithoutLegalGuardianOverEighteen(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
@@ -231,6 +252,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
+
+        // Simulate AJAX call
+        $crawler = $client->submitForm('S\'inscrire', [
+            'registration_form[postalCode]' => '01000',
+        ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
@@ -241,11 +267,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
-            'registration_form[address][laneNumber]' => '100',
-            'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'du test',
-            'registration_form[address][postalCode]' => '01000',
-            'registration_form[address][city]' => 'One City',
+            'registration_form[laneNumber]' => '100',
+            'registration_form[laneType]' => 'Rue',
+            'registration_form[laneName]' => 'du test',
+            'registration_form[city]' => 'One City',
             'registration_form[firstLegalGuardian][role]' => '',
             'registration_form[firstLegalGuardian][firstName]' => '',
             'registration_form[firstLegalGuardian][lastName]' => '',
@@ -273,6 +298,10 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRegistrationTwice(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
         $license = LicenseFactory::createOne(['seasonCategory' => $season->getSeasonCategories()->first()]);
 
@@ -281,6 +310,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/register/'.$license->getSeasonCategory()->getSlug());
 
         $this->assertResponseIsSuccessful();
+
+        // Simulate AJAX call
+        $crawler = $client->submitForm('S\'inscrire', [
+            'registration_form[postalCode]' => '01000',
+        ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
             'registration_form[gender]' => 'm',
@@ -291,11 +325,10 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
             'registration_form[birthday]' => '2010-01-01',
-            'registration_form[address][laneNumber]' => '100',
-            'registration_form[address][laneType]' => 'Rue',
-            'registration_form[address][laneName]' => 'du test',
-            'registration_form[address][postalCode]' => '01000',
-            'registration_form[address][city]' => 'One City',
+            'registration_form[laneNumber]' => '100',
+            'registration_form[laneType]' => 'Rue',
+            'registration_form[laneName]' => 'du test',
+            'registration_form[city]' => 'One City',
             'registration_form[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'registration_form[firstLegalGuardian][firstName]' => 'Gandalf',
             'registration_form[firstLegalGuardian][lastName]' => 'Le Blanc',

@@ -22,41 +22,21 @@ namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddressType extends AbstractType
+class LaneTypeType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('laneNumber', TextType::class, [
-                'label' => 'Numéro',
-            ])
-            ->add('laneType', ChoiceType::class, [
-                'label' => 'Type de voie',
-                'choices' => $this->getLaneTypes(),
-                'placeholder' => '--- Sélectionner un type de voie ---',
-            ])
-            ->add('laneName', TextType::class, [
-                'label' => 'Nom de voie',
-            ])
-            ->add('postalCode', TextType::class, [
-                'label' => 'Code postal',
-                'attr' => ['autocomplete' => 'postal-code'],
-            ])
-            ->add('city', TextType::class, [
-                'label' => 'Ville',
-            ])
-        ;
-    }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'inherit_data' => true,
+            'choices' => $this->getLaneTypes(),
+            'placeholder' => '--- Sélectionner un type de voie ---',
         ]);
+    }
+
+    public function getParent(): string
+    {
+        return ChoiceType::class;
     }
 
     private function getLaneTypes(): array

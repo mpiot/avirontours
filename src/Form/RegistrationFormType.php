@@ -20,9 +20,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\PostalCode;
 use App\Entity\User;
 use App\Form\Model\RegistrationModel;
-use App\Form\Type\AddressType;
+use App\Form\Type\LaneTypeType;
+use App\Repository\PostalCodeRepository;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
@@ -35,6 +37,9 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
@@ -42,6 +47,10 @@ use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class RegistrationFormType extends AbstractType
 {
+    public function __construct(private readonly PostalCodeRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -84,8 +93,18 @@ class RegistrationFormType extends AbstractType
                     'attr' => ['autocomplete' => 'new-password'],
                 ],
             ])
-            ->add('address', AddressType::class, [
-                'label' => false,
+            ->add('laneNumber', TextType::class, [
+                'label' => 'Numéro',
+            ])
+            ->add('laneType', LaneTypeType::class, [
+                'label' => 'Type de voie',
+            ])
+            ->add('laneName', TextType::class, [
+                'label' => 'Nom de voie',
+            ])
+            ->add('postalCode', TextType::class, [
+                'label' => 'Code postal',
+                'attr' => ['autocomplete' => 'postal-code'],
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
@@ -137,6 +156,14 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $this->formModifier($event->getForm(), $event->getData()->postalCode);
+        });
+
+        $builder->get('postalCode')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $this->formModifier($event->getForm()->getParent(), $event->getForm()->getData());
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -144,6 +171,17 @@ class RegistrationFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RegistrationModel::class,
             'validation_groups' => ['Default', 'new'],
+        ]);
+    }
+
+    public function formModifier(FormInterface $form, string $postalCode = null): void
+    {
+        $cities = null === $postalCode ? [] : $this->repository->findBy(['postalCode' => $postalCode]);
+        $cities = array_map(fn (PostalCode $postalCode) => $postalCode->getCity(), $cities);
+
+        $form->add('city', ChoiceType::class, [
+            'placeholder' => '',
+            'choices' => array_combine($cities, $cities),
         ]);
     }
 }
