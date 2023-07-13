@@ -131,7 +131,10 @@
                         <div class="mt-3">
                             {{ form_row(form.clubEmailAllowed) }}
                             {{ form_row(form.federationEmailAllowed) }}
-                            {{ form_row(form.optionalInsurance) }}
+                            {{ form_row(form.optionalInsurance, {
+                                'help': '<a href="'~ asset('files/maif-assurance-accidents-corporels-licencies-titre-initiation-2024.pdf') ~'">Télécharger la notice</a>',
+                                'help_html': true,
+                            }) }}
                             {{ form_row(form.agreeSwim) }}
                         </div>
 
