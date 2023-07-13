@@ -93,7 +93,7 @@ class SeasonCsvGenerator
                 'Prenom2' => '',
                 'Prenom3' => '',
                 'NomNaissance' => '',
-                'Nationalite' => 'FR',
+                'Nationalite' => $user->getBirthCountry(),
                 'DateNaissance' => $user->getBirthday()->format('d/m/Y'),
                 'PaysNaissance' => '',
                 'DeptNaissance' => '',

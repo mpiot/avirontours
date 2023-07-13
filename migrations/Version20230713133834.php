@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230713115409 extends AbstractMigration
+final class Version20230713133834 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,15 +20,14 @@ final class Version20230713115409 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SEQUENCE postal_code_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE postal_code (id INT NOT NULL, postal_code VARCHAR(255) NOT NULL, city VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_EA98E376EA98E3762D5B0234 ON postal_code (postal_code, city)');
+        $this->addSql('ALTER TABLE app_user ADD birth_country VARCHAR(2) DEFAULT NULL');
+        $this->addSql('UPDATE app_user SET birth_country = \'FR\'');
+        $this->addSql('ALTER TABLE app_user ALTER COLUMN birth_country SET NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP SEQUENCE postal_code_id_seq CASCADE');
-        $this->addSql('DROP TABLE postal_code');
+        $this->addSql('ALTER TABLE app_user DROP birth_country');
     }
 }

@@ -53,6 +53,9 @@ class RegistrationModel
     public ?string $lastName = null;
 
     #[Assert\NotBlank]
+    public ?string $birthCountry = 'FR';
+
+    #[Assert\NotBlank]
     public ?\DateTime $birthday = null;
 
     #[Assert\NotBlank]
@@ -101,6 +104,7 @@ class RegistrationModel
             ->setGender($this->gender)
             ->setFirstName($this->firstName)
             ->setLastName($this->lastName)
+            ->setBirthCountry($this->birthCountry)
             ->setBirthday($this->birthday)
             ->setLaneNumber($this->laneNumber)
             ->setLaneType($this->laneType)
@@ -117,7 +121,7 @@ class RegistrationModel
     }
 
     #[Assert\Callback]
-    public function validateFirstLegalGuardians(ExecutionContextInterface $context)
+    public function validateFirstLegalGuardian(ExecutionContextInterface $context): void
     {
         if (null === $this->birthday) {
             return;

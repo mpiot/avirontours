@@ -46,6 +46,7 @@
                                         </div>
                                         <div class="card-body">
                                             {{ form_row(form.gender) }}
+
                                             <div class="row">
                                                 <div class="col">
                                                     {{ form_row(form.firstName) }}
@@ -54,10 +55,19 @@
                                                     {{ form_row(form.lastName) }}
                                                 </div>
                                             </div>
+
                                             {{ form_row(form.email) }}
                                             {{ form_row(form.phoneNumber) }}
                                             {{ form_row(form.plainPassword) }}
-                                            {{ form_row(form.birthday) }}
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    {{ form_row(form.birthCountry) }}
+                                                </div>
+                                                <div class="col">
+                                                    {{ form_row(form.birthday) }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

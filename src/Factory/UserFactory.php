@@ -78,6 +78,7 @@ final class UserFactory extends ModelFactory
             'gender' => self::faker()->randomElement(User::getAvailableGenders()),
             'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
+            'birthCountry' => self::faker()->countryCode(),
             'birthday' => self::faker()->dateTimeBetween('-80 years', '-20 years'),
             'laneNumber' => '5',
             'laneType' => 'Avenue',
