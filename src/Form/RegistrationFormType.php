@@ -107,8 +107,8 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Code postal',
                 'attr' => ['autocomplete' => 'postal-code'],
             ])
-            ->add('birthCountry', CountryType::class, [
-                'label' => 'Pays de naissance',
+            ->add('nationality', CountryType::class, [
+                'label' => 'Nationalité',
                 'preferred_choices' => ['FR'],
                 'placeholder' => '--- Sélectionner un pays ---',
             ])

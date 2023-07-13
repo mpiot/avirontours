@@ -79,7 +79,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[Assert\NotBlank]
     #[ORM\Column(length: 2)]
-    private ?string $birthCountry = 'FR';
+    private ?string $nationality = 'FR';
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -332,14 +332,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->getFirstName().' '.$this->getLastName();
     }
 
-    public function getBirthCountry(): ?string
+    public function getNationality(): ?string
     {
-        return $this->birthCountry;
+        return $this->nationality;
     }
 
-    public function setBirthCountry(?string $birthCountry): static
+    public function setNationality(?string $nationality): static
     {
-        $this->birthCountry = $birthCountry;
+        $this->nationality = $nationality;
 
         return $this;
     }
