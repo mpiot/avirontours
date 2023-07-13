@@ -58,6 +58,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[phoneNumber]' => '0102030405',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthCountry]' => 'FR',
             'registration_form[birthday]' => '2010-01-01',
             'registration_form[laneNumber]' => '100',
             'registration_form[laneType]' => 'Rue',
@@ -94,6 +95,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('john.doe', $user->getUsername());
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertNotNull($user->getPassword());
+        $this->assertSame('FR', $user->getBirthCountry());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
         $this->assertSame('100', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
@@ -138,6 +140,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[phoneNumber]' => '',
             'registration_form[plainPassword][first]' => '',
             'registration_form[plainPassword][second]' => '',
+            'registration_form[birthCountry]' => '',
             'registration_form[birthday]' => '',
             'registration_form[laneNumber]' => '',
             'registration_form[laneType]' => '',
@@ -163,6 +166,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_lastName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_email')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_birthCountry')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_birthday')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_form_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#registration_form_laneType')->ancestors()->filter('.invalid-feedback')->text());
@@ -174,7 +178,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_form_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_form_agreeSwim')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(15, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(16, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
     }
@@ -206,6 +210,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[phoneNumber]' => '0123456789',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthCountry]' => 'FR',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
             'registration_form[laneNumber]' => '100',
             'registration_form[laneType]' => 'Rue',
@@ -266,6 +271,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[phoneNumber]' => '0123456789',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthCountry]' => 'FR',
             'registration_form[birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
             'registration_form[laneNumber]' => '100',
             'registration_form[laneType]' => 'Rue',
@@ -324,6 +330,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration_form[phoneNumber]' => '0102030405',
             'registration_form[plainPassword][first]' => 'engage',
             'registration_form[plainPassword][second]' => 'engage',
+            'registration_form[birthCountry]' => 'FR',
             'registration_form[birthday]' => '2010-01-01',
             'registration_form[laneNumber]' => '100',
             'registration_form[laneType]' => 'Rue',

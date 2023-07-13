@@ -28,6 +28,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -73,6 +74,11 @@ class UserType extends AbstractType
                 'label' => 'Numéro de téléphone',
                 'attr' => ['autocomplete' => 'tel-national'],
                 'required' => false,
+            ])
+            ->add('birthCountry', CountryType::class, [
+                'label' => 'Pays de naissance',
+                'preferred_choices' => ['FR'],
+                'placeholder' => '--- Sélectionner un pays ---',
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',

@@ -31,6 +31,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -105,6 +106,11 @@ class RegistrationFormType extends AbstractType
             ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
                 'attr' => ['autocomplete' => 'postal-code'],
+            ])
+            ->add('birthCountry', CountryType::class, [
+                'label' => 'Pays de naissance',
+                'preferred_choices' => ['FR'],
+                'placeholder' => '--- Sélectionner un pays ---',
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',

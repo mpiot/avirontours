@@ -117,6 +117,7 @@ class UserControllerTest extends AppWebTestCase
             'user[lastName]' => 'Doe',
             'user[email]' => 'john.doe@avirontours.fr',
             'user[phoneNumber]' => '0102030405',
+            'user[birthCountry]' => 'FR',
             'user[birthday]' => '2010-01-01',
             'user[laneNumber]' => '100',
             'user[laneType]' => 'Avenue',
@@ -147,6 +148,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('john.doe', $user->getUsername());
         $this->assertSame('0102030405', $user->getPhoneNumber());
         $this->assertNull($user->getPassword());
+        $this->assertSame('FR', $user->getBirthCountry());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
         $this->assertSame('100', $user->getLaneNumber());
         $this->assertSame('Avenue', $user->getLaneType());
@@ -181,6 +183,7 @@ class UserControllerTest extends AppWebTestCase
             'user[lastName]' => '',
             'user[email]' => '',
             'user[phoneNumber]' => '',
+            'user[birthCountry]' => '',
             'user[birthday]' => '',
             'user[laneNumber]' => '',
             'user[laneType]' => '',
@@ -205,6 +208,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_firstName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_lastName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_email')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_birthCountry')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_birthday')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#user_laneType')->ancestors()->filter('.invalid-feedback')->text());
@@ -212,7 +216,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_postalCode')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(11, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(12, $crawler->filter('.invalid-feedback'));
     }
 
     public function testEditUser(): void
@@ -241,6 +245,7 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[lastName]' => 'Doe',
             'user_edit[email]' => 'john.doe@avirontours.fr',
             'user_edit[phoneNumber]' => '0102030405',
+            'user_edit[birthCountry]' => 'FR',
             'user_edit[birthday]' => '2010-01-01',
             'user_edit[laneNumber]' => '100',
             'user_edit[laneType]' => 'Avenue',
@@ -268,6 +273,7 @@ class UserControllerTest extends AppWebTestCase
         $this->assertSame('john.doe', $user->getUsername());
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame('0102030405', $user->getPhoneNumber());
+        $this->assertSame('FR', $user->getBirthCountry());
         $this->assertSame('2010-01-01', $user->getBirthday()->format('Y-m-d'));
         $this->assertSame('100', $user->getLaneNumber());
         $this->assertSame('Avenue', $user->getLaneType());
