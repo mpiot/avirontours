@@ -25,6 +25,7 @@ use App\Form\ProfileType;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -58,6 +59,10 @@ class ProfileController extends AbstractController
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
 
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('profile/edit.html.twig', [

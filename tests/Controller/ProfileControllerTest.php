@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Enum\LegalGuardianRole;
+use App\Factory\PostalCodeFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,6 +59,11 @@ class ProfileControllerTest extends AppWebTestCase
 
     public function testEditProfile(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
+
         static::ensureKernelShutdown();
         $client = static::createClient();
         $user = $this->logIn($client, 'ROLE_USER');
@@ -65,16 +71,20 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        // Simulate AJAX call
+        $crawler = $client->submitForm('Modifier', [
+            'profile[postalCode]' => '01000',
+        ]);
+
+        $form = $crawler->selectButton('Modifier')->form([
             'profile[email]' => 'john.doe@avirontours.fr',
             'profile[phoneNumber]' => '0123456777',
             'profile[firstName]' => 'John',
             'profile[lastName]' => 'Doe',
-            'profile[address][laneNumber]' => '2',
-            'profile[address][laneType]' => 'Rue',
-            'profile[address][laneName]' => 'du test',
-            'profile[address][postalCode]' => '01000',
-            'profile[address][city]' => 'One City',
+            'profile[laneNumber]' => '2',
+            'profile[laneType]' => 'Rue',
+            'profile[laneName]' => 'du test',
+            'profile[city]' => 'One City',
             'profile[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'profile[firstLegalGuardian][firstName]' => 'Gandalf',
             'profile[firstLegalGuardian][lastName]' => 'Le Blanc',
@@ -87,6 +97,7 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[secondLegalGuardian][phoneNumber]' => '0123456799',
             'profile[clubEmailAllowed]' => 1,
         ]);
+        $crawler = $client->submit($form);
 
         $this->assertResponseRedirects();
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
@@ -126,11 +137,11 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[phoneNumber]' => '',
             'profile[firstName]' => '',
             'profile[lastName]' => '',
-            'profile[address][laneNumber]' => '',
-            'profile[address][laneType]' => '',
-            'profile[address][laneName]' => '',
-            'profile[address][postalCode]' => '',
-            'profile[address][city]' => '',
+            'profile[laneNumber]' => '',
+            'profile[laneType]' => '',
+            'profile[laneName]' => '',
+            'profile[postalCode]' => '',
+            'profile[city]' => '',
             'profile[firstLegalGuardian][role]' => '',
             'profile[firstLegalGuardian][firstName]' => '',
             'profile[firstLegalGuardian][lastName]' => '',
@@ -147,11 +158,11 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_email')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_firstName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_lastName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#profile_address_laneType')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_laneName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_postalCode')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_address_city')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#profile_laneType')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_laneName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_postalCode')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(8, $crawler->filter('.invalid-feedback'));
     }

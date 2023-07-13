@@ -88,8 +88,6 @@ return (new PhpCsFixer\Config())
         'explicit_string_variable' => true,
         'no_useless_return' => true,
         'return_assignment' => true,
-        // Semicolon
-        'multiline_whitespace_before_semicolons' => ['strategy' => 'new_line_for_chained_calls'],
         // Strict
         'strict_comparison' => true,
         'strict_param' => true,

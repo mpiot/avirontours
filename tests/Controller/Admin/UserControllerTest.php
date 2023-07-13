@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Enum\LegalGuardianRole;
+use App\Factory\PostalCodeFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,6 +93,11 @@ class UserControllerTest extends AppWebTestCase
 
     public function testNewUser(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
+
         self::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_USER_ADMIN');
@@ -99,7 +105,12 @@ class UserControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        // Simulate AJAX call
+        $crawler = $client->submitForm('Sauver', [
+            'user[postalCode]' => '01000',
+        ]);
+
+        $form = $crawler->selectButton('Sauver')->form([
             'user[subscriptionDate]' => '2019-09-01',
             'user[gender]' => 'm',
             'user[firstName]' => 'John',
@@ -107,11 +118,10 @@ class UserControllerTest extends AppWebTestCase
             'user[email]' => 'john.doe@avirontours.fr',
             'user[phoneNumber]' => '0102030405',
             'user[birthday]' => '2010-01-01',
-            'user[address][laneNumber]' => '100',
-            'user[address][laneType]' => 'Avenue',
-            'user[address][laneName]' => 'du test',
-            'user[address][postalCode]' => '01000',
-            'user[address][city]' => 'One City',
+            'user[laneNumber]' => '100',
+            'user[laneType]' => 'Avenue',
+            'user[laneName]' => 'du test',
+            'user[city]' => 'One City',
             'user[licenseNumber]' => '0123456789',
             'user[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'user[firstLegalGuardian][firstName]' => 'Gandalf',
@@ -124,6 +134,7 @@ class UserControllerTest extends AppWebTestCase
             'user[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'user[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
+        $crawler = $client->submit($form);
 
         $this->assertResponseRedirects();
 
@@ -171,11 +182,11 @@ class UserControllerTest extends AppWebTestCase
             'user[email]' => '',
             'user[phoneNumber]' => '',
             'user[birthday]' => '',
-            'user[address][laneNumber]' => '',
-            'user[address][laneType]' => '',
-            'user[address][laneName]' => '',
-            'user[address][postalCode]' => '',
-            'user[address][city]' => '',
+            'user[laneNumber]' => '',
+            'user[laneType]' => '',
+            'user[laneName]' => '',
+            'user[postalCode]' => '',
+            'user[city]' => '',
             'user[firstLegalGuardian][role]' => '',
             'user[firstLegalGuardian][firstName]' => '',
             'user[firstLegalGuardian][lastName]' => '',
@@ -195,17 +206,21 @@ class UserControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_lastName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_email')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_birthday')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_address_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#user_address_laneType')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_address_laneName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_address_postalCode')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_address_city')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#user_laneType')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_laneName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_postalCode')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#user_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(11, $crawler->filter('.invalid-feedback'));
     }
 
     public function testEditUser(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
         $user = UserFactory::createOne();
 
         static::ensureKernelShutdown();
@@ -214,7 +229,12 @@ class UserControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/user/'.$user->getId().'/edit');
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        // Simulate AJAX call
+        $crawler = $client->submitForm('Modifier', [
+            'user_edit[postalCode]' => '01000',
+        ]);
+
+        $form = $crawler->selectButton('Modifier')->form([
             'user_edit[subscriptionDate]' => '2019-09-01',
             'user_edit[gender]' => 'm',
             'user_edit[firstName]' => 'John',
@@ -222,11 +242,10 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[email]' => 'john.doe@avirontours.fr',
             'user_edit[phoneNumber]' => '0102030405',
             'user_edit[birthday]' => '2010-01-01',
-            'user_edit[address][laneNumber]' => '100',
-            'user_edit[address][laneType]' => 'Avenue',
-            'user_edit[address][laneName]' => 'du test',
-            'user_edit[address][postalCode]' => '01000',
-            'user_edit[address][city]' => 'One City',
+            'user_edit[laneNumber]' => '100',
+            'user_edit[laneType]' => 'Avenue',
+            'user_edit[laneName]' => 'du test',
+            'user_edit[city]' => 'One City',
             'user_edit[licenseNumber]' => '0123456789',
             'user_edit[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'user_edit[firstLegalGuardian][firstName]' => 'Gandalf',
@@ -239,6 +258,7 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'user_edit[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
+        $crawler = $client->submit($form);
 
         $this->assertResponseRedirects();
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));

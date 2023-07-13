@@ -1,72 +1,93 @@
-{{ form_start(form) }}
-    {{ form_errors(form) }}
+<div {{ stimulus_controller('dependent-field') }}>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
 
-    <div class="row">
-        <div class="col-lg-6 mb-3">
-            <div class="card">
-                <div class="card-header">
-                    Informations personnelles
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Informations personnelles
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.phoneNumber) }}
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.firstName) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.lastName) }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    {{ form_row(form.email) }}
-                    {{ form_row(form.phoneNumber) }}
+            </div>
 
-                    <div class="row">
-                        <div class="col">
-                            {{ form_row(form.firstName) }}
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Adresse
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.laneNumber) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.laneType) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.laneName) }}
+                            </div>
                         </div>
-                        <div class="col">
-                            {{ form_row(form.lastName) }}
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.postalCode, { attr: { 'data-action': 'dependent-field#keyup' } }) }}
+                            </div>
+                            <div id="city-target" class="col" {{ stimulus_target('dependent-field', 'target') }}>
+                                {{ form_row(form.city) }}
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Responsable légal 1
+                    </div>
+                    <div class="card-body">
+                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.firstLegalGuardian } %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Responsable légal 2
+                    </div>
+                    <div class="card-body">
+                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.secondLegalGuardian } %}
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-6 mb-3">
-            <div class="card">
-                <div class="card-header">
-                    Adresse
-                </div>
-                <div class="card-body">
-                    {{ include('admin/user/_address_form.html.twig') }}
-                </div>
+        <div class="card">
+            <div class="card-header">
+                Préférences de communication
+            </div>
+            <div class="card-body">
+                {{ form_row(form.clubEmailAllowed) }}
             </div>
         </div>
 
-        <div class="col-lg-6 mb-3">
-            <div class="card">
-                <div class="card-header">
-                    Responsable légal 1
-                </div>
-                <div class="card-body">
-                    {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.firstLegalGuardian } %}
-                </div>
-            </div>
-        </div>
+        {{ form_rest(form) }}
 
-        <div class="col-lg-6 mb-3">
-            <div class="card">
-                <div class="card-header">
-                    Responsable légal 2
-                </div>
-                <div class="card-body">
-                    {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.secondLegalGuardian } %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            Préférences de communication
-        </div>
-        <div class="card-body">
-            {{ form_row(form.clubEmailAllowed) }}
-        </div>
-    </div>
-
-    {{ form_rest(form) }}
-
-    <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
-{{ form_end(form) }}
+        <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
+    {{ form_end(form) }}
+</div>

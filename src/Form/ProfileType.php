@@ -20,18 +20,28 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\PostalCode;
 use App\Entity\User;
-use App\Form\Type\AddressType;
+use App\Form\Type\LaneTypeType;
+use App\Repository\PostalCodeRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProfileType extends AbstractType
 {
+    public function __construct(private readonly PostalCodeRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -48,8 +58,18 @@ class ProfileType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
             ])
-            ->add('address', AddressType::class, [
-                'label' => false,
+            ->add('laneNumber', TextType::class, [
+                'label' => 'Numéro',
+            ])
+            ->add('laneType', LaneTypeType::class, [
+                'label' => 'Type de voie',
+            ])
+            ->add('laneName', TextType::class, [
+                'label' => 'Nom de voie',
+            ])
+            ->add('postalCode', TextType::class, [
+                'label' => 'Code postal',
+                'attr' => ['autocomplete' => 'postal-code'],
             ])
             ->add('firstLegalGuardian', LegalGuardianType::class, [
                 'label' => false,
@@ -65,12 +85,31 @@ class ProfileType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $this->formModifier($event->getForm(), $event->getData()->getPostalCode());
+        });
+
+        $builder->get('postalCode')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $this->formModifier($event->getForm()->getParent(), $event->getForm()->getData());
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+        ]);
+    }
+
+    public function formModifier(FormInterface $form, string $postalCode = null): void
+    {
+        $cities = null === $postalCode ? [] : $this->repository->findBy(['postalCode' => $postalCode]);
+        $cities = array_map(fn (PostalCode $postalCode) => $postalCode->getCity(), $cities);
+
+        $form->add('city', ChoiceType::class, [
+            'placeholder' => '',
+            'choices' => array_combine($cities, $cities),
         ]);
     }
 }

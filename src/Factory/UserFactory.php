@@ -82,8 +82,8 @@ final class UserFactory extends ModelFactory
             'laneNumber' => '5',
             'laneType' => 'Avenue',
             'laneName' => 'de Florence',
-            'postalCode' => '37000',
-            'city' => 'Tours',
+            'postalCode' => PostalCodeFactory::findOrCreate(['postalCode' => '37000', 'city' => 'TOURS'])->getPostalCode(),
+            'city' => PostalCodeFactory::findOrCreate(['postalCode' => '37000', 'city' => 'TOURS'])->getCity(),
         ];
     }
 

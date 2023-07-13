@@ -29,6 +29,7 @@ use App\Repository\SeasonCategoryRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -78,6 +79,10 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('registration/register.html.twig', [
