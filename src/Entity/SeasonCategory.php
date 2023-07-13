@@ -77,12 +77,11 @@ class SeasonCategory
     private string $slug;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $displayed = null;
+    private ?bool $displayed = true;
 
     public function __construct()
     {
         $this->licenses = new ArrayCollection();
-        $this->displayed = true;
     }
 
     public function getId(): ?int

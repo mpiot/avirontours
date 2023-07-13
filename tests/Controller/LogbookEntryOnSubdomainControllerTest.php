@@ -355,7 +355,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $client->submitForm('Sauver', [
             'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',

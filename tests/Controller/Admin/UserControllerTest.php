@@ -134,7 +134,7 @@ class UserControllerTest extends AppWebTestCase
             'user[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'user[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
-        $crawler = $client->submit($form);
+        $client->submit($form);
 
         $this->assertResponseRedirects();
 
@@ -258,7 +258,7 @@ class UserControllerTest extends AppWebTestCase
             'user_edit[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'user_edit[secondLegalGuardian][phoneNumber]' => '0123456799',
         ]);
-        $crawler = $client->submit($form);
+        $client->submit($form);
 
         $this->assertResponseRedirects();
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));

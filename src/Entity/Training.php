@@ -253,11 +253,9 @@ class Training
 
     public function removeTrainingPhase(TrainingPhase $trainingPhase): self
     {
-        if ($this->trainingPhases->removeElement($trainingPhase)) {
-            // set the owning side to null (unless already changed)
-            if ($trainingPhase->getTraining() === $this) {
-                $trainingPhase->setTraining(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->trainingPhases->removeElement($trainingPhase) && $trainingPhase->getTraining() === $this) {
+            $trainingPhase->setTraining(null);
         }
 
         return $this;
