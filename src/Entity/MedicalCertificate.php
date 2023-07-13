@@ -42,11 +42,11 @@ class MedicalCertificate
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $type = null;
+    private ?string $type = self::TYPE_CERTIFICATE;
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $level = null;
+    private ?string $level = self::LEVEL_COMPETITION;
 
     #[Assert\NotBlank]
     #[Assert\GreaterThan(value: '-1 year', message: 'Le certificat médical doit avoir moins d\'un an.')]
@@ -76,12 +76,6 @@ class MedicalCertificate
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $updatedAt = null;
-
-    public function __construct()
-    {
-        $this->type = self::TYPE_CERTIFICATE;
-        $this->level = self::LEVEL_COMPETITION;
-    }
 
     public function getId(): ?int
     {

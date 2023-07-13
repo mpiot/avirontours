@@ -97,7 +97,7 @@ class ProfileControllerTest extends AppWebTestCase
             'profile[secondLegalGuardian][phoneNumber]' => '0123456799',
             'profile[clubEmailAllowed]' => 1,
         ]);
-        $crawler = $client->submit($form);
+        $client->submit($form);
 
         $this->assertResponseRedirects();
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());

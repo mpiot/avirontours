@@ -1,5 +1,5 @@
 # Executables (local)
-DOCKER_COMPOSE = docker compose -f docker-compose.yaml -f docker-compose.override.yaml
+DOCKER_COMPOSE = docker compose -f docker-compose.yml -f docker-compose.override.yml
 
 # Executables
 SYMFONY  = symfony
@@ -75,9 +75,11 @@ test-all: lint validate-schema tests# # Lint all, run PHP tests
 test-all-weak: lint validate-schema tests-weak ## Lint all, run PHP tests without Deprecations helper
 
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
+	@$(COMPOSER) validate
 	@$(CONSOLE) lint:yaml --parse-tags config
 	@$(CONSOLE) lint:twig templates --env=prod
 	@$(CONSOLE) lint:container
+	@$(PHP) vendor/bin/rector process --dry-run
 	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 	@$(PHP) vendor/bin/phpstan
 

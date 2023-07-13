@@ -117,7 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $authCode = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $clubEmailAllowed;
+    private ?bool $clubEmailAllowed = true;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
@@ -161,7 +161,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->subscriptionDate = new \DateTime();
         $this->logbookEntries = new ArrayCollection();
         $this->licenses = new ArrayCollection();
-        $this->clubEmailAllowed = true;
         $this->trainings = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
@@ -433,9 +432,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function getFormattedAddress(): string
     {
         $address = "{$this->getLaneNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
-        $address .= "{$this->getPostalCode()} {$this->getCity()}";
 
-        return $address;
+        return $address."{$this->getPostalCode()} {$this->getCity()}";
     }
 
     public function getFirstLegalGuardian(): ?LegalGuardian

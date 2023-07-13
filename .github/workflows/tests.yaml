@@ -37,12 +37,12 @@ jobs:
 
             - name: Set composer cache directory
               id: composer-cache
-              run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+              run: echo "cache-dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Cache composer
               uses: actions/cache@v3
               with:
-                  path: ${{ steps.composer-cache.outputs.dir }}
+                  path: ${{ steps.composer-cache.outputs.cache-dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
                   restore-keys: |
                       ${{ runner.os }}-composer-
@@ -60,15 +60,15 @@ jobs:
 
             - name: Set yarn cache directory
               id: yarn-cache
-              run: echo "::set-output name=dir::$(yarn cache dir)"
+              run: echo "cache-dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
 
             - name: Cache yarn
               uses: actions/cache@v3
               with:
-                  path: ${{ steps.yarn-cache.outputs.dir }}
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+                path: ${{ steps.yarn-cache.outputs.cache-dir }}
+                key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                restore-keys: |
+                  ${{ runner.os }}-yarn-
 
             - name: Install node_modules
               run: yarn install

@@ -45,16 +45,14 @@ class Season
     private Collection $seasonCategories;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $subscriptionEnabled = null;
+    private ?bool $subscriptionEnabled = false;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $active = null;
+    private ?bool $active = false;
 
     public function __construct()
     {
         $this->seasonCategories = new ArrayCollection();
-        $this->subscriptionEnabled = false;
-        $this->active = false;
     }
 
     public function getId(): ?int
