@@ -75,8 +75,8 @@ class UserType extends AbstractType
                 'attr' => ['autocomplete' => 'tel-national'],
                 'required' => false,
             ])
-            ->add('birthCountry', CountryType::class, [
-                'label' => 'Pays de naissance',
+            ->add('nationality', CountryType::class, [
+                'label' => 'Nationalité',
                 'preferred_choices' => ['FR'],
                 'placeholder' => '--- Sélectionner un pays ---',
             ])

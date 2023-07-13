@@ -53,7 +53,7 @@ class RegistrationModel
     public ?string $lastName = null;
 
     #[Assert\NotBlank]
-    public ?string $birthCountry = 'FR';
+    public ?string $nationality = 'FR';
 
     #[Assert\NotBlank]
     public ?\DateTime $birthday = null;
@@ -104,7 +104,7 @@ class RegistrationModel
             ->setGender($this->gender)
             ->setFirstName($this->firstName)
             ->setLastName($this->lastName)
-            ->setBirthCountry($this->birthCountry)
+            ->setNationality($this->nationality)
             ->setBirthday($this->birthday)
             ->setLaneNumber($this->laneNumber)
             ->setLaneType($this->laneType)
