@@ -100,7 +100,7 @@ class Shell
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $personalBoat = false;
 
-    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\ShellDamage')]
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\ShellDamage', cascade: ['remove'])]
     private Collection $shellDamages;
 
     public function __construct()
