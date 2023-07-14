@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -18,17 +16,25 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Validator;
+namespace App\Form\Type;
 
-use Symfony\Component\Validator\Constraint;
+use App\Form\LicenseType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
-class UniqueUser extends Constraint
+class RegistrationLicenseType extends AbstractType
 {
-    public string $message = 'Un compte existe déjà avec ce nom et prénom.';
-
-    public function getTargets(): string|array
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        return self::CLASS_CONSTRAINT;
+        $builder
+            ->remove('user')
+            ->remove('seasonCategory')
+            ->remove('logbookEntryLimit')
+        ;
+    }
+
+    public function getParent(): string
+    {
+        return LicenseType::class;
     }
 }

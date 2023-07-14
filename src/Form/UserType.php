@@ -27,6 +27,7 @@ use App\Repository\PostalCodeRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -110,6 +111,11 @@ class UserType extends AbstractType
                 'label' => 'Code postal',
                 'attr' => ['autocomplete' => 'postal-code'],
             ])
+            ->add('clubEmailAllowed', CheckboxType::class, [
+                'label' => 'Recevoir les emails du club',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
         ;
 
         if ($this->security->isGranted('ROLE_SUPER_ADMIN')) {
@@ -154,7 +160,8 @@ class UserType extends AbstractType
         $cities = array_map(fn (PostalCode $postalCode) => $postalCode->getCity(), $cities);
 
         $form->add('city', ChoiceType::class, [
-            'placeholder' => '',
+            'label' => 'Ville',
+            'placeholder' => '--- Sélectionner une ville ---',
             'choices' => array_combine($cities, $cities),
         ]);
     }

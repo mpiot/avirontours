@@ -22,10 +22,11 @@ namespace App\Controller;
 
 use App\Entity\License;
 use App\Entity\SeasonCategory;
-use App\Form\Model\RegistrationModel;
-use App\Form\RegistrationFormType;
+use App\Entity\User;
+use App\Form\RegistrationType;
 use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -33,7 +34,6 @@ use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -43,25 +43,23 @@ class RegistrationController extends AbstractController
     public function register(
         #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
         Request $request,
-        ManagerRegistry $managerRegistry,
-        UserPasswordHasherInterface $passwordHasher,
+        UserRepository $userRepository,
         MailerInterface $mailer
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
 
-        $registrationModel = new RegistrationModel();
-        $form = $this->createForm(RegistrationFormType::class, $registrationModel);
+        $user = new User();
+        $license = new License();
+        $license->setSeasonCategory($seasonCategory);
+        $user->addLicense($license);
+
+        $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $registrationModel->generateUser($seasonCategory, $passwordHasher);
-
-            // Persist user
-            $entityManager = $managerRegistry->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $userRepository->save($user, true);
 
             // Send email
             $email = (new TemplatedEmail())
@@ -75,7 +73,6 @@ class RegistrationController extends AbstractController
             ;
             $mailer->send($email);
 
-            // Add flash message
             $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
