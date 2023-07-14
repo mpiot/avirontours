@@ -35,7 +35,7 @@ class LogbookEntry
 {
     public const NUM_ITEMS = 20;
 
-    #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
+    #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
 
     #[Assert\NotNull(groups: ['start', 'edit'])]
@@ -72,7 +72,7 @@ class LogbookEntry
     private ?float $coveredDistance = null;
 
     #[Assert\Valid]
-    #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: 'App\Entity\ShellDamage', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: 'App\Entity\ShellDamage', cascade: ['persist'])]
     private Collection $shellDamages;
 
     public function __construct()
