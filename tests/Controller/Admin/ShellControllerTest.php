@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -177,6 +178,9 @@ class ShellControllerTest extends AppWebTestCase
     public function testDeleteShell(): void
     {
         $shell = ShellFactory::createOne()->disableAutoRefresh();
+        $shellDamage = ShellDamageFactory::createOne([
+            'shell' => $shell,
+        ])->disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -188,6 +192,7 @@ class ShellControllerTest extends AppWebTestCase
         $client->submitForm('Supprimer');
 
         $this->assertResponseRedirects('/admin/shell');
-        ShellFactory::repository()->assert()->notExists($shell);
+        ShellFactory::assert()->notExists($shell);
+        ShellDamageFactory::assert()->notExists($shellDamage);
     }
 }
