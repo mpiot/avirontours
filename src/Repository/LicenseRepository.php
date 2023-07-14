@@ -46,6 +46,24 @@ class LicenseRepository extends ServiceEntityRepository
         parent::__construct($registry, License::class);
     }
 
+    public function save(License $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(License $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     public function findLastUserSeason(User $user)
     {
         $query = $this->createQueryBuilder('license')

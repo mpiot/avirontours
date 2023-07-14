@@ -21,43 +21,22 @@ declare(strict_types=1);
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\IsTrue;
 
 class RenewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('agreeSwim', CheckboxType::class, [
-                'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
-                'label_attr' => ['class' => 'checkbox-custom'],
-                'required' => false,
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.',
-                    ]),
-                ],
-            ])
-            ->remove('seasonCategory')
-            ->remove('user')
-            ->remove('logbookEntryLimit')
-            ->get('medicalCertificate')->get('file')->setRequired(true)
-        ;
+        $builder->get('user')->remove('plainPassword');
+        $builder->get('user')->get('gender')->setDisabled(true);
+        $builder->get('user')->get('firstName')->setDisabled(true);
+        $builder->get('user')->get('lastName')->setDisabled(true);
+        $builder->get('user')->get('nationality')->setDisabled(true);
+        $builder->get('user')->get('birthday')->setDisabled(true);
     }
 
     public function getParent(): string
     {
-        return LicenseType::class;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'validation_groups' => ['Default', 'new'],
-        ]);
+        return RegistrationType::class;
     }
 }

@@ -127,8 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
-    #[Assert\Valid]
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['remove'])]
     #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
 

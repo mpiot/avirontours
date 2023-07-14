@@ -20,55 +20,27 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Form\Model\Registration;
 use App\Form\Type\RegistrationLicenseType;
+use App\Form\Type\RegistrationUserType;
 use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
 use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
 
 class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->remove('subscriptionDate')
-            ->remove('licenseNumber')
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'Les mots de passes doivent être identiques.',
-                'first_options' => [
-                    'label' => 'Mot de passe',
-                    'hash_property_path' => 'password',
-                    'constraints' => [
-                        new NotBlank(),
-                        new Length(['min' => 6, 'max' => 4096]),
-                        new NotCompromisedPassword(),
-                    ],
-                    'attr' => ['autocomplete' => 'new-password'],
-                ],
-                'second_options' => [
-                    'label' => 'Répéter le mot de passe',
-                    'attr' => ['autocomplete' => 'new-password'],
-                ],
-                'mapped' => false,
-            ])
-            ->add('licenses', CollectionType::class, [
+            ->add('user', RegistrationUserType::class, [
                 'label' => false,
-                'entry_type' => RegistrationLicenseType::class,
-                'entry_options' => [
-                    'label' => false,
-                ],
-                'by_reference' => false,
+            ])
+            ->add('license', RegistrationLicenseType::class, [
+                'label' => false,
             ])
             ->add('agreeSwim', CheckboxType::class, [
                 'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
@@ -94,13 +66,8 @@ class RegistrationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
-            'validation_groups' => ['Default', 'new'],
+            'data_class' => Registration::class,
+            'validation_groups' => ['Default', 'registration', 'new'],
         ]);
-    }
-
-    public function getParent(): string
-    {
-        return UserType::class;
     }
 }

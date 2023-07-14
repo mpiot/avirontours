@@ -33,8 +33,9 @@ class LicenseFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         foreach ($this->getSeasonData() as [$seasonCategory, $user, $certificateType, $certificateLevel, $isValid]) {
-            $license = new License($seasonCategory, $user);
+            $license = new License($seasonCategory);
             $license
+                ->setUser($user)
                 ->setMedicalCertificate(
                     (new MedicalCertificate())
                         ->setType($certificateType)
