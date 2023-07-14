@@ -73,11 +73,11 @@ final class UserFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'email' => self::faker()->email(),
             'password' => '$argon2id$v=19$m=10,t=3,p=1$504u7GDCM160iitiwetjvQ$6MguL3z0WsHOSxjKI6NhcPi4QdBFNlff/xrck+m975I',
             'gender' => self::faker()->randomElement(User::getAvailableGenders()),
             'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
+            'email' => self::faker()->email(),
             'nationality' => self::faker()->countryCode(),
             'birthday' => self::faker()->dateTimeBetween('-80 years', '-20 years'),
             'laneNumber' => '5',

@@ -56,8 +56,8 @@ class License
     #[ORM\Column(type: Types::JSON)]
     private array $transitionContexts = [];
 
-    #[Assert\NotNull]
-    #[Assert\Valid]
+    #[Assert\NotNull(groups: ['Default', 'registration'])]
+    #[Assert\Valid(groups: ['Default', 'registration'])]
     #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?MedicalCertificate $medicalCertificate = null;
@@ -72,10 +72,9 @@ class License
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $logbookEntryLimit = null;
 
-    public function __construct(SeasonCategory $seasonCategory = null, User $user = null)
+    public function __construct(SeasonCategory $seasonCategory = null)
     {
         $this->seasonCategory = $seasonCategory;
-        $this->user = $user;
     }
 
     public function getId(): ?int

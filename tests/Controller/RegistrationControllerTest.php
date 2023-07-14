@@ -23,6 +23,7 @@ namespace App\Tests\Controller;
 use App\Entity\MedicalCertificate;
 use App\Enum\LegalGuardianRole;
 use App\Factory\LicenseFactory;
+use App\Factory\MedicalCertificateFactory;
 use App\Factory\PostalCodeFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
@@ -47,42 +48,42 @@ class RegistrationControllerTest extends AppWebTestCase
 
         // Simulate AJAX call
         $crawler = $client->submitForm('S\'inscrire', [
-            'registration[postalCode]' => '01000',
+            'registration[user][postalCode]' => '01000',
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[gender]' => 'm',
-            'registration[firstName]' => 'John',
-            'registration[lastName]' => 'Doe',
-            'registration[email]' => 'john.doe@avirontours.fr',
-            'registration[phoneNumber]' => '0102030405',
-            'registration[plainPassword][first]' => 'engage',
-            'registration[plainPassword][second]' => 'engage',
-            'registration[nationality]' => 'FR',
-            'registration[birthday]' => '2010-01-01',
-            'registration[laneNumber]' => '100',
-            'registration[laneType]' => 'Rue',
-            'registration[laneName]' => 'du test',
-            'registration[city]' => 'One City',
-            'registration[clubEmailAllowed]' => 1,
+            'registration[user][gender]' => 'm',
+            'registration[user][firstName]' => 'John',
+            'registration[user][lastName]' => 'Doe',
+            'registration[user][email]' => 'john.doe@avirontours.fr',
+            'registration[user][phoneNumber]' => '0102030405',
+            'registration[user][plainPassword][first]' => 'engage',
+            'registration[user][plainPassword][second]' => 'engage',
+            'registration[user][nationality]' => 'FR',
+            'registration[user][birthday]' => '2010-01-01',
+            'registration[user][laneNumber]' => '100',
+            'registration[user][laneType]' => 'Rue',
+            'registration[user][laneName]' => 'du test',
+            'registration[user][city]' => 'One City',
+            'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
-            'registration[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
-            'registration[firstLegalGuardian][firstName]' => 'Gandalf',
-            'registration[firstLegalGuardian][lastName]' => 'Le Blanc',
-            'registration[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
-            'registration[firstLegalGuardian][phoneNumber]' => '0123456788',
-            'registration[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
-            'registration[secondLegalGuardian][firstName]' => 'Galadriel',
-            'registration[secondLegalGuardian][lastName]' => 'Artanis',
-            'registration[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
-            'registration[secondLegalGuardian][phoneNumber]' => '0123456799',
-            'registration[licenses][0][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[licenses][0][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration[licenses][0][medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
-            'registration[licenses][0][optionalInsurance]' => 1,
-            'registration[licenses][0][federationEmailAllowed]' => 1,
+            'registration[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'registration[user][firstLegalGuardian][firstName]' => 'Gandalf',
+            'registration[user][firstLegalGuardian][lastName]' => 'Le Blanc',
+            'registration[user][firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'registration[user][firstLegalGuardian][phoneNumber]' => '0123456788',
+            'registration[user][secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'registration[user][secondLegalGuardian][firstName]' => 'Galadriel',
+            'registration[user][secondLegalGuardian][lastName]' => 'Artanis',
+            'registration[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'registration[user][secondLegalGuardian][phoneNumber]' => '0123456799',
+            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
+            'registration[license][optionalInsurance]' => 1,
+            'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[licenses][0][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
@@ -125,6 +126,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate()->getFile());
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
+        MedicalCertificateFactory::repository()->assert()->count(1);
     }
 
     public function testRegistrationWithoutData(): void
@@ -138,54 +140,55 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $crawler = $client->submitForm('S\'inscrire', [
-            'registration[firstName]' => '',
-            'registration[lastName]' => '',
-            'registration[email]' => '',
-            'registration[phoneNumber]' => '',
-            'registration[plainPassword][first]' => '',
-            'registration[plainPassword][second]' => '',
-            'registration[nationality]' => '',
-            'registration[birthday]' => '',
-            'registration[laneNumber]' => '',
-            'registration[laneType]' => '',
-            'registration[laneName]' => '',
-            'registration[postalCode]' => '',
-            'registration[city]' => '',
-            'registration[firstLegalGuardian][role]' => '',
-            'registration[firstLegalGuardian][firstName]' => '',
-            'registration[firstLegalGuardian][lastName]' => '',
-            'registration[firstLegalGuardian][email]' => '',
-            'registration[firstLegalGuardian][phoneNumber]' => '',
-            'registration[secondLegalGuardian][role]' => '',
-            'registration[secondLegalGuardian][firstName]' => '',
-            'registration[secondLegalGuardian][lastName]' => '',
-            'registration[secondLegalGuardian][email]' => '',
-            'registration[secondLegalGuardian][phoneNumber]' => '',
-            'registration[licenses][0][medicalCertificate][date]' => '',
+            'registration[user][firstName]' => '',
+            'registration[user][lastName]' => '',
+            'registration[user][email]' => '',
+            'registration[user][phoneNumber]' => '',
+            'registration[user][plainPassword][first]' => '',
+            'registration[user][plainPassword][second]' => '',
+            'registration[user][nationality]' => '',
+            'registration[user][birthday]' => '',
+            'registration[user][laneNumber]' => '',
+            'registration[user][laneType]' => '',
+            'registration[user][laneName]' => '',
+            'registration[user][postalCode]' => '',
+            'registration[user][city]' => '',
+            'registration[user][firstLegalGuardian][role]' => '',
+            'registration[user][firstLegalGuardian][firstName]' => '',
+            'registration[user][firstLegalGuardian][lastName]' => '',
+            'registration[user][firstLegalGuardian][email]' => '',
+            'registration[user][firstLegalGuardian][phoneNumber]' => '',
+            'registration[user][secondLegalGuardian][role]' => '',
+            'registration[user][secondLegalGuardian][firstName]' => '',
+            'registration[user][secondLegalGuardian][lastName]' => '',
+            'registration[user][secondLegalGuardian][email]' => '',
+            'registration[user][secondLegalGuardian][phoneNumber]' => '',
+            'registration[license][medicalCertificate][date]' => '',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_gender')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_firstName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_lastName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_email')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_nationality')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_birthday')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#registration_laneType')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_laneName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_postalCode')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_city')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_licenses_0_medicalCertificate_type')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_licenses_0_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_licenses_0_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_licenses_0_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_gender')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_firstName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_lastName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_email')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_nationality')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_birthday')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#registration_user_laneType')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_laneName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_postalCode')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_user_city')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_type')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_license_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_agreeSwim')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(17, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
+        MedicalCertificateFactory::repository()->assert()->count(0);
     }
 
     public function testRegistrationWithoutLegalGuardianForUnderEighteen(): void
@@ -204,42 +207,42 @@ class RegistrationControllerTest extends AppWebTestCase
 
         // Simulate AJAX call
         $crawler = $client->submitForm('S\'inscrire', [
-            'registration[postalCode]' => '01000',
+            'registration[user][postalCode]' => '01000',
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[gender]' => 'm',
-            'registration[firstName]' => 'John',
-            'registration[lastName]' => 'Doe',
-            'registration[email]' => 'john.doe@avirontours.fr',
-            'registration[phoneNumber]' => '0102030405',
-            'registration[plainPassword][first]' => 'engage',
-            'registration[plainPassword][second]' => 'engage',
-            'registration[nationality]' => 'FR',
-            'registration[birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
-            'registration[laneNumber]' => '100',
-            'registration[laneType]' => 'Rue',
-            'registration[laneName]' => 'du test',
-            'registration[city]' => 'One City',
-            'registration[clubEmailAllowed]' => 1,
+            'registration[user][gender]' => 'm',
+            'registration[user][firstName]' => 'John',
+            'registration[user][lastName]' => 'Doe',
+            'registration[user][email]' => 'john.doe@avirontours.fr',
+            'registration[user][phoneNumber]' => '0102030405',
+            'registration[user][plainPassword][first]' => 'engage',
+            'registration[user][plainPassword][second]' => 'engage',
+            'registration[user][nationality]' => 'FR',
+            'registration[user][birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
+            'registration[user][laneNumber]' => '100',
+            'registration[user][laneType]' => 'Rue',
+            'registration[user][laneName]' => 'du test',
+            'registration[user][city]' => 'One City',
+            'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
-            'registration[firstLegalGuardian][role]' => '',
-            'registration[firstLegalGuardian][firstName]' => '',
-            'registration[firstLegalGuardian][lastName]' => '',
-            'registration[firstLegalGuardian][email]' => '',
-            'registration[firstLegalGuardian][phoneNumber]' => '',
-            'registration[secondLegalGuardian][role]' => '',
-            'registration[secondLegalGuardian][firstName]' => '',
-            'registration[secondLegalGuardian][lastName]' => '',
-            'registration[secondLegalGuardian][email]' => '',
-            'registration[secondLegalGuardian][phoneNumber]' => '',
-            'registration[licenses][0][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[licenses][0][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration[licenses][0][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
-            'registration[licenses][0][optionalInsurance]' => 1,
-            'registration[licenses][0][federationEmailAllowed]' => 1,
+            'registration[user][firstLegalGuardian][role]' => '',
+            'registration[user][firstLegalGuardian][firstName]' => '',
+            'registration[user][firstLegalGuardian][lastName]' => '',
+            'registration[user][firstLegalGuardian][email]' => '',
+            'registration[user][firstLegalGuardian][phoneNumber]' => '',
+            'registration[user][secondLegalGuardian][role]' => '',
+            'registration[user][secondLegalGuardian][firstName]' => '',
+            'registration[user][secondLegalGuardian][lastName]' => '',
+            'registration[user][secondLegalGuardian][email]' => '',
+            'registration[user][secondLegalGuardian][phoneNumber]' => '',
+            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration[license][optionalInsurance]' => 1,
+            'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[licenses][0][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -248,6 +251,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertCount(0, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
+        MedicalCertificateFactory::repository()->assert()->count(0);
     }
 
     public function testRegistrationWithoutLegalGuardianOverEighteen(): void
@@ -266,47 +270,48 @@ class RegistrationControllerTest extends AppWebTestCase
 
         // Simulate AJAX call
         $crawler = $client->submitForm('S\'inscrire', [
-            'registration[postalCode]' => '01000',
+            'registration[user][postalCode]' => '01000',
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[gender]' => 'm',
-            'registration[firstName]' => 'John',
-            'registration[lastName]' => 'Doe',
-            'registration[email]' => 'john.doe@avirontours.fr',
-            'registration[phoneNumber]' => '0102030405',
-            'registration[plainPassword][first]' => 'engage',
-            'registration[plainPassword][second]' => 'engage',
-            'registration[nationality]' => 'FR',
-            'registration[birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
-            'registration[laneNumber]' => '100',
-            'registration[laneType]' => 'Rue',
-            'registration[laneName]' => 'du test',
-            'registration[city]' => 'One City',
-            'registration[clubEmailAllowed]' => 1,
+            'registration[user][gender]' => 'm',
+            'registration[user][firstName]' => 'John',
+            'registration[user][lastName]' => 'Doe',
+            'registration[user][email]' => 'john.doe@avirontours.fr',
+            'registration[user][phoneNumber]' => '0102030405',
+            'registration[user][plainPassword][first]' => 'engage',
+            'registration[user][plainPassword][second]' => 'engage',
+            'registration[user][nationality]' => 'FR',
+            'registration[user][birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
+            'registration[user][laneNumber]' => '100',
+            'registration[user][laneType]' => 'Rue',
+            'registration[user][laneName]' => 'du test',
+            'registration[user][city]' => 'One City',
+            'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
-            'registration[firstLegalGuardian][role]' => '',
-            'registration[firstLegalGuardian][firstName]' => '',
-            'registration[firstLegalGuardian][lastName]' => '',
-            'registration[firstLegalGuardian][email]' => '',
-            'registration[firstLegalGuardian][phoneNumber]' => '',
-            'registration[secondLegalGuardian][role]' => '',
-            'registration[secondLegalGuardian][firstName]' => '',
-            'registration[secondLegalGuardian][lastName]' => '',
-            'registration[secondLegalGuardian][email]' => '',
-            'registration[secondLegalGuardian][phoneNumber]' => '',
-            'registration[licenses][0][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[licenses][0][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration[licenses][0][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
-            'registration[licenses][0][optionalInsurance]' => 1,
-            'registration[licenses][0][federationEmailAllowed]' => 1,
+            'registration[user][firstLegalGuardian][role]' => '',
+            'registration[user][firstLegalGuardian][firstName]' => '',
+            'registration[user][firstLegalGuardian][lastName]' => '',
+            'registration[user][firstLegalGuardian][email]' => '',
+            'registration[user][firstLegalGuardian][phoneNumber]' => '',
+            'registration[user][secondLegalGuardian][role]' => '',
+            'registration[user][secondLegalGuardian][firstName]' => '',
+            'registration[user][secondLegalGuardian][lastName]' => '',
+            'registration[user][secondLegalGuardian][email]' => '',
+            'registration[user][secondLegalGuardian][phoneNumber]' => '',
+            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration[license][optionalInsurance]' => 1,
+            'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[licenses][0][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
+        MedicalCertificateFactory::repository()->assert()->count(1);
     }
 
     public function testRegistrationTwice(): void
@@ -326,50 +331,51 @@ class RegistrationControllerTest extends AppWebTestCase
 
         // Simulate AJAX call
         $crawler = $client->submitForm('S\'inscrire', [
-            'registration[postalCode]' => '01000',
+            'registration[user][postalCode]' => '01000',
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[gender]' => 'm',
-            'registration[firstName]' => $license->getUser()->getFirstName(),
-            'registration[lastName]' => $license->getUser()->getLastName(),
-            'registration[email]' => 'john.doe@avirontours.fr',
-            'registration[phoneNumber]' => '0102030405',
-            'registration[plainPassword][first]' => 'engage',
-            'registration[plainPassword][second]' => 'engage',
-            'registration[nationality]' => 'FR',
-            'registration[birthday]' => '2010-01-01',
-            'registration[laneNumber]' => '100',
-            'registration[laneType]' => 'Rue',
-            'registration[laneName]' => 'du test',
-            'registration[city]' => 'One City',
-            'registration[clubEmailAllowed]' => 1,
+            'registration[user][gender]' => 'm',
+            'registration[user][firstName]' => $license->getUser()->getFirstName(),
+            'registration[user][lastName]' => $license->getUser()->getLastName(),
+            'registration[user][email]' => 'john.doe@avirontours.fr',
+            'registration[user][phoneNumber]' => '0102030405',
+            'registration[user][plainPassword][first]' => 'engage',
+            'registration[user][plainPassword][second]' => 'engage',
+            'registration[user][nationality]' => 'FR',
+            'registration[user][birthday]' => '2010-01-01',
+            'registration[user][laneNumber]' => '100',
+            'registration[user][laneType]' => 'Rue',
+            'registration[user][laneName]' => 'du test',
+            'registration[user][city]' => 'One City',
+            'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
-            'registration[firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
-            'registration[firstLegalGuardian][firstName]' => 'Gandalf',
-            'registration[firstLegalGuardian][lastName]' => 'Le Blanc',
-            'registration[firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
-            'registration[firstLegalGuardian][phoneNumber]' => '0123456788',
-            'registration[secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
-            'registration[secondLegalGuardian][firstName]' => 'Galadriel',
-            'registration[secondLegalGuardian][lastName]' => 'Artanis',
-            'registration[secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
-            'registration[secondLegalGuardian][phoneNumber]' => '0123456799',
-            'registration[licenses][0][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[licenses][0][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'registration[licenses][0][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
-            'registration[licenses][0][optionalInsurance]' => 1,
-            'registration[licenses][0][federationEmailAllowed]' => 1,
+            'registration[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'registration[user][firstLegalGuardian][firstName]' => 'Gandalf',
+            'registration[user][firstLegalGuardian][lastName]' => 'Le Blanc',
+            'registration[user][firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'registration[user][firstLegalGuardian][phoneNumber]' => '0123456788',
+            'registration[user][secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'registration[user][secondLegalGuardian][firstName]' => 'Galadriel',
+            'registration[user][secondLegalGuardian][lastName]' => 'Artanis',
+            'registration[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'registration[user][secondLegalGuardian][phoneNumber]' => '0123456799',
+            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration[license][optionalInsurance]' => 1,
+            'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[licenses][0][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('#registration_firstName')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('#registration_user_firstName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
+        MedicalCertificateFactory::repository()->assert()->count(1);
     }
 
     public function testNonEnabledRegistration(): void
@@ -408,35 +414,95 @@ class RegistrationControllerTest extends AppWebTestCase
 
     public function testRenew(): void
     {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
+        $user = UserFactory::createOne();
+        LicenseFactory::createOne([
+            'user' => $user,
+        ]);
         $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $user = $this->logIn($client, 'ROLE_USER');
+        $client->loginUser($user->object());
         $crawler = $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
+        $this->assertNotNull($crawler->filter('#renew_user_gender_0')->attr('disabled'));
+        $this->assertNotNull($crawler->filter('#renew_user_gender_1')->attr('disabled'));
+        $this->assertNotNull($crawler->filter('#renew_user_firstName')->attr('disabled'));
+        $this->assertNotNull($crawler->filter('#renew_user_lastName')->attr('disabled'));
+        $this->assertNotNull($crawler->filter('#renew_user_nationality')->attr('disabled'));
+        $this->assertNotNull($crawler->filter('#renew_user_birthday')->attr('disabled'));
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
-            'renew[medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
-            'renew[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
-            'renew[medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
-            'renew[federationEmailAllowed]' => 1,
-            'renew[optionalInsurance]' => 1,
-            'renew[agreeSwim]' => 1,
+        // Simulate AJAX call
+        $crawler = $client->submitForm('S\'inscrire', [
+            'renew[user][postalCode]' => '01000',
         ]);
 
-        $form['renew[medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form = $crawler->selectButton('S\'inscrire')->form([
+            'renew[user][email]' => 'john.doe@avirontours.fr',
+            'renew[user][phoneNumber]' => '0102030405',
+            'renew[user][laneNumber]' => '100',
+            'renew[user][laneType]' => 'Rue',
+            'renew[user][laneName]' => 'du test',
+            'renew[user][city]' => 'One City',
+            'renew[user][clubEmailAllowed]' => 1,
+            'renew[agreeSwim]' => 1,
+            'renew[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
+            'renew[user][firstLegalGuardian][firstName]' => 'Gandalf',
+            'renew[user][firstLegalGuardian][lastName]' => 'Le Blanc',
+            'renew[user][firstLegalGuardian][email]' => 'g.le-blanc@avirontours.fr',
+            'renew[user][firstLegalGuardian][phoneNumber]' => '0123456788',
+            'renew[user][secondLegalGuardian][role]' => LegalGuardianRole::Mother->value,
+            'renew[user][secondLegalGuardian][firstName]' => 'Galadriel',
+            'renew[user][secondLegalGuardian][lastName]' => 'Artanis',
+            'renew[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
+            'renew[user][secondLegalGuardian][phoneNumber]' => '0123456799',
+            'renew[license][medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
+            'renew[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'renew[license][medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
+            'renew[license][optionalInsurance]' => 1,
+            'renew[license][federationEmailAllowed]' => 1,
+        ]);
+        $form['renew[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
         $this->assertQueuedEmailCount(1);
-        $this->assertCount(1, $user->getLicenses());
+        $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
+        $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
+        $this->assertSame('0102030405', $user->getPhoneNumber());
+        $this->assertSame('100', $user->getLaneNumber());
+        $this->assertSame('Rue', $user->getLaneType());
+        $this->assertSame('Du Test', $user->getLaneName());
+        $this->assertSame('01000', $user->getPostalCode());
+        $this->assertSame('One City', $user->getCity());
+        $this->assertTrue($user->getClubEmailAllowed());
+        $this->assertSame(LegalGuardianRole::Father, $user->getFirstLegalGuardian()->getRole());
+        $this->assertSame('Gandalf', $user->getFirstLegalGuardian()->getFirstName());
+        $this->assertSame('Le Blanc', $user->getFirstLegalGuardian()->getLastName());
+        $this->assertSame('g.le-blanc@avirontours.fr', $user->getFirstLegalGuardian()->getEmail());
+        $this->assertSame('0123456788', $user->getFirstLegalGuardian()->getPhoneNumber());
+        $this->assertSame(LegalGuardianRole::Mother, $user->getSecondLegalGuardian()->getRole());
+        $this->assertSame('Galadriel', $user->getSecondLegalGuardian()->getFirstName());
+        $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
+        $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
+        $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
+        $this->assertCount(2, $user->refresh()->getLicenses());
+        $this->assertSame($season->getSeasonCategories()->first(), $user->getLicenses()->last()->getSeasonCategory());
+        $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
+        $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());
+        $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate());
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
-        $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
-        $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());
+        $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate()->getFile());
+        UserFactory::repository()->assert()->count(1);
+        LicenseFactory::repository()->assert()->count(2);
+        MedicalCertificateFactory::repository()->assert()->count(2);
     }
 
     public function testNonDisplayedCategoryRenew(): void

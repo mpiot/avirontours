@@ -20,14 +20,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\License;
 use App\Entity\SeasonCategory;
-use App\Entity\User;
+use App\Form\Model\Registration;
 use App\Form\RegistrationType;
 use App\Form\RenewType;
+use App\Repository\LicenseRepository;
 use App\Repository\SeasonCategoryRepository;
 use App\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Form\ClearableErrorsInterface;
@@ -44,31 +43,30 @@ class RegistrationController extends AbstractController
         #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
         Request $request,
         UserRepository $userRepository,
+        LicenseRepository $licenseRepository,
         MailerInterface $mailer
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
 
-        $user = new User();
-        $license = new License();
-        $license->setSeasonCategory($seasonCategory);
-        $user->addLicense($license);
-
-        $form = $this->createForm(RegistrationType::class, $user);
+        $registration = new Registration($seasonCategory);
+        $form = $this->createForm(RegistrationType::class, $registration);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userRepository->save($user, true);
+            $registration->license->setUser($registration->user);
+            $userRepository->save($registration->user);
+            $licenseRepository->save($registration->license, true);
 
             // Send email
             $email = (new TemplatedEmail())
-                ->to($user->getEmail())
+                ->to($registration->user->getEmail())
                 ->subject('Inscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/registration.html.twig')
                 ->context([
-                    'fullName' => $user->getFullName(),
-                    'userIdenfitier' => $user->getUserIdentifier(),
+                    'fullName' => $registration->user->getFullName(),
+                    'userIdentifier' => $registration->user->getUserIdentifier(),
                 ])
             ;
             $mailer->send($email);
@@ -89,35 +87,37 @@ class RegistrationController extends AbstractController
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
     #[IsGranted('ROLE_USER')]
-    public function renew(string $slug, SeasonCategoryRepository $repository, Request $request, ManagerRegistry $managerRegistry, MailerInterface $mailer): Response
-    {
-        $seasonCategory = $repository->findSubscriptionSeasonCategory($slug, $this->getUser());
+    public function renew(
+        string $slug,
+        SeasonCategoryRepository $seasonCategoryRepository,
+        Request $request,
+        LicenseRepository $licenseRepository,
+        MailerInterface $mailer
+    ): Response {
+        $seasonCategory = $seasonCategoryRepository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {
             throw $this->createNotFoundException();
         }
 
-        $license = new License($seasonCategory, $this->getUser());
-        $form = $this->createForm(RenewType::class, $license);
+        $registration = new Registration($seasonCategory, $this->getUser());
+        $form = $this->createForm(RenewType::class, $registration);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Persist user
-            $entityManager = $managerRegistry->getManager();
-            $entityManager->persist($license);
-            $entityManager->flush();
+            $registration->license->setUser($registration->user);
+            $licenseRepository->save($registration->license, true);
 
             // Send email
             $email = (new TemplatedEmail())
-                ->to($this->getUser()->getEmail())
+                ->to($registration->user->getEmail())
                 ->subject('Réinscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/renew.html.twig')
                 ->context([
-                    'user' => $this->getUser(),
+                    'fullName' => $registration->user->getFullName(),
                 ])
             ;
             $mailer->send($email);
 
-            // Add flash message
             $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
 
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);

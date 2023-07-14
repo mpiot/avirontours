@@ -40,27 +40,28 @@ class MedicalCertificate
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ['Default', 'registration'])]
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $type = self::TYPE_CERTIFICATE;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(groups: ['Default', 'registration'])]
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $level = self::LEVEL_COMPETITION;
 
-    #[Assert\NotBlank]
-    #[Assert\GreaterThan(value: '-1 year', message: 'Le certificat médical doit avoir moins d\'un an.')]
+    #[Assert\NotBlank(groups: ['Default', 'registration'])]
+    #[Assert\GreaterThan(value: '-1 year', message: 'Le certificat médical doit avoir moins d\'un an.', groups: ['Default', 'registration'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date = null;
 
     /**
      * NOTE: This is not a mapped field of entity metadata, just a simple property.
      */
-    #[Assert\NotNull(groups: ['new'])]
+    #[Assert\NotNull(groups: ['new', 'registration'])]
     #[Assert\File(
         maxSize: '3M',
         mimeTypes: ['application/pdf', 'application/x-pdf', 'image/*'],
-        mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image.'
+        mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image.',
+        groups: ['Default', 'registration']
     )]
     #[Vich\UploadableField(mapping: 'medical_certificate', fileNameProperty: 'fileName', size: 'fileSize', mimeType: 'fileMimeType')]
     private ?File $file = null;

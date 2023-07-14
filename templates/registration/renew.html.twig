@@ -13,60 +13,7 @@
 
     <div class="card border-0 shadow mt-3">
         <div class="card-body">
-            {{ form_start(form) }}
-                {{ form_errors(form) }}
-
-                <div class="card mt-3">
-                    <div class="card-header">
-                        Certificat médical ou attestation
-                    </div>
-                    <div class="card-body">
-                        {{ form_row(form.medicalCertificate.type) }}
-                        {{ form_row(form.medicalCertificate.level) }}
-                        {{ form_row(form.medicalCertificate.date) }}
-
-                        <div class="alert alert-info" role="alert">
-                            <span class="fas fa-info-circle"></span>
-                            Document à fournir:
-                            <ul>
-                                <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
-                                <li><u>Majeur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport (si le précédent certificat médical date de moins de 3 ans).</li>
-                            </ul>
-                        </div>
-
-                        <ul>
-                            <li>
-                                <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé (majeurs et mineurs)
-                                </a>
-                            </li>
-                        </ul>
-
-                        {{ form_row(form.medicalCertificate.file) }}
-                    </div>
-                </div>
-
-                <div class="mt-3">
-                    {{ form_row(form.federationEmailAllowed) }}
-                    {{ form_row(form.optionalInsurance, {
-                        'help': '<a href="'~ asset('files/maif-assurance-accidents-corporels-licencies-titre-initiation-2024.pdf') ~'">Télécharger la notice</a>',
-                        'help_html': true,
-                    }) }}
-                    {{ form_row(form.agreeSwim) }}
-                </div>
-
-                <button class="btn btn-primary mt-3">S'inscrire</button>
-            {{ form_end(form) }}
+            {{ include('registration/_form.html.twig') }}
         </div>
     </div>
 {% endblock %}

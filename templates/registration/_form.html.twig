@@ -1,0 +1,177 @@
+<div {{ stimulus_controller('dependent-field') }}>
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Membre
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.user.gender) }}
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.user.firstName) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.user.lastName) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.user.nationality) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.user.birthday) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.user.email) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.user.phoneNumber) }}
+                            </div>
+                        </div>
+
+                        {% if form.user.plainPassword is defined %}
+                            {{ form_row(form.user.plainPassword) }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        Adresse
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.user.laneNumber) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.user.laneType) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.user.laneName) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.user.postalCode, { attr: { 'data-action': 'dependent-field#keyup' } }) }}
+                            </div>
+                            <div id="city-target" class="col" {{ stimulus_target('dependent-field', 'target') }}>
+                                {{ form_row(form.user.city) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Licence
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            <span class="fas fa-info-circle"></span>
+                            Document à fournir:
+                            <ul>
+                                {% if form.plainPassword is defined %}
+                                    <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
+                                    <li><u>Majeur</u>: certificat médical de moins d'un an. Les attestation QS sport ne sont valables que lors du renouvellement d'une licence au sein du club.</li>
+                                {% else %}
+                                    <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
+                                    <li><u>Majeur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport (si le précédent certificat médical date de moins de 3 ans).</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <ul>
+                            {% if form.plainPassword is not defined %}
+                                <li>
+                                    <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
+                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
+                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.license.medicalCertificate.type) }}
+                            </div>
+
+                            <div class="col">
+                                {{ form_row(form.license.medicalCertificate.level) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.license.medicalCertificate.date) }}
+                            </div>
+
+                            <div class="col">
+                                {{ form_row(form.license.medicalCertificate.file) }}
+                            </div>
+                        </div>
+
+                        {{ form_row(form.license.optionalInsurance, {
+                            'help': '<a href="'~ asset('files/maif-assurance-accidents-corporels-licencies-titre-initiation-2024.pdf') ~'">Télécharger la notice</a>',
+                            'help_html': true,
+                        }) }}
+                        {{ form_row(form.license.federationEmailAllowed) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Responsable légal 1
+                    </div>
+                    <div class="card-body">
+                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.user.firstLegalGuardian } %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        Responsable légal 2
+                    </div>
+                    <div class="card-body">
+                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.user.secondLegalGuardian } %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            {{ form_row(form.user.clubEmailAllowed) }}
+            {{ form_row(form.agreeSwim) }}
+        </div>
+
+        <button class="btn btn-primary mt-3">S'inscrire</button>
+    {{ form_end(form) }}
+</div>
