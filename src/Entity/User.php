@@ -23,6 +23,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ReadableCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
@@ -126,6 +127,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
+    #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
@@ -535,9 +537,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     /**
-     * @return Collection|License[]
+     * @return ReadableCollection<int, License>
      */
-    public function getLicenses(): Collection
+    public function getLicenses(): ReadableCollection
     {
         return $this->licenses;
     }
@@ -724,7 +726,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     #[Assert\Callback]
-    public function validateFirstLegalGuardians(ExecutionContextInterface $context)
+    public function validateFirstLegalGuardian(ExecutionContextInterface $context): void
     {
         if (null === $this->birthday) {
             return;
