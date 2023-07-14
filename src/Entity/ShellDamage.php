@@ -58,6 +58,7 @@ class ShellDamage
     private ?Shell $shell = null;
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\LogbookEntry', inversedBy: 'shellDamages')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?LogbookEntry $logbookEntry = null;
 
     public function getId(): ?int

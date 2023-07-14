@@ -673,8 +673,10 @@ class LogbookEntryControllerTest extends AppWebTestCase
     public function testDeleteLogbookEntry(): void
     {
         $shell = ShellFactory::createOne();
+        $shellDamage = ShellDamageFactory::createOne();
         $entry = LogbookEntryFactory::createOne([
             'shell' => $shell,
+            'shellDamages' => [$shellDamage],
         ])->disableAutoRefresh();
         $shell->save();
 
@@ -690,6 +692,8 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/logbook-entry');
 
         LogbookEntryFactory::repository()->assert()->notExists($entry);
+        ShellDamageFactory::assert()->exists($shellDamage);
+        $this->assertNull($shellDamage->getLogbookEntry());
         $this->assertSame(0.0, $shell->getMileage());
     }
 }
