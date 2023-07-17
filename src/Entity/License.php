@@ -22,6 +22,8 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
 use App\Repository\LicenseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
@@ -72,9 +74,15 @@ class License
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $logbookEntryLimit = null;
 
+    #[Assert\Count(min: 1, groups: ['validate_payment'])]
+    #[Assert\Valid(groups: ['validate_payment'])]
+    #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $payments;
+
     public function __construct(SeasonCategory $seasonCategory = null)
     {
         $this->seasonCategory = $seasonCategory;
+        $this->payments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,6 +194,34 @@ class License
     public function setLogbookEntryLimit(?int $logbookEntryLimit): self
     {
         $this->logbookEntryLimit = $logbookEntryLimit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LicensePayment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(LicensePayment $payment): static
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setLicense($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(LicensePayment $payment): static
+    {
+        // set the owning side to null (unless already changed)
+        if ($this->payments->removeElement($payment) && $payment->getLicense() === $this) {
+            $payment->setLicense(null);
+        }
 
         return $this;
     }

@@ -38,33 +38,18 @@ framework:
                 validate_medical_certificate:
                     from: wait_medical_certificate_validation
                     to:   medical_certificate_validated
-                    metadata:
-                        title: Valider le certificat médical
-                        button: primary
                 reject_medical_certificate:
                     from: wait_medical_certificate_validation
                     to: medical_certificate_rejected
-                    metadata:
-                        title: Rejeter le certificat médical
-                        button: warning
                 unreject_medical_certificate:
                     from: medical_certificate_rejected
                     to:   wait_medical_certificate_validation
-                    metadata:
-                        title: Passer le certificat en attente de validation
-                        button: danger
                 validate_payment:
                     from: wait_payment_validation
                     to:   payment_validated
-                    metadata:
-                        title: Valider le paiement
-                        button: primary
                 validate_license:
                     guard: "is_granted('ROLE_SEASON_ADMIN')"
                     from:
                         - medical_certificate_validated
                         - payment_validated
                     to:   validated
-                    metadata:
-                        title: Valider la licence
-                        button: primary

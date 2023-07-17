@@ -21,7 +21,9 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\PaymentMethod;
 use App\Factory\LicenseFactory;
+use App\Factory\LicensePaymentFactory;
 use App\Factory\SeasonCategoryFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
@@ -98,8 +100,13 @@ class LicenseControllerTest extends AppWebTestCase
         yield ['POST', '/admin/season/{season_id}/license/new'];
         yield ['GET', '/admin/season/{season_id}/license/{id}/edit'];
         yield ['POST', '/admin/season/{season_id}/license/{id}/edit'];
-        yield ['POST', '/admin/season/{season_id}/license/{id}/apply-transition'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/validate-payment'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/validate-payment'];
         yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/apply-transition/validate_medical_certificate'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/apply-transition/reject_medical_certificate'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/apply-transition/unreject_medical_certificate'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/apply-transition/validate_license'];
     }
 
     public function adminUrlProvider(): \Generator
@@ -221,6 +228,82 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 
+    public function testValidatePayment(): void
+    {
+        $license = LicenseFactory::createOne(['marking' => []]);
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $crawler = $client->request('GET', "/admin/season/{$seasonCategory->getSeason()->getId()}/license/{$license->getId()}/validate-payment");
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form();
+        $values = $form->getPhpValues();
+        $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
+        $values['license_payment']['payments'][0]['amount'] = 240;
+        $values['license_payment']['payments'][2]['method'] = PaymentMethod::Cash->value;
+        $values['license_payment']['payments'][2]['amount'] = 100;
+        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseRedirects();
+        $this->assertSame(['wait_medical_certificate_validation' => 1, 'payment_validated' => 1], $license->getMarking());
+        $this->assertCount(2, $license->getPayments());
+        $this->assertSame(PaymentMethod::Check, $license->getPayments()->first()->getMethod());
+        $this->assertSame(24000, $license->getPayments()->first()->getAmount());
+        $this->assertSame(PaymentMethod::Cash, $license->getPayments()->last()->getMethod());
+        $this->assertSame(10000, $license->getPayments()->last()->getAmount());
+    }
+
+    public function testValidatePaymentWithoutData(): void
+    {
+        $license = LicenseFactory::createOne(['marking' => []]);
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $client->request('GET', "/admin/season/{$seasonCategory->getSeason()->getId()}/license/{$license->getId()}/validate-payment");
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('#license_payment_payments')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        LicensePaymentFactory::repository()->assert()->count(0);
+    }
+
+    public function testValidatePaymentWithEmptyData(): void
+    {
+        $license = LicenseFactory::createOne(['marking' => []]);
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $crawler = $client->request('GET', "/admin/season/{$seasonCategory->getSeason()->getId()}/license/{$license->getId()}/validate-payment");
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form();
+        $values = $form->getPhpValues();
+        $values['license_payment']['payments'][0]['method'] = '';
+        $values['license_payment']['payments'][0]['amount'] = '';
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#license_payment_payments_0_method')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_0_amount')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
+        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
+        LicensePaymentFactory::repository()->assert()->count(0);
+    }
+
     public function testChainMedicalCertificateValidationWithEmptyArray(): void
     {
         $license = LicenseFactory::createOne(['marking' => []]);
@@ -232,9 +315,9 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Valider le certificat médical');
+        $client->clickLink('Valider le certificat médical');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}/license/chain-medical-certificate-validation");
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
@@ -252,9 +335,9 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Valider le certificat médical');
+        $client->clickLink('Valider le certificat médical');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/chain-medical-certificate-validation');
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}/license/chain-medical-certificate-validation");
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
@@ -272,9 +355,9 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Valider le certificat médical');
+        $client->clickLink('Valider le certificat médical');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_validated' => 1,
@@ -292,9 +375,9 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Rejeter le certificat médical');
+        $client->clickLink('Rejeter le certificat médical');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
         $this->assertQueuedEmailCount(1);
         $this->assertSame([
             'wait_payment_validation' => 1,
@@ -313,32 +396,12 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Passer le certificat en attente de validation');
+        $client->clickLink('Passer le certificat en attente de validation');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
         $this->assertSame([
             'wait_payment_validation' => 1,
             'wait_medical_certificate_validation' => 1,
-        ], $license->getMarking());
-    }
-
-    public function testValidatePayment(): void
-    {
-        $license = LicenseFactory::createOne(['marking' => []]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
-        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Valider le paiement');
-
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-        $this->assertSame([
-            'wait_medical_certificate_validation' => 1,
-            'payment_validated' => 1,
         ], $license->getMarking());
     }
 
@@ -353,9 +416,9 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Valider la licence');
+        $client->clickLink('Valider la licence');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
         $this->assertSame([
             'validated' => 1,
         ], $license->getMarking());
@@ -372,7 +435,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertCount(0, $crawler->selectButton('Valider la licence'));
+        $this->assertCount(0, $crawler->selectLink('Valider la licence'));
     }
 
     public function testDeleteLicense(): void
@@ -388,7 +451,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->submitForm('Supprimer');
 
-        $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
+        $this->assertResponseRedirects("/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
         LicenseFactory::repository()->assert()->notExists($license);
     }
 }

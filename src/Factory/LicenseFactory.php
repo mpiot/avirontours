@@ -94,6 +94,13 @@ final class LicenseFactory extends ModelFactory
         ]);
     }
 
+    public function withPayments(): self
+    {
+        return $this->addState([
+            'payments' => LicensePaymentFactory::new()->many(1, 5),
+        ]);
+    }
+
     protected function getDefaults(): array
     {
         return [

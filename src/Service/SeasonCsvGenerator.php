@@ -46,26 +46,78 @@ class SeasonCsvGenerator
             $user = $license->getUser();
 
             $data[] = [
-                'fullName' => $license->getUser()->getFullName(),
-                'email' => $license->getUser()->getEmail(),
-                'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
+                'Prénom - Nom' => $license->getUser()->getFullName(),
+                'Email' => $license->getUser()->getEmail(),
+                'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
             ];
 
             if (null !== $user->getFirstLegalGuardian()) {
                 $data[] = [
-                    'fullName' => $user->getFirstLegalGuardian()->getFullName(),
-                    'email' => $user->getFirstLegalGuardian()->getEmail(),
-                    'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
+                    'Prénom - Nom' => $user->getFirstLegalGuardian()->getFullName(),
+                    'Email' => $user->getFirstLegalGuardian()->getEmail(),
+                    'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
                 ];
             }
 
             if (null !== $user->getSecondLegalGuardian()) {
                 $data[] = [
-                    'fullName' => $user->getSecondLegalGuardian()->getFullName(),
-                    'email' => $user->getSecondLegalGuardian()->getEmail(),
-                    'clubEmailAllowed' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
+                    'Prénom - Nom' => $user->getSecondLegalGuardian()->getFullName(),
+                    'Email' => $user->getSecondLegalGuardian()->getEmail(),
+                    'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
                 ];
             }
+        }
+
+        $serializer = new Serializer([], [new CsvEncoder()]);
+
+        return $serializer->serialize($data, 'csv', [CsvEncoder::DELIMITER_KEY => ';']);
+    }
+
+    public function exportPayments(Season $season): ?string
+    {
+        $licenses = $this->licenseRepository->findForPaymentsExport($season);
+        if (empty($licenses)) {
+            return null;
+        }
+
+        $headers = [];
+        foreach ($licenses as $license) {
+            $counter = [];
+            foreach ($license->getPayments() as $payment) {
+                $header = $payment->getMethod()->label();
+                if (false === \array_key_exists($header, $counter)) {
+                    $counter[$header] = 0;
+                }
+                $count = ++$counter[$header];
+                $header = 1 === $count ? $header : "{$header} {$count}";
+
+                if (false === \in_array($header, $headers, true)) {
+                    $headers[] = $header;
+                }
+            }
+        }
+        sort($headers);
+        array_unshift($headers, 'Prénom', 'Nom');
+
+        $data = [];
+        foreach ($licenses as $license) {
+            $tmpData = array_fill_keys($headers, null);
+            $tmpData['Prénom'] = $license->getUser()->getFirstName();
+            $tmpData['Nom'] = $license->getUser()->getLastName();
+
+            $counter = [];
+            foreach ($license->getPayments() as $payment) {
+                $paymentMethod = $payment->getMethod()->label();
+                if (false === \array_key_exists($paymentMethod, $counter)) {
+                    $counter[$paymentMethod] = 0;
+                }
+                $count = ++$counter[$paymentMethod];
+                $paymentMethod = 1 === $count ? $paymentMethod : "{$paymentMethod} {$count}";
+
+                $tmpData[$paymentMethod] = $payment->getAmount() / 100;
+            }
+
+            $data[] = $tmpData;
         }
 
         $serializer = new Serializer([], [new CsvEncoder()]);

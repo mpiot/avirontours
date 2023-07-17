@@ -24,11 +24,12 @@ use App\Controller\AbstractController;
 use App\Entity\License;
 use App\Entity\Season;
 use App\Form\LicenseEditType;
+use App\Form\LicensePaymentType;
 use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use ProxyManager\Exception\ExceptionInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -90,44 +91,36 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_SEASON_ADMIN')]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
-            $entityManager->remove($license);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'La licence a été supprimée avec succès.');
+    #[Route(path: '/{id}/validate-payment', name: 'license_validate_payment', methods: ['GET', 'POST'])]
+    public function validatePayment(
+        Request $request,
+        ManagerRegistry $managerRegistry,
+        WorkflowInterface $licenseWorkflow,
+        License $license,
+    ): Response {
+        if (false === $licenseWorkflow->can($license, 'validate_payment')) {
+            throw $this->createNotFoundException();
         }
 
-        return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
-    }
+        $form = $this->createForm(LicensePaymentType::class, $license);
+        $form->handleRequest($request);
 
-    #[Route(path: '/{id}/apply-transition', name: 'license_apply_transition', methods: ['POST'])]
-    #[Route(path: '/{id}/chain-validation-apply-transition', name: 'license_chain_validation_apply_transition', methods: ['POST'])]
-    public function applyTransition(Request $request, ManagerRegistry $managerRegistry, WorkflowInterface $licenseWorkflow, License $license, int $seasonId): Response
-    {
-        try {
-            $licenseWorkflow->apply($license, (string) $request->request->get('transition'), [
+        if ($form->isSubmitted() && $form->isValid()) {
+            $licenseWorkflow->apply($license, 'validate_payment', [
                 'time' => date('y-m-d H:i:s'),
             ]);
             $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
-        } catch (NotEnabledTransitionException $error) {
-            throw $this->createAccessDeniedException();
-        } catch (ExceptionInterface $error) {
-            $this->addFlash('error', $error->getMessage());
+
+            return $this->redirectToRoute('season_show', [
+                'id' => $license->getSeasonCategory()->getSeason()->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
-        if ('license_chain_validation_apply_transition' === $request->get('_route')) {
-            return $this->redirectToRoute('license_validate_medical_certificate', ['seasonId' => $seasonId]);
-        }
-
-        return $this->redirectToRoute('season_show', [
-            'id' => $license->getSeasonCategory()->getSeason()->getId(),
+        return $this->render('admin/license/validate_payment.html.twig', [
+            'form' => $form,
+            'license' => $license,
         ]);
     }
 
@@ -146,5 +139,48 @@ class LicenseController extends AbstractController
             'license' => $license,
             'previous_licences' => $previousLicenses ?? null,
         ]);
+    }
+
+    #[Route(
+        path: '/{id}/apply-transition/{transitionName<validate_medical_certificate|reject_medical_certificate|unreject_medical_certificate|validate_license>}',
+        name: 'license_apply_transition',
+        methods: ['GET']
+    )]
+    public function applyTransition(
+        Request $request,
+        ManagerRegistry $managerRegistry,
+        WorkflowInterface $licenseWorkflow,
+        License $license,
+        string $transitionName
+    ): Response {
+        if ($this->isCsrfTokenValid('license-apply-transition', (string) $request->query->get('_token'))) {
+            try {
+                $licenseWorkflow->apply($license, $transitionName, [
+                    'time' => date('y-m-d H:i:s'),
+                ]);
+                $managerRegistry->getManager()->flush();
+
+                $this->addFlash('success', 'La licence a été modifiée avec succès.');
+            } catch (NotEnabledTransitionException $error) {
+                throw $this->createAccessDeniedException();
+            }
+        }
+
+        return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
+    public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
+            $entityManager = $managerRegistry->getManager();
+            $entityManager->remove($license);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La licence a été supprimée avec succès.');
+        }
+
+        return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
     }
 }

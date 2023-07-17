@@ -129,6 +129,7 @@ class SeasonController extends AbstractController
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
+
         $response = new StreamedResponse(function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
@@ -137,6 +138,31 @@ class SeasonController extends AbstractController
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
             "season_contact_{$season->getName()}.csv"
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
+
+    #[Route(path: '/{id}/export/payment', name: 'season_export_payments', methods: ['GET'])]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
+    public function exportPayments(Season $season, SeasonCsvGenerator $csvGenerator): Response
+    {
+        $csv = $csvGenerator->exportPayments($season);
+        if (null === $csv) {
+            $this->addFlash('notice', 'Aucun paiements à exporter.');
+
+            return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
+        }
+
+        $response = new StreamedResponse(function () use ($csv): void {
+            $outputStream = fopen('php://output', 'w');
+            fwrite($outputStream, $csv);
+        });
+        $response->headers->set('Content-Type', 'text/csv');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            'season_payments_'.$season->getName().'_'.(new \DateTime())->format('YmdHis').'.csv'
         );
         $response->headers->set('Content-Disposition', $disposition);
 
@@ -153,6 +179,7 @@ class SeasonController extends AbstractController
 
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
+
         $response = new StreamedResponse(function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
