@@ -65,6 +65,11 @@ class Season
         return $this->name;
     }
 
+    public function getExtendedName(): string
+    {
+        return ($this->name - 1).' - '.$this->name;
+    }
+
     public function setName(int $name): self
     {
         $this->name = $name;

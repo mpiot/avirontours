@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% set appMenuAutoOpen = false %}
+
+{% block breadcrumb_block %}
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center">
+        {% if license is null %}
+            <div class="border rounded p-5 border-danger">
+                <div class="text-danger text-center">
+                    <span class="fas fa-4x fa-times-circle"></span>
+                </div>
+
+                <p class="fs-3">Attestation de paiement</p>
+
+                <p>Nous n'avons trouvé aucune licence.</p>
+            </div>
+        {% else %}
+            <div class="border rounded p-5 border-success">
+                <div class="text-success text-center">
+                    <span class="fas fa-4x fa-check-circle"></span>
+                </div>
+
+                <p class="fs-3">Attestation de paiement</p>
+
+                <b>Nom - Prénom:</b> {{ license.user.firstLegalGuardian ? license.user.firstLegalGuardian.fullName : license.user.fullName }}<br>
+                <b>Montant:</b> {{ (license.paymentsAmount / 100)|format_currency('EUR') }}<br>
+                <b>Saison:</b> {{ license.seasonCategory.season.extendedName }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

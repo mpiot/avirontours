@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+
+            <style>
+                @page {
+                    size: A4 portrait;
+                    margin: 17mm 10mm 10mm 10mm;
+                }
+
+                body {
+                    font-size: 10pt;
+                    background-color: transparent;
+                }
+            </style>
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block body %}
+        {% endblock %}
+    </body>
+</html>

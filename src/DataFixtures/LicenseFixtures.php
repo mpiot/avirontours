@@ -20,43 +20,34 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\License;
 use App\Entity\MedicalCertificate;
+use App\Factory\LicenseFactory;
+use App\Factory\MedicalCertificateFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class LicenseFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         foreach ($this->getSeasonData() as [$seasonCategory, $user, $certificateType, $certificateLevel, $isValid]) {
-            $license = new License($seasonCategory);
-            $license
-                ->setUser($user)
-                ->setMedicalCertificate(
-                    (new MedicalCertificate())
-                        ->setType($certificateType)
-                        ->setLevel($certificateLevel)
-                        ->setDate(new \DateTime('-3 months'))
-                        ->setFile($this->getUploadedFile())
-                )
-            ;
+            $states = $isValid ? ['withValidLicense', 'withPayments'] : [];
+            $license = LicenseFactory::new([
+                'seasonCategory' => $seasonCategory,
+                'user' => $user,
+                'medicalCertificate' => MedicalCertificateFactory::new([
+                    'type' => $certificateType,
+                    'level' => $certificateLevel,
+                    'date' => new \DateTime('-3 months'),
+                ]),
+            ], ...$states)->create();
 
-            if ($isValid) {
-                $license->setMarking(['validated' => 1]);
-            }
-
-            $manager->persist($license);
-            $this->addReference($seasonCategory->getSeason()->getName().'-'.$seasonCategory->getName().'-'.$user->getFullName(), $license);
+            $this->addReference($seasonCategory->getSeason()->getName().'-'.$seasonCategory->getName().'-'.$user->getFullName(), $license->object());
         }
-
-        $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             SeasonFixtures::class,
@@ -74,21 +65,5 @@ class LicenseFixtures extends Fixture implements DependentFixtureInterface
             [$this->getReference('2019-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
             [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
         ];
-    }
-
-    private function getUploadedFile(): UploadedFile
-    {
-        $file = 'medical-certificate.pdf';
-        $fs = new Filesystem();
-        $targetPath = sys_get_temp_dir().'/'.$file;
-        $fs->copy(__DIR__.'/Files/'.$file, $targetPath, true);
-
-        return new UploadedFile(
-            $targetPath,
-            'my-certificate.pdf',
-            'application/pdf',
-            null,
-            true
-        );
     }
 }
