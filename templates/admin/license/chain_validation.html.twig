@@ -67,17 +67,19 @@
                         </div>
 
                         <div class="mt-3">
-                            <form action="{{ path('license_chain_validation_apply_transition', {'seasonId': season.id, 'id': license.id}) }}" method="post">
-                                <div class="btn-group-vertical btn-group-sm w-100" role="group">
-                                    {% for transition in workflow_transitions(license) %}
-                                        {% if transition.name|u.containsAny('_medical_certificate') %}
-                                            <button type="submit" name="transition" value="{{ transition.name }}" class="btn btn-{{ workflow_metadata(license, 'button', transition) }}">
-                                                {{ workflow_metadata(license, 'title', transition) }}
-                                            </button>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </form>
+                            <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                                {% if workflow_can(license, 'validate_medical_certificate') %}
+                                    <a class="btn btn-primary" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'validate_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
+                                        Valider le certificat médical
+                                    </a>
+                                {% endif %}
+
+                                {% if workflow_can(license, 'reject_medical_certificate') %}
+                                    <a class="btn btn-warning" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'reject_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
+                                        Rejeter le certificat médical
+                                    </a>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

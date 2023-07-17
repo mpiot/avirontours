@@ -1,0 +1,37 @@
+{% extends 'admin/base.html.twig' %}
+{% form_theme form _self %}
+
+{% block _license_payment_payments_entry_widget %}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.children.method) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.children.amount) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block title %}Valider un paiement{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des saisons</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('season_show', { 'id': license.seasonCategory.season.id }) }}">{{ license.seasonCategory.season.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('user_show', { 'id': license.user.id }) }}">{{ license.user.fullName }}</a></li>
+    <li class="breadcrumb-item active">Valider un paiement</li>
+{% endblock %}
+
+{% block body %}
+    <h1>Valider le paiement de {{ license.user.fullName }}</h1>
+
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+
+                <button class="btn btn-primary mt-3">Sauver</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

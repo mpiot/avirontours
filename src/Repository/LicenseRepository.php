@@ -81,6 +81,19 @@ class LicenseRepository extends ServiceEntityRepository
     }
 
     /** @return License[] */
+    public function findForPaymentsExport(Season $season): array
+    {
+        $qb = $this->findBySeasonQueryBuilder($season)
+            ->leftJoin('license.payments', 'payments')
+            ->orderBy('user.firstName', 'ASC')
+            ->addOrderBy('user.lastName', 'ASC')
+            ->andWhere('payments IS NOT NULL')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /** @return License[] */
     public function findForContactExport(Season $season): array
     {
         $qb = $this->findBySeasonQueryBuilder($season)

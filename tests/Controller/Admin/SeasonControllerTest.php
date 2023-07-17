@@ -91,6 +91,7 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['POST', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}'];
         yield ['GET', '/admin/season/{id}/export/contact'];
+        yield ['GET', '/admin/season/{id}/export/payment'];
         yield ['GET', '/admin/season/{id}/export/license'];
     }
 
@@ -220,6 +221,22 @@ class SeasonControllerTest extends AppWebTestCase
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
+    }
+
+    public function testExportSeasonPayments(): void
+    {
+        $season = SeasonFactory::createOne();
+        LicenseFactory::new()->withPayments()->withValidLicense()->create([
+            'seasonCategory' => $season->getSeasonCategories()->first(),
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/export/payment');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
