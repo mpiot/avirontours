@@ -14,7 +14,7 @@
                             <th>Pace</th>
                             <th>Watts</th>
                             <th>S/M</th>
-                            <th><span class="fas fa-heart"></span></th>
+                            <th><span class="o-icon">{{ source('@icons/heart-pulse.svg') }}</span></th>
                             <th></th>
                         </tr>
                         <tr>
@@ -38,7 +38,7 @@
                                 <td>{{ trainingPhase.averageHeartRate ?? '-' }}</td>
                                 <td>
                                     <a href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}" class="link-dark">
-                                        <span class="fas fa-eye"></span>
+                                        <span class="o-icon">{{ source('@icons/search.svg') }}</span>
                                     </a>
                                 </td>
                             </tr>

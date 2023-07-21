@@ -12,7 +12,7 @@
         <h1>Gestion des utilisateurs</h1>
 
         <a href="{{ path('user_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un utilisateur
+            <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter un utilisateur
         </a>
     </div>
 
@@ -20,7 +20,7 @@
         <div class="card-body">
             <form method="get">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                    <span class="input-group-text" id="basic-addon1"><span class="o-icon">{{ source('@icons/search.svg') }}</span></span>
                     <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </form>
@@ -45,12 +45,12 @@
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
                                     <a class="btn btn-outline-info btn-sm rounded-pill"
                                        href="{{ path('homepage', {'_switch_user': user.username}) }}">
-                                        <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
+                                        <span class="o-icon">{{ source('@icons/people-arrow.svg') }}</span> <span class="d-none d-lg-inline">Impersonate</span>
                                     </a>
                                 {% endif %}
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('user_edit', {'id': user.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                 </a>
                             </td>
                         </tr>

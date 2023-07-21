@@ -18,11 +18,11 @@
     <div class="mb-3">
         {{ form_label(form.feeling) }}
         <div class="d-flex align-items-center">
-            <span class="far fa-frown fa-2x text-danger"></span>
+            <span class="o-icon o-icon--2x text-danger">{{ source('@icons/emoji-frown.svg') }}</span>
 
             {{ form_widget(form.feeling, { 'attr': { 'class': 'mx-3' } }) }}
 
-            <span class="far fa-smile fa-2x text-success"></span>
+            <span class="o-icon o-icon--2x text-success">{{ source('@icons/emoji-smile.svg') }}</span>
         </div>
         {{ form_errors(form.feeling) }}
     </div>

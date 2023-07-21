@@ -7,6 +7,7 @@ twig:
         - 'bootstrap_5_layout.html.twig'
     paths:
         '%kernel.project_dir%/assets/images': images
+        '%kernel.project_dir%/assets/icons': icons
     globals:
         APP_VERSION: '%env(APP_VERSION)%'
         APP_IBAN: '%env(APP_IBAN)%'

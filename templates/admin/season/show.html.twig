@@ -18,7 +18,7 @@
                     {% block buttons %}
                         <div class="btn-group-sm">
                             <a class="btn btn-outline-warning" href="{{ path('season_edit', {'id': season.id}) }}">
-                                <span class="fas fa-pencil-alt"></span> Modifier
+                                <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> Modifier
                             </a>
 
                             {{ parent() }}
@@ -125,34 +125,34 @@
                     <span class="h5 align-self-center">Licences</span>
 
                     <a href="{{ path('license_new', { 'seasonId': season.id }) }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-                        <span class="fas fa-plus"></span> Ajouter une licence
+                        <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter une licence
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="d-flex">
                         <div class="align-self-center">
                             <a href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}" class="btn btn-sm btn-outline-success">
-                                <span class="fas fa-file-medical-alt"></span> Valider les certificats
+                                <span class="o-icon">{{ source('@icons/check-circle.svg') }}</span> Valider les certificats
                             </a>
 
                             {% if is_granted('ROLE_SEASON_ADMIN') %}
                                 <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les contacts
+                                    <span class="o-icon">{{ source('@icons/file-csv.svg') }}</span> Exporter les contacts
                                 </a>
 
                                 <a href="{{ path('season_export_payments', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les paiements
+                                    <span class="o-icon">{{ source('@icons/file-csv.svg') }}</span> Exporter les paiements
                                 </a>
 
                                 <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les licences
+                                    <span class="o-icon">{{ source('@icons/file-csv.svg') }}</span> Exporter les licences
                                 </a>
                             {% endif %}
                         </div>
 
                         <form method="get" class="ms-auto">
                             <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                                <span class="input-group-text" id="basic-addon1"><span class="o-icon">{{ source('@icons/search.svg') }}</span></span>
                                 <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
                             </div>
                         </form>
@@ -194,7 +194,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" data-turbo="false">
-                                            <span class="far fa-file-pdf"></span> Certificat
+                                           <span class="o-icon">{{ source('@icons/file-pdf.svg') }}</span> Certificat
                                         </a>
                                     </td>
                                     <td>{{ license.optionalInsurance ? 'Oui' : 'Non' }}</td>
@@ -234,7 +234,7 @@
 
                                             <a class="btn btn-outline-warning btn-sm rounded-pill"
                                                href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
-                                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                                <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                             </a>
                                         </div>
                                     </td>

@@ -55,7 +55,7 @@
                                 Saison {{ license.seasonCategory.season.name }}
 
                                 <a href="{{ path('license_edit', { 'seasonId': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ms-auto align-self-center">
-                                    <span class="fas fa-pencil-alt"></span>
+                                    <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span>
                                 </a>
                             </div>
 
@@ -85,7 +85,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-info" role="alert">
-                    <span class="fas fa-info-circle"></span> Il n'y a pas de license à valider.
+                    <span class="o-icon">{{ source('@icons/info-circle.svg') }}</span> Il n'y a pas de license à valider.
                 </div>
             {% endif %}
         </div>

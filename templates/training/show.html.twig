@@ -20,7 +20,7 @@
                 {% block buttons %}
                     <div class="btn-group-sm">
                         <a class="btn btn-outline-warning" href="{{ path('training_edit', {'id': training.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
+                            <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> Modifier
                         </a>
 
                         {{ parent() }}

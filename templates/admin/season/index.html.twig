@@ -13,7 +13,7 @@
 
         {% if is_granted('ROLE_SEASON_ADMIN') %}
             <a href="{{ path('season_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-                <span class="fas fa-plus"></span> Ajouter une saison
+                <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter une saison
             </a>
         {% endif %}
     </div>
@@ -54,7 +54,7 @@
                                 <td class="text-end">
                                     <a class="btn btn-outline-warning btn-sm rounded-pill"
                                        href="{{ path('season_edit', {'id': season.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                        <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                     </a>
                                 </td>
                             {% endif %}

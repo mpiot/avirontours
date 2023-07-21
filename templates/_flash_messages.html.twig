@@ -10,13 +10,13 @@
                     <div class="toast-body d-flex align-items-start">
                         <div class="text-{{ color }} align-self-center">
                             {% if 'success' == label %}
-                                <span class="fas fa-check-circle"></span>
+                                <span class="o-icon">{{ source('@icons/check-circle.svg') }}</span>
                             {% elseif 'notice' == label %}
-                                <span class="fas fa-question-circle"></span>
+                                <span class="o-icon">{{ source('@icons/question-circle.svg') }}</span>>
                             {% elseif 'warning' == label %}
-                                <span class="fas fa-exclamation-circle"></span>
+                                <span class="o-icon">{{ source('@icons/exclamation-circle.svg') }}</span>
                             {% elseif 'error' == label %}
-                                <span class="fas fa-times-circle"></span>
+                                <span class="o-icon">{{ source('@icons/x-circle.svg') }}</span>
                             {% endif %}
                         </div>
                         <div class="ms-3">

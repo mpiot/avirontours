@@ -80,7 +80,7 @@
                     </div>
                     <div class="card-body">
                         <div class="alert alert-info" role="alert">
-                            <span class="fas fa-info-circle"></span>
+                            <span class="o-icon">{{ source('@icons/info-circle.svg') }}</span>
                             Document à fournir:
                             <ul>
                                 {% if form.plainPassword is defined %}
@@ -97,18 +97,18 @@
                             {% if form.plainPassword is not defined %}
                                 <li>
                                     <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
-                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
+                                       <span class="o-icon">{{ source('@icons/file-pdf.svg') }}</span> Questionnaire santé pour personnes majeurs
                                     </a>
                                 </li>
                             {% endif %}
                             <li>
                                 <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
+                                   <span class="o-icon">{{ source('@icons/file-pdf.svg') }}</span> Questionnaire santé pour personnes mineurs
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
-                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                   <span class="o-icon">{{ source('@icons/file-pdf.svg') }}</span> Attestation questionnaire santé
                                 </a>
                             </li>
                         </ul>

@@ -12,7 +12,7 @@
         <h1>Gestion des groupes</h1>
 
         <a href="{{ path('group_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un groupe
+            <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter un groupe
         </a>
     </div>
 
@@ -35,7 +35,7 @@
                             <td class="text-end">
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('group_edit', {'id': group.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                 </a>
                             </td>
                         </tr>

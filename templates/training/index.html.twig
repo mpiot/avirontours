@@ -14,11 +14,11 @@
         <div class="ms-auto align-self-center">
             <div class="btn-group" role="group">
                 <a href="{{ path('training_new') }}" class="btn btn-outline-primary">
-                    <span class="fas fa-plus"></span> Ajouter un entraînement
+                    <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter un entraînement
                 </a>
 
                 <a href="{{ path('training_import_concept_logbook') }}" class="btn btn-outline-secondary {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}">
-                    <span class="fa fa-sync"></span> Sync ErgData
+                    <span class="o-icon">{{ source('@icons/sync.svg') }}</span> Sync ErgData
                 </a>
             </div>
         </div>
@@ -53,7 +53,7 @@
                             <td class="text-end">
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('training_edit', {'id': training.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                    <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                 </a>
                             </td>
                         </tr>

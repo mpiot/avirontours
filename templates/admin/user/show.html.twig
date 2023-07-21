@@ -17,7 +17,7 @@
                 {% block buttons %}
                     <div class="btn-group-sm">
                         <a class="btn btn-outline-warning" href="{{ path('user_edit', {'id': user.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
+                            <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> Modifier
                         </a>
 
                         {{ parent() }}

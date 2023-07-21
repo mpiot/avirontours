@@ -1,7 +1,7 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="o-icon">{{ source('@icons/house-fill.svg') }}</span> Accueil</a></li>
     <li class="breadcrumb-item active">Administration</li>
 {% endblock %}
 
@@ -15,7 +15,9 @@
                         <a href="{{ path('shell_damage_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-tools fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/tools.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Avaries</h4>
                                 </div>
                             </div>
@@ -26,7 +28,9 @@
                         <a href="{{ path('shell_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-ship fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/boat.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Parc</h4>
                                 </div>
                             </div>
@@ -37,7 +41,9 @@
                         <a href="{{ path('shell_damage_category_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-tags fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/tags-fill.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Catégories d'avaries</h4>
                                 </div>
                             </div>
@@ -57,7 +63,9 @@
                         <a href="{{ path('sports_profile_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-running fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/run.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Profils sportifs</h4>
                                 </div>
                             </div>
@@ -67,7 +75,9 @@
                         <a href="{{ path('admin_training_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-chart-line fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/graph-up.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Entraînements</h4>
                                 </div>
                             </div>
@@ -87,7 +97,9 @@
                         <a href="{{ path('user_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-users-cog fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/person-fill-gear.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Utilisateurs</h4>
                                 </div>
                             </div>
@@ -100,7 +112,9 @@
                         <a href="{{ path('season_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="far fa-id-badge fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/person-badge.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Saisons & Licences</h4>
                                 </div>
                             </div>
@@ -113,7 +127,9 @@
                         <a href="{{ path('group_index') }}">
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <span class="fas fa-users fa-6x mb-3 text-secondary"></span>
+                                    <div class="text-secondary mx-auto mb-3">
+                                        <span class="o-icon o-icon--6x">{{ source('@icons/people-fill.svg') }}</span>
+                                    </div>
                                     <h4 class="card-title fw-normal fs-5">Groupes</h4>
                                 </div>
                             </div>

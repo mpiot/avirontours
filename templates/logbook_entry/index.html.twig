@@ -3,7 +3,7 @@
 {% block title %}Gestion des sorties{% endblock %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="o-icon">{{ source('@icons/house-fill.svg') }}</span> Accueil</a></li>
     <li class="breadcrumb-item active">Cahier de sorties</li>
 {% endblock %}
 
@@ -12,13 +12,13 @@
         <h1>Gestion des sorties</h1>
 
         <a href="{{ path('logbook_entry_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter une sortie
+            <span class="o-icon">{{ source('@icons/plus.svg') }}</span> Ajouter une sortie
         </a>
     </div>
 
     <div class="mb-3">
         <a href="{{ path('logbook_entry_statistics') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
-            <span class="far fa-chart-bar"></span> Voir les statistiques
+            <span class="o-icon">{{ source('@icons/graph-up.svg') }}</span> Voir les statistiques
         </a>
     </div>
 
@@ -72,13 +72,13 @@
                                 {% if logbook_entry.endAt is null %}
                                     <a class="btn btn-success btn-sm rounded-pill"
                                        href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
-                                        <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
+                                        <span class="o-icon">{{ source('@icons/flag.svg') }}</span> <span class="d-none d-lg-inline">Finir la sortie</span>
                                     </a>
                                 {% endif %}
                                 {% if is_granted('ROLE_LOGBOOK_ADMIN') %}
                                     <a class="btn btn-outline-warning btn-sm rounded-pill"
                                        href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                        <span class="o-icon">{{ source('@icons/pencil-fill.svg') }}</span> <span class="d-none d-lg-inline">Modifier</span>
                                     </a>
                                 {% endif %}
                             </td>

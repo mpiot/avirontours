@@ -7,7 +7,7 @@
         {% if authenticationError %}
             <div class="alert alert-danger d-flex">
                 <div class="align-self-center">
-                    <span class="fas fa-2x fa-exclamation-circle"></span>
+                    <span class="o-icon o-icon--2x">{{ source('@icons/exclamation-circle.svg') }}</span>
                 </div>
                 <div class="align-self-center ms-3">
                     {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
