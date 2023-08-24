@@ -106,7 +106,7 @@ class SeasonCategory
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -118,7 +118,7 @@ class SeasonCategory
         return $this->price;
     }
 
-    public function setPrice(float $price): self
+    public function setPrice(?float $price): self
     {
         $this->price = $price;
 
@@ -130,7 +130,7 @@ class SeasonCategory
         return $this->licenseType;
     }
 
-    public function setLicenseType(string $licenseType): self
+    public function setLicenseType(?string $licenseType): self
     {
         $this->licenseType = $licenseType;
 

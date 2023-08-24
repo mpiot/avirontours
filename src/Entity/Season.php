@@ -41,7 +41,7 @@ class Season
     private ?int $name = null;
 
     #[Assert\Count(min: 1)]
-    #[ORM\OneToMany(mappedBy: 'season', targetEntity: 'App\Entity\SeasonCategory', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'season', targetEntity: 'App\Entity\SeasonCategory', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $seasonCategories;
 
     #[ORM\Column(type: Types::BOOLEAN)]
