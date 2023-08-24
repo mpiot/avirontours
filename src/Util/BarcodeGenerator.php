@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -16,25 +18,27 @@
  * limitations under the License.
  */
 
-namespace App\Twig\Extension;
+namespace App\Util;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
+use Com\Tecnick\Barcode\Barcode;
 
-class AppExtension extends AbstractExtension
+class BarcodeGenerator
 {
-    public function getFilters(): array
+    public static function qrCode(string $text, int $width = -1, int $height = -1): string
     {
-        return [
-            new TwigFilter('qrCode', [AppRuntime::class, 'generateQrCode']),
-        ];
-    }
+        $barcode = new Barcode();
 
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('encore_entry_css_source', [AppRuntime::class, 'getEncoreEntryCssSource']),
-        ];
+        /** @var string $pngData */
+        $pngData = $barcode
+            ->getBarcodeObj(
+                'QRCODE',
+                $text,
+                $width,
+                $height
+            )
+            ->getPngDataImagick()
+        ;
+
+        return 'data:image/png;base64,'.base64_encode($pngData);
     }
 }

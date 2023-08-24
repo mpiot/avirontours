@@ -1,0 +1,36 @@
+{% extends 'document_generator/base_portrait.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col">
+            <img src="{{ asset('build/images/logo_colored.png') }}" width="200px">
+
+            <div class="mt-3">
+                Aviron Tours Métropole<br>
+                5 Avenue de Florence<br>
+                37000 Tours<br>
+                Tel: 02 47 44 30 44<br>
+                Email: contact@avirontours.fr
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="text-end">
+                <img src="{{ url('payment_attestation_check', { uuid: license.uuid })|qrCode(125, 125) }}">
+            </div>
+        </div>
+    </div>
+
+    <div class="fs-3 text-center mt-3">Attestation de paiement</div>
+
+    <p class="mt-3">
+        Le club Aviron Tours Métropole atteste avoir reçu la somme de {{ (license.paymentsAmount / 100)|format_currency('EUR') }}
+        de la part de {{ license.user.firstLegalGuardian ? license.user.firstLegalGuardian.fullName : license.user.fullName }}
+        pour le paiement d'une licence sportive concernant la saison {{ license.seasonCategory.season.extendedName }}.
+    </p>
+
+    <p class="float-end">
+        Fait à Tours,<br>
+        le {{ 'now'|date('d/m/Y') }}
+    </p>
+{% endblock %}

@@ -27,7 +27,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity(fields: ['seasonCategory', 'user'], message: 'Déjà inscrit pour cette saison.')]
@@ -41,6 +43,9 @@ class License
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
+
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private Uuid $uuid;
 
     #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: 'App\Entity\SeasonCategory', inversedBy: 'licenses')]
@@ -81,6 +86,7 @@ class License
 
     public function __construct(SeasonCategory $seasonCategory = null)
     {
+        $this->uuid = Uuid::v4();
         $this->seasonCategory = $seasonCategory;
         $this->payments = new ArrayCollection();
     }
@@ -88,6 +94,11 @@ class License
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
     }
 
     public function getSeasonCategory(): ?SeasonCategory
@@ -224,5 +235,10 @@ class License
         }
 
         return $this;
+    }
+
+    public function getPaymentsAmount(): int
+    {
+        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment) => $carrier + $payment->getAmount(), 0);
     }
 }
