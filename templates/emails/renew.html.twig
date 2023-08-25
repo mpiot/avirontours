@@ -1,32 +1,4 @@
-{% extends 'emails/base.html.twig' %}
+{% extends 'emails/registration.html.twig' %}
 
-{% block body %}
-    <container>
-        <row>
-            <columns>
-                <p>
-                    Bonjour {{ fullName }},<br/>
-                    Le club Aviron Tours Métropole vous remercie de votre inscription.
-                </p>
-
-                <p style="margin-bottom: 0;">
-                    Pour finaliser cette dernière, merci de procéder au paiement de votre inscription auprès d'un membre du bureau.<br>
-                    Les moyens de paiements acceptés sont les suivants:
-                </p>
-
-                <ul style="margin-top: 0;">
-                    <li>Chèque, avec possibilité de payer en 3 fois</li>
-                    <li>Carte bancaire</li>
-                    <li>Chèques vacances</li>
-                    <li>Coupon sport</li>
-                    <li>Pass'sport</li>
-                </ul>
-
-                <p>
-                    Sportivement,<br/>
-                    Aviron Tours Métropole
-                </p>
-            </columns>
-        </row>
-    </container>
+{% block identifier_info %}
 {% endblock %}
