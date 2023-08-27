@@ -106,6 +106,7 @@ class LicenseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $license->setPayedAt(new \DateTimeImmutable());
             $licenseWorkflow->apply($license, 'validate_payment', [
                 'time' => date('y-m-d H:i:s'),
             ]);

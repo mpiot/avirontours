@@ -84,6 +84,9 @@ class License
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $payments;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $payedAt = null;
+
     public function __construct(SeasonCategory $seasonCategory = null)
     {
         $this->uuid = Uuid::v4();
@@ -240,5 +243,17 @@ class License
     public function getPaymentsAmount(): int
     {
         return $this->payments->reduce(fn (int $carrier, LicensePayment $payment) => $carrier + $payment->getAmount(), 0);
+    }
+
+    public function getPayedAt(): ?\DateTimeImmutable
+    {
+        return $this->payedAt;
+    }
+
+    public function setPayedAt(?\DateTimeImmutable $payedAt): static
+    {
+        $this->payedAt = $payedAt;
+
+        return $this;
     }
 }

@@ -98,6 +98,7 @@ final class LicenseFactory extends ModelFactory
     {
         return $this->addState([
             'payments' => LicensePaymentFactory::new()->many(1, 5),
+            'payedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeThisYear()),
         ]);
     }
 

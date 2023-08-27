@@ -24,9 +24,16 @@
     <div class="fs-3 text-center mt-3">Attestation de paiement</div>
 
     <p class="mt-3">
-        Le club Aviron Tours Métropole atteste avoir reçu la somme de {{ (license.paymentsAmount / 100)|format_currency('EUR') }}
-        de la part de {{ license.user.firstLegalGuardian ? license.user.firstLegalGuardian.fullName : license.user.fullName }}
-        pour le paiement d'une licence sportive concernant la saison {{ license.seasonCategory.season.extendedName }}.
+        Le club Aviron Tours Métropole atteste que {{ license.user.firstLegalGuardian ? license.user.firstLegalGuardian.fullName : license.user.fullName }}
+        a effetué le paiement de sa cotisation annuelle pour la saison {{ license.seasonCategory.season.extendedName }}.
+    </p>
+
+    <p class="mt-3">
+        Cette cotisation de {{ (license.paymentsAmount / 100)|format_currency('EUR') }} a été réglée le {{ license.payedAt|date }}.
+    </p>
+
+    <p class="mt-3">
+        Cette attestation a été établie pour servir et valoir ce que de droit.
     </p>
 
     <p class="float-end">
