@@ -67,6 +67,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][city]' => 'One City',
             'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
+            'registration[agreeRulesAndRegulations]' => 1,
             'registration[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'registration[user][firstLegalGuardian][firstName]' => 'Gandalf',
             'registration[user][firstLegalGuardian][lastName]' => 'Le Blanc',
@@ -184,8 +185,9 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_license_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_agreeSwim')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.', $crawler->filter('#registration_agreeRulesAndRegulations')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(17, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(18, $crawler->filter('.invalid-feedback'));
         UserFactory::repository()->assert()->count(0);
         LicenseFactory::repository()->assert()->count(0);
         MedicalCertificateFactory::repository()->assert()->count(0);
@@ -226,6 +228,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][city]' => 'One City',
             'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
+            'registration[agreeRulesAndRegulations]' => 1,
             'registration[user][firstLegalGuardian][role]' => '',
             'registration[user][firstLegalGuardian][firstName]' => '',
             'registration[user][firstLegalGuardian][lastName]' => '',
@@ -289,6 +292,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][city]' => 'One City',
             'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
+            'registration[agreeRulesAndRegulations]' => 1,
             'registration[user][firstLegalGuardian][role]' => '',
             'registration[user][firstLegalGuardian][firstName]' => '',
             'registration[user][firstLegalGuardian][lastName]' => '',
@@ -350,6 +354,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][city]' => 'One City',
             'registration[user][clubEmailAllowed]' => 1,
             'registration[agreeSwim]' => 1,
+            'registration[agreeRulesAndRegulations]' => 1,
             'registration[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'registration[user][firstLegalGuardian][firstName]' => 'Gandalf',
             'registration[user][firstLegalGuardian][lastName]' => 'Le Blanc',
@@ -451,6 +456,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[user][city]' => 'One City',
             'renew[user][clubEmailAllowed]' => 1,
             'renew[agreeSwim]' => 1,
+            'renew[agreeRulesAndRegulations]' => 1,
             'renew[user][firstLegalGuardian][role]' => LegalGuardianRole::Father->value,
             'renew[user][firstLegalGuardian][firstName]' => 'Gandalf',
             'renew[user][firstLegalGuardian][lastName]' => 'Le Blanc',

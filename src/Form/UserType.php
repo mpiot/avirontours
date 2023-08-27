@@ -112,7 +112,7 @@ class UserType extends AbstractType
                 'attr' => ['autocomplete' => 'postal-code'],
             ])
             ->add('clubEmailAllowed', CheckboxType::class, [
-                'label' => 'Recevoir les emails du club',
+                'label' => 'Je souhaites recevoir les emails du club.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
