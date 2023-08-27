@@ -48,7 +48,7 @@ set('bin/console', '{{bin/php}} {{release_or_current_path}}/bin/console');
 // Hosts
 
 host('rhea.avirontours.fr')
-    ->set('deploy_path', '/var/www/avirontours')
+    ->set('deploy_path', '/mnt/app')
     ->set('branch', 'develop')
     ->set('symfony_env', 'prod')
 ;
