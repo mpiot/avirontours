@@ -96,18 +96,18 @@
                         <ul>
                             {% if form.plainPassword is not defined %}
                                 <li>
-                                    <a href="{{ asset('files/qs-sport-majeurs.pdf') }}">
+                                    <a href="{{ asset('files/qs-sport-majeurs.pdf') }}" target="_blank" rel="noopener">
                                         <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
                                     </a>
                                 </li>
                             {% endif %}
                             <li>
-                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}">
+                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}" target="_blank" rel="noopener">
                                     <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}">
+                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}" target="_blank" rel="noopener">
                                     <span class="far fa-file-pdf"></span> Attestation questionnaire santé
                                 </a>
                             </li>
@@ -134,7 +134,7 @@
                         </div>
 
                         {{ form_row(form.license.optionalInsurance, {
-                            'help': '<a href="'~ asset('files/maif-assurance-accidents-corporels-licencies-titre-initiation-2024.pdf') ~'">Télécharger la notice</a>',
+                            'help': '<a href="'~ asset('files/maif-assurance-accidents-corporels-licencies-titre-initiation-2024.pdf') ~'" target="_blank" rel="noopener">Télécharger la notice</a>',
                             'help_html': true,
                         }) }}
                         {{ form_row(form.license.federationEmailAllowed) }}
@@ -170,6 +170,10 @@
         <div class="mt-3">
             {{ form_row(form.user.clubEmailAllowed) }}
             {{ form_row(form.agreeSwim) }}
+            {{ form_row(form.agreeRulesAndRegulations, {
+                'help': '<a href="'~ asset('files/reglement-interieur.pdf') ~'" target="_blank" rel="noopener">Télécharger le règlement intérieur</a>',
+                'help_html': true,
+            }) }}
         </div>
 
         <button class="btn btn-primary mt-3">S'inscrire</button>
