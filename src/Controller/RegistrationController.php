@@ -33,6 +33,8 @@ use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -41,6 +43,7 @@ class RegistrationController extends AbstractController
     #[Route(path: '/register/{slug}', name: 'app_register')]
     public function register(
         #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
+        string $publicDir,
         Request $request,
         UserRepository $userRepository,
         LicenseRepository $licenseRepository,
@@ -64,6 +67,8 @@ class RegistrationController extends AbstractController
                 ->to($registration->user->getEmail())
                 ->subject('Inscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/registration.html.twig')
+                ->addPart(new DataPart(new File("{$publicDir}/files/droit-image.pdf"), 'Droit à l\'image.pdf'))
+                ->addPart(new DataPart(new File("{$publicDir}/files/cerfa-10008-02.pdf"), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
                     'userIdentifier' => $registration->user->getUserIdentifier(),
@@ -89,6 +94,7 @@ class RegistrationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function renew(
         string $slug,
+        string $publicDir,
         SeasonCategoryRepository $seasonCategoryRepository,
         Request $request,
         LicenseRepository $licenseRepository,
@@ -112,6 +118,8 @@ class RegistrationController extends AbstractController
                 ->to($registration->user->getEmail())
                 ->subject('Réinscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/renew.html.twig')
+                ->addPart(new DataPart(new File("{$publicDir}/files/droit-image.pdf"), 'Droit à l\'image.pdf'))
+                ->addPart(new DataPart(new File("{$publicDir}/files/cerfa-10008-02.pdf"), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
                 ])

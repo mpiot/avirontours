@@ -9,22 +9,41 @@
                     Le club Aviron Tours Métropole vous souhaite la bienvenue et vous remercie de votre inscription.
                 </p>
 
-                <p>
-                    Vous pouvez vous connecter à votre espace personnel sur <a href="{{ url('homepage') }}">avirontours.fr</a> avec votre mot de passe et votre identifiant: <strong>{{ userIdentifier }}</strong>.
-                </p>
+                {% block identifier_info %}
+                    <p>
+                        Vous pouvez vous connecter à votre espace personnel sur <a href="{{ url('homepage') }}">avirontours.fr</a> avec votre mot de passe et votre identifiant: <strong>{{ userIdentifier }}</strong>.
+                    </p>
+                {% endblock %}
 
                 <p style="margin-bottom: 0;">
-                    Pour finaliser cette dernière, merci de procéder au paiement de votre inscription auprès d'un membre du bureau.<br>
-                    Les moyens de paiements acceptés sont les suivants:
+                    Pour finaliser cette dernière, merci de:
                 </p>
 
                 <ul style="margin-top: 0;">
-                    <li>Chèque, avec possibilité de payer en 3 fois</li>
-                    <li>Carte bancaire</li>
+                    <li>procéder au paiement de votre inscription auprès du bureau</li>
+                    <li>retourner impérativement l'attestation de droit à l'image dûment complétée</li>
+                    <li>pour les mineurs: retourner la fiche liaison sanitaire dûment complétée</li>
+                </ul>
+
+                <p style="margin-bottom: 0;">
+                    Moyens de paiements acceptés:
+                </p>
+
+                <ul style="margin-top: 0;">
+                    <li>Chèque (possibilité de payer en 3 fois)</li>
+                    <li>
+                        Carte bancaire <a href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2024">via HelloAsso</a> (possibilité de payer en 3 fois)
+                    </li>
                     <li>Chèques vacances</li>
                     <li>Coupon sport</li>
                     <li>Pass'sport</li>
                 </ul>
+
+                <p>
+                    Nous attirons particulièrement votre attention sur le fait que la plateforme HelloAsso,
+                    propose par défaut une contribution à leur fonctionnement ("Votre contribution au fonctionnement de
+                    HelloAsso" lors de la dernière étape "Récapitulatif").
+                </p>
 
                 <p>
                     Sportivement,<br/>
