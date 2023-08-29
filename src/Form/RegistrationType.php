@@ -23,8 +23,6 @@ namespace App\Form;
 use App\Form\Model\Registration;
 use App\Form\Type\RegistrationLicenseType;
 use App\Form\Type\RegistrationUserType;
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,14 +58,6 @@ class RegistrationType extends AbstractType
                         'message' => 'Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.',
                     ]),
                 ],
-                'mapped' => false,
-            ])
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'constraints' => [
-                    new Recaptcha3(),
-                ],
-                'action_name' => 'register',
-                'locale' => 'fr',
                 'mapped' => false,
             ])
         ;

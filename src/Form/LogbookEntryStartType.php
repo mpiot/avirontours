@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -41,14 +39,6 @@ class LogbookEntryStartType extends AbstractType
             ->remove('endAt')
             ->remove('coveredDistance')
             ->remove('shellDamages')
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'constraints' => [
-                    new Recaptcha3(),
-                ],
-                'action_name' => 'logbook_new',
-                'locale' => 'fr',
-                'mapped' => false,
-            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
