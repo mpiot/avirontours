@@ -34,17 +34,18 @@ class LogbookEntryFinishType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'action_name' => 'logbook_finish',
-                'mapped' => false,
-                'constraints' => [
-                    new Recaptcha3(),
-                ],
-            ])
             ->remove('shell')
             ->remove('crewMembers')
             ->remove('nonUserCrewMembers')
             ->remove('startAt')
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
+                'action_name' => 'logbook_finish',
+                'locale' => 'fr',
+                'mapped' => false,
+            ])
         ;
 
         $builder->get('endAt')->setRequired(true);
