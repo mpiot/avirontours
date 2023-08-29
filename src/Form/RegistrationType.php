@@ -63,10 +63,11 @@ class RegistrationType extends AbstractType
                 'mapped' => false,
             ])
             ->add('recaptcha', Recaptcha3Type::class, [
-                'action_name' => 'register',
                 'constraints' => [
                     new Recaptcha3(),
                 ],
+                'action_name' => 'register',
+                'locale' => 'fr',
                 'mapped' => false,
             ])
         ;

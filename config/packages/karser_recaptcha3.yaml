@@ -3,3 +3,12 @@ karser_recaptcha3:
     secret_key: '%env(RECAPTCHA3_SECRET)%'
     score_threshold: 0.5
     enabled: true
+
+when@dev:
+    karser_recaptcha3:
+        enabled: false
+
+
+when@test:
+    karser_recaptcha3:
+        enabled: false

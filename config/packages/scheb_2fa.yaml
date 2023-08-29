@@ -8,3 +8,8 @@ scheb_two_factor:
         mailer: App\Mailer\TwoFactorAuthenticationMailer
         digits: 6
         template: security/2fa_form.html.twig
+
+when@dev:
+    scheb_two_factor:
+        email:
+            enabled: false

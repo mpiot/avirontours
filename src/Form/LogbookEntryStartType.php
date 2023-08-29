@@ -38,16 +38,17 @@ class LogbookEntryStartType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'action_name' => 'logbook_new',
-                'mapped' => false,
-                'constraints' => [
-                    new Recaptcha3(),
-                ],
-            ])
             ->remove('endAt')
             ->remove('coveredDistance')
             ->remove('shellDamages')
+            ->add('recaptcha', Recaptcha3Type::class, [
+                'constraints' => [
+                    new Recaptcha3(),
+                ],
+                'action_name' => 'logbook_new',
+                'locale' => 'fr',
+                'mapped' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
