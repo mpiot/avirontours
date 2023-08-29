@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,13 +35,6 @@ class ResetPasswordRequestFormType extends AbstractType
                 'label' => 'Nom d\'utilisateur',
                 'constraints' => [
                     new NotBlank(),
-                ],
-            ])
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'action_name' => 'reset_password_request',
-                'mapped' => false,
-                'constraints' => [
-                    new Recaptcha3(),
                 ],
             ])
         ;

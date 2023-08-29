@@ -143,18 +143,6 @@
     "gedmo/doctrine-extensions": {
         "version": "v3.5.0"
     },
-    "google/recaptcha": {
-        "version": "1.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.1",
-            "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
-        },
-        "files": [
-            "config/packages/google_recaptcha.yaml"
-        ]
-    },
     "guzzlehttp/guzzle": {
         "version": "7.4.1"
     },
@@ -166,18 +154,6 @@
     },
     "jms/metadata": {
         "version": "2.6.1"
-    },
-    "karser/karser-recaptcha3-bundle": {
-        "version": "0.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "0.1",
-            "ref": "c51ce07c10331d506762efe25b6f5843c1a5ea17"
-        },
-        "files": [
-            "config/packages/karser_recaptcha3.yaml"
-        ]
     },
     "knplabs/knp-components": {
         "version": "v3.5.0"
