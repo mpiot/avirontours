@@ -131,6 +131,10 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
         }
 
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
+        }
+
         return $this->render('registration/renew.html.twig', [
             'form' => $form,
             'season_category' => $seasonCategory,
