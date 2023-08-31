@@ -20,6 +20,7 @@ framework:
         log: true
 
     trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
 
 when@dev:
     framework:
