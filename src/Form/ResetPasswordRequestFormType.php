@@ -20,12 +20,10 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
+use App\Form\Type\TurnstileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ResetPasswordRequestFormType extends AbstractType
@@ -39,19 +37,9 @@ class ResetPasswordRequestFormType extends AbstractType
                     new NotBlank(),
                 ],
             ])
-            ->add('recaptcha', Recaptcha3Type::class, [
-                'constraints' => [
-                    new Recaptcha3(),
-                ],
-                'action_name' => 'reset_password_request',
-                'locale' => 'fr',
-                'mapped' => false,
+            ->add('turnstile', TurnstileType::class, [
+                'turnstile_action' => 'reset_password_request',
             ])
         ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([]);
     }
 }

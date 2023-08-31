@@ -20,8 +20,6 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use Karser\Recaptcha3Bundle\Form\Recaptcha3Type;
-use Karser\Recaptcha3Bundle\Validator\Constraints\Recaptcha3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -35,14 +33,7 @@ class RenewType extends AbstractType
         $builder->get('user')->get('lastName')->setDisabled(true);
         $builder->get('user')->get('nationality')->setDisabled(true);
         $builder->get('user')->get('birthday')->setDisabled(true);
-        $builder->add('recaptcha', Recaptcha3Type::class, [
-            'constraints' => [
-                new Recaptcha3(),
-            ],
-            'action_name' => 'renew',
-            'locale' => 'fr',
-            'mapped' => false,
-        ]);
+        $builder->remove('turnstile');
     }
 
     public function getParent(): string

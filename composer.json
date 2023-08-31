@@ -20,7 +20,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
         "erusev/parsedown": "^1.7",
-        "karser/karser-recaptcha3-bundle": "^0.1.20",
         "knplabs/knp-paginator-bundle": "^5.7",
         "knpuniversity/oauth2-client-bundle": "^2.9",
         "martin-georgiev/postgresql-for-doctrine": "^1.7",
