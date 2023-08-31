@@ -33,6 +33,7 @@ class RenewType extends AbstractType
         $builder->get('user')->get('lastName')->setDisabled(true);
         $builder->get('user')->get('nationality')->setDisabled(true);
         $builder->get('user')->get('birthday')->setDisabled(true);
+        $builder->remove('turnstile');
     }
 
     public function getParent(): string

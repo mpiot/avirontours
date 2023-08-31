@@ -23,6 +23,7 @@ namespace App\Form;
 use App\Form\Model\Registration;
 use App\Form\Type\RegistrationLicenseType;
 use App\Form\Type\RegistrationUserType;
+use App\Form\Type\TurnstileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -59,6 +60,9 @@ class RegistrationType extends AbstractType
                     ]),
                 ],
                 'mapped' => false,
+            ])
+            ->add('turnstile', TurnstileType::class, [
+                'turnstile_action' => 'registration',
             ])
         ;
     }

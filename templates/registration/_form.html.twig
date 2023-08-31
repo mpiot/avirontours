@@ -176,6 +176,10 @@
             }) }}
         </div>
 
+        {% if form.turnstile is defined %}
+            {{ form_row(form.turnstile)}}
+        {% endif %}
+
         <button class="btn btn-primary mt-3">S'inscrire</button>
     {{ form_end(form) }}
 </div>

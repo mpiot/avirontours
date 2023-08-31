@@ -5,6 +5,7 @@ twig:
         interval_format: '%%d days'
     form_themes:
         - 'bootstrap_5_layout.html.twig'
+        - 'form/_turnstile.html.twig'
     paths:
         '%kernel.project_dir%/assets/images': images
     globals:

@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Copyright 2020 Mathieu Piot
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace App\Form\Type;
+
+use App\Validator\Turnstile;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class TurnstileType extends AbstractType
+{
+    public function __construct(private readonly string $turnstileSiteKey)
+    {
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'label' => false,
+            'mapped' => false,
+            'constraints' => new Turnstile(),
+        ]);
+
+        $resolver
+            ->define('turnstile_action')
+            ->required()
+            ->allowedTypes('string')
+        ;
+
+        $resolver
+            ->define('turnstile_theme')
+            ->default('light')
+            ->allowedValues('light', 'dark')
+        ;
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['turnstileSiteKey'] = $this->turnstileSiteKey;
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'turnstile';
+    }
+
+    public function getParent(): ?string
+    {
+        return TextType::class;
+    }
+}
