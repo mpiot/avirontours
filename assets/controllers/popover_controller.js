@@ -1,11 +1,20 @@
 import { Controller } from '@hotwired/stimulus';
 import { Popover } from 'bootstrap';
 
-/* stimulusFetch: "lazy" */
 export default class extends Controller {
-    static values = { options: Object };
+    static values = {
+        options: Object
+    };
 
-    connect() {
-        new Popover(this.element, this.hasOptionsValue ? this.optionsValue : {});
+    /**
+     * @property {object} optionsValue
+     */
+
+    connect () {
+        this.initPopover();
+    }
+
+    initPopover () {
+        return new Popover(this.element, this.optionsValue);
     }
 }

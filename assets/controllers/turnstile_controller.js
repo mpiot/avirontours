@@ -8,8 +8,9 @@ export default class extends Controller {
         theme: String
     };
 
+    /* eslint-disable no-undef */
     /**
-     * @type {Object} turnstile
+     * @type {object} turnstile
      * @property {HTMLFormElement} containerTarget
      * @property {string} siteKeyValue
      * property {string} actionValue
