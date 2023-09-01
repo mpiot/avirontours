@@ -57,6 +57,8 @@ class TurnstileType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         $view->vars['turnstileSiteKey'] = $this->turnstileSiteKey;
+        $view->vars['turnstileAction'] = $options['turnstile_action'];
+        $view->vars['turnstileTheme'] = $options['turnstile_theme'];
     }
 
     public function getBlockPrefix(): string

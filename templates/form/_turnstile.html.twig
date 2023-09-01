@@ -1,5 +1,9 @@
 {% block turnstile_widget %}
-    <div {{ stimulus_controller('turnstile', {siteKey: turnstileSiteKey}) }}>
+    <div {{ stimulus_controller('turnstile', {
+        siteKey: turnstileSiteKey,
+        action: turnstileAction,
+        theme: turnstileTheme
+    }) }}>
         <div {{ stimulus_target('turnstile', 'container') }}></div>
     </div>
 {% endblock %}
