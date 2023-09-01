@@ -1,26 +1,34 @@
 import { Controller } from '@hotwired/stimulus';
 import { Toast } from 'bootstrap';
 
-/* stimulusFetch: "lazy" */
 export default class extends Controller {
     static values = {
         options: Object,
         initShow: Boolean
     };
 
-    connect() {
-        this.toast = new Toast(this.element, this.hasOptionsValue ? this.optionsValue : {});
+    /**
+     * @property {object} optionsValue
+     * @property {boolean} initShowValue
+     * @property {boolean} hasInitShowValue
+     */
+
+    /** @type {Toast} */
+    #toast;
+
+    connect () {
+        this.#toast = new Toast(this.element, this.optionsValue);
 
         if (false === this.hasInitShowValue || true === this.initShowValue) {
             this.show();
         }
     }
 
-    show() {
-        this.toast.show();
+    show () {
+        this.#toast.show();
     }
 
-    dismiss() {
-        this.toast.dispose();
+    dismiss () {
+        this.#toast.dispose();
     }
 }

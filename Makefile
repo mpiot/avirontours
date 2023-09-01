@@ -6,7 +6,7 @@ SYMFONY  = symfony
 PHP      = $(SYMFONY) php
 COMPOSER = $(SYMFONY) composer
 CONSOLE  = $(SYMFONY) console
-YARN     = yarn
+NPM      = npm
 
 # Misc
 .DEFAULT_GOAL : help
@@ -82,6 +82,7 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(PHP) vendor/bin/rector process --dry-run
 	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
 	@$(PHP) vendor/bin/phpstan
+	@${NPM} run lint
 
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate

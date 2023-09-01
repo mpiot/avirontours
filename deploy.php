@@ -20,13 +20,13 @@ declare(strict_types=1);
 
 namespace Deployer;
 
-require 'contrib/yarn.php';
-require 'contrib/webpack_encore.php';
+require 'contrib/npm.php';
 require 'recipe/common.php';
 
 // Config
 
 set('repository', 'git@github.com:mpiot/avirontours.git');
+set('keep_releases', 10);
 
 set('shared_files', [
     'config/secrets/prod/prod.decrypt.private.php',
@@ -47,7 +47,7 @@ set('bin/console', '{{bin/php}} {{release_or_current_path}}/bin/console');
 
 // Hosts
 
-host('rhea.avirontours.fr')
+host('141.94.65.219')
     ->set('deploy_path', '/mnt/app')
     ->set('branch', 'develop')
     ->set('symfony_env', 'prod')
@@ -75,6 +75,11 @@ task('deploy:vendors', function () {
     run('cd {{release_or_current_path}} && APP_ENV={{symfony_env}} {{bin/composer}} {{composer_action}} {{composer_options}} 2>&1');
 });
 
+desc('Build assets');
+task('assets:build', function () {
+    run('cd {{release_path}} && npm run build');
+});
+
 desc('Stop workers');
 task('app:stop-workers', function (): void {
     run('cd {{release_or_current_path}} && {{bin/console}} messenger:stop-workers');
@@ -96,8 +101,8 @@ desc('Deploys project');
 task('deploy', [
     'deploy:prepare',
     'deploy:vendors',
-    'yarn:install',
-    'webpack_encore:build',
+    'npm:install',
+    'assets:build',
     'symfony:optimize_env_files',
     'deploy:publish',
 ]);

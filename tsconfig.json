@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "noUnusedLocals": true,
+        "target": "es2022",
+        "removeComments": true,
+        "allowSyntheticDefaultImports": true,
+    },
+    "exclude": ["node_modules", "vendor"],
+    "include": ["assets"]
+}

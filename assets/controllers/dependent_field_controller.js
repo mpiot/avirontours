@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
-import axios from "axios";
-import { useDebounce } from "stimulus-use";
+import axios from 'axios';
+import { useDebounce } from 'stimulus-use';
 
 export default class extends Controller {
     static targets = [
@@ -10,81 +10,112 @@ export default class extends Controller {
     static debounces = [
         {
             name: 'denouncedChange',
-            wait: 400,
+            wait: 400
         },
         'denouncedKeyup'
     ];
 
-    connect() {
+    /**
+     * @type {HTMLInputElement[]|HTMLSelectElement[]} targetTargets
+     */
+
+    connect () {
         useDebounce(this, { wait: 800 });
     }
 
-    change(event) {
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     */
+    change (event) {
         this.denouncedChange(event);
     }
 
-    denouncedChange(event) {
-        this.#updateTarget(event)
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     */
+    denouncedChange (event) {
+        this.updateTarget(event);
     }
 
-    input(event) {
-        this.#updateTarget(event);
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     */
+    input (event) {
+        this.updateTarget(event);
     }
 
-    keyup(event) {
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     */
+    keyup (event) {
         this.denouncedKeyup(event);
     }
 
-    denouncedKeyup(event) {
-        this.#updateTarget(event)
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     */
+    denouncedKeyup (event) {
+        this.updateTarget(event);
     }
 
-    async #updateTarget(event) {
+    /**
+     * @param {UIEvent} event
+     * @returns {void}
+     * @private
+     */
+    async updateTarget (event) {
         const form = event.target.closest('form');
         const formData = new FormData(form);
 
         // Remove the CSRF token from data
-        for (let key of formData.keys()) {
+        for (const key of formData.keys()) {
             if (key.includes('[_token]')) {
                 formData.delete(key);
             }
         }
 
-        try  {
+        try {
             const response = await axios({
                 method: form.method,
                 url: form.action,
                 data: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
 
-            this.#replaceTargetContent(response.data);
+            this.replaceTargetContent(response.data);
         } catch (error) {
-            this.#replaceTargetContent(error.response.data);
+            this.replaceTargetContent(error.response.data);
         }
     }
 
-    #replaceTargetContent(content) {
+    /**
+     * @param {string} content
+     * @returns {void}
+     * @private
+     */
+    replaceTargetContent (content) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(content, 'text/html');
 
-        console.log(this.targetTargets);
-
-        this.targetTargets.forEach(function(target) {
+        this.targetTargets.forEach(function (target) {
             let selector = `#${target.id}`;
             if ('' === target.id) {
                 selector = '[data-dependent-field-target="target"]';
             }
-            console.log(selector);
 
-            let replacement = doc.querySelector(selector);
+            const replacement = doc.querySelector(selector);
             if (null === replacement) {
                 target.innerHTML = '';
             } else {
                 target.outerHTML = replacement.outerHTML;
             }
-        })
+        });
     }
 }

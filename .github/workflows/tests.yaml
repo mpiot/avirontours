@@ -50,31 +50,17 @@ jobs:
             - name: Install vendors
               run: composer install --no-interaction --optimize-autoloader
 
-            - name: Install Node
+            - name: Install NodeJS
               uses: actions/setup-node@v3
               with:
                   node-version: 18
-
-            - name: Install Yarn
-              run: npm install -g yarn
-
-            - name: Set yarn cache directory
-              id: yarn-cache
-              run: echo "cache-dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-
-            - name: Cache yarn
-              uses: actions/cache@v3
-              with:
-                path: ${{ steps.yarn-cache.outputs.cache-dir }}
-                key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                restore-keys: |
-                  ${{ runner.os }}-yarn-
+                  cache: 'npm'
 
             - name: Install node_modules
-              run: yarn install
+              run: npm install
 
             - name: Build assets
-              run: yarn build
+              run: npm run build
 
             - name: Run tests
               run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml

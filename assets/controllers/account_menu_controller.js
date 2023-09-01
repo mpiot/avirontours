@@ -3,12 +3,12 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['menu'];
 
-    toggle(event) {
+    toggle (event) {
         event.stopPropagation();
         this.element.classList.toggle('nav-account-menu-show');
     }
 
-    main() {
+    main () {
         if (false === this.element.classList.contains('nav-account-menu-show')) {
             return;
         }

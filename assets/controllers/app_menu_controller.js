@@ -2,22 +2,22 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['menu'];
-    static values = { autoOpen: Boolean }
+    static values = { autoOpen: Boolean };
 
-    connect() {
+    connect () {
         // On xl screen, display the menu automatically
-        if (true === this.autoOpenValue && window.innerWidth >= 1200) {
+        if (true === this.autoOpenValue && 1200 < window.innerWidth) {
             this.element.classList.add('nav-app-menu-show');
         }
     }
 
-    toggle(event) {
+    toggle (event) {
         event.stopPropagation();
         this.element.classList.toggle('nav-app-menu-show');
     }
 
-    main() {
-        if (window.innerWidth >= 1200) {
+    main () {
+        if (1200 < window.innerWidth) {
             return;
         }
 
