@@ -36,8 +36,14 @@
         Cette attestation a été établie pour servir et valoir ce que de droit.
     </p>
 
-    <p class="float-end">
-        Fait à Tours,<br>
-        le {{ 'now'|date('d/m/Y') }}
-    </p>
+    <div class="d-flex flex-column align-items-end">
+        <p>
+            Fait à Tours,<br>
+            le {{ 'now'|date('d/m/Y') }}
+        </p>
+
+        <p class="mt-n4">
+            <img src="data:image/png;base64,{{ treasurerStamp }}"/>
+        </p>
+    </div>
 {% endblock %}

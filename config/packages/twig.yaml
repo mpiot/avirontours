@@ -11,6 +11,7 @@ twig:
     globals:
         APP_VERSION: '%env(APP_VERSION)%'
         projectDir: '%kernel.project_dir%'
+        treasurerStamp:  '%env(TREASURER_STAMP)%'
 
 when@test:
     twig:
