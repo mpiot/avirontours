@@ -43,7 +43,7 @@ class LicensePayment
     private ?int $amount = null;
 
     #[Assert\When(
-        expression: 'constant("App\\\\Enum\\\\PaymentMethod::Check") === this.getMethod()',
+        expression: 'true === this.getMethod()?.hasCheckNumber()',
         constraints: [
             new Assert\NotBlank(groups: ['validate_payment']),
         ],

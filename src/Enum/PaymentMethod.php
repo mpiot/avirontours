@@ -36,4 +36,9 @@ enum PaymentMethod: string
             self::PassSport => 'Pass\'Sport',
         };
     }
+
+    public function hasCheckNumber(): bool
+    {
+        return \in_array($this, [self::Check, self::VacationCheck], true);
+    }
 }

@@ -68,7 +68,7 @@ class LicensePaymentType extends AbstractType
         $form
             ->add('checkNumber', TextType::class, [
                 'label' => 'Numéro de chèque',
-                'disabled' => PaymentMethod::Check !== $paymentMethod,
+                'disabled' => true !== $paymentMethod?->hasCheckNumber(),
             ])
         ;
     }
