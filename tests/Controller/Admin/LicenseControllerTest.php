@@ -244,6 +244,7 @@ class LicenseControllerTest extends AppWebTestCase
         $values = $form->getPhpValues();
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
+        $values['license_payment']['payments'][0]['checkNumber'] = '1234567';
         $values['license_payment']['payments'][2]['method'] = PaymentMethod::Cash->value;
         $values['license_payment']['payments'][2]['amount'] = 100;
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
@@ -254,8 +255,38 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertCount(2, $license->getPayments());
         $this->assertSame(PaymentMethod::Check, $license->getPayments()->first()->getMethod());
         $this->assertSame(24000, $license->getPayments()->first()->getAmount());
+        $this->assertSame('1234567', $license->getPayments()->first()->getCheckNumber());
         $this->assertSame(PaymentMethod::Cash, $license->getPayments()->last()->getMethod());
         $this->assertSame(10000, $license->getPayments()->last()->getAmount());
+        $this->assertNull($license->getPayments()->last()->getCheckNumber());
+    }
+
+    public function testValidateCheckPaymentWithoutCheckNumber(): void
+    {
+        $license = LicenseFactory::createOne(['marking' => []]);
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $crawler = $client->request('GET', "/admin/season/{$seasonCategory->getSeason()->getId()}/license/{$license->getId()}/validate-payment");
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Sauver')->form();
+        $values = $form->getPhpValues();
+        $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
+        $values['license_payment']['payments'][0]['amount'] = 240;
+        $values['license_payment']['payments'][0]['checkNumber'] = '';
+        $values['license_payment']['payments'][2]['method'] = PaymentMethod::Cash->value;
+        $values['license_payment']['payments'][2]['amount'] = 100;
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_0_checkNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        LicensePaymentFactory::repository()->assert()->count(0);
     }
 
     public function testValidatePaymentWithoutData(): void
