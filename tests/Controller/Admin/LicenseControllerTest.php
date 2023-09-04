@@ -245,6 +245,9 @@ class LicenseControllerTest extends AppWebTestCase
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
         $values['license_payment']['payments'][0]['checkNumber'] = '1234567';
+        $values['license_payment']['payments'][1]['method'] = PaymentMethod::VacationCheck->value;
+        $values['license_payment']['payments'][1]['amount'] = 120;
+        $values['license_payment']['payments'][1]['checkNumber'] = '1234568';
         $values['license_payment']['payments'][2]['method'] = PaymentMethod::Cash->value;
         $values['license_payment']['payments'][2]['amount'] = 100;
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
@@ -252,13 +255,16 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $this->assertSame(['wait_medical_certificate_validation' => 1, 'payment_validated' => 1], $license->getMarking());
         $this->assertNotNull($license->getPayedAt());
-        $this->assertCount(2, $license->getPayments());
-        $this->assertSame(PaymentMethod::Check, $license->getPayments()->first()->getMethod());
-        $this->assertSame(24000, $license->getPayments()->first()->getAmount());
-        $this->assertSame('1234567', $license->getPayments()->first()->getCheckNumber());
-        $this->assertSame(PaymentMethod::Cash, $license->getPayments()->last()->getMethod());
-        $this->assertSame(10000, $license->getPayments()->last()->getAmount());
-        $this->assertNull($license->getPayments()->last()->getCheckNumber());
+        $this->assertCount(3, $license->getPayments());
+        $this->assertSame(PaymentMethod::Check, $license->getPayments()->get(0)->getMethod());
+        $this->assertSame(24000, $license->getPayments()->get(0)->getAmount());
+        $this->assertSame('1234567', $license->getPayments()->get(0)->getCheckNumber());
+        $this->assertSame(PaymentMethod::VacationCheck, $license->getPayments()->get(1)->getMethod());
+        $this->assertSame(12000, $license->getPayments()->get(1)->getAmount());
+        $this->assertSame('1234568', $license->getPayments()->get(1)->getCheckNumber());
+        $this->assertSame(PaymentMethod::Cash, $license->getPayments()->get(2)->getMethod());
+        $this->assertSame(10000, $license->getPayments()->get(2)->getAmount());
+        $this->assertNull($license->getPayments()->get(2)->getCheckNumber());
     }
 
     public function testValidateCheckPaymentWithoutCheckNumber(): void
@@ -278,14 +284,18 @@ class LicenseControllerTest extends AppWebTestCase
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
         $values['license_payment']['payments'][0]['checkNumber'] = '';
+        $values['license_payment']['payments'][1]['method'] = PaymentMethod::VacationCheck->value;
+        $values['license_payment']['payments'][1]['amount'] = 120;
+        $values['license_payment']['payments'][1]['checkNumber'] = '';
         $values['license_payment']['payments'][2]['method'] = PaymentMethod::Cash->value;
         $values['license_payment']['payments'][2]['amount'] = 100;
         $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_0_checkNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_1_checkNumber')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
         LicensePaymentFactory::repository()->assert()->count(0);
     }
 
