@@ -29,6 +29,7 @@ use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,6 +119,10 @@ class LicenseController extends AbstractController
             return $this->redirectToRoute('season_show', [
                 'id' => $license->getSeasonCategory()->getSeason()->getId(),
             ], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('admin/license/validate_payment.html.twig', [

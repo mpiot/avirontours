@@ -42,6 +42,16 @@ class LicensePayment
     #[ORM\Column]
     private ?int $amount = null;
 
+    #[Assert\When(
+        expression: 'constant("App\\\\Enum\\\\PaymentMethod::Check") === this.getMethod()',
+        constraints: [
+            new Assert\NotBlank(groups: ['validate_payment']),
+        ],
+        groups: ['validate_payment']
+    )]
+    #[ORM\Column(nullable: true)]
+    private ?string $checkNumber = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +89,18 @@ class LicensePayment
     public function setAmount(?int $amount): static
     {
         $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getCheckNumber(): ?string
+    {
+        return $this->checkNumber;
+    }
+
+    public function setCheckNumber(?string $checkNumber): static
+    {
+        $this->checkNumber = $checkNumber;
 
         return $this;
     }

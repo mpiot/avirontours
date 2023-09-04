@@ -4,10 +4,13 @@
 {% block _license_payment_payments_entry_widget %}
     <div class="row">
         <div class="col">
-            {{ form_row(form.children.method) }}
+            {{ form_row(form.children.method, { attr: { 'data-action': 'dependent-field#change' } }) }}
         </div>
         <div class="col">
             {{ form_row(form.children.amount) }}
+        </div>
+        <div class="col" id="{{ form.children.checkNumber.vars.id }}_container" {{ stimulus_target('dependent-field', 'target') }}>
+            {{ form_row(form.children.checkNumber) }}
         </div>
     </div>
 {% endblock %}
@@ -26,7 +29,7 @@
     <h1>Valider le paiement de {{ license.user.fullName }}</h1>
 
     <div class="card border-0 shadow">
-        <div class="card-body">
+        <div class="card-body" {{ stimulus_controller('dependent-field') }}>
             {{ form_start(form) }}
                 {{ form_widget(form) }}
 

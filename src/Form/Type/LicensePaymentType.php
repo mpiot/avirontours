@@ -23,7 +23,11 @@ use App\Enum\PaymentMethod;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class LicensePaymentType extends AbstractType
@@ -42,6 +46,14 @@ class LicensePaymentType extends AbstractType
                 'divisor' => 100,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $this->formModifier($event->getForm(), $event->getData()?->getMethod());
+        });
+
+        $builder->get('method')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $this->formModifier($event->getForm()->getParent(), $event->getForm()->getData());
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -49,5 +61,15 @@ class LicensePaymentType extends AbstractType
         $resolver->setDefaults([
             'data_class' => LicensePayment::class,
         ]);
+    }
+
+    public function formModifier(FormInterface $form, PaymentMethod $paymentMethod = null): void
+    {
+        $form
+            ->add('checkNumber', TextType::class, [
+                'label' => 'Numéro de chèque',
+                'disabled' => PaymentMethod::Check !== $paymentMethod,
+            ])
+        ;
     }
 }
