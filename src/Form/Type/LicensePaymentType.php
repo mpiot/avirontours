@@ -21,6 +21,7 @@ namespace App\Form\Type;
 use App\Entity\LicensePayment;
 use App\Enum\PaymentMethod;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -69,6 +70,12 @@ class LicensePaymentType extends AbstractType
             ->add('checkNumber', TextType::class, [
                 'label' => 'Numéro de chèque',
                 'disabled' => true !== $paymentMethod?->hasCheckNumber(),
+            ])
+            ->add('checkDate', DateType::class, [
+                'label' => 'Date du chèque',
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'disabled' => true !== $paymentMethod?->hasCheckDate(),
             ])
         ;
     }

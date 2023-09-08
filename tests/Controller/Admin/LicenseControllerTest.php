@@ -245,6 +245,7 @@ class LicenseControllerTest extends AppWebTestCase
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
         $values['license_payment']['payments'][0]['checkNumber'] = '1234567';
+        $values['license_payment']['payments'][0]['checkDate'] = '2023-09-01';
         $values['license_payment']['payments'][1]['method'] = PaymentMethod::VacationCheck->value;
         $values['license_payment']['payments'][1]['amount'] = 120;
         $values['license_payment']['payments'][1]['checkNumber'] = '1234568';
@@ -259,12 +260,15 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame(PaymentMethod::Check, $license->getPayments()->get(0)->getMethod());
         $this->assertSame(24000, $license->getPayments()->get(0)->getAmount());
         $this->assertSame('1234567', $license->getPayments()->get(0)->getCheckNumber());
+        $this->assertSame('2023-09-01', $license->getPayments()->get(0)->getCheckDate()->format('Y-m-d'));
         $this->assertSame(PaymentMethod::VacationCheck, $license->getPayments()->get(1)->getMethod());
         $this->assertSame(12000, $license->getPayments()->get(1)->getAmount());
         $this->assertSame('1234568', $license->getPayments()->get(1)->getCheckNumber());
+        $this->assertNull($license->getPayments()->get(1)->getCheckDate());
         $this->assertSame(PaymentMethod::Cash, $license->getPayments()->get(2)->getMethod());
         $this->assertSame(10000, $license->getPayments()->get(2)->getAmount());
         $this->assertNull($license->getPayments()->get(2)->getCheckNumber());
+        $this->assertNull($license->getPayments()->get(2)->getCheckDate());
     }
 
     public function testValidateCheckPaymentWithoutCheckNumber(): void
@@ -293,9 +297,10 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_0_checkNumber')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_0_checkDate')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_payment_payments_1_checkNumber')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         LicensePaymentFactory::repository()->assert()->count(0);
     }
 

@@ -41,4 +41,9 @@ enum PaymentMethod: string
     {
         return \in_array($this, [self::Check, self::VacationCheck], true);
     }
+
+    public function hasCheckDate(): bool
+    {
+        return self::Check === $this;
+    }
 }

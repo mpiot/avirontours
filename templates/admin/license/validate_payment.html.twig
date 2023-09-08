@@ -12,6 +12,9 @@
         <div class="col" id="{{ form.children.checkNumber.vars.id }}_container" {{ stimulus_target('dependent-field', 'target') }}>
             {{ form_row(form.children.checkNumber) }}
         </div>
+        <div class="col" id="{{ form.children.checkDate.vars.id }}_container" {{ stimulus_target('dependent-field', 'target') }}>
+            {{ form_row(form.children.checkDate) }}
+        </div>
     </div>
 {% endblock %}
 
