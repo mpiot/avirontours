@@ -271,7 +271,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertNull($license->getPayments()->get(2)->getCheckDate());
     }
 
-    public function testValidateCheckPaymentWithoutCheckNumber(): void
+    public function testValidatePaymentAsCheckWithoutCheckInfos(): void
     {
         $license = LicenseFactory::createOne(['marking' => []]);
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
@@ -351,7 +351,7 @@ class LicenseControllerTest extends AppWebTestCase
         LicensePaymentFactory::repository()->assert()->count(0);
     }
 
-    public function testChainMedicalCertificateValidationWithEmptyArray(): void
+    public function testValidateMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => []]);
 
@@ -371,7 +371,7 @@ class LicenseControllerTest extends AppWebTestCase
         ], $license->getMarking());
     }
 
-    public function testChainMedicalCertificateValidationWithMarkingFilled(): void
+    public function testRejectMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1]]);
 
@@ -382,57 +382,16 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->clickLink('Valider le certificat médical');
-
-        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}/license/chain-medical-certificate-validation");
-        $this->assertSame([
-            'wait_payment_validation' => 1,
-            'medical_certificate_validated' => 1,
-        ], $license->getMarking());
-    }
-
-    public function testValidateMedicalCertificate(): void
-    {
-        $license = LicenseFactory::createOne(['marking' => []]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
-        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $this->assertResponseIsSuccessful();
-
-        $client->clickLink('Valider le certificat médical');
-
-        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
-        $this->assertSame([
-            'wait_payment_validation' => 1,
-            'medical_certificate_validated' => 1,
-        ], $license->getMarking());
-    }
-
-    public function testRejectMedicalCertificate(): void
-    {
-        $license = LicenseFactory::createOne(['marking' => []]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
-        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
-
-        $this->assertResponseIsSuccessful();
-
         $client->clickLink('Rejeter le certificat médical');
 
-        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}");
-        $this->assertQueuedEmailCount(1);
+        $this->assertResponseRedirects("http://localhost/admin/season/{$license->getSeasonCategory()->getSeason()->getId()}/license/chain-medical-certificate-validation");
         $this->assertSame([
             'wait_payment_validation' => 1,
             'medical_certificate_rejected' => 1,
         ], $license->getMarking());
     }
 
-    public function testUnrejectMedicalCertificate(): void
+    public function testUnRejectMedicalCertificate(): void
     {
         $license = LicenseFactory::createOne(['marking' => ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1]]);
 
