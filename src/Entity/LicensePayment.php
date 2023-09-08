@@ -20,6 +20,7 @@ namespace App\Entity;
 
 use App\Enum\PaymentMethod;
 use App\Repository\LicensePaymentRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -51,6 +52,16 @@ class LicensePayment
     )]
     #[ORM\Column(nullable: true)]
     private ?string $checkNumber = null;
+
+    #[Assert\When(
+        expression: 'true === this.getMethod()?.hasCheckDate()',
+        constraints: [
+            new Assert\NotBlank(groups: ['validate_payment']),
+        ],
+        groups: ['validate_payment']
+    )]
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $checkDate = null;
 
     public function getId(): ?int
     {
@@ -101,6 +112,18 @@ class LicensePayment
     public function setCheckNumber(?string $checkNumber): static
     {
         $this->checkNumber = $checkNumber;
+
+        return $this;
+    }
+
+    public function getCheckDate(): ?\DateTimeImmutable
+    {
+        return $this->checkDate;
+    }
+
+    public function setCheckDate(?\DateTimeImmutable $checkDate): static
+    {
+        $this->checkDate = $checkDate;
 
         return $this;
     }
