@@ -201,18 +201,6 @@
                                     <td>
                                         <div class="d-flex justify-content-end align-items-center">
                                             <div class="btn-group-vertical btn-group-sm me-3" role="group">
-                                                {% if workflow_can(license, 'validate_medical_certificate') %}
-                                                    <a class="btn btn-primary" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'validate_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
-                                                        Valider le certificat médical
-                                                    </a>
-                                                {% endif %}
-
-                                                {% if workflow_can(license, 'reject_medical_certificate') %}
-                                                    <a class="btn btn-warning" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'reject_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
-                                                        Rejeter le certificat médical
-                                                    </a>
-                                                {% endif %}
-
                                                 {% if workflow_can(license, 'unreject_medical_certificate') %}
                                                     <a class="btn btn-danger" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'unreject_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
                                                         Passer le certificat en attente de validation
