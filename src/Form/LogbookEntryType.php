@@ -128,6 +128,7 @@ class LogbookEntryType extends AbstractType
                     'data-controller' => 'collection-type',
                     'data-collection-type-button-text-value' => 'Ajouter une avarie',
                     'data-collection-type-label-value' => 'Avarie n°',
+                    'data-collection-type-number-entries-at-init-value' => 0,
                 ],
             ])
         ;
