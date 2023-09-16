@@ -65,6 +65,26 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testLoginWithSpaces(): void
+    {
+        UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client->request('GET', '/login');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Se connecter', [
+            'username' => 'firstname.lastname ',
+            'password' => UserFactory::PASSWORD,
+        ]);
+
+        $this->assertResponseRedirects('/dashboard');
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+    }
+
     public function testLoginWithBadUsername(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
