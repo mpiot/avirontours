@@ -34,3 +34,10 @@ yarn-error.log
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+<<<<<<< ours
+=======
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+>>>>>>> theirs
