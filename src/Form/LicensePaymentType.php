@@ -18,9 +18,7 @@
 
 namespace App\Form;
 
-use App\Entity\License;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,26 +27,23 @@ class LicensePaymentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('payments', CollectionType::class, [
-                'label' => 'Paiements',
-                'entry_type' => \App\Form\Type\LicensePaymentType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'error_bubbling' => false,
-                'attr' => [
-                    'data-controller' => 'collection-type',
-                    'data-collection-type-button-text-value' => 'Ajouter un paiement',
-                    'data-collection-type-number-entries-at-init-value' => 1,
-                ],
-            ])
+            ->remove('user')
+            ->remove('seasonCategory')
+            ->remove('logbookEntryLimit')
+            ->remove('medicalCertificate')
+            ->remove('optionalInsurance')
+            ->remove('federationEmailAllowed')
         ;
+    }
+
+    public function getParent(): string
+    {
+        return LicenseType::class;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => License::class,
             'validation_groups' => ['validate_payment'],
         ]);
     }

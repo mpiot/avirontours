@@ -28,6 +28,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -76,7 +77,7 @@ class LicenseType extends AbstractType
                 'label' => false,
             ])
             ->add('optionalInsurance', CheckboxType::class, [
-                'label' => 'Je souhaites souscrire l\'Option I.A. Sport (+11,34 €).',
+                'label' => 'Je souhaites souscrire l\'Option I.A. Sport (+11,85 €).',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
@@ -84,6 +85,19 @@ class LicenseType extends AbstractType
                 'label' => 'Je souhaites recevoir les emails de la Fédération Française d\'Aviron.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
+            ])
+            ->add('payments', CollectionType::class, [
+                'label' => 'Paiements',
+                'entry_type' => \App\Form\Type\LicensePaymentType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'error_bubbling' => false,
+                'attr' => [
+                    'data-controller' => 'collection-type',
+                    'data-collection-type-button-text-value' => 'Ajouter un paiement',
+                    'data-collection-type-number-entries-at-init-value' => 1,
+                ],
             ])
         ;
     }

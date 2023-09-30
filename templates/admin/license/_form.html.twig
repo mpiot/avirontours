@@ -1,5 +1,69 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="row">
+        {% if form.user is defined %}
+            <div class="col">
+                {{ form_row(form.user) }}
+            </div>
+        {% endif %}
+
+        {% if form.seasonCategory is defined %}
+            <div class="col">
+                {{ form_row(form.seasonCategory) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if form.logbookEntryLimit is defined %}
+        {{ form_row(form.logbookEntryLimit) }}
+    {% endif %}
+
+    {% if form.medicalCertificate is defined %}
+        <div class="card mb-3">
+            <div class="card-header">
+                Certificat Médical
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        {{ form_row(form.medicalCertificate.type) }}
+                    </div>
+
+                    <div class="col">
+                        {{ form_row(form.medicalCertificate.level) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        {{ form_row(form.medicalCertificate.date) }}
+                    </div>
+
+                    <div class="col">
+                        {{ form_row(form.medicalCertificate.file) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card mb-3">
+        <div class="card-header">
+             Paiements
+        </div>
+
+        <div class="card-body" {{ stimulus_controller('dependent-field') }}>
+            {{ form_row(form.payments) }}
+        </div>
+    </div>
+
+    {% if form.optionalInsurance is defined %}
+        {{ form_row(form.optionalInsurance, {
+            'help': '<a href="'~ asset('files/maif-garanties-assurance-ffa-2024.pdf') ~'" target="_blank" rel="noopener">Télécharger la notice</a>',
+            'help_html': true,
+        }) }}
+        {{ form_row(form.federationEmailAllowed) }}
+    {% endif %}
 
     <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
 {{ form_end(form) }}

@@ -30,6 +30,7 @@ class RegistrationLicenseType extends AbstractType
             ->remove('user')
             ->remove('seasonCategory')
             ->remove('logbookEntryLimit')
+            ->remove('payments')
         ;
     }
 

@@ -210,6 +210,57 @@ class LicenseControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $crawler = $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Modifier')->form([
+            'license_edit[seasonCategory]' => $seasonCategory->getId(),
+            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][date]' => $date = date('Y-m-d'),
+        ]);
+        $values = $form->getPhpValues();
+        $values['license_edit']['payments'][0]['method'] = PaymentMethod::Check->value;
+        $values['license_edit']['payments'][0]['amount'] = 240;
+        $values['license_edit']['payments'][0]['checkNumber'] = '1234567';
+        $values['license_edit']['payments'][0]['checkDate'] = '2023-09-01';
+        $values['license_edit']['payments'][1]['method'] = PaymentMethod::VacationCheck->value;
+        $values['license_edit']['payments'][1]['amount'] = 120;
+        $values['license_edit']['payments'][1]['checkNumber'] = '1234568';
+        $values['license_edit']['payments'][2]['method'] = PaymentMethod::Cash->value;
+        $values['license_edit']['payments'][2]['amount'] = 100;
+        $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseRedirects();
+        $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
+        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
+        $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+        $this->assertNull($license->getPayedAt());
+        $this->assertCount(3, $license->getPayments());
+        $this->assertSame(PaymentMethod::Check, $license->getPayments()->get(0)->getMethod());
+        $this->assertSame(24000, $license->getPayments()->get(0)->getAmount());
+        $this->assertSame('1234567', $license->getPayments()->get(0)->getCheckNumber());
+        $this->assertSame('2023-09-01', $license->getPayments()->get(0)->getCheckDate()->format('Y-m-d'));
+        $this->assertSame(PaymentMethod::VacationCheck, $license->getPayments()->get(1)->getMethod());
+        $this->assertSame(12000, $license->getPayments()->get(1)->getAmount());
+        $this->assertSame('1234568', $license->getPayments()->get(1)->getCheckNumber());
+        $this->assertNull($license->getPayments()->get(1)->getCheckDate());
+        $this->assertSame(PaymentMethod::Cash, $license->getPayments()->get(2)->getMethod());
+        $this->assertSame(10000, $license->getPayments()->get(2)->getAmount());
+        $this->assertNull($license->getPayments()->get(2)->getCheckNumber());
+        $this->assertNull($license->getPayments()->get(2)->getCheckDate());
+    }
+
+    public function testEditLicenseWithoutPayments(): void
+    {
+        $license = LicenseFactory::createOne();
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
         $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/'.$license->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -240,7 +291,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form();
+        $form = $crawler->selectButton('Valider le paiement')->form();
         $values = $form->getPhpValues();
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
@@ -283,7 +334,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form();
+        $form = $crawler->selectButton('Valider le paiement')->form();
         $values = $form->getPhpValues();
         $values['license_payment']['payments'][0]['method'] = PaymentMethod::Check->value;
         $values['license_payment']['payments'][0]['amount'] = 240;
@@ -316,7 +367,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver');
+        $crawler = $client->submitForm('Valider le paiement');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette collection doit contenir 1 élément ou plus.', $crawler->filter('#license_payment_payments')->ancestors()->filter('.invalid-feedback')->text());
@@ -337,7 +388,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form();
+        $form = $crawler->selectButton('Valider le paiement')->form();
         $values = $form->getPhpValues();
         $values['license_payment']['payments'][0]['method'] = '';
         $values['license_payment']['payments'][0]['amount'] = '';

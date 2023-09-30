@@ -80,7 +80,7 @@ class License
     private ?int $logbookEntryLimit = null;
 
     #[Assert\Count(min: 1, groups: ['validate_payment'])]
-    #[Assert\Valid(groups: ['validate_payment'])]
+    #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'asc'])]
     private Collection $payments;
