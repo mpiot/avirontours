@@ -64,7 +64,7 @@ class DurationManipulator
     {
         $hours = intdiv($seconds, 3600);
         $minutes = intdiv($seconds % 3600, 60);
-        $seconds = $seconds % 60;
+        $seconds %= 60;
 
         return [
             'hours' => $hours,
