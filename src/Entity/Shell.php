@@ -97,6 +97,9 @@ class Shell
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $usageFrequency = null;
 
+    #[ORM\Column]
+    private bool $enabled = true;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $personalBoat = false;
 
@@ -353,6 +356,18 @@ class Shell
     public function setUsageFrequency(?int $usageFrequency): self
     {
         $this->usageFrequency = $usageFrequency;
+
+        return $this;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

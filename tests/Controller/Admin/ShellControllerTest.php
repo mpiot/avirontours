@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Entity\Shell;
 use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
@@ -106,8 +107,12 @@ class ShellControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $shell = ShellFactory::repository()->findOneBy(['name' => 'A new shell']);
+        /** @var Shell $shell */
+        $shell = ShellFactory::repository()->first();
 
+        $this->assertSame('A new shell', $shell->getName());
+        $this->assertTrue($shell->isEnabled());
+        $this->assertFalse($shell->getPersonalBoat());
         $this->assertSame(2, $shell->getNumberRowers());
         $this->assertSame(1000.0, $shell->getMileage());
         $this->assertSame('2x/2-', $shell->getAbbreviation());
@@ -158,6 +163,8 @@ class ShellControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'shell_edit[name]' => 'A modified shell',
+            'shell_edit[personalBoat]' => true,
+            'shell_edit[enabled]' => false,
             'shell_edit[numberRowers]' => 8,
             'shell_edit[rowingType]' => 'sweep',
             'shell_edit[coxed]' => true,
@@ -167,6 +174,8 @@ class ShellControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertSame('A modified shell', $shell->getName());
+        $this->assertFalse($shell->isEnabled());
+        $this->assertTrue($shell->getPersonalBoat());
         $this->assertSame(2, $shell->getNumberRowers());
         $this->assertSame('sweep', $shell->getRowingType());
         $this->assertFalse($shell->getCoxed());

@@ -26,6 +26,7 @@
                         <th>Type</th>
                         <th>Porteur</th>
                         <th>Kilométrage</th>
+                        <th>Actif</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -44,6 +45,13 @@
                                 {% endif %}
                             </td>
                             <td>{{ shell.mileage }} km</td>
+                            <td>
+                                {% if shell.enabled %}
+                                    <span class="badge rounded-pill bg-success">Actif</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-danger">Inactif</span>
+                                {% endif %}
+                            </td>
                             <td class="text-end">
                                 <a class="btn btn-outline-warning btn-sm rounded-pill"
                                    href="{{ path('shell_edit', {'id': shell.id}) }}">
