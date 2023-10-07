@@ -25,6 +25,7 @@ enum PaymentMethod: string
     case Online = 'online';
     case Cash = 'cash';
     case PassSport = 'pass-sport';
+    case Yelp = 'yelp';
 
     public function label(): string
     {
@@ -34,6 +35,7 @@ enum PaymentMethod: string
             self::Online => 'En ligne (HelloAsso)',
             self::Cash => 'Liquide',
             self::PassSport => 'Pass\'Sport',
+            self::Yelp => 'Yelp',
         };
     }
 
