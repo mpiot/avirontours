@@ -309,6 +309,22 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assert()->count(1);
     }
 
+    public function testNewLogbookEntryWithDisabledShell(): void
+    {
+        $shell = ShellFactory::createOne(['name' => 'My shell', 'enabled' => false]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $crawler = $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertEmpty($crawler->filterXPath(sprintf('//select[@id="logbook_entry_start_shell"]/option[@value="%s"]', $shell->getId())));
+    }
+
     public function testNewLogbookEntryWithHighlyDamagedShell(): void
     {
         $damage = ShellDamageFactory::new()->highlyDamaged()->notRepaired()->create([

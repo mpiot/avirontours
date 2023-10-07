@@ -51,6 +51,7 @@ final class ShellFactory extends ModelFactory
             'weightCategory' => self::faker()->randomElement(Shell::getAvailableWeightCategories()),
             'riggerMaterial' => self::faker()->randomElement(Shell::getAvailableRiggerMaterials()),
             'riggerPosition' => self::faker()->randomElement(Shell::getAvailableRiggerPositions()),
+            'enabled' => true,
             'personalBoat' => self::faker()->boolean(),
         ];
     }

@@ -289,6 +289,19 @@ class LogbookEntryControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assert()->count(1);
     }
 
+    public function testNewLogbookEntryWithDisabledShell(): void
+    {
+        $shell = ShellFactory::createOne(['name' => 'My shell', 'enabled' => false]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $crawler = $client->request('GET', '/logbook-entry/new');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertEmpty($crawler->filterXPath(sprintf('//select[@id="logbook_entry_start_shell"]/option[@value="%s"]', $shell->getId())));
+    }
+
     public function testNewLogbookEntryWithHighlyDamagedShell(): void
     {
         $damage = ShellDamageFactory::new()->highlyDamaged()->notRepaired()->create([
