@@ -163,6 +163,15 @@
                                 <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
                                 <td>{{ license.medicalCertificate.textType }}</td>
                                 <td>{{ license.medicalCertificate.textLevel }}</td>
+                                <td>
+                                    {% for place in workflow_marked_places(license)  %}
+                                        <div>
+                                            <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }}">
+                                                {{ workflow_metadata(license, 'title', place) }}
+                                            </span>
+                                        </div>
+                                    {% endfor %}
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
