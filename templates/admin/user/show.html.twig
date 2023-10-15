@@ -153,15 +153,14 @@
                         <thead>
                         <tr>
                             <th>Saison</th>
-                            <th>Type certificat</th>
                             <th>Niveau certificat</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for license in user.licenses %}
                             <tr>
                                 <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
-                                <td>{{ license.medicalCertificate.textType }}</td>
                                 <td>{{ license.medicalCertificate.textLevel }}</td>
                                 <td>
                                     {% for place in workflow_marked_places(license)  %}
