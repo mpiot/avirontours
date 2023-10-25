@@ -23,6 +23,8 @@ use App\Repository\LegalGuardianRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use function Symfony\Component\String\u;
+
 #[ORM\Entity(repositoryClass: LegalGuardianRepository::class)]
 class LegalGuardian
 {
@@ -74,6 +76,10 @@ class LegalGuardian
 
     public function setFirstName(?string $firstName): self
     {
+        if (null !== $firstName) {
+            $firstName = u($firstName)->lower()->title(true)->toString();
+        }
+
         $this->firstName = $firstName;
 
         return $this;
@@ -86,6 +92,10 @@ class LegalGuardian
 
     public function setLastName(?string $lastName): self
     {
+        if (null !== $lastName) {
+            $lastName = u($lastName)->lower()->title(true)->toString();
+        }
+
         $this->lastName = $lastName;
 
         return $this;
