@@ -76,16 +76,6 @@ class LicenseType extends AbstractType
             ->add('medicalCertificate', MedicalCertificateType::class, [
                 'label' => false,
             ])
-            ->add('optionalInsurance', CheckboxType::class, [
-                'label' => 'Je souhaites souscrire l\'Option I.A. Sport (+11,85 €).',
-                'label_attr' => ['class' => 'checkbox-custom'],
-                'required' => false,
-            ])
-            ->add('federationEmailAllowed', CheckboxType::class, [
-                'label' => 'Je souhaites recevoir les emails de la Fédération Française d\'Aviron.',
-                'label_attr' => ['class' => 'checkbox-custom'],
-                'required' => false,
-            ])
             ->add('payments', CollectionType::class, [
                 'label' => 'Paiements',
                 'entry_type' => \App\Form\Type\LicensePaymentType::class,
@@ -98,6 +88,16 @@ class LicenseType extends AbstractType
                     'data-collection-type-button-text-value' => 'Ajouter un paiement',
                     'data-collection-type-number-entries-at-init-value' => 1,
                 ],
+            ])
+            ->add('optionalInsurance', CheckboxType::class, [
+                'label' => 'Je souhaites souscrire l\'Option I.A. Sport (+11,85 €).',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
+            ])
+            ->add('federationEmailAllowed', CheckboxType::class, [
+                'label' => 'Je souhaites recevoir les emails de la Fédération Française d\'Aviron.',
+                'label_attr' => ['class' => 'checkbox-custom'],
+                'required' => false,
             ])
         ;
     }

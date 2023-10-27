@@ -47,15 +47,17 @@
         </div>
     {% endif %}
 
-    <div class="card mb-3">
-        <div class="card-header">
-             Paiements
-        </div>
+    {% if form.payments is defined %}
+        <div class="card mb-3">
+            <div class="card-header">
+                 Paiements
+            </div>
 
-        <div class="card-body" {{ stimulus_controller('dependent-field') }}>
-            {{ form_row(form.payments) }}
+            <div class="card-body" {{ stimulus_controller('dependent-field') }}>
+                {{ form_row(form.payments) }}
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     {% if form.optionalInsurance is defined %}
         {{ form_row(form.optionalInsurance, {

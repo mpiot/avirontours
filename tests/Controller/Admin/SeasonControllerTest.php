@@ -30,6 +30,8 @@ class SeasonControllerTest extends AppWebTestCase
 {
     /**
      * @dataProvider urlProvider
+     * @dataProvider paymentAdminUrlProvider
+     * @dataProvider adminUrlProvider
      */
     public function testAccessDeniedForAnonymousUser($method, $url): void
     {
@@ -42,6 +44,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     /**
      * @dataProvider urlProvider
+     * @dataProvider paymentAdminUrlProvider
      * @dataProvider adminUrlProvider
      */
     public function testAccessDeniedForRegularUser($method, $url): void
@@ -61,8 +64,9 @@ class SeasonControllerTest extends AppWebTestCase
 
     /**
      * @dataProvider adminUrlProvider
+     * @dataProvider paymentAdminUrlProvider
      */
-    public function testAccessDeniedForSeasonModerator($method, $url): void
+    public function testAccessDeniedForMedicalCertificateAdmin($method, $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -71,7 +75,25 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @dataProvider adminUrlProvider
+     */
+    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    {
+        if (mb_strpos($url, '{id}')) {
+            $season = SeasonFactory::createOne();
+            $url = str_replace('{id}', (string) $season->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -83,15 +105,18 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['GET', '/admin/season/{id}'];
     }
 
+    public function paymentAdminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{id}/export/payment'];
+    }
+
     public function adminUrlProvider(): \Generator
     {
         yield ['GET', '/admin/season/new'];
         yield ['POST', '/admin/season/new'];
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
-        yield ['POST', '/admin/season/{id}'];
         yield ['GET', '/admin/season/{id}/export/contact'];
-        yield ['GET', '/admin/season/{id}/export/payment'];
         yield ['GET', '/admin/season/{id}/export/license'];
     }
 
@@ -99,7 +124,17 @@ class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $client->request('GET', '/admin/season');
+
+        $this->assertResponseIsSuccessful();
+
+        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $client->request('GET', '/admin/season');
+
+        $this->assertResponseIsSuccessful();
+
+        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
@@ -111,7 +146,17 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
@@ -235,7 +280,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/payment');
 
         $this->assertResponseIsSuccessful();

@@ -56,6 +56,24 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    /**
+     * @dataProvider urlProvider
+     */
+    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    {
+        if (mb_strpos($url, '{id}')) {
+            $medicalCertificate = MedicalCertificateFactory::createOne();
+            $url = str_replace('{id}', (string) $medicalCertificate->getId(), $url);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $client->request($method, $url);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function urlProvider(): \Generator
     {
         yield ['GET', '/admin/medical-certificate/{id}/download'];
@@ -67,7 +85,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MODERATOR');
+        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
         $client->request('GET', '/admin/medical-certificate/'.$medicalCertificate->getId().'/download');
 
         $this->assertResponseIsSuccessful();

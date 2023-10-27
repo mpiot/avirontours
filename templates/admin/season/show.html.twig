@@ -132,18 +132,25 @@
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="btn-group btn-group-sm">
-                                <a class="btn btn-outline-success" href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}">
-                                    <span class="fas fa-file-medical-alt"></span> Valider les certificats
-                                </a>
+                                {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                                    <a class="btn btn-outline-success" href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}">
+                                        <span class="fas fa-file-medical-alt"></span> Valider les certificats
+                                    </a>
+                                {% endif %}
 
-                                {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                {% if is_granted('ROLE_SEASON_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
                                     <button type="button" class="btn btn-outline-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="fas fa-file-export"></span> Exporter
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ path('season_export_contact', { 'id': season.id }) }}">Contacts</a></li>
-                                        <li><a class="dropdown-item" href="{{ path('season_export_payments', { 'id': season.id }) }}">Paiements</a></li>
-                                        <li><a class="dropdown-item" href="{{ path('season_export_license', { 'id': season.id }) }}">Licences</a></li>
+                                        {% if is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
+                                            <li><a class="dropdown-item" href="{{ path('season_export_payments', { 'id': season.id }) }}">Paiements</a></li>
+                                        {% endif %}
+
+                                        {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                            <li><a class="dropdown-item" href="{{ path('season_export_contact', { 'id': season.id }) }}">Contacts</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('season_export_license', { 'id': season.id }) }}">Licences</a></li>
+                                        {% endif %}
                                     </ul>
                                 {% endif %}
                             </div>
@@ -167,7 +174,9 @@
                                 <th>Type</th>
                                 <th>Level</th>
                                 <th>Status de la licence</th>
-                                <th>Certificat</th>
+                                {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                                    <th>Certificat</th>
+                                {% endif %}
                                 <th>Option I.A.</th>
                                 <th></th>
                             </tr>
@@ -193,17 +202,19 @@
                                             </div>
                                         {% endfor %}
                                     </td>
-                                    <td>
-                                        <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" data-turbo="false">
-                                            <span class="far fa-file-pdf"></span> Certificat
-                                        </a>
-                                    </td>
+                                    {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                                        <td>
+                                            <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" data-turbo="false">
+                                                <span class="far fa-file-pdf"></span> Certificat
+                                            </a>
+                                        </td>
+                                    {% endif %}
                                     <td>{{ license.optionalInsurance ? 'Oui' : 'Non' }}</td>
                                     <td>
                                         <div class="d-flex justify-content-end align-items-center">
                                             <div class="btn-group-vertical btn-group-sm me-3" role="group">
                                                 {% if workflow_can(license, 'unreject_medical_certificate') %}
-                                                    <a class="btn btn-danger" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'unreject_medical_certificate', _token: csrf_token('license-apply-transition') }) }}">
+                                                    <a class="btn btn-danger" href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject', _token: csrf_token('license-medical-certificate-action') }) }}">
                                                         Passer le certificat en attente de validation
                                                     </a>
                                                 {% endif %}
@@ -215,7 +226,7 @@
                                                 {% endif %}
 
                                                 {% if workflow_can(license, 'validate_license') %}
-                                                    <a class="btn btn-primary" href="{{ path('license_apply_transition', { seasonId: season.id, id: license.id, transitionName: 'validate_license', _token: csrf_token('license-apply-transition') }) }}">
+                                                    <a class="btn btn-primary" href="{{ path('license_validate', { seasonId: season.id, id: license.id, _token: csrf_token('license-validate') }) }}">
                                                         Valider la licence
                                                     </a>
                                                 {% endif %}

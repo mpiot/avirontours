@@ -27,6 +27,7 @@ use App\Repository\LicenseRepository;
 use App\Repository\SeasonRepository;
 use App\Service\SeasonCsvGenerator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +36,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/admin/season')]
-#[IsGranted('ROLE_SEASON_MODERATOR')]
+#[IsGranted(new Expression('is_granted("ROLE_SEASON_ADMIN") or is_granted("ROLE_SEASON_PAYMENTS_ADMIN") or is_granted("ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN")'))]
 class SeasonController extends AbstractController
 {
     #[Route(path: '', name: 'season_index', methods: ['GET'])]
@@ -145,7 +146,7 @@ class SeasonController extends AbstractController
     }
 
     #[Route(path: '/{id}/export/payment', name: 'season_export_payments', methods: ['GET'])]
-    #[IsGranted('ROLE_SEASON_ADMIN')]
+    #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function exportPayments(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
         $csv = $csvGenerator->exportPayments($season);
