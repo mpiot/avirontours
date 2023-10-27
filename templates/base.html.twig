@@ -78,7 +78,7 @@
                         <a class="nav-link text-light" href="https://www.helloasso.com/associations/aviron-tours-metropole">Réservations</a>
                     </li>
 
-                    {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') or is_granted('ROLE_SEASON_MODERATOR') %}
+                    {% if is_granted('ROLE_MATERIAL_ADMIN') or is_granted('ROLE_SPORT_ADMIN') or is_granted('ROLE_USER_ADMIN') or is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
                         <li class="nav-item">
                             <a class="nav-link link-light" href="{{ path('admin_home') }}">Administration</a>
                         </li>

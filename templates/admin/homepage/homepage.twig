@@ -95,7 +95,7 @@
                     </div>
                 {% endif %}
 
-                {% if is_granted('ROLE_SEASON_MODERATOR') %}
+                {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
                     <div class="col">
                         <a href="{{ path('season_index') }}">
                             <div class="card">
