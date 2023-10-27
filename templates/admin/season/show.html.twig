@@ -129,33 +129,34 @@
                     </a>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex">
-                        <div class="align-self-center">
-                            <a href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}" class="btn btn-sm btn-outline-success">
-                                <span class="fas fa-file-medical-alt"></span> Valider les certificats
-                            </a>
-
-                            {% if is_granted('ROLE_SEASON_ADMIN') %}
-                                <a href="{{ path('season_export_contact', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les contacts
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-outline-success" href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}">
+                                    <span class="fas fa-file-medical-alt"></span> Valider les certificats
                                 </a>
 
-                                <a href="{{ path('season_export_payments', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les paiements
-                                </a>
-
-                                <a href="{{ path('season_export_license', { 'id': season.id }) }}" class="btn btn-sm btn-outline-info">
-                                    <span class="fas fa-file-export"></span> Exporter les licences
-                                </a>
-                            {% endif %}
+                                {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                    <button type="button" class="btn btn-outline-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="fas fa-file-export"></span> Exporter
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ path('season_export_contact', { 'id': season.id }) }}">Contacts</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('season_export_payments', { 'id': season.id }) }}">Paiements</a></li>
+                                        <li><a class="dropdown-item" href="{{ path('season_export_license', { 'id': season.id }) }}">Licences</a></li>
+                                    </ul>
+                                {% endif %}
+                            </div>
                         </div>
 
-                        <form method="get" class="ms-auto">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
-                                <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
-                            </div>
-                        </form>
+                        <div class="col-12 col-md-6 mt-3 mt-md-0">
+                            <form method="get" class="ms-auto">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
+                                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <div class="table-responsive mt-3">
