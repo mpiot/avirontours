@@ -28,7 +28,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Vich\UploaderBundle\Handler\DownloadHandler;
 
 #[Route(path: '/admin/medical-certificate')]
-#[IsGranted('ROLE_SEASON_MODERATOR')]
+#[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
 class MedicalCertificateController extends AbstractController
 {
     #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]

@@ -29,6 +29,7 @@ use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +40,7 @@ use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[Route(path: '/admin/season/{seasonId}/license')]
-#[IsGranted('ROLE_SEASON_MODERATOR')]
+#[IsGranted(new Expression('is_granted("ROLE_SEASON_ADMIN") or is_granted("ROLE_SEASON_PAYMENTS_ADMIN") or is_granted("ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN")'))]
 class LicenseController extends AbstractController
 {
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
@@ -93,6 +94,7 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/{id}/validate-payment', name: 'license_validate_payment', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function validatePayment(
         Request $request,
         ManagerRegistry $managerRegistry,
@@ -132,6 +134,7 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/chain-medical-certificate-validation', name: 'license_validate_medical_certificate', methods: ['GET'])]
+    #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
     public function chainValidation(
         #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
         LicenseRepository $repository
@@ -149,20 +152,46 @@ class LicenseController extends AbstractController
     }
 
     #[Route(
-        path: '/{id}/apply-transition/{transitionName<validate_medical_certificate|reject_medical_certificate|unreject_medical_certificate|validate_license>}',
-        name: 'license_apply_transition',
+        path: '/{id}/medical-certificate/{transitionName<validate|reject|unreject>}',
+        name: 'license_medical_certificate_action',
         methods: ['GET']
     )]
-    public function applyTransition(
-        Request $request,
-        ManagerRegistry $managerRegistry,
-        WorkflowInterface $licenseWorkflow,
+    #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
+    public function medicalCertificateAction(
         License $license,
-        string $transitionName
+        string $transitionName,
+        Request $request,
+        WorkflowInterface $licenseWorkflow,
+        ManagerRegistry $managerRegistry
     ): Response {
-        if ($this->isCsrfTokenValid('license-apply-transition', (string) $request->query->get('_token'))) {
+        if ($this->isCsrfTokenValid('license-medical-certificate-action', (string) $request->query->get('_token'))) {
             try {
-                $licenseWorkflow->apply($license, $transitionName, [
+                $licenseWorkflow->apply($license, $transitionName.'_medical_certificate', [
+                    'time' => date('y-m-d H:i:s'),
+                    'user' => $this->getUser()->getFullname(),
+                ]);
+                $managerRegistry->getManager()->flush();
+
+                $this->addFlash('success', 'La licence a été modifiée avec succès.');
+            } catch (NotEnabledTransitionException $error) {
+                throw $this->createAccessDeniedException();
+            }
+        }
+
+        return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route(path: '/{id}/validate', name: 'license_validate', methods: ['GET'])]
+    #[IsGranted('ROLE_SEASON_ADMIN')]
+    public function validate(
+        License $license,
+        Request $request,
+        WorkflowInterface $licenseWorkflow,
+        ManagerRegistry $managerRegistry
+    ): Response {
+        if ($this->isCsrfTokenValid('license-validate', (string) $request->query->get('_token'))) {
+            try {
+                $licenseWorkflow->apply($license, 'validate_license', [
                     'time' => date('y-m-d H:i:s'),
                     'user' => $this->getUser()->getFullname(),
                 ]);

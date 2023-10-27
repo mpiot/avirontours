@@ -36,20 +36,24 @@ framework:
                         badge: success
             transitions:
                 validate_medical_certificate:
+                    guard: "is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')"
                     from: wait_medical_certificate_validation
-                    to:   medical_certificate_validated
+                    to: medical_certificate_validated
                 reject_medical_certificate:
+                    guard: "is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')"
                     from: wait_medical_certificate_validation
                     to: medical_certificate_rejected
                 unreject_medical_certificate:
+                    guard: "is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')"
                     from: medical_certificate_rejected
-                    to:   wait_medical_certificate_validation
+                    to: wait_medical_certificate_validation
                 validate_payment:
+                    guard: "is_granted('ROLE_SEASON_PAYMENTS_ADMIN')"
                     from: wait_payment_validation
-                    to:   payment_validated
+                    to: payment_validated
                 validate_license:
                     guard: "is_granted('ROLE_SEASON_ADMIN')"
                     from:
                         - medical_certificate_validated
                         - payment_validated
-                    to:   validated
+                    to: validated
