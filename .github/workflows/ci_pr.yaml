@@ -23,7 +23,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: 8.2
+                  php-version: 8.3
                   tools: composer:v2
 
             - name: Get Composer Cache Directory
@@ -82,7 +82,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: 8.2
+                  php-version: 8.3
                   tools: composer:v2
 
             - name: Get Composer Cache Directory
@@ -117,7 +117,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: 8.2
+                  php-version: 8.3
                   tools: composer:v2
 
             - name: Get Composer Cache Directory
@@ -152,7 +152,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: none
-                  php-version: 8.2
+                  php-version: 8.3
                   tools: composer:v2
 
             - name: Get Composer Cache Directory
@@ -217,7 +217,7 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   coverage: "none"
-                  php-version: 8.2
+                  php-version: 8.3
                   tools: composer:v2
 
             - uses: actions/setup-node@v3
