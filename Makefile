@@ -14,7 +14,7 @@ NPM      = npm
 .PHONY        : start stop restart
 .PHONY        : docker-start docker-stop docker-up docker-down docker-logs
 .PHONY        : db-reset db-fixtures
-.PHONY        : test-all test-all-weak lint validate-schema tests tests-weak
+.PHONY        : tests lint validate-schema phpunit
 
 # Help display
 help:
@@ -70,9 +70,7 @@ db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
 ##
 ## Tests 🚦️
 ##---------------------------------------------------------------------------
-test-all: lint validate-schema tests# # Lint all, run PHP tests
-
-test-all-weak: lint validate-schema tests-weak ## Lint all, run PHP tests without Deprecations helper
+tests: lint validate-schema phpunit ## Lint all, run PHP tests
 
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(COMPOSER) validate
@@ -87,8 +85,5 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
-tests: ## Run tests
+phpunit: ## Run tests
 	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
-
-tests-weak: ## Run tests weak
-	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
