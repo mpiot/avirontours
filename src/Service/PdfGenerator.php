@@ -20,33 +20,31 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use Twig\Environment;
 
 use function Symfony\Component\String\u;
 
-class PdfHelper implements ServiceSubscriberInterface
+class PdfGenerator
 {
     private const CHROME_BINARY = 'google-chrome';
 
     public function __construct(
-        private readonly ContainerInterface $locator,
+        private readonly Environment $twig,
         private readonly string $projectDir,
     ) {
     }
 
-    public function twigToPdf(string $view, array $parameters = [], string $outFile = null): string
+    public function twigToPdf(string $view, array $parameters, string $outFile): string
     {
-        $content = $this->locator->get('twig')->render($view, $parameters);
+        $content = $this->twig->render($view, $parameters);
 
         return $this->htmlToPdf($content, $outFile);
     }
 
-    public function htmlToPdf(string $content, string $outFile = null): string
+    public function htmlToPdf(string $content, string $outFile): string
     {
         // Prepare the HTML content:
         // 1. use absolute local path for assets
@@ -59,16 +57,16 @@ class PdfHelper implements ServiceSubscriberInterface
 
         // Create an .html file with the content
         $filesystem = new Filesystem();
-        $tmpFile = $filesystem->tempnam(sys_get_temp_dir(), 'pdf_', '.html');
+        $tmpFile = $filesystem->tempnam(sys_get_temp_dir(), 'htmlToPdf_', '.html');
         $filesystem->appendToFile($tmpFile, $content);
 
         // Generate the .pdf file
-        $outFile = $outFile ?? $filesystem->tempnam(sys_get_temp_dir(), 'pdf_', '.pdf');
         $process = new Process([
             self::CHROME_BINARY,
             '--headless',
             '--disable-gpu',
-            '--print-to-pdf-no-header',
+            '--run-all-compositor-stages-before-draw',
+            '--no-pdf-header-footer',
             "--print-to-pdf={$outFile}",
             $tmpFile,
         ]);
@@ -82,12 +80,5 @@ class PdfHelper implements ServiceSubscriberInterface
         }
 
         return $outFile;
-    }
-
-    public static function getSubscribedServices(): array
-    {
-        return [
-            'twig' => Environment::class,
-        ];
     }
 }

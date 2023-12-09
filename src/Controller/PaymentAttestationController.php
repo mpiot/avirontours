@@ -22,7 +22,8 @@ namespace App\Controller;
 
 use App\Entity\License;
 use App\Repository\LicenseRepository;
-use App\Service\PdfHelper;
+use App\Service\PdfGenerator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -37,22 +38,26 @@ class PaymentAttestationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function download(
         License $license,
-        PdfHelper $pdfHelper
+        PdfGenerator $pdfGenerator
     ): Response {
         if ($this->getUser() !== $license->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        $pdf = $pdfHelper->twigToPdf('payment_attestation/_pdf.html.twig', [
-            'license' => $license,
-        ]);
+        $filesystem = new Filesystem();
+        $pdfFilename = $filesystem->tempnam(sys_get_temp_dir(), 'payment_attestation_', '.pdf');
+        $pdfGenerator->twigToPdf(
+            'payment_attestation/_pdf.html.twig',
+            ['license' => $license],
+            $pdfFilename
+        );
 
         $fileName = u('Attestation de paiement')
             ->append(' - ', (string) $license->getSeasonCategory()->getSeason()->getName(), '.pdf')
         ;
 
         return $this
-            ->file($pdf, $fileName->toString())
+            ->file($pdfFilename, $fileName->toString())
             ->deleteFileAfterSend()
         ;
     }
