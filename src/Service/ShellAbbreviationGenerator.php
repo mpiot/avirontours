@@ -42,7 +42,7 @@ class ShellAbbreviationGenerator
         return $this->getScullAbbreviation($numberRowers, $coxed, $yolette).'/'.$this->getSweepAbbreviation($numberRowers, $coxed, $yolette);
     }
 
-    private function getScullAbbreviation(int $numberRower, bool $coxed, bool $yolette)
+    private function getScullAbbreviation(int $numberRower, bool $coxed, bool $yolette): string
     {
         $abbreviation = $numberRower;
         if (true === $yolette) {
@@ -58,7 +58,7 @@ class ShellAbbreviationGenerator
         return $abbreviation;
     }
 
-    private function getSweepAbbreviation(int $numberRower, bool $coxed, bool $yolette)
+    private function getSweepAbbreviation(int $numberRower, bool $coxed, bool $yolette): string
     {
         $abbreviation = $numberRower;
         if (true === $yolette) {

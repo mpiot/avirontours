@@ -53,7 +53,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 ])]
 class AutomaticTrainingCreator
 {
-    private $trainings = [];
+    private array $trainings = [];
 
     public function prePersist(LogbookEntry $logbookEntry): void
     {
