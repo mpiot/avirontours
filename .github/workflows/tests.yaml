@@ -5,13 +5,13 @@ on:
                 required: true
 
 jobs:
-    phpunit:
-        name: PHPUnit
+    tests:
+        name: Tests
         runs-on: ubuntu-latest
 
         services:
             postgres:
-                image: postgres
+                image: postgres:15-alpine
                 env:
                     POSTGRES_USER: app
                     POSTGRES_PASSWORD: "!ChangeMe!"
@@ -34,21 +34,7 @@ jobs:
                   coverage: pcov
                   php-version: 8.3
                   tools: composer:v2
-
-            - name: Set composer cache directory
-              id: composer-cache
-              run: echo "cache-dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-            - name: Cache composer
-              uses: actions/cache@v3
-              with:
-                  path: ${{ steps.composer-cache.outputs.cache-dir }}
-                  key: ${{ runner.os }}-composer-${{ hashFiles('composer.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-composer-
-
-            - name: Install vendors
-              run: composer install --no-interaction --optimize-autoloader
+                  ini-values: zend.assertions=1
 
             - name: Install NodeJS
               uses: actions/setup-node@v3
@@ -56,29 +42,58 @@ jobs:
                   node-version: 18
                   cache: 'npm'
 
+            - name: Get composer cache directory path
+              id: composer-cache
+              run: |
+                  echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+            - name: Composer cache
+              uses: actions/cache@v3
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-composer-
+
+            - name: Install vendors
+              run: composer install --no-interaction --optimize-autoloader
+
             - name: Install node_modules
-              run: npm install
+              run: npm ci
 
             - name: Build assets
               run: npm run build
 
-            - name: Run tests
-              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate vendor/bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+            - name: Get coverage cache directory path
+              id: coverage-cache-dir-path
+              run: echo "dir=$(pwd)/.coverage-cache" >> $GITHUB_OUTPUT
 
-            - name: Upload Reports
-              uses: actions/upload-artifact@v2
+            - name: Coverage cache
+              uses: actions/cache@v3
+              id: coverage-cache
               with:
-                  name: phpunit-reports
+                  path: ${{ steps.coverage-cache-dir-path.outputs.dir }}
+                  key: ${{ runner.os }}-coverage-cache-${{ hashFiles('src', 'templates', 'tests', 'phpunit.xml.dist') }}
+                  restore-keys: |
+                      ${{ runner.os }}-coverage-cache-
+
+            - name: Run tests
+              run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
+
+            - name: Upload reports
+              uses: actions/upload-artifact@v3
+              with:
+                  name: reports
                   path: |
                       coverage-report.xml
                       tests-report.xml
                   retention-days: 1
 
-    sonarcloud:
+    sonar-cloud:
         name: SonarCloud
         runs-on: ubuntu-latest
 
-        needs: phpunit
+        needs: tests
 
         steps:
             - uses: actions/checkout@v3
@@ -86,13 +101,13 @@ jobs:
                   fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
             - name: Download Coverage Reports
-              uses: actions/download-artifact@v2
+              uses: actions/download-artifact@v3
               with:
-                  name: phpunit-reports
+                  name: reports
 
             - name: Change Paths from PHPUnit reports
               run: |
-                  sed -i 's#/home/runner/work/avirontours/avirontours#/github/workspace#g' coverage-report.xml
+                  sed -i 's#/home/runner/work/apps/apps#/github/workspace#g' coverage-report.xml
 
             - name: SonarCloud Scan
               uses: SonarSource/sonarcloud-github-action@master
