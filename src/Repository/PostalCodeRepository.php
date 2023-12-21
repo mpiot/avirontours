@@ -37,24 +37,6 @@ class PostalCodeRepository extends ServiceEntityRepository
         parent::__construct($registry, PostalCode::class);
     }
 
-    public function save(PostalCode $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(PostalCode $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
     public function exists(int|string $postalCode, string $city): bool
     {
         $result = $this->createQueryBuilder('postal_code')

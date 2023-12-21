@@ -20,6 +20,7 @@ namespace App\Command;
 
 use App\Entity\PostalCode;
 use App\Repository\PostalCodeRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -38,7 +39,8 @@ class ImportPostalCodeCommand extends Command
 
     public function __construct(
         private readonly HttpClientInterface $client,
-        private readonly PostalCodeRepository $repository
+        private readonly PostalCodeRepository $repository,
+        private readonly ManagerRegistry $managerRegistry
     ) {
         parent::__construct();
     }
@@ -59,6 +61,8 @@ class ImportPostalCodeCommand extends Command
         // Skip  the first line
         $file->fgetcsv();
 
+        $entityManager = $this->managerRegistry->getManager();
+
         // Import postal codes
         while (false !== $data = $file->fgetcsv(separator: ';')) {
             if (\array_key_exists(2, $data) && false === $this->repository->exists($data[2], $data[3])) {
@@ -68,7 +72,8 @@ class ImportPostalCodeCommand extends Command
                     ->setCity($data[3])
                 ;
 
-                $this->repository->save($postalCode, true);
+                $entityManager->persist($postalCode);
+                $entityManager->flush();
             }
 
             $progressBar->advance();

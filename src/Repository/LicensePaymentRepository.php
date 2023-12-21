@@ -36,22 +36,4 @@ class LicensePaymentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, LicensePayment::class);
     }
-
-    public function save(LicensePayment $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(LicensePayment $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
 }
