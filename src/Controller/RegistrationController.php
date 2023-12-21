@@ -27,6 +27,7 @@ use App\Form\RenewType;
 use App\Repository\LicenseRepository;
 use App\Repository\SeasonCategoryRepository;
 use App\Repository\UserRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Form\ClearableErrorsInterface;
@@ -47,6 +48,7 @@ class RegistrationController extends AbstractController
         Request $request,
         UserRepository $userRepository,
         LicenseRepository $licenseRepository,
+        ManagerRegistry $managerRegistry,
         MailerInterface $mailer
     ): Response {
         if ($this->getUser()) {
@@ -59,8 +61,11 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $registration->license->setUser($registration->user);
-            $userRepository->save($registration->user);
-            $licenseRepository->save($registration->license, true);
+
+            $entityManager = $managerRegistry->getManager();
+            $entityManager->persist($registration->user);
+            $entityManager->persist($registration->license);
+            $entityManager->flush();
 
             // Send email
             $email = (new TemplatedEmail())
@@ -98,6 +103,7 @@ class RegistrationController extends AbstractController
         SeasonCategoryRepository $seasonCategoryRepository,
         Request $request,
         LicenseRepository $licenseRepository,
+        ManagerRegistry $managerRegistry,
         MailerInterface $mailer
     ): Response {
         $seasonCategory = $seasonCategoryRepository->findSubscriptionSeasonCategory($slug, $this->getUser());
@@ -111,7 +117,10 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $registration->license->setUser($registration->user);
-            $licenseRepository->save($registration->license, true);
+
+            $entityManager = $managerRegistry->getManager();
+            $entityManager->persist($registration->license);
+            $entityManager->flush();
 
             // Send email
             $email = (new TemplatedEmail())
