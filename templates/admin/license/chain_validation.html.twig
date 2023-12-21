@@ -17,7 +17,7 @@
             {% if license is not null %}
                 <div class="row">
                     <div class="col-lg-8">
-                        {% if license.medicalCertificate.fileMimeType|u.containsAny('image/') %}
+                        {% if license.medicalCertificate.uploadedFile.mimeType|u.containsAny('image/') %}
                             <img src="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" alt="Certificat médical" class="img-fluid">
                         {% else %}
                             <object data="{{ path('medical_certificate_download', { 'id': license.medicalCertificate.id }) }}" type="application/pdf" class="w-100 vh-100">Certificat médical</object>

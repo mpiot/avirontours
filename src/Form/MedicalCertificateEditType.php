@@ -20,41 +20,19 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\MedicalCertificate;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\NotNull;
 
-class MedicalCertificateType extends AbstractType
+class MedicalCertificateEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('type', ChoiceType::class, [
-                'label' => 'Type de certificat',
-                'choices' => MedicalCertificate::getAvailableTypes(),
-                'expanded' => true,
-                'label_attr' => ['class' => 'radio-custom radio-inline'],
-            ])
-            ->add('level', ChoiceType::class, [
-                'label' => 'Niveau',
-                'choices' => MedicalCertificate::getAvailableLevels(),
-                'expanded' => true,
-                'label_attr' => ['class' => 'radio-custom radio-inline'],
-            ])
-            ->add('date', DateType::class, [
-                'label' => 'Date du document',
-                'widget' => 'single_text',
-            ])
             ->add('file', FileType::class, [
                 'label' => 'Fichier',
                 'constraints' => [
-                    new NotNull(),
                     new File(
                         maxSize: '3M',
                         mimeTypes: ['application/pdf', 'application/x-pdf', 'image/*'],
@@ -62,14 +40,13 @@ class MedicalCertificateType extends AbstractType
                     ),
                 ],
                 'mapped' => false,
+                'required' => false,
             ])
         ;
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function getParent(): string
     {
-        $resolver->setDefaults([
-            'data_class' => MedicalCertificate::class,
-        ]);
+        return MedicalCertificateType::class;
     }
 }

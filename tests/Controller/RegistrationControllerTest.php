@@ -84,7 +84,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
@@ -124,7 +124,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->first()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->first()->getMedicalCertificate()->getDate()->format('Y-m-d'));
-        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate()->getFile());
+        $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate()->getUploadedFile());
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
         MedicalCertificateFactory::repository()->assert()->count(1);
@@ -183,7 +183,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_type')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#registration_license_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_license_medicalCertificate_file_file')->closest('fieldset')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('input#registration_license_medicalCertificate_file')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.', $crawler->filter('#registration_agreeSwim')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.', $crawler->filter('#registration_agreeRulesAndRegulations')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
@@ -245,7 +245,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -309,7 +309,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
@@ -371,7 +371,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
         ]);
-        $form['registration[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -473,7 +473,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[license][optionalInsurance]' => 1,
             'renew[license][federationEmailAllowed]' => 1,
         ]);
-        $form['renew[license][medicalCertificate][file][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['renew[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
@@ -505,7 +505,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
-        $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate()->getFile());
+        $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate()->getUploadedFile());
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(2);
         MedicalCertificateFactory::repository()->assert()->count(2);

@@ -27,6 +27,7 @@ use App\Form\LicenseEditType;
 use App\Form\LicensePaymentType;
 use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
+use App\Service\FileUploader;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -45,15 +46,20 @@ class LicenseController extends AbstractController
 {
     #[Route(path: '/new', name: 'license_new', methods: ['GET', 'POST'])]
     public function new(
+        #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
         Request $request,
         ManagerRegistry $managerRegistry,
-        #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season
+        FileUploader $fileUploader
     ): Response {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form->get('medicalCertificate')->get('file')->getData();
+            $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
+            $license->getMedicalCertificate()->setUploadedFile($uploadedFile);
+
             $entityManager = $managerRegistry->getManager();
             $entityManager->persist($license);
             $entityManager->flush();
@@ -72,12 +78,21 @@ class LicenseController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ManagerRegistry $managerRegistry, License $license): Response
-    {
+    public function edit(
+        License $license,
+        Request $request,
+        ManagerRegistry $managerRegistry,
+        FileUploader $fileUploader
+    ): Response {
         $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->has('medicalCertificate') && null !== $uploadedFile = $form->get('medicalCertificate')->get('file')->getData()) {
+                $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
+                $license->getMedicalCertificate()->setUploadedFile($uploadedFile);
+            }
+
             $managerRegistry->getManager()->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');

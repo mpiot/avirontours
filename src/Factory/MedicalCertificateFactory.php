@@ -22,8 +22,7 @@ namespace App\Factory;
 
 use App\Entity\MedicalCertificate;
 use App\Repository\MedicalCertificateRepository;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -47,7 +46,9 @@ final class MedicalCertificateFactory extends ModelFactory
             'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),
             'level' => self::faker()->randomElement(MedicalCertificate::getAvailableLevels()),
             'date' => self::faker()->dateTimeThisYear(),
-            'file' => $this->getUploadedFile(),
+            'uploadedFile' => UploadedFileFactory::new([
+                'file' => new File(__DIR__.'/../DataFixtures/Files/document.pdf'),
+            ])->private(),
         ];
     }
 
@@ -56,22 +57,6 @@ final class MedicalCertificateFactory extends ModelFactory
         // see https://github.com/zenstruck/foundry#initialization
         return $this;
         // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
-    }
-
-    private function getUploadedFile(): UploadedFile
-    {
-        $file = 'medical-certificate.pdf';
-        $fs = new Filesystem();
-        $targetPath = sys_get_temp_dir().'/'.$file;
-        $fs->copy(__DIR__.'/Files/'.$file, $targetPath, true);
-
-        return new UploadedFile(
-            $targetPath,
-            'my-certificate.pdf',
-            'application/pdf',
-            null,
-            true
-        );
     }
 
     protected static function getClass(): string

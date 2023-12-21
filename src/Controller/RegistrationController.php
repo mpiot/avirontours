@@ -24,9 +24,8 @@ use App\Entity\SeasonCategory;
 use App\Form\Model\Registration;
 use App\Form\RegistrationType;
 use App\Form\RenewType;
-use App\Repository\LicenseRepository;
 use App\Repository\SeasonCategoryRepository;
-use App\Repository\UserRepository;
+use App\Service\FileUploader;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -46,9 +45,8 @@ class RegistrationController extends AbstractController
         #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
         string $publicDir,
         Request $request,
-        UserRepository $userRepository,
-        LicenseRepository $licenseRepository,
         ManagerRegistry $managerRegistry,
+        FileUploader $fileUploader,
         MailerInterface $mailer
     ): Response {
         if ($this->getUser()) {
@@ -60,6 +58,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form->get('license')->get('medicalCertificate')->get('file')->getData();
+            $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
+            $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
             $registration->license->setUser($registration->user);
 
             $entityManager = $managerRegistry->getManager();
@@ -100,10 +101,10 @@ class RegistrationController extends AbstractController
     public function renew(
         string $slug,
         string $publicDir,
-        SeasonCategoryRepository $seasonCategoryRepository,
         Request $request,
-        LicenseRepository $licenseRepository,
+        SeasonCategoryRepository $seasonCategoryRepository,
         ManagerRegistry $managerRegistry,
+        FileUploader $fileUploader,
         MailerInterface $mailer
     ): Response {
         $seasonCategory = $seasonCategoryRepository->findSubscriptionSeasonCategory($slug, $this->getUser());
@@ -116,6 +117,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedFile = $form->get('license')->get('medicalCertificate')->get('file')->getData();
+            $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
+            $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
             $registration->license->setUser($registration->user);
 
             $entityManager = $managerRegistry->getManager();

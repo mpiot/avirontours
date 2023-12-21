@@ -175,7 +175,7 @@ class LicenseControllerTest extends AppWebTestCase
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'license[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
-        $form['license[medicalCertificate][file][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/medical-certificate.pdf');
+        $form['license[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
         $this->assertResponseRedirects();
@@ -211,8 +211,9 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_level')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_type')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#license_medicalCertificate_date')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#license_medicalCertificate_file')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(5, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(6, $crawler->filter('.invalid-feedback'));
         LicenseFactory::repository()->assert()->count(0);
     }
 
@@ -223,17 +224,19 @@ class LicenseControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SEASON_ADMIN');
-        $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/new');
+        $crawler = $client->request('GET', '/admin/season/'.$license->getSeasonCategory()->getSeason()->getId().'/license/new');
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $form = $crawler->selectButton('Sauver')->form([
             'license[user]' => $license->getUser()->getId(),
             'license[seasonCategory]' => $license->getSeasonCategory()->getId(),
             'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
             'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
             'license[medicalCertificate][date]' => date('Y-m-d'),
         ]);
+        $form['license[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
+        $crawler = $client->submit($form);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Déjà inscrit pour cette saison.', $crawler->filter('.invalid-feedback')->text());

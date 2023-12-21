@@ -22,18 +22,22 @@ namespace App\Controller\Admin;
 
 use App\Controller\AbstractController;
 use App\Entity\MedicalCertificate;
+use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Vich\UploaderBundle\Handler\DownloadHandler;
 
 #[Route(path: '/admin/medical-certificate')]
 #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
 class MedicalCertificateController extends AbstractController
 {
     #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]
-    public function download(MedicalCertificate $medicalCertificate, DownloadHandler $downloadHandler): Response
+    public function download(MedicalCertificate $medicalCertificate, FileUploader $fileUploader): Response
     {
-        return $downloadHandler->downloadObject($medicalCertificate, 'file', null, null, false);
+        $uploadedFile = $medicalCertificate->getUploadedFile();
+        $path = $fileUploader->getAbsolutePath($uploadedFile);
+
+        return $this->file($path, $uploadedFile->getOriginalFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
     }
 }
