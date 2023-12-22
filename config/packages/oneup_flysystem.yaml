@@ -1,0 +1,15 @@
+oneup_flysystem:
+    adapters:
+        private_uploads:
+            local:
+                location: '%uploads_private_dir%'
+
+        uploads:
+            local:
+                location: '%uploads_public_dir%'
+
+    filesystems:
+        private_uploads:
+            adapter: private_uploads
+        uploads:
+            adapter: uploads

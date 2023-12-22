@@ -20,44 +20,44 @@ declare(strict_types=1);
 
 namespace App\Entity\Traits;
 
-use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
-trait TimestampableEntity
+trait BlameableEntity
 {
     #[Assert\DisableAutoMapping]
-    #[Gedmo\Timestampable(on: 'create')]
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    protected ?\DateTimeImmutable $createdAt = null;
+    #[Gedmo\Blameable(on: 'create')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    protected ?User $createdBy = null;
 
     #[Assert\DisableAutoMapping]
-    #[Gedmo\Timestampable(on: 'update')]
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    protected ?\DateTimeImmutable $updatedAt = null;
+    #[Gedmo\Blameable(on: 'update')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    protected ?User $updatedBy = null;
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedBy(User $createdBy): static
     {
-        $this->createdAt = $createdAt;
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedBy(): ?User
     {
-        return $this->createdAt;
+        return $this->createdBy;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedBy(User $updatedBy): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedBy = $updatedBy;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedBy(): ?User
     {
-        return $this->updatedAt;
+        return $this->updatedBy;
     }
 }

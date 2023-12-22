@@ -33,6 +33,9 @@ class LicenseEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->remove('user');
+        $builder->add('medicalCertificate', MedicalCertificateEditType::class, [
+            'label' => false,
+        ]);
 
         if (false === $this->security->isGranted('ROLE_SEASON_PAYMENTS_ADMIN')) {
             $builder->remove('payments');

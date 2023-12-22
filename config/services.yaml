@@ -5,6 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     logbook_host: '%env(string:key:host:url:APP_LOGBOOK_URI)%'
+    uploads_dir_name: 'uploads'
+    uploads_private_dir: '%kernel.project_dir%/var/%uploads_dir_name%'
+    uploads_public_dir: '%kernel.project_dir%/public/%uploads_dir_name%'
+    uploads_base_url: '%env(APP_URI)%/%uploads_dir_name%'
 
 services:
     # default configuration for services in *this* file
@@ -16,6 +20,9 @@ services:
             string $logbookHost: '%logbook_host%'
             string $projectDir:  '%kernel.project_dir%'
             string $publicDir: '%kernel.project_dir%/public'
+            string $uploadsBaseUrl: '%uploads_base_url%'
+            string $uploadsPrivateDir: '%uploads_private_dir%'
+            string $uploadsPublicDir: '%uploads_public_dir%'
             string $turnstileSiteKey: '%env(TURNSTILE_SITE_KEY)%'
             string $turnstileSecretKey: '%env(TURNSTILE_SECRET_KEY)%'
 
