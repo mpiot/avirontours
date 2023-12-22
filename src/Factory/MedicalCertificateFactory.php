@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\MedicalCertificateLevel;
+use App\Enum\MedicalCertificateType;
 use App\Repository\MedicalCertificateRepository;
 use Symfony\Component\HttpFoundation\File\File;
 use Zenstruck\Foundry\ModelFactory;
@@ -43,8 +45,8 @@ final class MedicalCertificateFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),
-            'level' => self::faker()->randomElement(MedicalCertificate::getAvailableLevels()),
+            'type' => self::faker()->randomElement(MedicalCertificateType::cases()),
+            'level' => self::faker()->randomElement(MedicalCertificateLevel::cases()),
             'date' => self::faker()->dateTimeThisYear(),
             'uploadedFile' => UploadedFileFactory::new([
                 'file' => new File(__DIR__.'/../DataFixtures/Files/document.pdf'),

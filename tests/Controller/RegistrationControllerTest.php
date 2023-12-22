@@ -22,6 +22,8 @@ namespace App\Tests\Controller;
 
 use App\Entity\MedicalCertificate;
 use App\Enum\LegalGuardianRole;
+use App\Enum\MedicalCertificateLevel;
+use App\Enum\MedicalCertificateType;
 use App\Factory\LicenseFactory;
 use App\Factory\MedicalCertificateFactory;
 use App\Factory\PostalCodeFactory;
@@ -78,8 +80,8 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][secondLegalGuardian][lastName]' => 'Artanis',
             'registration[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'registration[user][secondLegalGuardian][phoneNumber]' => '0123456799',
-            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][type]' => MedicalCertificateType::Certificate->value,
+            'registration[license][medicalCertificate][level]' => MedicalCertificateLevel::Competition->value,
             'registration[license][medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
@@ -121,8 +123,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertTrue($user->getLicenses()->first()->getFederationEmailAllowed());
         $this->assertTrue($user->getLicenses()->first()->getOptionalInsurance());
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $user->getLicenses()->first()->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->first()->getMedicalCertificate()->getLevel());
+        $this->assertSame(MedicalCertificateType::Certificate, $user->getLicenses()->first()->getMedicalCertificate()->getType());
+        $this->assertSame(MedicalCertificateLevel::Competition, $user->getLicenses()->first()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->first()->getMedicalCertificate()->getDate()->format('Y-m-d'));
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate()->getUploadedFile());
         UserFactory::repository()->assert()->count(1);
@@ -239,8 +241,8 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][secondLegalGuardian][lastName]' => '',
             'registration[user][secondLegalGuardian][email]' => '',
             'registration[user][secondLegalGuardian][phoneNumber]' => '',
-            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][type]' => MedicalCertificateType::Certificate->value,
+            'registration[license][medicalCertificate][level]' => MedicalCertificateLevel::Competition->value,
             'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
@@ -303,8 +305,8 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][secondLegalGuardian][lastName]' => '',
             'registration[user][secondLegalGuardian][email]' => '',
             'registration[user][secondLegalGuardian][phoneNumber]' => '',
-            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][type]' => MedicalCertificateType::Certificate->value,
+            'registration[license][medicalCertificate][level]' => MedicalCertificateLevel::Competition->value,
             'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
@@ -365,8 +367,8 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][secondLegalGuardian][lastName]' => 'Artanis',
             'registration[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'registration[user][secondLegalGuardian][phoneNumber]' => '0123456799',
-            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][type]' => MedicalCertificateType::Certificate->value,
+            'registration[license][medicalCertificate][level]' => MedicalCertificateLevel::Competition->value,
             'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
             'registration[license][optionalInsurance]' => 1,
             'registration[license][federationEmailAllowed]' => 1,
@@ -467,8 +469,8 @@ class RegistrationControllerTest extends AppWebTestCase
             'renew[user][secondLegalGuardian][lastName]' => 'Artanis',
             'renew[user][secondLegalGuardian][email]' => 'g.artanis@avirontours.fr',
             'renew[user][secondLegalGuardian][phoneNumber]' => '0123456799',
-            'renew[license][medicalCertificate][type]' => MedicalCertificate::TYPE_ATTESTATION,
-            'renew[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'renew[license][medicalCertificate][type]' => MedicalCertificateType::Attestation->value,
+            'renew[license][medicalCertificate][level]' => MedicalCertificateLevel::Competition->value,
             'renew[license][medicalCertificate][date]' => $date = (new \DateTime())->format('Y-m-d'),
             'renew[license][optionalInsurance]' => 1,
             'renew[license][federationEmailAllowed]' => 1,
@@ -502,8 +504,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
         $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());
         $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate());
-        $this->assertSame(MedicalCertificate::TYPE_ATTESTATION, $user->getLicenses()->last()->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
+        $this->assertSame(MedicalCertificateType::Attestation, $user->getLicenses()->last()->getMedicalCertificate()->getType());
+        $this->assertSame(MedicalCertificateLevel::Competition, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
         $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate()->getUploadedFile());
         UserFactory::repository()->assert()->count(1);

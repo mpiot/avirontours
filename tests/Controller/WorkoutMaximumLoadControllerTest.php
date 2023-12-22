@@ -24,7 +24,7 @@ use App\Factory\LicenseFactory;
 use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
 
-class WorkoutMaximumloadControllerTest extends AppWebTestCase
+class WorkoutMaximumLoadControllerTest extends AppWebTestCase
 {
     /**
      * @dataProvider urlProvider

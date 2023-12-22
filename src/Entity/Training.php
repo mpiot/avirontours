@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 class Training
 {
-    public const NUM_ITEMS = 25;
+    public const int NUM_ITEMS = 25;
     public const TYPE_B1 = 'b1';
     public const TYPE_B2 = 'b2';
     public const TYPE_B3 = 'b3';

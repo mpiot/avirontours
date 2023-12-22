@@ -42,7 +42,7 @@ use function Symfony\Component\String\u;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, \Stringable
 {
-    public const NUM_ITEMS = 20;
+    public const int NUM_ITEMS = 20;
     public const GENDER_FEMALE = 'f';
     public const GENDER_MALE = 'm';
 

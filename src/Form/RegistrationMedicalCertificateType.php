@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\MedicalCertificateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -38,7 +39,7 @@ class RegistrationMedicalCertificateType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             /** @var MedicalCertificate $data */
             $data = $event->getData();
-            $data->setType(MedicalCertificate::TYPE_CERTIFICATE);
+            $data->setType(\App\Enum\MedicalCertificateType::Certificate);
 
             $event->setData($data);
         });

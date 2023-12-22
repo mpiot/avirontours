@@ -71,7 +71,7 @@
             </div>
             <div class="card-body d-flex">
                 <div class="flex-grow-1">
-                    {{ (license.medicalCertificate.textType ~ ' ' ~ license.medicalCertificate.textLevel)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
+                    {{ (license.medicalCertificate.type.label ~ ' ' ~ license.medicalCertificate.level.label)|capitalize }} du {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
                     Option I.A. Sport: {{ license.optionalInsurance ? 'Oui' : 'Non' }}
                 </div>
 

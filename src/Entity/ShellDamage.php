@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ShellDamage
 {
     use TimestampableEntity;
-    public const NUM_ITEMS = 20;
+    public const int NUM_ITEMS = 20;
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;

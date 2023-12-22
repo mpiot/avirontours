@@ -21,9 +21,10 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\MedicalCertificateLevel;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,15 +36,17 @@ class MedicalCertificateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('type', ChoiceType::class, [
+            ->add('type', EnumType::class, [
                 'label' => 'Type de certificat',
-                'choices' => MedicalCertificate::getAvailableTypes(),
+                'class' => \App\Enum\MedicalCertificateType::class,
+                'choice_label' => 'label',
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])
-            ->add('level', ChoiceType::class, [
+            ->add('level', EnumType::class, [
                 'label' => 'Niveau',
-                'choices' => MedicalCertificate::getAvailableLevels(),
+                'class' => MedicalCertificateLevel::class,
+                'choice_label' => 'label',
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])

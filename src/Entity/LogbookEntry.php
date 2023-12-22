@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\HasLifecycleCallbacks]
 class LogbookEntry
 {
-    public const NUM_ITEMS = 20;
+    public const int NUM_ITEMS = 20;
 
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;

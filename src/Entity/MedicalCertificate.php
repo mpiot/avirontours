@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\MedicalCertificateLevel;
+use App\Enum\MedicalCertificateType;
 use App\Repository\MedicalCertificateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,22 +30,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: MedicalCertificateRepository::class)]
 class MedicalCertificate
 {
-    public const TYPE_CERTIFICATE = 'certificate';
-    public const TYPE_ATTESTATION = 'attestation';
-    public const LEVEL_PRACTICE = 'practice';
-    public const LEVEL_COMPETITION = 'competition';
-    public const LEVEL_UPGRADE = 'upgrade';
-
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
     #[Assert\NotBlank(groups: ['Default', 'registration'])]
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $type = self::TYPE_CERTIFICATE;
+    #[ORM\Column(enumType: MedicalCertificateType::class)]
+    private ?MedicalCertificateType $type = MedicalCertificateType::Certificate;
 
     #[Assert\NotBlank(groups: ['Default', 'registration'])]
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $level = self::LEVEL_COMPETITION;
+    #[ORM\Column(enumType: MedicalCertificateLevel::class)]
+    private ?MedicalCertificateLevel $level = MedicalCertificateLevel::Competition;
 
     #[Assert\NotBlank(groups: ['Default', 'registration'])]
     #[Assert\GreaterThan(value: '-1 year', message: 'Le certificat médical doit avoir moins d\'un an.', groups: ['Default', 'registration'])]
@@ -60,34 +56,24 @@ class MedicalCertificate
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getType(): ?MedicalCertificateType
     {
         return $this->type;
     }
 
-    public function getTextType(): ?string
-    {
-        return array_flip(self::getAvailableTypes())[$this->type];
-    }
-
-    public function setType(?string $type): self
+    public function setType(?MedicalCertificateType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getLevel(): ?string
+    public function getLevel(): ?MedicalCertificateLevel
     {
         return $this->level;
     }
 
-    public function getTextLevel(): ?string
-    {
-        return array_flip(self::getAvailableLevels())[$this->level];
-    }
-
-    public function setLevel(?string $level): self
+    public function setLevel(?MedicalCertificateLevel $level): self
     {
         $this->level = $level;
 
@@ -116,22 +102,5 @@ class MedicalCertificate
     public function getUploadedFile(): ?UploadedFile
     {
         return $this->uploadedFile;
-    }
-
-    public static function getAvailableLevels(): array
-    {
-        return [
-            'Pratique' => self::LEVEL_PRACTICE,
-            'Compétition' => self::LEVEL_COMPETITION,
-            'Surclassement' => self::LEVEL_UPGRADE,
-        ];
-    }
-
-    public static function getAvailableTypes(): array
-    {
-        return [
-            'Attestation' => self::TYPE_ATTESTATION,
-            'Certificat' => self::TYPE_CERTIFICATE,
-        ];
     }
 }

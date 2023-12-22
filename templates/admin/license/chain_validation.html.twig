@@ -44,8 +44,8 @@
 
                                 <div class="card-body">
                                     Date du certificat: {{ previous_licence.medicalCertificate.date|date('d/m/Y') }}<br>
-                                    Type de certificat : {{ previous_licence.medicalCertificate.textType }}<br>
-                                    Niveau de certificat: {{ previous_licence.medicalCertificate.textLevel }}
+                                    Type de certificat : {{ previous_licence.medicalCertificate.type.label }}<br>
+                                    Niveau de certificat: {{ previous_licence.medicalCertificate.level.label }}
                                 </div>
                             </div>
                         {% endfor %}
@@ -61,8 +61,8 @@
 
                             <div class="card-body">
                                 Date du certificat: {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
-                                Type de certificat : {{ license.medicalCertificate.textType }}<br>
-                                Niveau de certificat: {{ license.medicalCertificate.textLevel }}
+                                Type de certificat : {{ license.medicalCertificate.type.label }}<br>
+                                Niveau de certificat: {{ license.medicalCertificate.level.label }}
                             </div>
                         </div>
 
