@@ -1,17 +1,18 @@
 version: '3'
 
-# Development environment override
 services:
 ###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "5432:5432"
+    database:
+        ports:
+          - "127.0.0.1:5432:5432"
 ###< doctrine/doctrine-bundle ###
 
 ###> symfony/mailer ###
-  mailer:
-    image: schickling/mailcatcher
-    ports: ["1025", "1080"]
+    mailer:
+        image: schickling/mailcatcher
+        ports:
+            - "127.0.0.1:1025:1025"
+            - "127.0.0.1:1080:1080"
 ###< symfony/mailer ###
 
 ###> symfony/mercure-bundle ###

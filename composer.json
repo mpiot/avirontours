@@ -21,7 +21,6 @@
         "ext-xml": "*",
         "ext-zend-opcache": "*",
         "ext-zip": "*",
-        "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^2.9",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
@@ -146,8 +145,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "6.4.*",
-            "docker": true
+            "require": "6.4.*"
         }
     }
 }

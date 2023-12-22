@@ -12,7 +12,7 @@ NPM      = npm
 .DEFAULT_GOAL : help
 .PHONY        : help
 .PHONY        : start stop restart
-.PHONY        : docker-start docker-stop docker-up docker-down docker-logs
+.PHONY        : docker-start docker-stop docker-up docker-down
 .PHONY        : db-reset db-fixtures
 .PHONY        : tests lint validate-schema phpunit
 
@@ -50,9 +50,6 @@ docker-up: ## Create and start containers
 docker-down: ## Stop and remove resources
 	@$(DOCKER_COMPOSE) down -v --remove-orphans
 
-docker-logs: ## View output from containers
-	@$(DOCKER_COMPOSE) logs --tail=0 --follow
-
 
 ##
 ## Database 🛢️
@@ -63,7 +60,7 @@ db-reset: ## Reset the database
 	@$(CONSOLE) doctrine:migrations:migrate -n
 
 db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
-	rm -Rf protected_files
+	rm -Rf public/uploads var/uploads
 	@$(CONSOLE) doctrine:fixtures:load -n
 
 
@@ -86,4 +83,4 @@ validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
 phpunit: ## Run tests
-	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
+	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
