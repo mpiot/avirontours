@@ -22,6 +22,7 @@ namespace App\Form;
 
 use App\Entity\PostalCode;
 use App\Entity\User;
+use App\Enum\Gender;
 use App\Form\Type\LaneTypeType;
 use App\Repository\PostalCodeRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -32,6 +33,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,9 +55,10 @@ class UserType extends AbstractType
                 'label' => 'Date d\'inscription',
                 'widget' => 'single_text',
             ])
-            ->add('gender', ChoiceType::class, [
+            ->add('gender', EnumType::class, [
                 'label' => 'Genre',
-                'choices' => User::getAvailableGenders(),
+                'class' => Gender::class,
+                'choice_label' => 'label',
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])

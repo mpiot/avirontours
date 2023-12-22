@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\Gender;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -43,8 +44,6 @@ use function Symfony\Component\String\u;
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, \Stringable
 {
     public const int NUM_ITEMS = 20;
-    public const GENDER_FEMALE = 'f';
-    public const GENDER_MALE = 'm';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
@@ -67,8 +66,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $password = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $gender = null;
+    #[ORM\Column(enumType: Gender::class)]
+    private ?Gender $gender = null;
 
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -274,22 +273,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         // $this->plainPassword = null;
     }
 
-    public function getGender(): ?string
+    public function getGender(): ?Gender
     {
         return $this->gender;
     }
 
-    public function getTextGender(): ?string
-    {
-        return array_flip(self::getAvailableGenders())[$this->gender];
-    }
-
-    public function getTextCivility(): ?string
-    {
-        return array_flip(self::getAvailableCivilities())[$this->gender];
-    }
-
-    public function setGender(string $gender): self
+    public function setGender(?Gender $gender): self
     {
         $this->gender = $gender;
 
@@ -746,21 +735,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $firstName = $slugger->slug($this->firstName)->lower();
         $lastName = $slugger->slug($this->lastName)->lower();
         $this->username = "{$firstName}.{$lastName}";
-    }
-
-    public static function getAvailableCivilities(): array
-    {
-        return [
-            'Madame' => self::GENDER_FEMALE,
-            'Monsieur' => self::GENDER_MALE,
-        ];
-    }
-
-    public static function getAvailableGenders(): array
-    {
-        return [
-            'Femme' => self::GENDER_FEMALE,
-            'Homme' => self::GENDER_MALE,
-        ];
     }
 }

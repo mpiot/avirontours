@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Enum\Gender;
 use App\Enum\LegalGuardianRole;
 use App\Enum\MedicalCertificateLevel;
 use App\Enum\MedicalCertificateType;
@@ -53,7 +54,7 @@ class RegistrationControllerTest extends AppWebTestCase
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[user][gender]' => 'm',
+            'registration[user][gender]' => Gender::Male->value,
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
             'registration[user][email]' => 'john.doe@avirontours.fr',
@@ -93,7 +94,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
-        $this->assertSame('m', $user->getGender());
+        $this->assertSame(Gender::Male, $user->getGender());
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
@@ -214,7 +215,7 @@ class RegistrationControllerTest extends AppWebTestCase
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[user][gender]' => 'm',
+            'registration[user][gender]' => Gender::Male->value,
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
             'registration[user][email]' => 'john.doe@avirontours.fr',
@@ -278,7 +279,7 @@ class RegistrationControllerTest extends AppWebTestCase
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[user][gender]' => 'm',
+            'registration[user][gender]' => Gender::Male->value,
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
             'registration[user][email]' => 'john.doe@avirontours.fr',
@@ -340,7 +341,7 @@ class RegistrationControllerTest extends AppWebTestCase
         ]);
 
         $form = $crawler->selectButton('S\'inscrire')->form([
-            'registration[user][gender]' => 'm',
+            'registration[user][gender]' => Gender::Male->value,
             'registration[user][firstName]' => $license->getUser()->getFirstName(),
             'registration[user][lastName]' => $license->getUser()->getLastName(),
             'registration[user][email]' => 'john.doe@avirontours.fr',

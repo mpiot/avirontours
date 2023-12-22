@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\User;
+use App\Enum\Gender;
 use App\Repository\UserRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -39,7 +40,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class UserFactory extends ModelFactory
 {
-    public const PASSWORD = 'engage';
+    public const string PASSWORD = 'engage';
 
     public function major(): self
     {
@@ -74,7 +75,7 @@ final class UserFactory extends ModelFactory
     {
         return [
             'password' => '$argon2id$v=19$m=10,t=3,p=1$504u7GDCM160iitiwetjvQ$6MguL3z0WsHOSxjKI6NhcPi4QdBFNlff/xrck+m975I',
-            'gender' => self::faker()->randomElement(User::getAvailableGenders()),
+            'gender' => self::faker()->randomElement(Gender::cases()),
             'firstName' => self::faker()->firstName(),
             'lastName' => self::faker()->lastName(),
             'email' => self::faker()->email(),

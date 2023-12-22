@@ -140,7 +140,7 @@ class SeasonCsvGenerator
 
             $data[] = [
                 'CodeAdherent' => $user->getLicenseNumber(),
-                'Civilité' => $user->getTextCivility(),
+                'Civilité' => $user->getGender()->civility(),
                 'NomUsage' => $user->getLastName(),
                 'Prenom' => $user->getFirstName(),
                 'Prenom2' => '',

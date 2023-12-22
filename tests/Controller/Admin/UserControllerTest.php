@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Enum\Gender;
 use App\Enum\LegalGuardianRole;
 use App\Factory\PostalCodeFactory;
 use App\Factory\UserFactory;
@@ -112,7 +113,7 @@ class UserControllerTest extends AppWebTestCase
 
         $form = $crawler->selectButton('Sauver')->form([
             'user[subscriptionDate]' => '2019-09-01',
-            'user[gender]' => 'm',
+            'user[gender]' => Gender::Male->value,
             'user[firstName]' => 'John',
             'user[lastName]' => 'Doe',
             'user[email]' => 'john.doe@avirontours.fr',
@@ -142,7 +143,7 @@ class UserControllerTest extends AppWebTestCase
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
 
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));
-        $this->assertSame('m', $user->getGender());
+        $this->assertSame(Gender::Male, $user->getGender());
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
@@ -240,7 +241,7 @@ class UserControllerTest extends AppWebTestCase
 
         $form = $crawler->selectButton('Modifier')->form([
             'user_edit[subscriptionDate]' => '2019-09-01',
-            'user_edit[gender]' => 'm',
+            'user_edit[gender]' => Gender::Male->value,
             'user_edit[firstName]' => 'John',
             'user_edit[lastName]' => 'Doe',
             'user_edit[email]' => 'john.doe@avirontours.fr',
@@ -267,7 +268,7 @@ class UserControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertSame('2019-09-01', $user->getSubscriptionDate()->format('Y-m-d'));
-        $this->assertSame('m', $user->getGender());
+        $this->assertSame(Gender::Male, $user->getGender());
         $this->assertSame('John', $user->getFirstName());
         $this->assertSame('Doe', $user->getLastName());
         $this->assertSame('john.doe', $user->getUsername());
