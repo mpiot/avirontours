@@ -12,9 +12,9 @@ NPM      = npm
 .DEFAULT_GOAL : help
 .PHONY        : help
 .PHONY        : start stop restart
-.PHONY        : docker-start docker-stop docker-up docker-down docker-logs
+.PHONY        : docker-start docker-stop docker-up docker-down
 .PHONY        : db-reset db-fixtures
-.PHONY        : test-all test-all-weak lint validate-schema tests tests-weak
+.PHONY        : tests lint validate-schema phpunit
 
 # Help display
 help:
@@ -50,9 +50,6 @@ docker-up: ## Create and start containers
 docker-down: ## Stop and remove resources
 	@$(DOCKER_COMPOSE) down -v --remove-orphans
 
-docker-logs: ## View output from containers
-	@$(DOCKER_COMPOSE) logs --tail=0 --follow
-
 
 ##
 ## Database 🛢️
@@ -63,16 +60,14 @@ db-reset: ## Reset the database
 	@$(CONSOLE) doctrine:migrations:migrate -n
 
 db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
-	rm -Rf protected_files
+	rm -Rf public/uploads var/uploads
 	@$(CONSOLE) doctrine:fixtures:load -n
 
 
 ##
 ## Tests 🚦️
 ##---------------------------------------------------------------------------
-test-all: lint validate-schema tests# # Lint all, run PHP tests
-
-test-all-weak: lint validate-schema tests-weak ## Lint all, run PHP tests without Deprecations helper
+tests: lint validate-schema phpunit ## Lint all, run PHP tests
 
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(COMPOSER) validate
@@ -87,8 +82,5 @@ lint: ## Run lint on Yaml, Twig, Container, and PHP files
 validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
-tests: ## Run tests
-	@FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
-
-tests-weak: ## Run tests weak
+phpunit: ## Run tests
 	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit

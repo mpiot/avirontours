@@ -37,12 +37,9 @@ use function Symfony\Component\String\u;
 )]
 class BumpVersionCommand extends Command
 {
-    protected static $defaultName = 'app:bump-version';
-
     protected function configure(): void
     {
         $this
-            ->setDescription('Bump project version')
             ->addArgument('version', InputArgument::OPTIONAL, 'The new version')
             ->addOption('meta', null, InputOption::VALUE_NONE, 'The version is a meta (placed after existing version)')
         ;
@@ -54,19 +51,19 @@ class BumpVersionCommand extends Command
         $filesystem = new Filesystem();
 
         $version = $input->getArgument('version');
-        $filenames = ['.env', 'sonar-project.properties'];
+        $filenames = ['config/services.yaml', 'sonar-project.properties'];
 
         foreach ($filenames as $filename) {
             $fileContent = file_get_contents($filename);
 
-            if ($input->getOption('meta')) {
+            if (true === $input->getOption('meta')) {
                 $fileContent = u($fileContent)
-                    ->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-]+)(\+?[0-9a-z\.\-]*)#', '${1}${2}+'.$version)
+                    ->replaceMatches('#((?:app_version|sonar\.projectVersion)(?:(?::|=)\s?))(\'?)([0-9a-z\.\-\+]+)(\'?)#', '${1}${2}${3}+'.$version.'${4}')
                     ->toString()
                 ;
             } else {
                 $fileContent = u($fileContent)
-                    ->replaceMatches('#(APP_VERSION=|sonar.projectVersion=)([0-9a-z\.\-\+]+)#', '${1}'.$version)
+                    ->replaceMatches('#((?:app_version|sonar\.projectVersion)(?:(?::|=)\s?))(\'?)([0-9a-z\.\-\+]+)(\'?)#', '${1}${2}'.$version.'${4}')
                     ->toString()
                 ;
             }
@@ -74,7 +71,7 @@ class BumpVersionCommand extends Command
             $filesystem->dumpFile($filename, $fileContent);
         }
 
-        if ($input->getOption('meta')) {
+        if (true === $input->getOption('meta')) {
             $message = sprintf('The meta %s has been successfully added after the version.', $version);
         } else {
             $message = sprintf('The version has been successfully updated to %s.', $version);

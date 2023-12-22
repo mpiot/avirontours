@@ -22,6 +22,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class Concept2Provider extends AbstractProvider
@@ -43,7 +44,7 @@ class Concept2Provider extends AbstractProvider
         return 'https://log.concept2.com/api/users/me';
     }
 
-    public function getAccessToken($grant, array $options = [])
+    public function getAccessToken($grant, array $options = []): AccessTokenInterface|AccessToken
     {
         $scopeString = implode(',', self::SCOPES);
 
