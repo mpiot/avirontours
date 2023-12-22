@@ -33,11 +33,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ShellRepository::class)]
 class Shell
 {
-    public const WEIGHT_CATEGORY_50 = 50;
-    public const WEIGHT_CATEGORY_60 = 60;
-    public const WEIGHT_CATEGORY_70 = 70;
-    public const WEIGHT_CATEGORY_80 = 80;
-    public const WEIGHT_CATEGORY_90 = 90;
+    public const int WEIGHT_CATEGORY_50 = 50;
+    public const int WEIGHT_CATEGORY_60 = 60;
+    public const int WEIGHT_CATEGORY_70 = 70;
+    public const int WEIGHT_CATEGORY_80 = 80;
+    public const int WEIGHT_CATEGORY_90 = 90;
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
