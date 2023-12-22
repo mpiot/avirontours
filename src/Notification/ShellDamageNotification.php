@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace App\Notification;
 
 use App\Entity\ShellDamage;
-use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Notifier\Message\EmailMessage;
 use Symfony\Component\Notifier\Notification\EmailNotificationInterface;
@@ -33,7 +33,7 @@ class ShellDamageNotification extends Notification implements EmailNotificationI
 {
     public function __construct(private readonly ShellDamage $shellDamage)
     {
-        $this->importance(ShellDamageCategory::PRIORITY_HIGH === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM);
+        $this->importance(Priority::High === $shellDamage->getCategory()->getPriority() ? Notification::IMPORTANCE_URGENT : Notification::IMPORTANCE_MEDIUM);
 
         parent::__construct('Nouvelle avarie');
     }

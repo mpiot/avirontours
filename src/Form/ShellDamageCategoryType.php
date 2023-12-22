@@ -21,8 +21,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,9 +33,10 @@ class ShellDamageCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('priority', ChoiceType::class, [
+            ->add('priority', EnumType::class, [
                 'label' => 'Priorité',
-                'choices' => ShellDamageCategory::getAvailablePriorities(),
+                'class' => Priority::class,
+                'choice_label' => 'label',
             ])
             ->add('name', TextType::class, [
                 'label' => 'Nom',

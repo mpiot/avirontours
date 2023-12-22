@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use App\Repository\ShellDamageCategoryRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -43,7 +44,7 @@ final class ShellDamageCategoryFactory extends ModelFactory
     {
         return [
             'name' => self::faker()->name(),
-            'priority' => self::faker()->randomElement(ShellDamageCategory::getAvailablePriorities()),
+            'priority' => self::faker()->randomElement(Priority::cases()),
         ];
     }
 

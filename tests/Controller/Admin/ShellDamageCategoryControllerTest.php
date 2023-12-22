@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use App\Factory\ShellDamageCategoryFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,7 +87,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Sauver', [
-            'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
+            'shell_damage_category[priority]' => Priority::Medium->value,
             'shell_damage_category[name]' => 'A new shell damage',
         ]);
 
@@ -96,7 +96,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $category = ShellDamageCategoryFactory::repository()->findOneBy(['name' => 'A new shell damage']);
 
         $this->assertSame('A new shell damage', $category->getName());
-        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
+        $this->assertSame(Priority::Medium, $category->getPriority());
     }
 
     public function testNewShellDamageCategoryWithoutData(): void
@@ -131,13 +131,13 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Modifier', [
-            'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
+            'shell_damage_category[priority]' => Priority::Medium->value,
             'shell_damage_category[name]' => 'A modified shell damage category',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_SEE_OTHER);
         $this->assertSame('A modified shell damage category', $category->getName());
-        $this->assertSame(ShellDamageCategory::PRIORITY_MEDIUM, $category->getPriority());
+        $this->assertSame(Priority::Medium, $category->getPriority());
     }
 
     public function testDeleteShellDamageCategory(): void

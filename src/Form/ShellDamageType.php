@@ -23,6 +23,7 @@ namespace App\Form;
 use App\Entity\Shell;
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -52,7 +53,7 @@ class ShellDamageType extends AbstractType
                     ->orderBy('category.priority', 'DESC')
                     ->orderBy('category.name', 'ASC'),
                 'group_by' => function (ShellDamageCategory $choice) {
-                    if (ShellDamageCategory::PRIORITY_HIGH === $choice->getPriority()) {
+                    if (Priority::High === $choice->getPriority()) {
                         return 'Importante';
                     }
 

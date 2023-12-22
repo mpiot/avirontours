@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\Priority;
 use App\Repository\ShellDamageCategoryRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,9 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ShellDamageCategoryRepository::class)]
 class ShellDamageCategory
 {
-    public const PRIORITY_HIGH = 0;
-    public const PRIORITY_MEDIUM = 1;
-
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
@@ -39,8 +37,8 @@ class ShellDamageCategory
     private ?string $name = null;
 
     #[Assert\NotNull]
-    #[ORM\Column(type: Types::INTEGER)]
-    private ?int $priority = null;
+    #[ORM\Column(enumType: Priority::class)]
+    private ?Priority $priority = null;
 
     public function getId(): ?int
     {
@@ -59,28 +57,15 @@ class ShellDamageCategory
         return $this;
     }
 
-    public function getPriority(): ?int
+    public function getPriority(): ?Priority
     {
         return $this->priority;
     }
 
-    public function getTextPriority(): ?string
-    {
-        return array_flip(self::getAvailablePriorities())[$this->priority];
-    }
-
-    public function setPriority(int $priority): self
+    public function setPriority(?Priority $priority): self
     {
         $this->priority = $priority;
 
         return $this;
-    }
-
-    public static function getAvailablePriorities(): array
-    {
-        return [
-            'Intermédiaire' => self::PRIORITY_MEDIUM,
-            'Importante' => self::PRIORITY_HIGH,
-        ];
     }
 }

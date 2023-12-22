@@ -23,9 +23,9 @@ namespace App\Form;
 use App\Entity\LogbookEntry;
 use App\Entity\Shell;
 use App\Entity\ShellDamage;
-use App\Entity\ShellDamageCategory;
 use App\Entity\User;
 use App\Enum\LicenseType;
+use App\Enum\Priority;
 use App\Form\Type\NonUserCrewMemberType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -168,7 +168,7 @@ class LogbookEntryType extends AbstractType
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
         }
 
-        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
+        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => Priority::High === $damage->getCategory()->getPriority())->isEmpty()) {
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
         }
 

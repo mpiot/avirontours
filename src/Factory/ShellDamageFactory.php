@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\ShellDamage;
-use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use App\Repository\ShellDamageRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -43,14 +43,14 @@ final class ShellDamageFactory extends ModelFactory
     public function highlyDamaged(): self
     {
         return $this->addState([
-            'category' => ShellDamageCategoryFactory::new(['priority' => ShellDamageCategory::PRIORITY_HIGH]),
+            'category' => ShellDamageCategoryFactory::new(['priority' => Priority::High]),
         ]);
     }
 
     public function mediumDamaged(): self
     {
         return $this->addState([
-            'category' => ShellDamageCategoryFactory::new(['priority' => ShellDamageCategory::PRIORITY_MEDIUM]),
+            'category' => ShellDamageCategoryFactory::new(['priority' => Priority::Medium]),
         ]);
     }
 

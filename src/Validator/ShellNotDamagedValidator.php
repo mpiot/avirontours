@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace App\Validator;
 
 use App\Entity\Shell;
-use App\Entity\ShellDamageCategory;
+use App\Enum\Priority;
 use App\Repository\ShellRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -47,7 +47,7 @@ class ShellNotDamagedValidator extends ConstraintValidator
             throw new \Exception('The ShellAvailableValidator must be used on a Shell.');
         }
 
-        $unavailableShells = $this->shellRepository->findDamagedShells(ShellDamageCategory::PRIORITY_HIGH, [$value]);
+        $unavailableShells = $this->shellRepository->findDamagedShells(Priority::High, [$value]);
         if (!empty($unavailableShells)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation()
