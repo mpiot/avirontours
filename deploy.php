@@ -32,15 +32,18 @@ set('shared_files', [
     'config/secrets/prod/prod.decrypt.private.php',
 ]);
 set('shared_dirs', [
+    'public/uploads',
     'var/log',
     'var/sessions',
-    'protected_files',
+    'var/uploads',
 ]);
 set('writable_dirs', [
+    'public/uploads',
     'var',
     'var/cache',
     'var/log',
     'var/sessions',
+    'var/uploads',
 ]);
 
 set('bin/console', '{{bin/php}} {{release_or_current_path}}/bin/console');
