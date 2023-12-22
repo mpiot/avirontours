@@ -22,7 +22,7 @@ namespace App\Controller;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class StaticController extends AbstractController
 {

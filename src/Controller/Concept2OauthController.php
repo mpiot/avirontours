@@ -22,7 +22,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class Concept2OauthController extends AbstractController
 {
