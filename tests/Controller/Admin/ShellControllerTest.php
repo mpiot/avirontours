@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\Shell;
+use App\Enum\RowingType;
 use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
@@ -166,7 +167,7 @@ class ShellControllerTest extends AppWebTestCase
             'shell_edit[personalBoat]' => true,
             'shell_edit[enabled]' => false,
             'shell_edit[numberRowers]' => 8,
-            'shell_edit[rowingType]' => 'sweep',
+            'shell_edit[rowingType]' => RowingType::Sweep->value,
             'shell_edit[coxed]' => true,
             'shell_edit[yolette]' => true,
             'shell_edit[mileage]' => 10,
@@ -177,7 +178,7 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertFalse($shell->isEnabled());
         $this->assertTrue($shell->getPersonalBoat());
         $this->assertSame(2, $shell->getNumberRowers());
-        $this->assertSame('sweep', $shell->getRowingType());
+        $this->assertSame(RowingType::Sweep, $shell->getRowingType());
         $this->assertFalse($shell->getCoxed());
         $this->assertFalse($shell->getYolette());
         $this->assertSame(10.0, $shell->getMileage());

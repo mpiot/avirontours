@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\RiggerMaterial;
+use App\Enum\RiggerPosition;
+use App\Enum\RowingType;
 use App\Repository\ShellRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,18 +33,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ShellRepository::class)]
 class Shell
 {
-    public const ROWING_TYPE_BOTH = 'both';
-    public const ROWING_TYPE_SCULL = 'scull';
-    public const ROWING_TYPE_SWEEP = 'sweep';
     public const WEIGHT_CATEGORY_50 = 50;
     public const WEIGHT_CATEGORY_60 = 60;
     public const WEIGHT_CATEGORY_70 = 70;
     public const WEIGHT_CATEGORY_80 = 80;
     public const WEIGHT_CATEGORY_90 = 90;
-    public const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
-    public const RIGGER_MATERIAL_CARBON = 'carbon';
-    public const RIGGER_POSITION_BACK = 'back';
-    public const RIGGER_POSITION_FRONT = 'front';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
@@ -60,8 +56,8 @@ class Shell
     private ?bool $coxed = false;
 
     #[Assert\NotNull]
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $rowingType = self::ROWING_TYPE_BOTH;
+    #[ORM\Column(enumType: RowingType::class)]
+    private ?RowingType $rowingType = RowingType::Both;
 
     #[Assert\NotNull]
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -88,11 +84,11 @@ class Shell
     #[ORM\Column(type: Types::FLOAT)]
     private ?float $mileage = 0.0;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $riggerMaterial = null;
+    #[ORM\Column(nullable: true, enumType: RiggerMaterial::class)]
+    private ?RiggerMaterial $riggerMaterial = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $riggerPosition = null;
+    #[ORM\Column(nullable: true, enumType: RiggerPosition::class)]
+    private ?RiggerPosition $riggerPosition = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $usageFrequency = null;
@@ -153,17 +149,12 @@ class Shell
         return $this;
     }
 
-    public function getRowingType(): ?string
+    public function getRowingType(): ?RowingType
     {
         return $this->rowingType;
     }
 
-    public function getTextRowingType(): string
-    {
-        return array_flip(self::getAvailableRowingTypes())[$this->rowingType];
-    }
-
-    public function setRowingType(string $rowingType): self
+    public function setRowingType(?RowingType $rowingType): self
     {
         $this->rowingType = $rowingType;
 
@@ -314,34 +305,24 @@ class Shell
         return $this;
     }
 
-    public function getRiggerMaterial(): ?string
+    public function getRiggerMaterial(): ?RiggerMaterial
     {
         return $this->riggerMaterial;
     }
 
-    public function getTextRiggerMaterial(): ?string
-    {
-        return array_flip(self::getAvailableRiggerMaterials())[$this->riggerMaterial];
-    }
-
-    public function setRiggerMaterial(?string $riggerMaterial): self
+    public function setRiggerMaterial(?RiggerMaterial $riggerMaterial): self
     {
         $this->riggerMaterial = $riggerMaterial;
 
         return $this;
     }
 
-    public function getRiggerPosition(): ?string
+    public function getRiggerPosition(): ?RiggerPosition
     {
         return $this->riggerPosition;
     }
 
-    public function getTextRiggerPosition(): ?string
-    {
-        return array_flip(self::getAvailableRiggerPositions())[$this->riggerPosition];
-    }
-
-    public function setRiggerPosition(?string $riggerPosition): self
+    public function setRiggerPosition(?RiggerPosition $riggerPosition): self
     {
         $this->riggerPosition = $riggerPosition;
 
@@ -413,31 +394,6 @@ class Shell
         }
 
         return $this;
-    }
-
-    public static function getAvailableRiggerMaterials(): array
-    {
-        return [
-            'Aluminium' => self::RIGGER_MATERIAL_ALUMINIUM,
-            'Carbone' => self::RIGGER_MATERIAL_CARBON,
-        ];
-    }
-
-    public static function getAvailableRiggerPositions(): array
-    {
-        return [
-            'Arrière' => self::RIGGER_POSITION_BACK,
-            'Avant' => self::RIGGER_POSITION_FRONT,
-        ];
-    }
-
-    public static function getAvailableRowingTypes(): array
-    {
-        return [
-            'Les deux' => self::ROWING_TYPE_BOTH,
-            'Couple' => self::ROWING_TYPE_SCULL,
-            'Pointe' => self::ROWING_TYPE_SWEEP,
-        ];
     }
 
     public static function getAvailableWeightCategories(): array

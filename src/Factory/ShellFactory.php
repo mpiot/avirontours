@@ -21,6 +21,9 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Shell;
+use App\Enum\RiggerMaterial;
+use App\Enum\RiggerPosition;
+use App\Enum\RowingType;
 use App\Repository\ShellRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -45,12 +48,12 @@ final class ShellFactory extends ModelFactory
             'name' => self::faker()->name(),
             'numberRowers' => self::faker()->randomElement([1, 2, 4, 8]),
             'coxed' => self::faker()->boolean(0.1),
-            'rowingType' => self::faker()->randomElement(Shell::getAvailableRowingTypes()),
+            'rowingType' => self::faker()->randomElement(RowingType::cases()),
             'yolette' => self::faker()->boolean(0.1),
             'productionYear' => self::faker()->year(),
             'weightCategory' => self::faker()->randomElement(Shell::getAvailableWeightCategories()),
-            'riggerMaterial' => self::faker()->randomElement(Shell::getAvailableRiggerMaterials()),
-            'riggerPosition' => self::faker()->randomElement(Shell::getAvailableRiggerPositions()),
+            'riggerMaterial' => self::faker()->randomElement(RiggerMaterial::cases()),
+            'riggerPosition' => self::faker()->randomElement(RiggerPosition::cases()),
             'enabled' => true,
             'personalBoat' => self::faker()->boolean(),
         ];

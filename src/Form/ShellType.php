@@ -21,9 +21,13 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Shell;
+use App\Enum\RiggerMaterial;
+use App\Enum\RiggerPosition;
+use App\Enum\RowingType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -42,9 +46,10 @@ class ShellType extends AbstractType
             ->add('numberRowers', IntegerType::class, [
                 'label' => 'Nombre de rameurs',
             ])
-            ->add('rowingType', ChoiceType::class, [
+            ->add('rowingType', EnumType::class, [
                 'label' => 'Type',
-                'choices' => Shell::getAvailableRowingTypes(),
+                'class' => RowingType::class,
+                'choice_label' => 'label',
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
             ])
@@ -90,21 +95,23 @@ class ShellType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('riggerMaterial', ChoiceType::class, [
+            ->add('riggerMaterial', EnumType::class, [
                 'label' => 'Matériaux portants',
-                'choices' => Shell::getAvailableRiggerMaterials(),
+                'class' => RiggerMaterial::class,
+                'choice_label' => 'label',
                 'placeholder' => 'N/A',
-                'required' => false,
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
+                'required' => false,
             ])
-            ->add('riggerPosition', ChoiceType::class, [
+            ->add('riggerPosition', EnumType::class, [
                 'label' => 'Position portants',
-                'choices' => Shell::getAvailableRiggerPositions(),
+                'class' => RiggerPosition::class,
+                'choice_label' => 'label',
                 'placeholder' => 'N/A',
-                'required' => false,
                 'expanded' => true,
                 'label_attr' => ['class' => 'radio-custom'],
+                'required' => false,
             ])
         ;
     }

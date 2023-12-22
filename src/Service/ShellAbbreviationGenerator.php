@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Shell;
+use App\Enum\RowingType;
 
 class ShellAbbreviationGenerator
 {
@@ -31,11 +32,11 @@ class ShellAbbreviationGenerator
         $yolette = $shell->getYolette();
         $type = $shell->getRowingType();
 
-        if (Shell::ROWING_TYPE_SCULL === $type) {
+        if (RowingType::Scull === $type) {
             return $this->getScullAbbreviation($numberRowers, $coxed, $yolette);
         }
 
-        if (Shell::ROWING_TYPE_SWEEP === $type) {
+        if (RowingType::Sweep === $type) {
             return $this->getSweepAbbreviation($numberRowers, $coxed, $yolette);
         }
 
