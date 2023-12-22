@@ -21,9 +21,10 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\SeasonCategory;
+use App\Enum\LicenseType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -41,9 +42,10 @@ class SeasonCategoryType extends AbstractType
             ->add('price', MoneyType::class, [
                 'label' => 'Prix',
             ])
-            ->add('licenseType', ChoiceType::class, [
-                'label' => 'Type de license',
-                'choices' => SeasonCategory::getAvailableLicenseTypes(),
+            ->add('licenseType', EnumType::class, [
+                'label' => 'Rôle',
+                'class' => LicenseType::class,
+                'choice_label' => 'label',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',

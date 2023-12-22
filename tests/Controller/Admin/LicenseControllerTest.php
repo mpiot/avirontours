@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\MedicalCertificate;
 use App\Enum\MedicalCertificateLevel;
 use App\Enum\MedicalCertificateType;
 use App\Enum\PaymentMethod;

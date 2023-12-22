@@ -176,7 +176,7 @@ class SeasonCsvGenerator
                 'Profession' => '',
                 'CategSocioPro' => '',
                 'DateSouscription' => (new \DateTime())->format('d/m/Y'),
-                'TypeLicence' => $license->getSeasonCategory()->getLicenseType(),
+                'TypeLicence' => $license->getSeasonCategory()->getLicenseType()->value,
                 'code manifestation' => '',
                 'AssuranceIASportPlus' => $license->getOptionalInsurance() ? 'Oui' : 'Non',
                 'Date certificat "Pratique"' => $this->getMedicalCertificateDate($license, MedicalCertificateLevel::Practice),

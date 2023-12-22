@@ -22,6 +22,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Season;
 use App\Entity\SeasonCategory;
+use App\Enum\LicenseType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -69,10 +70,10 @@ class SeasonFixtures extends Fixture
     private function getSeasonCategoryData(): array
     {
         return [
-            ['Jeune', 214.0, SeasonCategory::LICENSE_TYPE_ANNUAL, null],
-            ['Etudiant', 256.0, SeasonCategory::LICENSE_TYPE_ANNUAL, null],
-            ['Adulte', 320.0, SeasonCategory::LICENSE_TYPE_ANNUAL, null],
-            ['Indoor', 130.0, SeasonCategory::LICENSE_TYPE_INDOOR, null],
+            ['Jeune', 214.0, LicenseType::Annual, null],
+            ['Etudiant', 256.0, LicenseType::Annual, null],
+            ['Adulte', 320.0, LicenseType::Annual, null],
+            ['Indoor', 130.0, LicenseType::Indoor, null],
         ];
     }
 }

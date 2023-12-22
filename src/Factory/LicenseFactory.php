@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\License;
-use App\Entity\SeasonCategory;
+use App\Enum\LicenseType;
 use App\Repository\LicenseRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -44,7 +44,7 @@ final class LicenseFactory extends ModelFactory
     {
         return $this->addState([
             'seasonCategory' => SeasonCategoryFactory::new([
-                'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
+                'licenseType' => LicenseType::Annual,
                 'season' => SeasonFactory::new()->active(),
             ]),
         ]);
@@ -54,7 +54,7 @@ final class LicenseFactory extends ModelFactory
     {
         return $this->addState([
             'seasonCategory' => SeasonCategoryFactory::new([
-                'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
+                'licenseType' => LicenseType::Indoor,
                 'season' => SeasonFactory::new()->active(),
             ]),
         ]);
@@ -64,7 +64,7 @@ final class LicenseFactory extends ModelFactory
     {
         return $this->addState([
             'seasonCategory' => SeasonCategoryFactory::new([
-                'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
+                'licenseType' => LicenseType::Annual,
                 'season' => SeasonFactory::new()->inactive(),
             ]),
         ]);
@@ -74,7 +74,7 @@ final class LicenseFactory extends ModelFactory
     {
         return $this->addState([
             'seasonCategory' => SeasonCategoryFactory::new([
-                'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
+                'licenseType' => LicenseType::Indoor,
                 'season' => SeasonFactory::new()->inactive(),
             ]),
         ]);

@@ -21,11 +21,11 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\LogbookEntry;
-use App\Entity\SeasonCategory;
 use App\Entity\Shell;
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
+use App\Enum\LicenseType;
 use App\Form\Type\NonUserCrewMemberType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -84,7 +84,7 @@ class LogbookEntryType extends AbstractType
                             ->andWhere('seasonCategory.licenseType = :licenseType')
                             ->andWhere('season.active = true')
                             ->andWhere('JSON_GET_FIELD_AS_TEXT(licenses.marking, \'validated\') = \'1\'')
-                            ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL)
+                            ->setParameter('licenseType', LicenseType::Annual->value)
                         ;
                     }
 

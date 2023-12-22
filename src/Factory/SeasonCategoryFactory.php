@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\SeasonCategory;
+use App\Enum\LicenseType;
 use App\Repository\SeasonCategoryRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -54,7 +55,7 @@ final class SeasonCategoryFactory extends ModelFactory
         return [
             'name' => self::faker()->sentence(),
             'price' => self::faker()->randomElement([120, 200, 320]),
-            'licenseType' => self::faker()->randomElement(SeasonCategory::getAvailableLicenseTypes()),
+            'licenseType' => self::faker()->randomElement(LicenseType::cases()),
             'description' => self::faker()->text(),
             'displayed' => self::faker()->boolean(0.8),
         ];

@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\LicenseType;
 use App\Repository\SeasonCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,13 +35,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: SeasonCategoryRepository::class)]
 class SeasonCategory
 {
-    public const LICENSE_TYPE_ANNUAL = 'A';
-    public const LICENSE_TYPE_UNIVERSITY = 'U';
-    public const LICENSE_TYPE_INDOOR = 'I';
-    public const LICENSE_TYPE_DISCOVERY_7D = 'D_7D';
-    public const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
-    public const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
-
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
@@ -57,8 +51,8 @@ class SeasonCategory
     private ?float $price = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING, length: 5)]
-    private ?string $licenseType = null;
+    #[ORM\Column(length: 5, enumType: LicenseType::class)]
+    private ?LicenseType $licenseType = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
@@ -125,21 +119,16 @@ class SeasonCategory
         return $this;
     }
 
-    public function getLicenseType(): ?string
+    public function getLicenseType(): ?LicenseType
     {
         return $this->licenseType;
     }
 
-    public function setLicenseType(?string $licenseType): self
+    public function setLicenseType(?LicenseType $licenseType): self
     {
         $this->licenseType = $licenseType;
 
         return $this;
-    }
-
-    public function getTextLicenseType(): ?string
-    {
-        return array_flip(self::getAvailableLicenseTypes())[$this->licenseType];
     }
 
     public function getDescription(): ?string
@@ -200,17 +189,5 @@ class SeasonCategory
         $this->displayed = $displayed;
 
         return $this;
-    }
-
-    public static function getAvailableLicenseTypes(): array
-    {
-        return [
-            'Licence Annuelle' => self::LICENSE_TYPE_ANNUAL,
-            'Licence Universitaire' => self::LICENSE_TYPE_UNIVERSITY,
-            'Licence Indoor' => self::LICENSE_TYPE_INDOOR,
-            'Licence Découverte - 7 jours' => self::LICENSE_TYPE_DISCOVERY_7D,
-            'Licence Découverte - 30 jours' => self::LICENSE_TYPE_DISCOVERY_30D,
-            'Licence Découverte - 90 jours' => self::LICENSE_TYPE_DISCOVERY_90D,
-        ];
     }
 }
