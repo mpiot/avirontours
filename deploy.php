@@ -60,7 +60,7 @@ host('141.94.65.219')
 
 after('deploy:symlink', 'database:migrate');
 after('deploy:symlink', 'php:restart');
-after('deploy:symlink', 'app:stop-workers');
+after('deploy:symlink', 'app:restart-workers');
 after('deploy:failed', 'deploy:unlock');
 
 // Tasks
@@ -83,9 +83,9 @@ task('assets:build', function () {
     run('cd {{release_path}} && npm run build');
 });
 
-desc('Stop workers');
-task('app:stop-workers', function (): void {
-    run('cd {{release_or_current_path}} && {{bin/console}} messenger:stop-workers');
+desc('Restart workers');
+task('app:restart-workers', function (): void {
+    run('sudo supervisorctl restart messenger-consume:*');
 });
 
 desc('Restart PHP');
