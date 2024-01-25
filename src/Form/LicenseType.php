@@ -78,7 +78,7 @@ class LicenseType extends AbstractType
             ])
             ->add('payments', CollectionType::class, [
                 'label' => 'Paiements',
-                'entry_type' => \App\Form\Type\LicensePaymentType::class,
+                'entry_type' => Type\LicensePaymentType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
