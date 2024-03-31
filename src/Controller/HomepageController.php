@@ -23,29 +23,20 @@ namespace App\Controller;
 use App\Chart\LogbookChart;
 use App\Chart\PhysicalQualitiesChart;
 use App\Chart\TrainingChart;
-use App\Repository\SeasonCategoryRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 class HomepageController extends AbstractController
 {
     #[Route(path: '', name: 'homepage')]
-    public function homepage(SeasonCategoryRepository $seasonCategoryRepository): Response
-    {
-        return $this->render('homepage/homepage.html.twig', [
-            'season_categories' => $seasonCategoryRepository->findAvailableForSubscription(),
-        ]);
-    }
-
-    #[Route(path: '/dashboard', name: 'dashboard')]
-    #[IsGranted('ROLE_USER')]
-    public function dashboard(
+    public function homepage(
         LogbookChart $logbookChart,
         PhysicalQualitiesChart $physicalQualitiesChart,
         TrainingChart $trainingsChart
     ): Response {
-        return $this->render('homepage/dashboard.html.twig', [
+        return $this->render('homepage/homepage.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),
             'physicalQualitiesChart' => $physicalQualitiesChart->chart($this->getUser()),
             'trainingsPathwaysChart' => $trainingsChart->pathways($this->getUser()),

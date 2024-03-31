@@ -40,7 +40,7 @@ class SecurityControllerTest extends AppWebTestCase
             'password' => UserFactory::PASSWORD,
         ]);
 
-        $this->assertResponseRedirects('/dashboard');
+        $this->assertResponseRedirects('/');
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
@@ -60,7 +60,7 @@ class SecurityControllerTest extends AppWebTestCase
             'password' => UserFactory::PASSWORD,
         ]);
 
-        $this->assertResponseRedirects('/dashboard');
+        $this->assertResponseRedirects('/');
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
     }
@@ -80,7 +80,7 @@ class SecurityControllerTest extends AppWebTestCase
             'password' => UserFactory::PASSWORD,
         ]);
 
-        $this->assertResponseRedirects('/dashboard');
+        $this->assertResponseRedirects('/');
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
     }

@@ -47,9 +47,9 @@ class TrainingControllerTest extends AppWebTestCase
      */
     public function testAccessDeniedForRegularUser($method, $url): void
     {
-        if (mb_strpos($url, '{user_id}')) {
+        if (mb_strpos($url, '{user-id}')) {
             $user = UserFactory::createOne();
-            $url = str_replace('{id}', (string) $user->getId(), $url);
+            $url = str_replace('{user-id}', (string) $user->getId(), $url);
 
             if (mb_strpos($url, '{id}')) {
                 $training = TrainingFactory::createOne(['user' => $user]);

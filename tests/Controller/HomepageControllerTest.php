@@ -31,14 +31,19 @@ use function Zenstruck\Foundry\faker;
 
 class HomepageControllerTest extends AppWebTestCase
 {
-    public function testIndex(): void
+    public function testAsAnonymousUserICannotShowHomepage(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/');
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseRedirects('/login');
+    }
 
+    public function testIndex(): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
         $this->logIn($client, 'ROLE_USER');
         $client->request('GET', '/');
 

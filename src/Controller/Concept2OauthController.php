@@ -35,7 +35,7 @@ class Concept2OauthController extends AbstractController
         ;
     }
 
-    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'avirontours.fr')]
+    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'my.avirontours.fr')]
     #[Route('/oauth/concept-logbook')]
     public function connectCheckAction(ClientRegistry $clientRegistry, ManagerRegistry $managerRegistry)
     {
