@@ -739,9 +739,6 @@
     "symfony/ux-chartjs": {
         "version": "v2.0.1"
     },
-    "symfony/ux-lazy-image": {
-        "version": "v2.0.1"
-    },
     "symfony/ux-turbo": {
         "version": "v2.0.1"
     },

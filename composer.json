@@ -63,7 +63,6 @@
         "symfony/uid": "6.4.*",
         "symfony/ux-autocomplete": "^2.8",
         "symfony/ux-chartjs": "^2.8",
-        "symfony/ux-lazy-image": "^2.8",
         "symfony/ux-turbo": "^2.8",
         "symfony/validator": "6.4.*",
         "symfony/web-link": "6.4.*",

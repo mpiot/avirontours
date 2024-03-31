@@ -63,16 +63,4 @@ class SeasonCategoryRepository extends ServiceEntityRepository
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
-
-    public function findAvailableForSubscription(): array
-    {
-        $query = $this->createQueryBuilder('season_category')
-            ->innerJoin('season_category.season', 'season')->addSelect('season')
-            ->andWhere('season.subscriptionEnabled = true')
-            ->andWhere('season_category.displayed = true')
-            ->getQuery()
-        ;
-
-        return $query->getResult();
-    }
 }
