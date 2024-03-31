@@ -71,7 +71,7 @@ class ShellRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findOnWaterShells(array $shells = null)
+    public function findOnWaterShells(?array $shells = null)
     {
         $qb = $this->createQueryBuilder('shell')
             ->innerJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
@@ -87,7 +87,7 @@ class ShellRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findDamagedShells(int $priority = null, array $shells = null)
+    public function findDamagedShells(?int $priority = null, ?array $shells = null)
     {
         $qb = $this->createQueryBuilder('shell')
             ->innerJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')

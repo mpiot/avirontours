@@ -88,7 +88,7 @@ class License
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $payedAt = null;
 
-    public function __construct(SeasonCategory $seasonCategory = null)
+    public function __construct(?SeasonCategory $seasonCategory = null)
     {
         $this->uuid = Uuid::v4();
         $this->seasonCategory = $seasonCategory;

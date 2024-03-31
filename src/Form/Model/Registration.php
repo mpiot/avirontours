@@ -31,7 +31,7 @@ class Registration
     #[Assert\Valid(groups: ['registration'])]
     public License $license;
 
-    public function __construct(SeasonCategory $seasonCategory, User $user = null)
+    public function __construct(SeasonCategory $seasonCategory, ?User $user = null)
     {
         $this->user = $user ?? new User();
         $this->license = new License($seasonCategory);

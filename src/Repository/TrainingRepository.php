@@ -59,7 +59,7 @@ class TrainingRepository extends ServiceEntityRepository
         );
     }
 
-    public function findForUser(User $user = null, \DateTime $from = null, \DateTime $to = null): array
+    public function findForUser(?User $user = null, ?\DateTime $from = null, ?\DateTime $to = null): array
     {
         $query = $this->createQueryBuilder('training')
             ->innerJoin('training.user', 'user')
