@@ -102,7 +102,7 @@ class ProfileType extends AbstractType
         ]);
     }
 
-    public function formModifier(FormInterface $form, string $postalCode = null): void
+    public function formModifier(FormInterface $form, ?string $postalCode = null): void
     {
         $cities = null === $postalCode ? [] : $this->repository->findBy(['postalCode' => $postalCode]);
         $cities = array_map(fn (PostalCode $postalCode) => $postalCode->getCity(), $cities);

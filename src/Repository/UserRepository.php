@@ -100,7 +100,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findUsersTrainings(\DateTime $from = null, \DateTime $to = null, Group $group = null, $query = null, $page = 1): PaginationInterface
+    public function findUsersTrainings(?\DateTime $from = null, ?\DateTime $to = null, ?Group $group = null, $query = null, $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')
             ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :from AND :to')
@@ -201,7 +201,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query->getResult();
     }
 
-    public function findOnWaterUsers(array $users = null): array
+    public function findOnWaterUsers(?array $users = null): array
     {
         $qb = $this->createQueryBuilder('user')
             ->innerJoin('user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')

@@ -38,7 +38,7 @@ class ShellDamageNotification extends Notification implements EmailNotificationI
         parent::__construct('Nouvelle avarie');
     }
 
-    public function asEmailMessage(EmailRecipientInterface $recipient, string $transport = null): ?EmailMessage
+    public function asEmailMessage(EmailRecipientInterface $recipient, ?string $transport = null): ?EmailMessage
     {
         $message = EmailMessage::fromNotification($this, $recipient);
         /** @var TemplatedEmail $rawMessage */

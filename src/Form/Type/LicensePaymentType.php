@@ -64,7 +64,7 @@ class LicensePaymentType extends AbstractType
         ]);
     }
 
-    public function formModifier(FormInterface $form, PaymentMethod $paymentMethod = null): void
+    public function formModifier(FormInterface $form, ?PaymentMethod $paymentMethod = null): void
     {
         $form
             ->add('checkNumber', TextType::class, [

@@ -633,7 +633,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->trainings;
     }
 
-    public function getTrainingsDuration(string $energyPathway = null): int
+    public function getTrainingsDuration(?string $energyPathway = null): int
     {
         $duration = 0;
         foreach ($this->trainings as $training) {
