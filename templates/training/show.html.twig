@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.textSport }}{% endblock %}
+{% block title %}{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.sport.label }}{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
     <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Carnet d'entraînements</a></li>
-    <li class="breadcrumb-item active">{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.textSport }}</li>
+    <li class="breadcrumb-item active">{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.sport.label }}</li>
 {% endblock %}
 
 {% block body %}
     <div class="d-flex">
         <h3>
-            {{ training.textSport }}<br>
+            {{ training.sport.label }}<br>
             <small>{{ training.trainedAt|date('d/m/Y - H:i') }}</small>
         </h3>
 

@@ -21,6 +21,8 @@ namespace App\Service;
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Entity\User;
+use App\Enum\SportType;
+use App\Enum\TrainingType;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
@@ -50,13 +52,19 @@ class Concept2ApiConsumer
 
     private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
     {
+        $averageHeartRate = $result['heart_rate']['average'] ?? null;
+        $maxHeartRate = $result['heart_rate']['max'] ?? null;
+
         $training = new Training($user);
         $training
-            ->setSport(Training::SPORT_ERGOMETER)
-            ->setType(Training::TYPE_B1)
+            ->setSport(SportType::Ergometer)
+            ->setType(TrainingType::B1)
             ->setTrainedAt(new \DateTime($result['date']))
-            ->setDuration($result['time'] / 10)
-            ->setDistance($result['distance'] / 1000)
+            ->setDuration($result['time'])
+            ->setDistance($result['distance'])
+            ->setStrokeRate($result['stroke_rate'])
+            ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
+            ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
         ;
 
         if (false === $result['stroke_data']) {
@@ -69,8 +77,7 @@ class Concept2ApiConsumer
         // If there is no interval, or only one, create it
         if (false === \array_key_exists('intervals', $result['workout']) || 1 === \count($result['workout']['intervals'])) {
             $trainingPhase = $this->createTrainingPhase(
-                $result['time'],
-                $result['distance'],
+                $result,
                 $strokeData[0]
             );
 
@@ -80,10 +87,9 @@ class Concept2ApiConsumer
         }
 
         // Else, create many phases, and split the strokeData in the number of phases
-        foreach ($result['workout']['intervals'] as $key => $interval) {
+        foreach ($result['workout']['intervals'] as $key => $intervalData) {
             $trainingPhase = $this->createTrainingPhase(
-                $interval['time'],
-                $interval['distance'],
+                $intervalData,
                 $strokeData[$key]
             );
 
@@ -93,12 +99,18 @@ class Concept2ApiConsumer
         return $training;
     }
 
-    private function createTrainingPhase(int $duration, int $distance, array $strokeData): TrainingPhase
-    {
+    private function createTrainingPhase(
+        array $intervalData,
+        array $strokeData
+    ): TrainingPhase {
         $trainingPhase = new TrainingPhase();
         $trainingPhase
-            ->setDuration($duration)
-            ->setDistance($distance)
+            ->setDuration($intervalData['time'])
+            ->setDistance($intervalData['distance'])
+            ->setStrokeRate($intervalData['stroke_rate'])
+            ->setAverageHeartRate($intervalData['heart_rate']['average'] ?? null)
+            ->setMaxHeartRate($intervalData['heart_rate']['max'] ?? null)
+            ->setEndingHeartRate($intervalData['heart_rate']['ending'] ?? null)
             ->setTimes($strokeData['times'])
             ->setDistances($strokeData['distances'])
             ->setPaces($strokeData['paces'])
@@ -157,9 +169,9 @@ class Concept2ApiConsumer
 
             $strokeData[$phaseKey]['times'][] = $datum['t'];
             $strokeData[$phaseKey]['distances'][] = $datum['d'];
-            $strokeData[$phaseKey]['paces'][] = $datum['p'] > 2400 ? 2400 : $datum['p'];
-            $strokeData[$phaseKey]['strokeRates'][] = $datum['spm'] > 100 ? 100 : $datum['spm'];
-            $strokeData[$phaseKey]['heartRates'][] = $datum['hr'] > 300 ? 300 : $datum['hr'];
+            $strokeData[$phaseKey]['paces'][] = min($datum['p'], 2400);
+            $strokeData[$phaseKey]['strokeRates'][] = min($datum['spm'], 70);
+            $strokeData[$phaseKey]['heartRates'][] = min($datum['hr'], 300);
 
             $maxTime = $datum['t'];
         }

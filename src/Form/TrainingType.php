@@ -21,10 +21,13 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Training;
+use App\Enum\EnergyPathwayType;
+use App\Enum\SportType;
+use App\Form\DataTransformer\KilometersToMetersTransformer;
 use App\Form\Type\DurationType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -40,17 +43,19 @@ class TrainingType extends AbstractType
                 'label' => 'Date',
                 'widget' => 'single_text',
             ])
-            ->add('sport', ChoiceType::class, [
+            ->add('sport', EnumType::class, [
                 'label' => 'Sport',
-                'choices' => Training::getAvailableSports(),
+                'class' => SportType::class,
+                'choice_label' => 'label',
                 'placeholder' => '-- Sélectionner un sport --',
             ])
-            ->add('type', ChoiceType::class, [
+            ->add('type', EnumType::class, [
                 'label' => 'Type d\'entraînement',
-                'choices' => Training::getAvailableTypes(),
-                'group_by' => function ($choice) {
-                    return Training::typeToTextEnergyPathway($choice);
+                'class' => \App\Enum\TrainingType::class,
+                'group_by' => function (\App\Enum\TrainingType $choice) {
+                    return EnergyPathwayType::fromTrainingType($choice)->label();
                 },
+                'choice_label' => 'label',
                 'placeholder' => '-- Type d\'entraînement --',
             ])
             ->add('distance', NumberType::class, [
@@ -79,6 +84,19 @@ class TrainingType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        $builder->get('distance')->addModelTransformer(new KilometersToMetersTransformer());
+
+        $data = $builder->getData();
+        \assert($data instanceof Training);
+
+        // If there is TrainingPhases, then, the Training is sync
+        if (false === $data->getTrainingPhases()->isEmpty()) {
+            $builder->get('trainedAt')->setDisabled(true);
+            $builder->get('sport')->setDisabled(true);
+            $builder->get('distance')->setDisabled(true);
+            $builder->get('duration')->setDisabled(true);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

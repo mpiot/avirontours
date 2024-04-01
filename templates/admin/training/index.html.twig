@@ -71,7 +71,7 @@
                             <td>
                                 {% set sum = 0 %}
                                 {% for training in user.trainings %}
-                                    {% if training.distance is not null and (constant('App\\Entity\\Training::SPORT_ROWING') == training.sport or constant('App\\Entity\\Training::SPORT_ERGOMETER') == training.sport) %}
+                                    {% if training.distance is not null and (constant('App\\Enum\\SportType::Rowing') == training.sport or constant('App\\Enum\\SportType::Ergometer') == training.sport) %}
                                         {% set sum = sum + training.distance %}
                                     {% endif %}
                                 {% endfor %}
@@ -79,16 +79,16 @@
                                 {{ sum }} km
                             </td>
                             <td>
-                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_AEROBIC')) / user.trainingsDuration * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::Aerobic')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_THRESHOLD')) / user.trainingsDuration * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::Threshold')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_LACTIC_ANAEROBIC')) / user.trainingsDuration * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::LacticAnaerobic')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
-                                {{ (user.trainingsDuration(constant('App\\Entity\\Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC')) / user.trainingsDuration * 100)|round}}%
+                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::AlacticAnaerobic')) / user.trainingsDuration * 100)|round}}%
                             </td>
                             <td>
                                 {% set feeling = user.trainingsFeeling %}

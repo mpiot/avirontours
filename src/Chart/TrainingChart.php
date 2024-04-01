@@ -20,6 +20,8 @@ namespace App\Chart;
 
 use App\Entity\Training;
 use App\Entity\User;
+use App\Enum\EnergyPathwayType;
+use App\Enum\SportType;
 use App\Repository\TrainingRepository;
 use App\Service\TrainingCalculator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -46,10 +48,10 @@ final class TrainingChart
         }
 
         $totalDuration = TrainingCalculator::getDuration($trainings);
-        $aerobicRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::ENERGY_PATHWAY_AEROBIC === $training->getEnergyPathway())) / $totalDuration;
-        $thresoldRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::ENERGY_PATHWAY_THRESHOLD === $training->getEnergyPathway())) / $totalDuration;
-        $lacticRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::ENERGY_PATHWAY_LACTIC_ANAEROBIC === $training->getEnergyPathway())) / $totalDuration;
-        $alacticRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::ENERGY_PATHWAY_ALACTIC_ANAEROBIC === $training->getEnergyPathway())) / $totalDuration;
+        $aerobicRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => EnergyPathwayType::Aerobic === $training->getEnergyPathway())) / $totalDuration;
+        $thresholdRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => EnergyPathwayType::Threshold === $training->getEnergyPathway())) / $totalDuration;
+        $lacticRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => EnergyPathwayType::LacticAnaerobic === $training->getEnergyPathway())) / $totalDuration;
+        $alacticRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => EnergyPathwayType::AlacticAnaerobic === $training->getEnergyPathway())) / $totalDuration;
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
         $chart->setData([
@@ -59,7 +61,7 @@ final class TrainingChart
                     'label' => '',
                     'data' => [
                         $aerobicRatio * 100,
-                        $thresoldRatio * 100,
+                        $thresholdRatio * 100,
                         $lacticRatio * 100,
                         $alacticRatio * 100,
                     ],
@@ -89,10 +91,10 @@ final class TrainingChart
         }
 
         $totalDuration = TrainingCalculator::getDuration($trainings);
-        $rowingTraingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::SPORT_ROWING === $training->getSport())) / $totalDuration;
-        $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => Training::SPORT_ERGOMETER === $training->getSport())) / $totalDuration;
-        $workoutTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => \in_array($training->getSport(), [Training::SPORT_WORKOUT_ENDURANCE, Training::SPORT_WORKOUT_STRENGTH], true))) / $totalDuration;
-        $otherSportTraingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [Training::SPORT_ROWING, Training::SPORT_ERGOMETER, Training::SPORT_WORKOUT_ENDURANCE, Training::SPORT_WORKOUT_STRENGTH], true))) / $totalDuration;
+        $rowingTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Rowing === $training->getSport())) / $totalDuration;
+        $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Ergometer === $training->getSport())) / $totalDuration;
+        $workoutTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => \in_array($training->getSport(), [SportType::WorkoutEndurance, SportType::WorkoutStrength], true))) / $totalDuration;
+        $otherSportTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [SportType::Rowing, SportType::Ergometer, SportType::WorkoutEndurance, SportType::WorkoutStrength], true))) / $totalDuration;
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
         $chart->setData([
@@ -101,10 +103,10 @@ final class TrainingChart
                 [
                     'label' => '',
                     'data' => [
-                        $rowingTraingsRatio * 100,
+                        $rowingTrainingsRatio * 100,
                         $ergometerTrainingsRatio * 100,
                         $workoutTrainingsRatio * 100,
-                        $otherSportTraingsRatio * 100,
+                        $otherSportTrainingsRatio * 100,
                     ],
                     'backgroundColor' => [
                         'rgb(70, 199, 238)',
