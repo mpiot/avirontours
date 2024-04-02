@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Entity\Training;
+use App\Enum\SportType;
+use App\Enum\TrainingType;
 use App\Factory\LicenseFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -130,8 +132,8 @@ class TrainingControllerTest extends AppWebTestCase
 
         $client->submitForm('Sauver', [
             'training[trainedAt]' => '2020-01-15 14:02',
-            'training[sport]' => Training::SPORT_ROWING,
-            'training[type]' => Training::TYPE_B1,
+            'training[sport]' => SportType::Rowing->value,
+            'training[type]' => TrainingType::B1->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
@@ -145,13 +147,11 @@ class TrainingControllerTest extends AppWebTestCase
         $training = TrainingFactory::repository()->last();
 
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
-        $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame('Aviron', $training->getTextSport());
-        $this->assertSame(Training::TYPE_B1, $training->getType());
-        $this->assertSame('B1', $training->getTextType());
-        $this->assertSame(5400, $training->getDuration());
+        $this->assertSame(SportType::Rowing, $training->getSport());
+        $this->assertSame(TrainingType::B1, $training->getType());
+        $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
-        $this->assertSame(16.3, $training->getDistance());
+        $this->assertSame(16300, $training->getDistance());
         $this->assertSame(0.9, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
     }
@@ -168,8 +168,8 @@ class TrainingControllerTest extends AppWebTestCase
 
         $crawler = $client->submitForm('Sauver', [
             'training[trainedAt]' => '2020-01-15 14:02',
-            'training[sport]' => Training::SPORT_ROWING,
-            'training[type]' => Training::TYPE_B1,
+            'training[sport]' => SportType::Rowing->value,
+            'training[type]' => TrainingType::B1->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 501,
@@ -230,8 +230,8 @@ class TrainingControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'training[trainedAt]' => '2020-01-15 14:02',
-            'training[sport]' => Training::SPORT_ROWING,
-            'training[type]' => Training::TYPE_B3,
+            'training[sport]' => SportType::Rowing->value,
+            'training[type]' => TrainingType::B3->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
@@ -241,11 +241,11 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertSame('2020-01-15 14:02', $training->getTrainedAt()->format('Y-m-d H:i'));
-        $this->assertSame(Training::SPORT_ROWING, $training->getSport());
-        $this->assertSame(Training::TYPE_B3, $training->getType());
-        $this->assertSame(5400, $training->getDuration());
+        $this->assertSame(SportType::Rowing, $training->getSport());
+        $this->assertSame(TrainingType::B3, $training->getType());
+        $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
-        $this->assertSame(16.3, $training->getDistance());
+        $this->assertSame(16300, $training->getDistance());
         $this->assertSame(0.9, $training->getFeeling());
         $this->assertSame('My little comment...', $training->getComment());
     }

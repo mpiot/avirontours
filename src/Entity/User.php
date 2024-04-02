@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\EnergyPathwayType;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -633,7 +634,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->trainings;
     }
 
-    public function getTrainingsDuration(?string $energyPathway = null): int
+    public function getTrainingsDuration(?EnergyPathwayType $energyPathway = null): int
     {
         $duration = 0;
         foreach ($this->trainings as $training) {

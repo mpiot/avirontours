@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\EnergyPathwayType;
+use App\Enum\SportType;
+use App\Enum\TrainingType;
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,36 +35,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 class Training
 {
-    public const NUM_ITEMS = 25;
-    public const TYPE_B1 = 'b1';
-    public const TYPE_B2 = 'b2';
-    public const TYPE_B3 = 'b3';
-    public const TYPE_B4 = 'b4';
-    public const TYPE_B5 = 'b5';
-    public const TYPE_B6 = 'b6';
-    public const TYPE_B7 = 'b7';
-    public const TYPE_B8 = 'b8';
-    public const TYPE_C1 = 'c1';
-    public const TYPE_C2 = 'c2';
-    public const TYPE_REST = 'rest';
-    public const TYPE_GENERALIZED_ENDURANCE = 'generalized_endurance';
-    public const TYPE_SPLIT_SHORT = 'split_short';
-    public const TYPE_SPLIT_LONG = 'split_long';
-    public const ENERGY_PATHWAY_AEROBIC = 'aerobic';
-    public const ENERGY_PATHWAY_THRESHOLD = 'threshold';
-    public const ENERGY_PATHWAY_LACTIC_ANAEROBIC = 'lactic_aerobic';
-    public const ENERGY_PATHWAY_ALACTIC_ANAEROBIC = 'alactic_aerobic';
-    public const SPORT_OTHER = 'other';
-    public const SPORT_ROWING = 'rowing';
-    public const SPORT_RUNNING = 'running';
-    public const SPORT_ERGOMETER = 'ergometer';
-    public const SPORT_WORKOUT_ENDURANCE = 'workout_endurance';
-    public const SPORT_WORKOUT_STRENGTH = 'workout_strength';
-    public const SPORT_SWIMMING = 'swimming';
-    public const SPORT_GENERAL_PHYSICAL_PREPARATION = 'general_physical_preparation';
-    public const SPORT_STRENGTHENING = 'strengthening';
-    public const SPORT_CYCLING = 'cycling';
-    public const SPORT_YOGA = 'yoga';
+    public const int NUM_ITEMS = 25;
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
@@ -77,17 +51,17 @@ class Training
     #[ORM\Column(type: Types::INTEGER)]
     private int $duration = 0;
 
-    #[Assert\LessThanOrEqual(400, message: 'Un entraînement doit faire 400km maximum.')]
-    #[ORM\Column(type: Types::FLOAT, nullable: true)]
-    private ?float $distance = null;
+    #[Assert\LessThanOrEqual(400000, message: 'Un entraînement doit faire 400km maximum.')]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $distance = null;
 
     #[Assert\NotNull]
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $sport = null;
+    #[ORM\Column(type: Types::STRING, length: 255, enumType: SportType::class)]
+    private ?SportType $sport = null;
 
     #[Assert\NotNull]
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    private ?string $type = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, enumType: TrainingType::class)]
+    private ?TrainingType $type = null;
 
     #[Assert\NotNull]
     #[Assert\GreaterThanOrEqual(0)]
@@ -99,7 +73,16 @@ class Training
     private ?string $comment = null;
 
     #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingPhase::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private $trainingPhases;
+    private Collection $trainingPhases;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $strokeRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $averageHeartRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $maxHeartRate = null;
 
     public function __construct(User $user)
     {
@@ -142,9 +125,15 @@ class Training
         return $this->duration;
     }
 
-    public function getFormattedDuration(): string
+    public function getFormattedDuration(bool $displayTenth = false): string
     {
-        return DurationManipulator::formatSeconds($this->duration);
+        if (true === $displayTenth) {
+            return DurationManipulator::formatTenthSeconds($this->duration);
+        }
+
+        $seconds = (int) round($this->duration / 10);
+
+        return DurationManipulator::formatSeconds($seconds);
     }
 
     public function setDuration(int $duration): self
@@ -154,59 +143,63 @@ class Training
         return $this;
     }
 
-    public function getDistance(): ?float
+    public function getDistance(): ?int
     {
         return $this->distance;
     }
 
-    public function setDistance(?float $distance): self
+    public function setDistance(?int $distance): self
     {
         $this->distance = $distance;
 
         return $this;
     }
 
-    public function getSport(): ?string
+    public function getPace(): ?int
+    {
+        return (int) round(500 * ($this->duration / $this->distance));
+    }
+
+    public function getFormattedPace(): string
+    {
+        return DurationManipulator::formatTenthSeconds($this->getPace());
+    }
+
+    public function getAverageWatt(): ?int
+    {
+        $paceInSeconds = $this->getPace() / 10;
+
+        // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
+        return (int) round(2.8 / ($paceInSeconds / 500) ** 3);
+    }
+
+    public function getSport(): ?SportType
     {
         return $this->sport;
     }
 
-    public function getTextSport(): ?string
-    {
-        return array_flip(self::getAvailableSports())[$this->sport];
-    }
-
-    public function setSport(string $sport): self
+    public function setSport(SportType $sport): self
     {
         $this->sport = $sport;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?TrainingType
     {
         return $this->type;
     }
 
-    public function getTextType(): ?string
-    {
-        if (null === $this->type) {
-            return null;
-        }
-
-        return array_flip(self::getAvailableTypes())[$this->type];
-    }
-
-    public function setType(?string $type): self
+    public function setType(?TrainingType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getEnergyPathway(): ?string
+    public function getEnergyPathway(): EnergyPathwayType
     {
-        return self::typeToEnergyPathway($this->type);
+        return EnergyPathwayType::fromTrainingType($this->type);
     }
 
     public function getFeeling(): ?float
@@ -251,102 +244,40 @@ class Training
         return $this;
     }
 
-    public function removeTrainingPhase(TrainingPhase $trainingPhase): self
+    public function getStrokeRate(): ?int
     {
-        // set the owning side to null (unless already changed)
-        if ($this->trainingPhases->removeElement($trainingPhase) && $trainingPhase->getTraining() === $this) {
-            $trainingPhase->setTraining(null);
-        }
+        return $this->strokeRate;
+    }
+
+    public function setStrokeRate(?int $strokeRate): static
+    {
+        $this->strokeRate = $strokeRate;
 
         return $this;
     }
 
-    public function getPhasesDuration(): ?int
+    public function getAverageHeartRate(): ?int
     {
-        $duration = 0;
-        foreach ($this->getTrainingPhases() as $trainingPhase) {
-            $duration += $trainingPhase->getDuration();
-        }
-
-        return $duration;
+        return $this->averageHeartRate;
     }
 
-    public function getFormattedPhasesDuration(): string
+    public function setAverageHeartRate(?int $averageHeartRate): static
     {
-        return DurationManipulator::formatTenthSeconds($this->getPhasesDuration());
+        $this->averageHeartRate = $averageHeartRate;
+
+        return $this;
     }
 
-    public function getPhasesDistance(): ?int
+    public function getMaxHeartRate(): ?int
     {
-        $distance = 0;
-        foreach ($this->getTrainingPhases() as $trainingPhase) {
-            $distance += $trainingPhase->getDistance();
-        }
-
-        return $distance;
+        return $this->maxHeartRate;
     }
 
-    public function getPhasesAveragePace(): ?int
+    public function setMaxHeartRate(?int $maxHeartRate): static
     {
-        $paces = [];
-        foreach ($this->getTrainingPhases() as $trainingPhase) {
-            $paces = array_merge($paces, $trainingPhase->getPaces());
-        }
+        $this->maxHeartRate = $maxHeartRate;
 
-        if (empty($paces)) {
-            return null;
-        }
-
-        return (int) round(array_sum($paces) / \count($paces), 0);
-    }
-
-    public function getPhasesFormattedAveragePace(): ?string
-    {
-        if (null === $this->getPhasesAveragePace()) {
-            return null;
-        }
-
-        return DurationManipulator::formatTenthSeconds($this->getPhasesAveragePace());
-    }
-
-    public function getPhasesAverageWatt(): ?int
-    {
-        if (null === $this->getPhasesAveragePace()) {
-            return null;
-        }
-
-        $paceInSeconds = $this->getPhasesAveragePace() / 10;
-
-        // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
-        return (int) round(2.8 / ($paceInSeconds / 500) ** 3, 0);
-    }
-
-    public function getPhasesAverageStrokeRate(): ?int
-    {
-        $strokeRates = [];
-        foreach ($this->getTrainingPhases() as $trainingPhase) {
-            $strokeRates = array_merge($strokeRates, $trainingPhase->getStrokeRates());
-        }
-
-        if (empty($strokeRates)) {
-            return null;
-        }
-
-        return (int) round(array_sum($strokeRates) / \count($strokeRates), 0);
-    }
-
-    public function getPhasesAverageHeartRate(): ?int
-    {
-        $heartRates = [];
-        foreach ($this->getTrainingPhases() as $trainingPhase) {
-            $heartRates = array_merge($heartRates, $trainingPhase->getHeartRates() ?? []);
-        }
-
-        if (empty($heartRates)) {
-            return null;
-        }
-
-        return (int) round(array_sum($heartRates) / \count($heartRates), 0);
+        return $this;
     }
 
     #[Assert\Callback]
@@ -358,64 +289,5 @@ class Training
                 ->addViolation()
             ;
         }
-    }
-
-    public static function getAvailableTypes(): array
-    {
-        return [
-            'B1' => self::TYPE_B1,
-            'B2' => self::TYPE_B2,
-            'B3' => self::TYPE_B3,
-            'B4' => self::TYPE_B4,
-            'B5' => self::TYPE_B5,
-            'B6' => self::TYPE_B6,
-            'B7' => self::TYPE_B7,
-            'B8' => self::TYPE_B8,
-            'C1' => self::TYPE_C1,
-            'C2' => self::TYPE_C2,
-            'Récupération' => self::TYPE_REST,
-            'Endurance généralisée' => self::TYPE_GENERALIZED_ENDURANCE,
-            'Fractionné long' => self::TYPE_SPLIT_LONG,
-            'Fractionné court' => self::TYPE_SPLIT_SHORT,
-        ];
-    }
-
-    public static function getAvailableSports(): array
-    {
-        return [
-            'Autre' => self::SPORT_OTHER,
-            'Aviron' => self::SPORT_ROWING,
-            'Course à pied' => self::SPORT_RUNNING,
-            'Ergomètre' => self::SPORT_ERGOMETER,
-            'Musculation (Endurance)' => self::SPORT_WORKOUT_ENDURANCE,
-            'Musculation (Force)' => self::SPORT_WORKOUT_STRENGTH,
-            'Natation' => self::SPORT_SWIMMING,
-            'PPG' => self::SPORT_GENERAL_PHYSICAL_PREPARATION,
-            'Renforcement' => self::SPORT_STRENGTHENING,
-            'Vélo' => self::SPORT_CYCLING,
-            'Yoga' => self::SPORT_YOGA,
-        ];
-    }
-
-    public static function typeToEnergyPathway(?string $type): string
-    {
-        return match ($type) {
-            self::TYPE_B1, self::TYPE_B2, self::TYPE_REST, self::TYPE_GENERALIZED_ENDURANCE => self::ENERGY_PATHWAY_AEROBIC,
-            self::TYPE_B3, self::TYPE_B4, self::TYPE_B7, self::TYPE_C2, self::TYPE_SPLIT_LONG => self::ENERGY_PATHWAY_THRESHOLD,
-            self::TYPE_B5, self::TYPE_SPLIT_SHORT => self::ENERGY_PATHWAY_LACTIC_ANAEROBIC,
-            self::TYPE_B6, self::TYPE_B8, self::TYPE_C1 => self::ENERGY_PATHWAY_ALACTIC_ANAEROBIC,
-            default => 'other',
-        };
-    }
-
-    public static function typeToTextEnergyPathway(?string $type): string
-    {
-        return match (self::typeToEnergyPathway($type)) {
-            self::ENERGY_PATHWAY_AEROBIC => 'Aérobie',
-            self::ENERGY_PATHWAY_THRESHOLD => 'Transition aérobie/anaérobie',
-            self::ENERGY_PATHWAY_LACTIC_ANAEROBIC => 'Anaérobie lactique',
-            self::ENERGY_PATHWAY_ALACTIC_ANAEROBIC => 'Anaérobie alactique',
-            default => 'Autre',
-        };
     }
 }

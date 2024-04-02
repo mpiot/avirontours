@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Training;
+use App\Enum\SportType;
+use App\Enum\TrainingType;
 use App\Repository\TrainingRepository;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -44,10 +46,10 @@ final class TrainingFactory extends ModelFactory
         return [
             'user' => UserFactory::new(),
             'trainedAt' => self::faker()->dateTimeThisYear(),
-            'duration' => self::faker()->numberBetween(1200, 7200),
-            'distance' => self::faker()->randomFloat(1, 2, 400),
-            'sport' => self::faker()->randomElement(Training::getAvailableSports()),
-            'type' => self::faker()->randomElement(Training::getAvailableTypes()),
+            'duration' => self::faker()->numberBetween(12000, 72000),
+            'distance' => self::faker()->numberBetween(8000, 20000),
+            'sport' => self::faker()->randomElement(SportType::cases()),
+            'type' => self::faker()->randomElement(TrainingType::cases()),
             'feeling' => self::faker()->randomFloat(1, 0, 1),
             'comment' => self::faker()->optional()->text(),
         ];

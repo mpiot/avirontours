@@ -24,21 +24,33 @@ use function Symfony\Component\String\u;
 
 class DurationManipulator
 {
-    public static function secondsToDateInterval(int $seconds): \DateInterval
+    public static function tenthSecondsToDateInterval(int $tenthSeconds): \DateInterval
     {
-        $splitDuration = self::splitDuration($seconds);
+        $splitDuration = self::splitDuration($tenthSeconds);
+        $string = sprintf(
+            '%s hours %s minutes %s seconds %s microseconds',
+            $splitDuration['hours'],
+            $splitDuration['minutes'],
+            $splitDuration['seconds'],
+            $splitDuration['tenthSeconds'] * 10000
+        );
 
-        return new \DateInterval(sprintf('P0Y0M0DT%sH%sM%sS', $splitDuration['hours'], $splitDuration['minutes'], $splitDuration['seconds']));
+        return \DateInterval::createFromDateString($string);
     }
 
-    public static function dateIntervalToSeconds(\DateInterval $dateInterval): int
+    public static function dateIntervalToTenthSeconds(\DateInterval $dateInterval): int
     {
-        return $dateInterval->h * 3600 + $dateInterval->i * 60 + $dateInterval->s;
+        return (int) round(
+            $dateInterval->h * 36000
+            + $dateInterval->i * 600
+            + $dateInterval->s
+            + $dateInterval->f / 10000
+        );
     }
 
     public static function formatSeconds(int $seconds): string
     {
-        $splitDuration = self::splitDuration($seconds);
+        $splitDuration = self::splitDuration($seconds * 10);
         $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
         $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
 
@@ -47,11 +59,11 @@ class DurationManipulator
 
     public static function formatTenthSeconds(int $tenthSeconds): string
     {
-        $splitDuration = self::splitDuration((int) ($tenthSeconds / 10));
+        $splitDuration = self::splitDuration($tenthSeconds);
         $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
         $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
         $seconds = u((string) $splitDuration['seconds'])->padStart(2, '0')->toString();
-        $tenthSeconds = $seconds % 10;
+        $tenthSeconds = (string) $splitDuration['tenthSeconds'];
 
         if (0 === $splitDuration['hours']) {
             return sprintf('%s:%s.%s', $minutes, $seconds, $tenthSeconds);
@@ -60,16 +72,18 @@ class DurationManipulator
         return sprintf('%s:%s:%s.%s', $hours, $minutes, $seconds, $tenthSeconds);
     }
 
-    private static function splitDuration(int $seconds): array
+    private static function splitDuration(int $tenthSeconds): array
     {
-        $hours = intdiv($seconds, 3600);
-        $minutes = intdiv($seconds % 3600, 60);
-        $seconds %= 60;
+        $hours = intdiv($tenthSeconds, 36000);
+        $minutes = intdiv($tenthSeconds - $hours * 36000, 600);
+        $seconds = intdiv($tenthSeconds - $hours * 36000 - $minutes * 600, 10);
+        $tenthSeconds = $tenthSeconds - $hours * 36000 - $minutes * 600 - $seconds * 10;
 
         return [
             'hours' => $hours,
             'minutes' => $minutes,
             'seconds' => $seconds,
+            'tenthSeconds' => $tenthSeconds,
         ];
     }
 }

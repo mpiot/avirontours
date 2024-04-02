@@ -20,28 +20,27 @@ declare(strict_types=1);
 
 namespace App\Form\DataTransformer;
 
-use App\Util\DurationManipulator;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class DateIntervalToSecondsTransformer implements DataTransformerInterface
+class KilometersToMetersTransformer implements DataTransformerInterface
 {
     /**
-     * Transforms an integer (seconds) to a DateInterval.
+     * Transforms an integer (meters) to a float (kilometers).
      *
      * @param int $value
      */
-    public function transform($value): \DateInterval
+    public function transform($value): float
     {
-        return DurationManipulator::tenthSecondsToDateInterval($value);
+        return $value / 1000;
     }
 
     /**
-     * Transforms a DateInterval to an integer (seconds).
+     * Transforms a float (kilometers) to an integer (meters).
      *
-     * @param \DateInterval $value
+     * @param float $value
      */
     public function reverseTransform($value): int
     {
-        return DurationManipulator::dateIntervalToTenthSeconds($value);
+        return (int) round($value * 1000);
     }
 }

@@ -26,20 +26,18 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TrainingPhaseRepository::class)]
 class TrainingPhase
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private $id;
+    #[ORM\Id, ORM\Column, ORM\GeneratedValue]
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Training::class, inversedBy: 'trainingPhases')]
     #[ORM\JoinColumn(nullable: false)]
-    private $training;
+    private Training $training;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private $duration;
+    private int $duration;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private $distance;
+    private int $distance;
 
     #[ORM\Column(type: 'integer[]')]
     private ?array $times = null;
@@ -53,8 +51,20 @@ class TrainingPhase
     #[ORM\Column(type: 'integer[]')]
     private ?array $strokeRates = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $strokeRate = null;
+
     #[ORM\Column(type: 'integer[]', nullable: true)]
     private ?array $heartRates = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $averageHeartRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $maxHeartRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $endingHeartRate = null;
 
     public function getId(): ?int
     {
@@ -131,22 +141,22 @@ class TrainingPhase
         return $this->paces;
     }
 
-    public function getAveragePace(): ?int
+    public function getPace(): ?int
     {
-        return (int) round(array_sum($this->paces) / \count($this->paces), 0);
+        return (int) round(500 * ($this->duration / $this->distance));
     }
 
-    public function getFormattedAveragePace(): string
+    public function getFormattedPace(): string
     {
-        return DurationManipulator::formatTenthSeconds($this->getAveragePace());
+        return DurationManipulator::formatTenthSeconds($this->getPace());
     }
 
     public function getAverageWatt(): ?int
     {
-        $paceInSeconds = $this->getAveragePace() / 10;
+        $paceInSeconds = $this->getPace() / 10;
 
         // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
-        return (int) round(2.8 / ($paceInSeconds / 500) ** 3, 0);
+        return (int) round(2.8 / ($paceInSeconds / 500) ** 3);
     }
 
     public function setPaces(?array $paces): self
@@ -161,9 +171,16 @@ class TrainingPhase
         return $this->strokeRates;
     }
 
-    public function getAverageStrokeRate(): ?int
+    public function getStrokeRate(): ?int
     {
-        return (int) round(array_sum($this->strokeRates) / \count($this->strokeRates), 0);
+        return $this->strokeRate;
+    }
+
+    public function setStrokeRate(?int $strokeRate): static
+    {
+        $this->strokeRate = $strokeRate;
+
+        return $this;
     }
 
     public function setStrokeRates(?array $strokeRates): self
@@ -178,18 +195,45 @@ class TrainingPhase
         return $this->heartRates;
     }
 
-    public function getAverageHeartRate(): ?int
-    {
-        if (null === $this->heartRates) {
-            return null;
-        }
-
-        return (int) round(array_sum($this->heartRates) / \count($this->heartRates), 0);
-    }
-
     public function setHeartRates(?array $heartRates): self
     {
         $this->heartRates = $heartRates;
+
+        return $this;
+    }
+
+    public function getAverageHeartRate(): ?int
+    {
+        return $this->averageHeartRate;
+    }
+
+    public function setAverageHeartRate(?int $averageHeartRate): static
+    {
+        $this->averageHeartRate = $averageHeartRate;
+
+        return $this;
+    }
+
+    public function getMaxHeartRate(): ?int
+    {
+        return $this->maxHeartRate;
+    }
+
+    public function setMaxHeartRate(?int $maxHeartRate): static
+    {
+        $this->maxHeartRate = $maxHeartRate;
+
+        return $this;
+    }
+
+    public function getEndingHeartRate(): ?int
+    {
+        return $this->endingHeartRate;
+    }
+
+    public function setEndingHeartRate(?int $endingHeartRate): static
+    {
+        $this->endingHeartRate = $endingHeartRate;
 
         return $this;
     }

@@ -22,6 +22,8 @@ namespace App\EventListener;
 
 use App\Entity\LogbookEntry;
 use App\Entity\Training;
+use App\Enum\SportType;
+use App\Enum\TrainingType;
 use App\Util\DurationManipulator;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
@@ -88,7 +90,7 @@ class AutomaticTrainingCreator
 
     private function createTrainings(LogbookEntry $logbookEntry): void
     {
-        $duration = DurationManipulator::dateIntervalToSeconds($logbookEntry->getStartAt()->diff($logbookEntry->getEndAt()));
+        $duration = DurationManipulator::dateIntervalToTenthSeconds($logbookEntry->getStartAt()->diff($logbookEntry->getEndAt()));
 
         foreach ($logbookEntry->getCrewMembers() as $user) {
             if (false === $user->getAutomaticTraining()) {
@@ -96,13 +98,15 @@ class AutomaticTrainingCreator
             }
 
             $date = new \DateTime(sprintf('%s %s', $logbookEntry->getDate()->format('Y-m-d'), $logbookEntry->getStartAt()->format('H:i:s')));
+            $distance = (int) round($logbookEntry->getCoveredDistance() * 1000);
+
             $training = new Training($user);
             $training
                 ->setTrainedAt($date)
                 ->setDuration($duration)
-                ->setDistance($logbookEntry->getCoveredDistance())
-                ->setSport(Training::SPORT_ROWING)
-                ->setType(Training::TYPE_B1)
+                ->setDistance($distance)
+                ->setSport(SportType::Rowing)
+                ->setType(TrainingType::B1)
             ;
 
             $this->trainings[] = $training;

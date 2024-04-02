@@ -48,7 +48,7 @@
                         <tr>
                             <td>{{ training.trainedAt|date('d/m/Y - H:i') }}</td>
                             <td>
-                                <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}">{{ training.textSport }}</a>
+                                <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}">{{ training.sport.label }}</a>
                             </td>
                             <td>{{ training.textType ?? '-' }}</td>
                             <td>{{ training.formattedDuration }}</td>
