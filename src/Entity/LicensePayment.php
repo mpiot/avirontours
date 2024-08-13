@@ -39,7 +39,11 @@ class LicensePayment
     private ?PaymentMethod $method = null;
 
     #[Assert\NotBlank(groups: ['validate_payment'])]
-    #[Assert\Positive(groups: ['validate_payment'])]
+    #[Assert\Expression(
+        expression: 'null === value or 0 !== value',
+        message: 'Cette valeur doit être différente de 0.',
+        groups: ['validate_payment']
+    )]
     #[ORM\Column]
     private ?int $amount = null;
 

@@ -20,6 +20,7 @@ namespace App\Enum;
 
 enum PaymentMethod: string
 {
+    case BankTransfer = 'bank_transfer';
     case Check = 'check';
     case VacationCheck = 'vacation_check';
     case Online = 'online';
@@ -35,6 +36,7 @@ enum PaymentMethod: string
             self::Online => 'En ligne (HelloAsso)',
             self::Cash => 'Liquide',
             self::PassSport => 'Pass\'Sport',
+            self::BankTransfer => 'Virement',
             self::Yelp => 'Yelp',
         };
     }
