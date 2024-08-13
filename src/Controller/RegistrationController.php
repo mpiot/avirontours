@@ -84,7 +84,7 @@ class RegistrationController extends AbstractController
 
             $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
 
-            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            return $this->render('registration/register_confirmation.html.twig');
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
@@ -139,9 +139,7 @@ class RegistrationController extends AbstractController
             ;
             $mailer->send($email);
 
-            $this->addFlash('success', 'Votre réinscription a bien été prise en compte.');
-
-            return $this->redirectToRoute('profile_show', [], Response::HTTP_SEE_OTHER);
+            return $this->render('registration/renew_confirmation.html.twig');
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {

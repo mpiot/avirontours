@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% set appMenuAutoOpen = false %}
+
+{% block title %}Réinscription à Aviron Tours{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">Mon profil</a></li>
+    <li class="breadcrumb-item active">Réinscription à Aviron Tours</li>
+{% endblock %}
+
+{% block body %}
+    {% include 'registration/_confirmation.html.twig' with { renew: true } %}
+{% endblock %}
