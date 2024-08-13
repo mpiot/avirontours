@@ -94,7 +94,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/register/confirmation', name: 'app_register_confirmation')]
+    #[Route(path: '/register/confirmation', name: 'app_register_confirmation', priority: 10)]
     public function registerConfirmation(): Response
     {
         return $this->render('registration/register_confirmation.html.twig');
@@ -156,7 +156,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/renew/confirmation', name: 'app_renew_confirmation')]
+    #[Route(path: '/renew/confirmation', name: 'app_renew_confirmation', priority: 10)]
     public function renewConfirmation(): Response
     {
         return $this->render('registration/renew_confirmation.html.twig');
