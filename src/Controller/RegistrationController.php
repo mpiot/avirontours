@@ -82,9 +82,7 @@ class RegistrationController extends AbstractController
             ;
             $mailer->send($email);
 
-            $this->addFlash('success', 'Votre inscription a bien été prise en compte, votre compte sera accessible après réglement de votre cotisation.');
-
-            return $this->render('registration/register_confirmation.html.twig');
+            return $this->redirectToRoute('app_register_confirmation');
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
@@ -94,6 +92,12 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route(path: '/register/confirmation', name: 'app_register_confirmation')]
+    public function registerConfirmation(): Response
+    {
+        return $this->render('registration/register_confirmation.html.twig');
     }
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
@@ -139,7 +143,7 @@ class RegistrationController extends AbstractController
             ;
             $mailer->send($email);
 
-            return $this->render('registration/renew_confirmation.html.twig');
+            return $this->redirectToRoute('app_renew_confirmation');
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
@@ -150,5 +154,11 @@ class RegistrationController extends AbstractController
             'form' => $form,
             'season_category' => $seasonCategory,
         ]);
+    }
+
+    #[Route(path: '/renew/confirmation', name: 'app_renew_confirmation')]
+    public function renewConfirmation(): Response
+    {
+        return $this->render('registration/renew_confirmation.html.twig');
     }
 }

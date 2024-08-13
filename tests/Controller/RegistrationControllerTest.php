@@ -87,7 +87,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseRedirects('/register/confirmation');
         $this->assertQueuedEmailCount(1);
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
@@ -312,7 +312,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseRedirects('/register/confirmation');
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
         MedicalCertificateFactory::repository()->assert()->count(1);
@@ -476,7 +476,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['renew[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseRedirects('/renew/confirmation');
         $this->assertQueuedEmailCount(1);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
