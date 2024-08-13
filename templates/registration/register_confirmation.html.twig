@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription à Aviron Tours{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Inscription à Aviron Tours</li>
+{% endblock %}
+
+{% block body %}
+    {% include 'registration/_confirmation.html.twig' with { renew: false } %}
+{% endblock %}
