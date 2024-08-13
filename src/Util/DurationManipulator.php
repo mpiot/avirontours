@@ -27,7 +27,7 @@ class DurationManipulator
     public static function tenthSecondsToDateInterval(int $tenthSeconds): \DateInterval
     {
         $splitDuration = self::splitDuration($tenthSeconds);
-        $string = sprintf(
+        $string = \sprintf(
             '%s hours %s minutes %s seconds %s microseconds',
             $splitDuration['hours'],
             $splitDuration['minutes'],
@@ -54,7 +54,7 @@ class DurationManipulator
         $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
         $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
 
-        return sprintf('%s:%s', $hours, $minutes);
+        return \sprintf('%s:%s', $hours, $minutes);
     }
 
     public static function formatTenthSeconds(int $tenthSeconds): string
@@ -66,10 +66,10 @@ class DurationManipulator
         $tenthSeconds = (string) $splitDuration['tenthSeconds'];
 
         if (0 === $splitDuration['hours']) {
-            return sprintf('%s:%s.%s', $minutes, $seconds, $tenthSeconds);
+            return \sprintf('%s:%s.%s', $minutes, $seconds, $tenthSeconds);
         }
 
-        return sprintf('%s:%s:%s.%s', $hours, $minutes, $seconds, $tenthSeconds);
+        return \sprintf('%s:%s:%s.%s', $hours, $minutes, $seconds, $tenthSeconds);
     }
 
     private static function splitDuration(int $tenthSeconds): array

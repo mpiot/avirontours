@@ -47,6 +47,6 @@ class JsonTypeof extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
-        return sprintf('JSON_TYPEOF(%s)', $this->json->dispatch($sqlWalker));
+        return \sprintf('JSON_TYPEOF(%s)', $this->json->dispatch($sqlWalker));
     }
 }

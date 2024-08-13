@@ -53,7 +53,7 @@ class DatePart extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
-        return sprintf(
+        return \sprintf(
             'DATE_PART(%s, %s)',
             $this->field->dispatch($sqlWalker),
             $this->source->dispatch($sqlWalker),

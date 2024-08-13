@@ -131,7 +131,7 @@ class Concept2ApiConsumer
             $query['from'] = $startAt->format('Y-m-d H:i:s');
         }
 
-        $response = $this->httpClient->request('GET', sprintf('%s/users/me/results', self::API_URL), [
+        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results', self::API_URL), [
             'query' => $query,
             'headers' => [
                 'Accept' => 'application/json',
@@ -148,7 +148,7 @@ class Concept2ApiConsumer
 
     private function getStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
     {
-        $response = $this->httpClient->request('GET', sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
+        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
             'headers' => [
                 'Accept' => 'application/json',
             ],
