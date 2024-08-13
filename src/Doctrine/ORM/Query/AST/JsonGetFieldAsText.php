@@ -53,7 +53,7 @@ class JsonGetFieldAsText extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
-        return sprintf(
+        return \sprintf(
             '%s ->> %s',
             $this->json->dispatch($sqlWalker),
             $this->field->dispatch($sqlWalker)

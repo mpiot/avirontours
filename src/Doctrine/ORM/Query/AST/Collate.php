@@ -48,6 +48,6 @@ class Collate extends FunctionNode
 
     public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker): string
     {
-        return sprintf('%s COLLATE %s', $sqlWalker->walkStringPrimary($this->expressionToCollate), $this->collation);
+        return \sprintf('%s COLLATE %s', $sqlWalker->walkStringPrimary($this->expressionToCollate), $this->collation);
     }
 }

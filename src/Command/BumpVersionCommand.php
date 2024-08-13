@@ -72,9 +72,9 @@ class BumpVersionCommand extends Command
         }
 
         if (true === $input->getOption('meta')) {
-            $message = sprintf('The meta %s has been successfully added after the version.', $version);
+            $message = \sprintf('The meta %s has been successfully added after the version.', $version);
         } else {
-            $message = sprintf('The version has been successfully updated to %s.', $version);
+            $message = \sprintf('The version has been successfully updated to %s.', $version);
         }
 
         $io->success($message);

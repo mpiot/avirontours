@@ -93,7 +93,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', sprintf('/admin/training?group=%s', $group->getId()));
+        $client->request('GET', \sprintf('/admin/training?group=%s', $group->getId()));
 
         $this->assertResponseIsSuccessful();
     }

@@ -97,7 +97,7 @@ class AutomaticTrainingCreator
                 continue;
             }
 
-            $date = new \DateTime(sprintf('%s %s', $logbookEntry->getDate()->format('Y-m-d'), $logbookEntry->getStartAt()->format('H:i:s')));
+            $date = new \DateTime(\sprintf('%s %s', $logbookEntry->getDate()->format('Y-m-d'), $logbookEntry->getStartAt()->format('H:i:s')));
             $distance = (int) round($logbookEntry->getCoveredDistance() * 1000);
 
             $training = new Training($user);
