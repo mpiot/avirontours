@@ -30,6 +30,8 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Zenstruck\Foundry\faker;
+
 class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration(): void
@@ -221,7 +223,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][plainPassword][first]' => 'engage',
             'registration[user][plainPassword][second]' => 'engage',
             'registration[user][nationality]' => 'FR',
-            'registration[user][birthday]' => SeasonFactory::faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
+            'registration[user][birthday]' => faker()->dateTimeBetween('-17 years', '-11 years')->format('Y-m-d'),
             'registration[user][laneNumber]' => '100',
             'registration[user][laneType]' => 'Rue',
             'registration[user][laneName]' => 'du test',
@@ -285,7 +287,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'registration[user][plainPassword][first]' => 'engage',
             'registration[user][plainPassword][second]' => 'engage',
             'registration[user][nationality]' => 'FR',
-            'registration[user][birthday]' => SeasonFactory::faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
+            'registration[user][birthday]' => faker()->dateTimeBetween('-80 years', '-20 years')->format('Y-m-d'),
             'registration[user][laneNumber]' => '100',
             'registration[user][laneType]' => 'Rue',
             'registration[user][laneName]' => 'du test',
@@ -431,7 +433,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $crawler = $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
@@ -497,7 +499,7 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
         $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
         $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
-        $this->assertCount(2, $user->refresh()->getLicenses());
+        $this->assertCount(2, $user->_refresh()->getLicenses());
         $this->assertSame($season->getSeasonCategories()->first(), $user->getLicenses()->last()->getSeasonCategory());
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
         $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());

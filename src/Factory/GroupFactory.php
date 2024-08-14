@@ -20,38 +20,56 @@ namespace App\Factory;
 
 use App\Entity\Group;
 use App\Repository\GroupRepository;
-use Zenstruck\Foundry\ModelFactory;
+use Doctrine\ORM\EntityRepository;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<Group>
+ * @extends PersistentProxyObjectFactory<Group>
  *
- * @method static Group|Proxy                     createOne(array $attributes = [])
- * @method static Group[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static Group|Proxy                     find(object|array|mixed $criteria)
- * @method static Group|Proxy                     findOrCreate(array $attributes)
- * @method static Group|Proxy                     first(string $sortedField = 'id')
- * @method static Group|Proxy                     last(string $sortedField = 'id')
- * @method static Group|Proxy                     random(array $attributes = [])
- * @method static Group|Proxy                     randomOrCreate(array $attributes = [])
- * @method static Group[]|Proxy[]                 all()
- * @method static Group[]|Proxy[]                 findBy(array $attributes)
- * @method static Group[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static Group[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static GroupRepository|RepositoryProxy repository()
- * @method        Group|Proxy                     create(array|callable $attributes = [])
+ * @method        Group|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static Group|Proxy                                createOne(array $attributes = [])
+ * @method static Group|Proxy                                find(object|array|mixed $criteria)
+ * @method static Group|Proxy                                findOrCreate(array $attributes)
+ * @method static Group|Proxy                                first(string $sortedField = 'id')
+ * @method static Group|Proxy                                last(string $sortedField = 'id')
+ * @method static Group|Proxy                                random(array $attributes = [])
+ * @method static Group|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static GroupRepository|ProxyRepositoryDecorator   repository()
+ * @method static Group[]|Proxy[]                            all()
+ * @method static Group[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static Group[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static Group[]|Proxy[]                            findBy(array $attributes)
+ * @method static Group[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static Group[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ *
+ * @phpstan-method        Group&Proxy<Group> create(array|callable $attributes = [])
+ * @phpstan-method static Group&Proxy<Group> createOne(array $attributes = [])
+ * @phpstan-method static Group&Proxy<Group> find(object|array|mixed $criteria)
+ * @phpstan-method static Group&Proxy<Group> findOrCreate(array $attributes)
+ * @phpstan-method static Group&Proxy<Group> first(string $sortedField = 'id')
+ * @phpstan-method static Group&Proxy<Group> last(string $sortedField = 'id')
+ * @phpstan-method static Group&Proxy<Group> random(array $attributes = [])
+ * @phpstan-method static Group&Proxy<Group> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<Group, EntityRepository> repository()
+ * @phpstan-method static list<Group&Proxy<Group>> all()
+ * @phpstan-method static list<Group&Proxy<Group>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Group&Proxy<Group>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Group&Proxy<Group>> findBy(array $attributes)
+ * @phpstan-method static list<Group&Proxy<Group>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Group&Proxy<Group>> randomSet(int $number, array $attributes = [])
  */
-final class GroupFactory extends ModelFactory
+final class GroupFactory extends PersistentProxyObjectFactory
 {
     public function withMembers(): self
     {
-        return $this->addState([
+        return $this->with([
             'members' => UserFactory::new()->many(1, 20),
         ]);
     }
 
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->text(),
@@ -65,7 +83,7 @@ final class GroupFactory extends ModelFactory
         // ->afterInstantiate(function(Group $group) {})
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return Group::class;
     }

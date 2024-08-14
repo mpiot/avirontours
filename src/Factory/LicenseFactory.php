@@ -23,26 +23,51 @@ namespace App\Factory;
 use App\Entity\License;
 use App\Entity\SeasonCategory;
 use App\Repository\LicenseRepository;
-use Zenstruck\Foundry\ModelFactory;
+use Doctrine\ORM\EntityRepository;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static License|Proxy                     createOne(array $attributes = [])
- * @method static License[]|Proxy[]                 createMany(int $number, $attributes = [])
- * @method static License|Proxy                     findOrCreate(array $attributes)
- * @method static License|Proxy                     random(array $attributes = [])
- * @method static License|Proxy                     randomOrCreate(array $attributes = [])
- * @method static License[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static License[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static LicenseRepository|RepositoryProxy repository()
- * @method        License|Proxy                     create($attributes = [])
+ * @extends PersistentProxyObjectFactory<License>
+ *
+ * @method        License|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static License|Proxy                                createOne(array $attributes = [])
+ * @method static License|Proxy                                find(object|array|mixed $criteria)
+ * @method static License|Proxy                                findOrCreate(array $attributes)
+ * @method static License|Proxy                                first(string $sortedField = 'id')
+ * @method static License|Proxy                                last(string $sortedField = 'id')
+ * @method static License|Proxy                                random(array $attributes = [])
+ * @method static License|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static LicenseRepository|ProxyRepositoryDecorator   repository()
+ * @method static License[]|Proxy[]                            all()
+ * @method static License[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static License[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static License[]|Proxy[]                            findBy(array $attributes)
+ * @method static License[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static License[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ *
+ * @phpstan-method        License&Proxy<License> create(array|callable $attributes = [])
+ * @phpstan-method static License&Proxy<License> createOne(array $attributes = [])
+ * @phpstan-method static License&Proxy<License> find(object|array|mixed $criteria)
+ * @phpstan-method static License&Proxy<License> findOrCreate(array $attributes)
+ * @phpstan-method static License&Proxy<License> first(string $sortedField = 'id')
+ * @phpstan-method static License&Proxy<License> last(string $sortedField = 'id')
+ * @phpstan-method static License&Proxy<License> random(array $attributes = [])
+ * @phpstan-method static License&Proxy<License> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<License, EntityRepository> repository()
+ * @phpstan-method static list<License&Proxy<License>> all()
+ * @phpstan-method static list<License&Proxy<License>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<License&Proxy<License>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<License&Proxy<License>> findBy(array $attributes)
+ * @phpstan-method static list<License&Proxy<License>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<License&Proxy<License>> randomSet(int $number, array $attributes = [])
  */
-final class LicenseFactory extends ModelFactory
+final class LicenseFactory extends PersistentProxyObjectFactory
 {
     public function annualActive(): self
     {
-        return $this->addState([
+        return $this->with([
             'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
                 'season' => SeasonFactory::new()->active(),
@@ -52,7 +77,7 @@ final class LicenseFactory extends ModelFactory
 
     public function indoorActive(): self
     {
-        return $this->addState([
+        return $this->with([
             'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
                 'season' => SeasonFactory::new()->active(),
@@ -62,7 +87,7 @@ final class LicenseFactory extends ModelFactory
 
     public function annualInactive(): self
     {
-        return $this->addState([
+        return $this->with([
             'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_ANNUAL,
                 'season' => SeasonFactory::new()->inactive(),
@@ -72,7 +97,7 @@ final class LicenseFactory extends ModelFactory
 
     public function indoorInactive(): self
     {
-        return $this->addState([
+        return $this->with([
             'seasonCategory' => SeasonCategoryFactory::new([
                 'licenseType' => SeasonCategory::LICENSE_TYPE_INDOOR,
                 'season' => SeasonFactory::new()->inactive(),
@@ -82,27 +107,27 @@ final class LicenseFactory extends ModelFactory
 
     public function withValidLicense(): self
     {
-        return $this->addState([
+        return $this->with([
             'marking' => ['validated' => 1],
         ]);
     }
 
     public function withInvalidLicense(): self
     {
-        return $this->addState([
+        return $this->with([
             'marking' => [],
         ]);
     }
 
     public function withPayments(): self
     {
-        return $this->addState([
+        return $this->with([
             'payments' => LicensePaymentFactory::new()->many(1, 5),
             'payedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeThisYear()),
         ]);
     }
 
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
@@ -129,7 +154,7 @@ final class LicenseFactory extends ModelFactory
         // ->beforeInstantiate(function(License $license) {})
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return License::class;
     }

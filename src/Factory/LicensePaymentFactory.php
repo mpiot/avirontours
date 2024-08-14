@@ -21,48 +21,49 @@ namespace App\Factory;
 use App\Entity\LicensePayment;
 use App\Enum\PaymentMethod;
 use App\Repository\LicensePaymentRepository;
-use Zenstruck\Foundry\ModelFactory;
+use Doctrine\ORM\EntityRepository;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<LicensePayment>
+ * @extends PersistentProxyObjectFactory<LicensePayment>
  *
- * @method        LicensePayment|Proxy                     create(array|callable $attributes = [])
- * @method static LicensePayment|Proxy                     createOne(array $attributes = [])
- * @method static LicensePayment|Proxy                     find(object|array|mixed $criteria)
- * @method static LicensePayment|Proxy                     findOrCreate(array $attributes)
- * @method static LicensePayment|Proxy                     first(string $sortedField = 'id')
- * @method static LicensePayment|Proxy                     last(string $sortedField = 'id')
- * @method static LicensePayment|Proxy                     random(array $attributes = [])
- * @method static LicensePayment|Proxy                     randomOrCreate(array $attributes = [])
- * @method static LicensePaymentRepository|RepositoryProxy repository()
- * @method static LicensePayment[]|Proxy[]                 all()
- * @method static LicensePayment[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static LicensePayment[]|Proxy[]                 createSequence(iterable|callable $sequence)
- * @method static LicensePayment[]|Proxy[]                 findBy(array $attributes)
- * @method static LicensePayment[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static LicensePayment[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method        LicensePayment|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static LicensePayment|Proxy                                createOne(array $attributes = [])
+ * @method static LicensePayment|Proxy                                find(object|array|mixed $criteria)
+ * @method static LicensePayment|Proxy                                findOrCreate(array $attributes)
+ * @method static LicensePayment|Proxy                                first(string $sortedField = 'id')
+ * @method static LicensePayment|Proxy                                last(string $sortedField = 'id')
+ * @method static LicensePayment|Proxy                                random(array $attributes = [])
+ * @method static LicensePayment|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static LicensePaymentRepository|ProxyRepositoryDecorator   repository()
+ * @method static LicensePayment[]|Proxy[]                            all()
+ * @method static LicensePayment[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static LicensePayment[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static LicensePayment[]|Proxy[]                            findBy(array $attributes)
+ * @method static LicensePayment[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static LicensePayment[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        Proxy<LicensePayment> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<LicensePayment> createOne(array $attributes = [])
- * @phpstan-method static Proxy<LicensePayment> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<LicensePayment> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<LicensePayment> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<LicensePayment> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<LicensePayment> random(array $attributes = [])
- * @phpstan-method static Proxy<LicensePayment> randomOrCreate(array $attributes = [])
- * @phpstan-method static RepositoryProxy<LicensePayment> repository()
- * @phpstan-method static list<Proxy<LicensePayment>> all()
- * @phpstan-method static list<Proxy<LicensePayment>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<LicensePayment>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<LicensePayment>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<LicensePayment>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<LicensePayment>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        LicensePayment&Proxy<LicensePayment> create(array|callable $attributes = [])
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> createOne(array $attributes = [])
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> find(object|array|mixed $criteria)
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> findOrCreate(array $attributes)
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> first(string $sortedField = 'id')
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> last(string $sortedField = 'id')
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> random(array $attributes = [])
+ * @phpstan-method static LicensePayment&Proxy<LicensePayment> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<LicensePayment, EntityRepository> repository()
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> all()
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> findBy(array $attributes)
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<LicensePayment&Proxy<LicensePayment>> randomSet(int $number, array $attributes = [])
  */
-final class LicensePaymentFactory extends ModelFactory
+final class LicensePaymentFactory extends PersistentProxyObjectFactory
 {
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'method' => self::faker()->randomElement(PaymentMethod::cases()),
@@ -77,7 +78,7 @@ final class LicensePaymentFactory extends ModelFactory
         ;
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return LicensePayment::class;
     }

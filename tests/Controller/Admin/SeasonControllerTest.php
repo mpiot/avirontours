@@ -240,7 +240,7 @@ class SeasonControllerTest extends AppWebTestCase
 
     public function testDeleteSeason(): void
     {
-        $season = SeasonFactory::createOne()->disableAutoRefresh();
+        $season = SeasonFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

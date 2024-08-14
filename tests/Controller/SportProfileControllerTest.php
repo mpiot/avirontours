@@ -52,7 +52,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/sport-profile/physiology');
 
         $this->assertResponseIsSuccessful();
@@ -84,7 +84,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/sport-profile/anatomy');
 
         $this->assertResponseIsSuccessful();
@@ -112,7 +112,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/sport-profile/physical-qualities');
 
         $this->assertResponseIsSuccessful();
@@ -148,7 +148,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/sport-profile/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
@@ -176,7 +176,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/sport-profile/configuration');
 
         $this->assertResponseIsSuccessful();

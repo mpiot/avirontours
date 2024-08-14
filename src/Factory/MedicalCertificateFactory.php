@@ -22,25 +22,50 @@ namespace App\Factory;
 
 use App\Entity\MedicalCertificate;
 use App\Repository\MedicalCertificateRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\File\File;
-use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static MedicalCertificate|Proxy                     createOne(array $attributes = [])
- * @method static MedicalCertificate[]|Proxy[]                 createMany(int $number, $attributes = [])
- * @method static MedicalCertificate|Proxy                     findOrCreate(array $attributes)
- * @method static MedicalCertificate|Proxy                     random(array $attributes = [])
- * @method static MedicalCertificate|Proxy                     randomOrCreate(array $attributes = [])
- * @method static MedicalCertificate[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static MedicalCertificate[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static MedicalCertificateRepository|RepositoryProxy repository()
- * @method        MedicalCertificate|Proxy                     create($attributes = [])
+ * @extends PersistentProxyObjectFactory<MedicalCertificate>
+ *
+ * @method        MedicalCertificate|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static MedicalCertificate|Proxy                                createOne(array $attributes = [])
+ * @method static MedicalCertificate|Proxy                                find(object|array|mixed $criteria)
+ * @method static MedicalCertificate|Proxy                                findOrCreate(array $attributes)
+ * @method static MedicalCertificate|Proxy                                first(string $sortedField = 'id')
+ * @method static MedicalCertificate|Proxy                                last(string $sortedField = 'id')
+ * @method static MedicalCertificate|Proxy                                random(array $attributes = [])
+ * @method static MedicalCertificate|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static MedicalCertificateRepository|ProxyRepositoryDecorator   repository()
+ * @method static MedicalCertificate[]|Proxy[]                            all()
+ * @method static MedicalCertificate[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static MedicalCertificate[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static MedicalCertificate[]|Proxy[]                            findBy(array $attributes)
+ * @method static MedicalCertificate[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static MedicalCertificate[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ *
+ * @phpstan-method        MedicalCertificate&Proxy<MedicalCertificate> create(array|callable $attributes = [])
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> createOne(array $attributes = [])
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> find(object|array|mixed $criteria)
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> findOrCreate(array $attributes)
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> first(string $sortedField = 'id')
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> last(string $sortedField = 'id')
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> random(array $attributes = [])
+ * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<MedicalCertificate, EntityRepository> repository()
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> all()
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> findBy(array $attributes)
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> randomSet(int $number, array $attributes = [])
  */
-final class MedicalCertificateFactory extends ModelFactory
+final class MedicalCertificateFactory extends PersistentProxyObjectFactory
 {
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),
@@ -59,7 +84,7 @@ final class MedicalCertificateFactory extends ModelFactory
         // ->beforeInstantiate(function(MedicalCertificate $medicalCertificate) {})
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return MedicalCertificate::class;
     }

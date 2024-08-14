@@ -170,7 +170,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamage(): void
     {
-        $damage = ShellDamageFactory::createOne()->disableAutoRefresh();
+        $damage = ShellDamageFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

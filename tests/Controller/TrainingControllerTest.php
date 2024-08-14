@@ -62,7 +62,7 @@ class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -267,7 +267,7 @@ class TrainingControllerTest extends AppWebTestCase
     {
         $training = TrainingFactory::createOne([
             'user' => $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser(),
-        ])->disableAutoRefresh();
+        ])->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
