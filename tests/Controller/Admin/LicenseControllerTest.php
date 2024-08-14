@@ -180,7 +180,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $license = LicenseFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $license = LicenseFactory::repository()->last();
 
         $this->assertSame($user->getId(), $license->getUser()->getId());
         $this->assertSame($season->getSeasonCategories()->first()->getId(), $license->getSeasonCategory()->getId());
@@ -627,7 +627,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testDeleteLicense(): void
     {
-        $license = LicenseFactory::createOne()->disableAutoRefresh();
+        $license = LicenseFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

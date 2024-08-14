@@ -142,7 +142,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamageCategory(): void
     {
-        $category = ShellDamageCategoryFactory::createOne()->disableAutoRefresh();
+        $category = ShellDamageCategoryFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

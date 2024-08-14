@@ -296,7 +296,7 @@ class UserControllerTest extends AppWebTestCase
 
     public function testDeleteUser(): void
     {
-        $user = UserFactory::createOne()->disableAutoRefresh();
+        $user = UserFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

@@ -23,6 +23,8 @@ namespace App\Tests\Controller;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 
+use function Zenstruck\Foundry\faker;
+
 class SecurityControllerTest extends AppWebTestCase
 {
     public function testLogin(): void
@@ -30,7 +32,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -50,7 +52,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -70,7 +72,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -90,7 +92,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -109,7 +111,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -129,7 +131,7 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -160,14 +162,14 @@ class SecurityControllerTest extends AppWebTestCase
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => UserFactory::faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
 
         for ($i = 0; $i < 25; ++$i) {
             $client->submitForm('Se connecter', [
-                'username' => UserFactory::faker()->userName(),
+                'username' => faker()->userName(),
                 'password' => 'IDoNotExist',
             ]);
 

@@ -114,7 +114,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertSame($shell->getId(), $logBookEntry->getShell()->getId());
         $this->assertCount(2, $logBookEntry->getCrewMembers());
@@ -150,7 +150,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertSame($shell->getId(), $logBookEntry->getShell()->getId());
         $this->assertCount(2, $logBookEntry->getCrewMembers());
@@ -373,7 +373,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertCount(1, $logBookEntry->getCrewMembers());
         $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
@@ -412,7 +412,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertCount(0, $logBookEntry->getCrewMembers());
         $this->assertCount(2, $logBookEntry->getNonUserCrewMembers());
@@ -692,8 +692,8 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $entry = LogbookEntryFactory::createOne([
             'shell' => $shell,
             'shellDamages' => [$shellDamage],
-        ])->disableAutoRefresh();
-        $shell->save();
+        ])->_disableAutoRefresh();
+        $shell->_save();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

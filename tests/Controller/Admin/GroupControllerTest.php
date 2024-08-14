@@ -160,7 +160,7 @@ class GroupControllerTest extends AppWebTestCase
 
     public function testDeleteGroup(): void
     {
-        $group = GroupFactory::createOne()->disableAutoRefresh();
+        $group = GroupFactory::createOne()->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

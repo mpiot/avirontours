@@ -63,7 +63,7 @@ class HomepageControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();

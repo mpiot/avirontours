@@ -36,7 +36,7 @@ class PaymentAttestationControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
         $client->request('GET', "/payment-attestation/download/{$license->getId()}");
 
         $this->assertResponseIsSuccessful();

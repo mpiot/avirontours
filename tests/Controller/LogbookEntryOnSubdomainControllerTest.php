@@ -115,7 +115,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertSame($shell->getId(), $logBookEntry->getShell()->getId());
         $this->assertCount(2, $logBookEntry->getCrewMembers());
@@ -154,7 +154,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
-        $logBookEntry = LogbookEntryFactory::repository()->findOneBy([], ['id' => 'DESC']);
+        $logBookEntry = LogbookEntryFactory::repository()->last();
 
         $this->assertSame($shell->getId(), $logBookEntry->getShell()->getId());
         $this->assertCount(2, $logBookEntry->getCrewMembers());

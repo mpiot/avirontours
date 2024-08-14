@@ -186,10 +186,10 @@ class ShellControllerTest extends AppWebTestCase
 
     public function testDeleteShell(): void
     {
-        $shell = ShellFactory::createOne()->disableAutoRefresh();
+        $shell = ShellFactory::createOne()->_disableAutoRefresh();
         $shellDamage = ShellDamageFactory::createOne([
             'shell' => $shell,
-        ])->disableAutoRefresh();
+        ])->_disableAutoRefresh();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

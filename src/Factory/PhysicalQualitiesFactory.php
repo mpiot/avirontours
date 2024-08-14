@@ -22,24 +22,49 @@ namespace App\Factory;
 
 use App\Entity\PhysicalQualities;
 use App\Repository\PhysicalQualitiesRepository;
-use Zenstruck\Foundry\ModelFactory;
+use Doctrine\ORM\EntityRepository;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static PhysicalQualities|Proxy                     createOne(array $attributes = [])
- * @method static PhysicalQualities[]|Proxy[]                 createMany(int $number, $attributes = [])
- * @method static PhysicalQualities|Proxy                     findOrCreate(array $attributes)
- * @method static PhysicalQualities|Proxy                     random(array $attributes = [])
- * @method static PhysicalQualities|Proxy                     randomOrCreate(array $attributes = [])
- * @method static PhysicalQualities[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static PhysicalQualities[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static PhysicalQualitiesRepository|RepositoryProxy repository()
- * @method        PhysicalQualities|Proxy                     create($attributes = [])
+ * @extends PersistentProxyObjectFactory<PhysicalQualities>
+ *
+ * @method        PhysicalQualities|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static PhysicalQualities|Proxy                                createOne(array $attributes = [])
+ * @method static PhysicalQualities|Proxy                                find(object|array|mixed $criteria)
+ * @method static PhysicalQualities|Proxy                                findOrCreate(array $attributes)
+ * @method static PhysicalQualities|Proxy                                first(string $sortedField = 'id')
+ * @method static PhysicalQualities|Proxy                                last(string $sortedField = 'id')
+ * @method static PhysicalQualities|Proxy                                random(array $attributes = [])
+ * @method static PhysicalQualities|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static PhysicalQualitiesRepository|ProxyRepositoryDecorator   repository()
+ * @method static PhysicalQualities[]|Proxy[]                            all()
+ * @method static PhysicalQualities[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static PhysicalQualities[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static PhysicalQualities[]|Proxy[]                            findBy(array $attributes)
+ * @method static PhysicalQualities[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static PhysicalQualities[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ *
+ * @phpstan-method        PhysicalQualities&Proxy<PhysicalQualities> create(array|callable $attributes = [])
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> createOne(array $attributes = [])
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> find(object|array|mixed $criteria)
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> findOrCreate(array $attributes)
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> first(string $sortedField = 'id')
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> last(string $sortedField = 'id')
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> random(array $attributes = [])
+ * @phpstan-method static PhysicalQualities&Proxy<PhysicalQualities> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<PhysicalQualities, EntityRepository> repository()
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> all()
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> findBy(array $attributes)
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<PhysicalQualities&Proxy<PhysicalQualities>> randomSet(int $number, array $attributes = [])
  */
-final class PhysicalQualitiesFactory extends ModelFactory
+final class PhysicalQualitiesFactory extends PersistentProxyObjectFactory
 {
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'user' => UserFactory::new(),
@@ -62,7 +87,7 @@ final class PhysicalQualitiesFactory extends ModelFactory
         // ->afterInstantiate(function(PhysicalQualities $physicalQualities) {})
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return PhysicalQualities::class;
     }

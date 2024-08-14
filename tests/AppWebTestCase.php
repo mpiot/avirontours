@@ -45,7 +45,7 @@ abstract class AppWebTestCase extends WebTestCase
             ->create()
         ;
 
-        $client->loginUser($user->object());
+        $client->loginUser($user->_real());
 
         return $user;
     }

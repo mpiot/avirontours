@@ -22,13 +22,13 @@ use App\Entity\UploadedFile;
 use App\Repository\UploadedFileRepository;
 use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\File\File;
-use Zenstruck\Foundry\Instantiator;
-use Zenstruck\Foundry\ModelFactory;
+use Zenstruck\Foundry\Object\Instantiator;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @extends ModelFactory<UploadedFile>
+ * @extends PersistentProxyObjectFactory<UploadedFile>
  *
  * @method        UploadedFile|Proxy                     create(array|callable $attributes = [])
  * @method static UploadedFile|Proxy                     createOne(array $attributes = [])
@@ -62,7 +62,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static list<Proxy<UploadedFile>> randomRange(int $min, int $max, array $attributes = [])
  * @phpstan-method static list<Proxy<UploadedFile>> randomSet(int $number, array $attributes = [])
  */
-final class UploadedFileFactory extends ModelFactory
+final class UploadedFileFactory extends PersistentProxyObjectFactory
 {
     public function __construct(private readonly FileUploader $fileUploader)
     {
@@ -71,33 +71,33 @@ final class UploadedFileFactory extends ModelFactory
 
     public function pdf(): static
     {
-        return $this->addState([
+        return $this->with([
             'file' => new File(__DIR__.'/../DataFixtures/Files/document.pdf'),
         ]);
     }
 
     public function png(): static
     {
-        return $this->addState([
+        return $this->with([
             'file' => new File(__DIR__.'/../DataFixtures/Files/placeholder_1000x1000.png'),
         ]);
     }
 
     public function public(): static
     {
-        return $this->addState([
+        return $this->with([
             'visibility' => FileUploader::PUBLIC,
         ]);
     }
 
     public function private(): static
     {
-        return $this->addState([
+        return $this->with([
             'visibility' => FileUploader::PRIVATE,
         ]);
     }
 
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
@@ -108,11 +108,11 @@ final class UploadedFileFactory extends ModelFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
-    protected function initialize(): static
+    protected function initialize(): self
     {
         return $this
             // ->afterInstantiate(function(UploadFile $uploadFile): void {})
-            ->instantiateWith((new Instantiator())->allowExtraAttributes(['file']))
+            ->instantiateWith(Instantiator::withoutConstructor()->allowExtra('file'))
             ->afterInstantiate(function (UploadedFile &$uploadedFile, array $attributes) {
                 $uploadedFile = $this->fileUploader->upload($attributes['file'], $uploadedFile->getVisibility());
                 $uploadedFile
@@ -123,7 +123,7 @@ final class UploadedFileFactory extends ModelFactory
         ;
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return UploadedFile::class;
     }

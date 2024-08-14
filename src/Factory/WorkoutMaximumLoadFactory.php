@@ -22,24 +22,49 @@ namespace App\Factory;
 
 use App\Entity\WorkoutMaximumLoad;
 use App\Repository\WorkoutMaximumLoadRepository;
-use Zenstruck\Foundry\ModelFactory;
+use Doctrine\ORM\EntityRepository;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
 
 /**
- * @method static WorkoutMaximumLoad|Proxy                     createOne(array $attributes = [])
- * @method static WorkoutMaximumLoad[]|Proxy[]                 createMany(int $number, $attributes = [])
- * @method static WorkoutMaximumLoad|Proxy                     findOrCreate(array $attributes)
- * @method static WorkoutMaximumLoad|Proxy                     random(array $attributes = [])
- * @method static WorkoutMaximumLoad|Proxy                     randomOrCreate(array $attributes = [])
- * @method static WorkoutMaximumLoad[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static WorkoutMaximumLoad[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static WorkoutMaximumLoadRepository|RepositoryProxy repository()
- * @method        WorkoutMaximumLoad|Proxy                     create($attributes = [])
+ * @extends PersistentProxyObjectFactory<WorkoutMaximumLoad>
+ *
+ * @method        WorkoutMaximumLoad|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                                createOne(array $attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                                find(object|array|mixed $criteria)
+ * @method static WorkoutMaximumLoad|Proxy                                findOrCreate(array $attributes)
+ * @method static WorkoutMaximumLoad|Proxy                                first(string $sortedField = 'id')
+ * @method static WorkoutMaximumLoad|Proxy                                last(string $sortedField = 'id')
+ * @method static WorkoutMaximumLoad|Proxy                                random(array $attributes = [])
+ * @method static WorkoutMaximumLoad|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static WorkoutMaximumLoadRepository|ProxyRepositoryDecorator   repository()
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            all()
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            findBy(array $attributes)
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static WorkoutMaximumLoad[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ *
+ * @phpstan-method        WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> create(array|callable $attributes = [])
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> createOne(array $attributes = [])
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> find(object|array|mixed $criteria)
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> findOrCreate(array $attributes)
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> first(string $sortedField = 'id')
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> last(string $sortedField = 'id')
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> random(array $attributes = [])
+ * @phpstan-method static WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<WorkoutMaximumLoad, EntityRepository> repository()
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> all()
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> findBy(array $attributes)
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<WorkoutMaximumLoad&Proxy<WorkoutMaximumLoad>> randomSet(int $number, array $attributes = [])
  */
-final class WorkoutMaximumLoadFactory extends ModelFactory
+final class WorkoutMaximumLoadFactory extends PersistentProxyObjectFactory
 {
-    protected function getDefaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'user' => UserFactory::new(),
@@ -58,7 +83,7 @@ final class WorkoutMaximumLoadFactory extends ModelFactory
         // ->afterInstantiate(function(WorkoutMaximumLoad $workoutMaximumLoad) {})
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return WorkoutMaximumLoad::class;
     }
