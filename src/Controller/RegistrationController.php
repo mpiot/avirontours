@@ -74,6 +74,7 @@ class RegistrationController extends AbstractController
                 ->subject('Inscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/registration.html.twig')
                 ->addPart(new DataPart(new File("{$publicDir}/files/droit-image.pdf"), 'Droit à l\'image.pdf'))
+                ->addPart(new DataPart(new File("{$publicDir}/files/autorisation-parentale-2025.pdf"), 'Autorisation parentale 2025.pdf'))
                 ->addPart(new DataPart(new File("{$publicDir}/files/cerfa-10008-02.pdf"), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
@@ -136,6 +137,7 @@ class RegistrationController extends AbstractController
                 ->subject('Réinscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/renew.html.twig')
                 ->addPart(new DataPart(new File("{$publicDir}/files/droit-image.pdf"), 'Droit à l\'image.pdf'))
+                ->addPart(new DataPart(new File("{$publicDir}/files/autorisation-parentale-2025.pdf"), 'Autorisation parentale 2025.pdf'))
                 ->addPart(new DataPart(new File("{$publicDir}/files/cerfa-10008-02.pdf"), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
@@ -157,6 +159,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route(path: '/renew/confirmation', name: 'app_renew_confirmation', priority: 10)]
+    #[IsGranted('ROLE_USER')]
     public function renewConfirmation(): Response
     {
         return $this->render('registration/renew_confirmation.html.twig');
