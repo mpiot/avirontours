@@ -79,8 +79,6 @@ class ProfileControllerTest extends AppWebTestCase
         $form = $crawler->selectButton('Modifier')->form([
             'profile[email]' => 'john.doe@avirontours.fr',
             'profile[phoneNumber]' => '0123456777',
-            'profile[firstName]' => 'John',
-            'profile[lastName]' => 'Doe',
             'profile[laneNumber]' => '2',
             'profile[laneType]' => 'Rue',
             'profile[laneName]' => 'du test',
@@ -102,9 +100,6 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseRedirects();
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame('0123456777', $user->getPhoneNumber());
-        $this->assertSame('John', $user->getFirstName());
-        $this->assertSame('Doe', $user->getLastName());
-        $this->assertSame('john.doe', $user->getUsername());
         $this->assertSame('2', $user->getLaneNumber());
         $this->assertSame('Rue', $user->getLaneType());
         $this->assertSame('Du Test', $user->getLaneName());
@@ -135,8 +130,6 @@ class ProfileControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Modifier', [
             'profile[email]' => '',
             'profile[phoneNumber]' => '',
-            'profile[firstName]' => '',
-            'profile[lastName]' => '',
             'profile[laneNumber]' => '',
             'profile[laneType]' => '',
             'profile[laneName]' => '',
@@ -156,15 +149,13 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_email')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_firstName')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_lastName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_laneNumber')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#profile_laneType')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_laneName')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_postalCode')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#profile_city')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(8, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(6, $crawler->filter('.invalid-feedback'));
     }
 
     public function testEditProfileWithoutLegalGuardianForUnderEighteen(): void

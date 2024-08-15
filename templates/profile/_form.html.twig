@@ -9,8 +9,7 @@
                         Informations personnelles
                     </div>
                     <div class="card-body">
-                        {{ form_row(form.email) }}
-                        {{ form_row(form.phoneNumber) }}
+                        {{ form_row(form.gender) }}
 
                         <div class="row">
                             <div class="col">
@@ -18,6 +17,24 @@
                             </div>
                             <div class="col">
                                 {{ form_row(form.lastName) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.nationality) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.birthday) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ form_row(form.email) }}
+                            </div>
+                            <div class="col">
+                                {{ form_row(form.phoneNumber) }}
                             </div>
                         </div>
                     </div>

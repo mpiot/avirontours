@@ -35,25 +35,27 @@ class RegistrationUserType extends AbstractType
             ->remove('subscriptionDate')
             ->remove('licenseNumber')
             ->remove('roles')
-            ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'Les mots de passes doivent être identiques.',
-                'first_options' => [
-                    'label' => 'Mot de passe',
-                    'hash_property_path' => 'password',
-                    'constraints' => [
-                        new NotBlank(),
-                        new Length(['min' => 6, 'max' => 4096]),
-                        new NotCompromisedPassword(),
-                    ],
-                    'attr' => ['autocomplete' => 'new-password'],
+        ;
+
+        $builder->add('plainPassword', RepeatedType::class, [
+            'type' => PasswordType::class,
+            'invalid_message' => 'Les mots de passes doivent être identiques.',
+            'first_options' => [
+                'label' => 'Mot de passe',
+                'hash_property_path' => 'password',
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(['min' => 6, 'max' => 4096]),
+                    new NotCompromisedPassword(),
                 ],
-                'second_options' => [
-                    'label' => 'Répéter le mot de passe',
-                    'attr' => ['autocomplete' => 'new-password'],
-                ],
-                'mapped' => false,
-            ])
+                'attr' => ['autocomplete' => 'new-password'],
+            ],
+            'second_options' => [
+                'label' => 'Répéter le mot de passe',
+                'attr' => ['autocomplete' => 'new-password'],
+            ],
+            'mapped' => false,
+        ])
         ;
     }
 
