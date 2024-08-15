@@ -35,7 +35,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportPostalCodeCommand extends Command
 {
-    private const DATASET_URL = 'https://www.data.gouv.fr/fr/datasets/r/5ed9b092-a25d-49e7-bdae-0152797c7577';
+    private const DATASET_URL = 'https://www.data.gouv.fr/fr/datasets/r/0f8ae8bd-9c0a-4a62-9be5-4798cbac07ff';
 
     public function __construct(
         private readonly HttpClientInterface $client,
