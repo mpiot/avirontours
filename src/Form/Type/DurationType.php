@@ -42,6 +42,7 @@ class DurationType extends AbstractType
                 'hours' => 'Heures',
                 'minutes' => 'Minutes',
             ],
+            'widget' => 'integer',
             'with_years' => false,
             'with_months' => false,
             'with_days' => false,

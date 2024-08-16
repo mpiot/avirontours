@@ -137,7 +137,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => 0.9,
+            'training[feeling]' => 0.75,
+            'training[ratedPerceivedExertion]' => 4,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -152,7 +153,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16300, $training->getDistance());
-        $this->assertSame(0.9, $training->getFeeling());
+        $this->assertSame(0.75, $training->getFeeling());
+        $this->assertSame(4, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -173,7 +175,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 501,
-            'training[feeling]' => 0.9,
+            'training[feeling]' => 0.75,
+            'training[ratedPerceivedExertion]' => 4,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -201,7 +204,6 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 0,
             'training[duration][minutes]' => 0,
             'training[distance]' => '',
-            'training[feeling]' => '',
             'training[comment]' => '',
         ]);
 
@@ -210,9 +212,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_type')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_feeling')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(5, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(4, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
@@ -235,7 +236,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => 0.9,
+            'training[feeling]' => 0.75,
+            'training[ratedPerceivedExertion]' => 4,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -246,7 +248,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16300, $training->getDistance());
-        $this->assertSame(0.9, $training->getFeeling());
+        $this->assertSame(0.75, $training->getFeeling());
+        $this->assertSame(4, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
