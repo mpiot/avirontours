@@ -64,7 +64,7 @@ class ShellDamageCategoryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'shell_damage_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ManagerRegistry $managerRegistry, ShellDamageCategory $shellDamageCategory): Response
     {
         $form = $this->createForm(ShellDamageCategoryType::class, $shellDamageCategory);
@@ -84,7 +84,7 @@ class ShellDamageCategoryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'shell_damage_category_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, ShellDamageCategory $shellDamageCategory): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shellDamageCategory->getId(), (string) $request->request->get('_token'))) {

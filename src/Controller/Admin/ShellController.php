@@ -65,7 +65,7 @@ class ShellController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'shell_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'shell_show', methods: ['GET'])]
     public function show(Shell $shell): Response
     {
         return $this->render('admin/shell/show.html.twig', [
@@ -73,7 +73,7 @@ class ShellController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'shell_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'shell_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Shell $shell): Response
     {
         $form = $this->createForm(ShellEditType::class, $shell);
@@ -93,7 +93,7 @@ class ShellController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'shell_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Shell $shell): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shell->getId(), (string) $request->request->get('_token'))) {

@@ -71,7 +71,7 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/finish', name: 'logbook_entry_finish', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/finish', name: 'logbook_entry_finish', methods: ['GET', 'POST'])]
     public function finish(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
     {
         if (null !== $logbookEntry->getEndAt()) {
@@ -101,7 +101,7 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_LOGBOOK_ADMIN')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
     {
@@ -122,7 +122,7 @@ class LogbookEntryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'logbook_entry_delete', methods: ['POST'])]
     #[IsGranted('ROLE_LOGBOOK_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
     {

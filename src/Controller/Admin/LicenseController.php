@@ -77,7 +77,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'license_edit', methods: ['GET', 'POST'])]
     public function edit(
         License $license,
         Request $request,
@@ -108,7 +108,7 @@ class LicenseController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/validate-payment', name: 'license_validate_payment', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/validate-payment', name: 'license_validate_payment', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function validatePayment(
         Request $request,
@@ -167,7 +167,7 @@ class LicenseController extends AbstractController
     }
 
     #[Route(
-        path: '/{id}/medical-certificate/{transitionName<validate|reject|unreject>}',
+        path: '/{id<\d+>}/medical-certificate/{transitionName<validate|reject|unreject>}',
         name: 'license_medical_certificate_action',
         methods: ['GET']
     )]
@@ -196,7 +196,7 @@ class LicenseController extends AbstractController
         return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
     }
 
-    #[Route(path: '/{id}/validate', name: 'license_validate', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}/validate', name: 'license_validate', methods: ['GET'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function validate(
         License $license,
@@ -221,7 +221,7 @@ class LicenseController extends AbstractController
         return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
     }
 
-    #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'license_delete', methods: ['POST'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
     {

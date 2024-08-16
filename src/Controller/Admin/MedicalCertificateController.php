@@ -32,7 +32,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
 class MedicalCertificateController extends AbstractController
 {
-    #[Route(path: '/{id}/download', name: 'medical_certificate_download', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}/download', name: 'medical_certificate_download', methods: ['GET'])]
     public function download(MedicalCertificate $medicalCertificate, FileUploader $fileUploader): Response
     {
         $uploadedFile = $medicalCertificate->getUploadedFile();

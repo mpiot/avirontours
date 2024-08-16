@@ -64,7 +64,7 @@ class GroupController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'group_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'group_show', methods: ['GET'])]
     public function show(Group $group): Response
     {
         return $this->render('admin/group/show.html.twig', [
@@ -72,7 +72,7 @@ class GroupController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'group_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'group_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Group $group): Response
     {
         $form = $this->createForm(GroupType::class, $group);
@@ -92,7 +92,7 @@ class GroupController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'group_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'group_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Group $group): Response
     {
         if ($this->isCsrfTokenValid('delete'.$group->getId(), (string) $request->request->get('_token'))) {

@@ -1,0 +1,56 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion du parc{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item active">Gestion des plans d'entraînement</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Gestion des plans d'entraînement</h1>
+
+        <a href="{{ path('training_plan_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
+            <span class="fas fa-plus"></span> Ajouter un plan d'entraînement
+        </a>
+    </div>
+
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for training_plan in training_plans %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('training_plan_show', {'id': training_plan.id}) }}">{{ training_plan.name }}</a>
+                            </td>
+                            <td>{{ training_plan.startAt|date }}</td>
+                            <td>{{ training_plan.endAt|date }}</td>
+                            <td class="text-end">
+                                <a class="btn btn-outline-warning btn-sm rounded-pill"
+                                   href="{{ path('training_plan_edit', {'id': training_plan.id}) }}">
+                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">Pas de plans d'entraînement</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

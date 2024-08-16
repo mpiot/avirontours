@@ -70,7 +70,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'season_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'season_show', methods: ['GET'])]
     public function show(Request $request, LicenseRepository $licenseRepository, Season $season): Response
     {
         return $this->render('admin/season/show.html.twig', [
@@ -84,7 +84,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'season_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
@@ -105,7 +105,7 @@ class SeasonController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'season_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'season_delete', methods: ['POST'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Season $season): Response
     {
@@ -120,7 +120,7 @@ class SeasonController extends AbstractController
         return $this->redirectToRoute('season_index');
     }
 
-    #[Route(path: '/{id}/export/contact', name: 'season_export_contact', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}/export/contact', name: 'season_export_contact', methods: ['GET'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
@@ -145,7 +145,7 @@ class SeasonController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/{id}/export/payment', name: 'season_export_payments', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}/export/payment', name: 'season_export_payments', methods: ['GET'])]
     #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function exportPayments(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {
@@ -170,7 +170,7 @@ class SeasonController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/{id}/export/license', name: 'season_export_license', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}/export/license', name: 'season_export_license', methods: ['GET'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function exportLicense(Season $season, SeasonCsvGenerator $csvGenerator): Response
     {

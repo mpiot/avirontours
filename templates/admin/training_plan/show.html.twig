@@ -1,0 +1,46 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}{{ training_plan.name }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('training_plan_index') }}">Gestion des plans d'entraînement</a></li>
+    <li class="breadcrumb-item active">{{ training_plan.name }}</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>{{ training_plan.name }}</h1>
+
+        <div class="ms-auto align-self-center ">
+            {% embed 'admin/training_plan/_delete_form.html.twig' %}
+                {% block buttons %}
+                    <div class="btn-group-sm">
+                        <a class="btn btn-outline-warning" href="{{ path('training_plan_edit', {'id': training_plan.id}) }}">
+                            <span class="fas fa-pencil-alt"></span> Modifier
+                        </a>
+
+                        {{ parent() }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <twig:Calendar
+                year="{{ year }}"
+                month="{{ month }}"
+                minDate="{{ training_plan.startAt }}"
+                maxDate="{{ training_plan.endAt }}"
+                navigationRouteName="training_plan_show"
+                navigationRouteParams="{{ { id: training_plan.id } }}"
+                newEventRouteName="planned_training_new"
+                newEventRouteParams="{{ { training_plan_id: training_plan.id } }}"
+                newEventButtonText="Ajouter un entraînement"
+                events="{{ events }}"
+            />
+        </div>
+    </div>
+{% endblock %}

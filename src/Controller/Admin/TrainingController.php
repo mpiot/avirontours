@@ -74,7 +74,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{user_id}/{id}', name: 'admin_training_show', methods: ['GET'])]
+    #[Route(path: '/{user_id}/{id<\d+>}', name: 'admin_training_show', methods: ['GET'])]
     public function show(
         #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
         Training $training

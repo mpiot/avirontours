@@ -162,6 +162,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $concept2LastImportAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'followers')]
+    private ?TrainingPlan $trainingPlan = null;
+
+    /**
+     * @var Collection<int, PlannedTraining>
+     */
+    #[ORM\ManyToMany(targetEntity: PlannedTraining::class, mappedBy: 'followers')]
+    private Collection $plannedTrainings;
+
     public function __construct()
     {
         $this->subscriptionDate = new \DateTime();
@@ -169,6 +178,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->licenses = new ArrayCollection();
         $this->trainings = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->plannedTrainings = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -747,6 +757,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $firstName = $slugger->slug($this->firstName)->lower();
         $lastName = $slugger->slug($this->lastName)->lower();
         $this->username = "{$firstName}.{$lastName}";
+    }
+
+    public function getTrainingPlan(): ?TrainingPlan
+    {
+        return $this->trainingPlan;
+    }
+
+    public function setTrainingPlan(?TrainingPlan $trainingPlan): static
+    {
+        $this->trainingPlan = $trainingPlan;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlannedTraining>
+     */
+    public function getPlannedTrainings(): Collection
+    {
+        return $this->plannedTrainings;
+    }
+
+    public function addPlannedTraining(PlannedTraining $plannedTraining): static
+    {
+        if (!$this->plannedTrainings->contains($plannedTraining)) {
+            $this->plannedTrainings->add($plannedTraining);
+            $plannedTraining->addFollower($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlannedTraining(PlannedTraining $plannedTraining): static
+    {
+        if ($this->plannedTrainings->removeElement($plannedTraining)) {
+            $plannedTraining->removeFollower($this);
+        }
+
+        return $this;
     }
 
     public static function getAvailableCivilities(): array

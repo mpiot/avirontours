@@ -52,7 +52,7 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/physiology', name: 'sports_profile_physiology', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/physiology', name: 'sports_profile_physiology', methods: ['GET', 'POST'])]
     public function physiology(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $physiology = $user->getPhysiology() ?? new Physiology($user);
@@ -73,7 +73,7 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/anatomy', name: 'sports_profile_anatomy', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/anatomy', name: 'sports_profile_anatomy', methods: ['GET', 'POST'])]
     public function anatomy(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $anatomy = $user->getAnatomy() ?? new Anatomy($user);
@@ -94,7 +94,7 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/physical-qualities', name: 'sports_profile_physical_qualities', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/physical-qualities', name: 'sports_profile_physical_qualities', methods: ['GET', 'POST'])]
     public function physicalQualities(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $physicalQualities = $user->getPhysicalQualities() ?? new PhysicalQualities($user);
@@ -115,7 +115,7 @@ class SportsProfileController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/workout-maximum-load', name: 'sports_profile_workout_maximum_load', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/workout-maximum-load', name: 'sports_profile_workout_maximum_load', methods: ['GET', 'POST'])]
     public function workoutMaximumLoad(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $workoutMaximumLoad = $user->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($user);

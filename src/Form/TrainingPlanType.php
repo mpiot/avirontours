@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -18,41 +16,32 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Form\Type;
+namespace App\Form;
 
-use App\Form\DataTransformer\DateIntervalToSecondsTransformer;
+use App\Entity\TrainingPlan;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DurationType extends AbstractType
+class TrainingPlanType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addModelTransformer(new DateIntervalToSecondsTransformer(), true);
+        $builder
+            ->add('name')
+            ->add('startAt', null, [
+                'widget' => 'single_text',
+            ])
+            ->add('endAt', null, [
+                'widget' => 'single_text',
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'labels' => [
-                'hours' => 'Heures',
-                'minutes' => 'Minutes',
-            ],
-            'widget' => 'integer',
-            'with_years' => false,
-            'with_months' => false,
-            'with_days' => false,
-            'with_weeks' => false,
-            'with_hours' => true,
-            'with_minutes' => true,
-            'with_seconds' => false,
+            'data_class' => TrainingPlan::class,
         ]);
-    }
-
-    public function getParent(): string
-    {
-        return DateIntervalType::class;
     }
 }

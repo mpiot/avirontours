@@ -79,7 +79,7 @@ class TrainingController extends AbstractController
         return $this->redirectToRoute('training_index');
     }
 
-    #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'training_show', methods: ['GET'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function show(Training $training): Response
     {
@@ -88,7 +88,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{training_id}/phase/{id}', name: 'training_show_phase', methods: ['GET'])]
+    #[Route(path: '/{training_id}/phase/{id<\d+>}', name: 'training_show_phase', methods: ['GET'])]
     #[IsGranted(new Expression('object.getUser() === user or is_granted("ROLE_SPORT_ADMIN")'), 'training')]
     public function showPhase(
         #[MapEntity(mapping: ['training_id' => 'id'])] Training $training,
@@ -102,7 +102,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function edit(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {
@@ -123,7 +123,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'training_delete', methods: ['POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function delete(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
     {

@@ -73,7 +73,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
         return $this->render('admin/user/show.html.twig', [
@@ -81,7 +81,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         $form = $this->createForm(UserEditType::class, $user);
@@ -105,7 +105,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'user_delete', methods: ['POST'])]
+    #[Route(path: '/{id<\d+>}', name: 'user_delete', methods: ['POST'])]
     public function delete(Request $request, ManagerRegistry $managerRegistry, User $user): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), (string) $request->request->get('_token'))) {

@@ -1,0 +1,26 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Modifier un bâteau{% endblock %}
+
+{% block breadcrumb %}
+    {{ parent() }}
+    <li class="breadcrumb-item"><a href="{{ path('training_plan_index') }}">Gestion des plans d'entraînement</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('training_plan_show', {'id': training_plan.id}) }}">{{ training_plan.name }}</a></li>
+    <li class="breadcrumb-item active">Modifier</li>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <h1>Modifier un plan d'entraînement</h1>
+
+        <div class="ms-auto align-self-center">
+            {{ include('admin/training_plan/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            {{ include('admin/training_plan/_form.html.twig', {'button_label': 'Modifier'}) }}
+        </div>
+    </div>
+{% endblock %}

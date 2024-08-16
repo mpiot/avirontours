@@ -129,7 +129,9 @@ class TrainingType extends AbstractType
         $builder->get('distance')->addModelTransformer(new KilometersToMetersTransformer());
 
         $data = $builder->getData();
-        \assert($data instanceof Training);
+        if (!$data instanceof Training) {
+            return;
+        }
 
         // If there is TrainingPhases, then, the Training is sync
         if (false === $data->getTrainingPhases()->isEmpty()) {

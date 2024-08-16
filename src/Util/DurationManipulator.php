@@ -48,13 +48,13 @@ class DurationManipulator
         );
     }
 
-    public static function formatSeconds(int $seconds): string
+    public static function formatSeconds(int $seconds, string $hoursSeparator = ':'): string
     {
         $splitDuration = self::splitDuration($seconds * 10);
         $hours = u((string) $splitDuration['hours'])->padStart(2, '0')->toString();
         $minutes = u((string) $splitDuration['minutes'])->padStart(2, '0')->toString();
 
-        return \sprintf('%s:%s', $hours, $minutes);
+        return "{$hours}{$hoursSeparator}{$minutes}";
     }
 
     public static function formatTenthSeconds(int $tenthSeconds): string
@@ -66,10 +66,10 @@ class DurationManipulator
         $tenthSeconds = (string) $splitDuration['tenthSeconds'];
 
         if (0 === $splitDuration['hours']) {
-            return \sprintf('%s:%s.%s', $minutes, $seconds, $tenthSeconds);
+            return "{$minutes}:{$seconds}.{$tenthSeconds}";
         }
 
-        return \sprintf('%s:%s:%s.%s', $hours, $minutes, $seconds, $tenthSeconds);
+        return "{$hours}:{$minutes}:{$seconds}.{$tenthSeconds}";
     }
 
     private static function splitDuration(int $tenthSeconds): array

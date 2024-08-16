@@ -34,7 +34,7 @@ use function Symfony\Component\String\u;
 #[Route(path: '/payment-attestation')]
 class PaymentAttestationController extends AbstractController
 {
-    #[Route(path: '/download/{id}', name: 'payment_attestation_download', methods: ['GET'])]
+    #[Route(path: '/download/{id<\d+>}', name: 'payment_attestation_download', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function download(
         License $license,

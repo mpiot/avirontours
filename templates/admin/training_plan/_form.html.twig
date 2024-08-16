@@ -1,0 +1,16 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.name) }}
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.startAt) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.endAt) }}
+        </div>
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
+{{ form_end(form) }}

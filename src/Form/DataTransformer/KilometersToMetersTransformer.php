@@ -29,8 +29,12 @@ class KilometersToMetersTransformer implements DataTransformerInterface
      *
      * @param int $value
      */
-    public function transform($value): float
+    public function transform($value): ?float
     {
+        if (null === $value) {
+            return null;
+        }
+
         return $value / 1000;
     }
 
@@ -39,8 +43,12 @@ class KilometersToMetersTransformer implements DataTransformerInterface
      *
      * @param float $value
      */
-    public function reverseTransform($value): int
+    public function reverseTransform($value): ?int
     {
+        if (null === $value) {
+            return null;
+        }
+
         return (int) round($value * 1000);
     }
 }

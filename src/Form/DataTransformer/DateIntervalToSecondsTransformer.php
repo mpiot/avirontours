@@ -30,18 +30,26 @@ class DateIntervalToSecondsTransformer implements DataTransformerInterface
      *
      * @param int $value
      */
-    public function transform($value): \DateInterval
+    public function transform($value): ?\DateInterval
     {
+        if (null === $value) {
+            return null;
+        }
+
         return DurationManipulator::tenthSecondsToDateInterval($value);
     }
 
     /**
      * Transforms a DateInterval to an integer (seconds).
      *
-     * @param \DateInterval $value
+     * @param ?\DateInterval $value
      */
-    public function reverseTransform($value): int
+    public function reverseTransform($value): ?int
     {
+        if (null === $value) {
+            return null;
+        }
+
         return DurationManipulator::dateIntervalToTenthSeconds($value);
     }
 }
