@@ -67,7 +67,10 @@ class Training
     #[Assert\GreaterThanOrEqual(0)]
     #[Assert\LessThanOrEqual(1)]
     #[ORM\Column(type: Types::FLOAT)]
-    private ?float $feeling = 0.5;
+    private ?float $feeling = 0.75;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $ratedPerceivedExertion = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
@@ -210,6 +213,18 @@ class Training
     public function setFeeling(?float $feeling): self
     {
         $this->feeling = $feeling;
+
+        return $this;
+    }
+
+    public function getRatedPerceivedExertion(): ?int
+    {
+        return $this->ratedPerceivedExertion;
+    }
+
+    public function setRatedPerceivedExertion(?int $ratedPerceivedExertion): static
+    {
+        $this->ratedPerceivedExertion = $ratedPerceivedExertion;
 
         return $this;
     }

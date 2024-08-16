@@ -2,9 +2,16 @@
     {{ form_errors(form) }}
 
     {{ form_row(form.trainedAt) }}
-    {{ form_row(form.sport) }}
-    {{ form_row(form.type) }}
-    {{ form_row(form.distance) }}
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.sport) }}
+        </div>
+
+        <div class="col">
+            {{ form_row(form.type) }}
+        </div>
+    </div>
 
     <div class="mb-3">
         {{ form.duration.vars.label }}
@@ -15,16 +22,16 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        {{ form_label(form.feeling) }}
-        <div class="d-flex align-items-center">
-            <span class="far fa-frown fa-2x text-danger"></span>
+    {{ form_row(form.distance) }}
 
-            {{ form_widget(form.feeling, { 'attr': { 'class': 'mx-3' } }) }}
-
-            <span class="far fa-smile fa-2x text-success"></span>
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.feeling) }}
         </div>
-        {{ form_errors(form.feeling) }}
+
+        <div class="col">
+            {{ form_row(form.ratedPerceivedExertion) }}
+        </div>
     </div>
 
     {{ form_row(form.comment) }}
