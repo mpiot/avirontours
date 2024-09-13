@@ -30,7 +30,7 @@ class TurnstileValidator extends ConstraintValidator
         private readonly string $env,
         private readonly string $turnstileSecretKey,
         private readonly RequestStack $requestStack,
-        private readonly HttpClientInterface $httpClient
+        private readonly HttpClientInterface $httpClient,
     ) {
     }
 

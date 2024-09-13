@@ -49,7 +49,7 @@ class LicenseController extends AbstractController
         #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
         Request $request,
         ManagerRegistry $managerRegistry,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
     ): Response {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
@@ -82,7 +82,7 @@ class LicenseController extends AbstractController
         License $license,
         Request $request,
         ManagerRegistry $managerRegistry,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
     ): Response {
         $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
         $form->handleRequest($request);
@@ -152,7 +152,7 @@ class LicenseController extends AbstractController
     #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
     public function chainValidation(
         #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
-        LicenseRepository $repository
+        LicenseRepository $repository,
     ): Response {
         $license = $repository->findOneForValidation($season);
         if (null !== $license) {
@@ -177,7 +177,7 @@ class LicenseController extends AbstractController
         string $transitionName,
         Request $request,
         WorkflowInterface $licenseWorkflow,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
     ): Response {
         if ($this->isCsrfTokenValid('license-medical-certificate-action', (string) $request->query->get('_token'))) {
             try {
@@ -202,7 +202,7 @@ class LicenseController extends AbstractController
         License $license,
         Request $request,
         WorkflowInterface $licenseWorkflow,
-        ManagerRegistry $managerRegistry
+        ManagerRegistry $managerRegistry,
     ): Response {
         if ($this->isCsrfTokenValid('license-validate', (string) $request->query->get('_token'))) {
             try {

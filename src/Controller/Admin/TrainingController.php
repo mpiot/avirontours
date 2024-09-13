@@ -64,7 +64,7 @@ class TrainingController extends AbstractController
         Request $request,
         #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
         TrainingRepository $trainingRepository,
-        TrainingChart $trainingsChart
+        TrainingChart $trainingsChart,
     ): Response {
         return $this->render('admin/training/list.html.twig', [
             'user' => $user,
@@ -77,7 +77,7 @@ class TrainingController extends AbstractController
     #[Route(path: '/{user_id}/{id}', name: 'admin_training_show', methods: ['GET'])]
     public function show(
         #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
-        Training $training
+        Training $training,
     ): Response {
         return $this->render('admin/training/show.html.twig', [
             'user' => $user,

@@ -29,7 +29,7 @@ final class LogbookChart
     public function __construct(
         private LogbookEntryRepository $logbookEntryRepository,
         private ChartBuilderInterface $chartBuilder,
-        private ArrayNormalizer $normalizer
+        private ArrayNormalizer $normalizer,
     ) {
     }
 

@@ -34,7 +34,7 @@ class HomepageController extends AbstractController
     public function homepage(
         LogbookChart $logbookChart,
         PhysicalQualitiesChart $physicalQualitiesChart,
-        TrainingChart $trainingsChart
+        TrainingChart $trainingsChart,
     ): Response {
         return $this->render('homepage/homepage.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),

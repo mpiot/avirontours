@@ -36,7 +36,7 @@ class FileUploader
         private readonly FilesystemOperator $privateUploadsFilesystem,
         private readonly string $uploadsBaseUrl,
         private readonly string $uploadsPrivateDir,
-        private readonly string $uploadsPublicDir
+        private readonly string $uploadsPublicDir,
     ) {
     }
 

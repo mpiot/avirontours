@@ -40,7 +40,7 @@ class ImportPostalCodeCommand extends Command
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly PostalCodeRepository $repository,
-        private readonly ManagerRegistry $managerRegistry
+        private readonly ManagerRegistry $managerRegistry,
     ) {
         parent::__construct();
     }
