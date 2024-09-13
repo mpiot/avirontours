@@ -26,7 +26,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Install PHP with extensions
               uses: shivammathur/setup-php@v2
@@ -37,7 +37,7 @@ jobs:
                   ini-values: zend.assertions=1
 
             - name: Install NodeJS
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18
                   cache: 'npm'
@@ -48,7 +48,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -69,7 +69,7 @@ jobs:
               run: echo "dir=$(pwd)/.coverage-cache" >> $GITHUB_OUTPUT
 
             - name: Coverage cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               id: coverage-cache
               with:
                   path: ${{ steps.coverage-cache-dir-path.outputs.dir }}
@@ -96,7 +96,7 @@ jobs:
         needs: tests
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
               with:
                   fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
 
