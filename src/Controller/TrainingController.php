@@ -93,7 +93,7 @@ class TrainingController extends AbstractController
     public function showPhase(
         #[MapEntity(mapping: ['training_id' => 'id'])] Training $training,
         TrainingPhase $trainingPhase,
-        TrainingPhaseChart $trainingPhaseChart
+        TrainingPhaseChart $trainingPhaseChart,
     ): Response {
         return $this->render('training/_phase.html.twig', [
             'training' => $training,

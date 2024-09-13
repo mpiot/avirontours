@@ -30,7 +30,7 @@ class Concept2ImportMessageHandler
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly Concept2ApiConsumer $apiConsumer,
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
     ) {
     }
 

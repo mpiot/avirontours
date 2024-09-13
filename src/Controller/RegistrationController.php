@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
         Request $request,
         ManagerRegistry $managerRegistry,
         FileUploader $fileUploader,
-        MailerInterface $mailer
+        MailerInterface $mailer,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('profile_show');
@@ -110,7 +110,7 @@ class RegistrationController extends AbstractController
         SeasonCategoryRepository $seasonCategoryRepository,
         ManagerRegistry $managerRegistry,
         FileUploader $fileUploader,
-        MailerInterface $mailer
+        MailerInterface $mailer,
     ): Response {
         $seasonCategory = $seasonCategoryRepository->findSubscriptionSeasonCategory($slug, $this->getUser());
         if (null === $seasonCategory) {

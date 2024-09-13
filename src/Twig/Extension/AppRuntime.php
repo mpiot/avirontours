@@ -28,7 +28,7 @@ class AppRuntime implements RuntimeExtensionInterface, ServiceSubscriberInterfac
 {
     public function __construct(
         private readonly ContainerInterface $locator,
-        private readonly string $publicDir
+        private readonly string $publicDir,
     ) {
     }
 

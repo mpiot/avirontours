@@ -101,7 +101,7 @@ class Concept2ApiConsumer
 
     private function createTrainingPhase(
         array $intervalData,
-        array $strokeData
+        array $strokeData,
     ): TrainingPhase {
         $trainingPhase = new TrainingPhase();
         $trainingPhase

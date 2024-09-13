@@ -38,7 +38,7 @@ class PaymentAttestationController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function download(
         License $license,
-        PdfGenerator $pdfGenerator
+        PdfGenerator $pdfGenerator,
     ): Response {
         if ($this->getUser() !== $license->getUser()) {
             throw $this->createAccessDeniedException();
