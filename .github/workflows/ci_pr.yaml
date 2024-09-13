@@ -17,7 +17,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Install PHP
               uses: shivammathur/setup-php@v2
@@ -28,7 +28,7 @@ jobs:
                   ini-values: zend.assertions=1
 
             - name: Install NodeJS
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18
                   cache: 'npm'
@@ -39,7 +39,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer Cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -50,7 +50,7 @@ jobs:
               run: composer install --no-interaction --no-progress
 
             - name: Install Node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18
 
@@ -86,7 +86,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Install PHP
               uses: shivammathur/setup-php@v2
@@ -102,7 +102,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer Cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -123,7 +123,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Install PHP
               uses: shivammathur/setup-php@v2
@@ -139,7 +139,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer Cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -160,7 +160,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Install PHP
               uses: shivammathur/setup-php@v2
@@ -176,7 +176,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer Cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -197,10 +197,10 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Security checker
-              uses: symfonycorp/security-checker-action@v4
+              uses: symfonycorp/security-checker-action@v5
 
     migrations-and-fixtures:
         name: Migrations & Fixtures
@@ -225,7 +225,7 @@ jobs:
 
         steps:
             - name: Checkout develop branch code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
                   ref: develop
 
@@ -238,7 +238,7 @@ jobs:
                   ini-values: zend.assertions=1
 
             - name: Install NodeJS
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 18
                   cache: 'npm'
@@ -249,7 +249,7 @@ jobs:
                   echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
             - name: Composer cache
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: ${{ steps.composer-cache.outputs.dir }}
                   key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
