@@ -29,7 +29,7 @@ use function Symfony\Component\String\u;
 
 class PdfGenerator
 {
-    private const CHROME_BINARY = 'google-chrome';
+    private const CHROME_BINARY = 'google-chrome-stable';
 
     public function __construct(
         private readonly Environment $twig,
@@ -63,7 +63,7 @@ class PdfGenerator
         // Generate the .pdf file
         $process = new Process([
             self::CHROME_BINARY,
-            '--headless',
+            '--headless=old',
             '--disable-gpu',
             '--run-all-compositor-stages-before-draw',
             '--no-pdf-header-footer',
