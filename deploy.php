@@ -51,7 +51,7 @@ set('bin/console', '{{bin/php}} {{release_or_current_path}}/bin/console');
 // Hosts
 
 host('141.94.65.219')
-    ->set('deploy_path', '/mnt/app')
+    ->set('deploy_path', '/mnt/data/app')
     ->set('branch', 'develop')
     ->set('symfony_env', 'prod')
 ;
