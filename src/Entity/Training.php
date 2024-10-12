@@ -20,9 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\EnergyPathwayType;
 use App\Enum\SportType;
-use App\Enum\TrainingType;
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -48,8 +46,9 @@ class Training
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $trainedAt;
 
+    #[Assert\NotNull]
     #[ORM\Column(type: Types::INTEGER)]
-    private int $duration = 0;
+    private ?int $duration = null;
 
     #[Assert\LessThanOrEqual(400000, message: 'Un entraînement doit faire 400km maximum.')]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -60,14 +59,10 @@ class Training
     private ?SportType $sport = null;
 
     #[Assert\NotNull]
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, enumType: TrainingType::class)]
-    private ?TrainingType $type = null;
-
-    #[Assert\NotNull]
     #[Assert\GreaterThanOrEqual(0)]
     #[Assert\LessThanOrEqual(1)]
     #[ORM\Column(type: Types::FLOAT)]
-    private ?float $feeling = 0.75;
+    private ?float $feeling = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $ratedPerceivedExertion = null;
@@ -90,7 +85,7 @@ class Training
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->trainedAt = new \DateTime((new \DateTime())->format('Y-m-d H:i'));
+        $this->trainedAt = new \DateTime((new \DateTime())->format('Y-m-d'));
         $this->trainingPhases = new ArrayCollection();
     }
 
@@ -123,13 +118,17 @@ class Training
         return $this;
     }
 
-    public function getDuration(): int
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function getFormattedDuration(bool $displayTenth = false): string
+    public function getFormattedDuration(bool $displayTenth = false): ?string
     {
+        if (null === $this->duration) {
+            return null;
+        }
+
         if (true === $displayTenth) {
             return DurationManipulator::formatTenthSeconds($this->duration);
         }
@@ -139,7 +138,7 @@ class Training
         return DurationManipulator::formatSeconds($seconds);
     }
 
-    public function setDuration(int $duration): self
+    public function setDuration(?int $duration): self
     {
         $this->duration = $duration;
 
@@ -186,23 +185,6 @@ class Training
         $this->sport = $sport;
 
         return $this;
-    }
-
-    public function getType(): ?TrainingType
-    {
-        return $this->type;
-    }
-
-    public function setType(?TrainingType $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getEnergyPathway(): EnergyPathwayType
-    {
-        return EnergyPathwayType::fromTrainingType($this->type);
     }
 
     public function getFeeling(): ?float

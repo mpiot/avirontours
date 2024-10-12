@@ -27,20 +27,28 @@ class KilometersToMetersTransformer implements DataTransformerInterface
     /**
      * Transforms an integer (meters) to a float (kilometers).
      *
-     * @param int $value
+     * @param ?int $value
      */
-    public function transform($value): float
+    public function transform($value): ?float
     {
+        if (null === $value) {
+            return null;
+        }
+
         return $value / 1000;
     }
 
     /**
      * Transforms a float (kilometers) to an integer (meters).
      *
-     * @param float $value
+     * @param ?float $value
      */
-    public function reverseTransform($value): int
+    public function reverseTransform($value): ?int
     {
+        if (null === $value) {
+            return null;
+        }
+
         return (int) round($value * 1000);
     }
 }

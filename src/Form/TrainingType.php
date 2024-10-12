@@ -21,13 +21,12 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Training;
-use App\Enum\EnergyPathwayType;
 use App\Enum\SportType;
 use App\Form\DataTransformer\KilometersToMetersTransformer;
 use App\Form\Type\DurationType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -39,24 +38,15 @@ class TrainingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('trainedAt', DateTimeType::class, [
-                'label' => 'Début de la séance',
-                'widget' => 'single_text',
-            ])
             ->add('sport', EnumType::class, [
                 'label' => 'Sport',
                 'class' => SportType::class,
                 'choice_label' => 'label',
                 'placeholder' => '-- Sélectionner un sport --',
             ])
-            ->add('type', EnumType::class, [
-                'label' => 'Type d\'entraînement',
-                'class' => \App\Enum\TrainingType::class,
-                'group_by' => function (\App\Enum\TrainingType $choice) {
-                    return EnergyPathwayType::fromTrainingType($choice)->label();
-                },
-                'choice_label' => 'label',
-                'placeholder' => '-- Type d\'entraînement --',
+            ->add('trainedAt', DateType::class, [
+                'label' => 'Début de la séance',
+                'widget' => 'single_text',
             ])
             ->add('duration', DurationType::class, [
                 'label' => 'Durée',
@@ -66,7 +56,7 @@ class TrainingType extends AbstractType
                 'scale' => 1,
                 'attr' => [
                     'step' => 0.1,
-                    'placeholder' => 'En km',
+                    'placeholder' => 'km',
                 ],
                 'html5' => true,
                 'required' => false,
@@ -82,6 +72,7 @@ class TrainingType extends AbstractType
                 ],
                 'options_as_html' => true,
                 'autocomplete' => true,
+                'placeholder' => '-- Sélectionner un choix --',
             ])
             ->add('ratedPerceivedExertion', ChoiceType::class, [
                 'label' => 'RPE - Perception de l\'effort',

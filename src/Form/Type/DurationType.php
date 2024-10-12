@@ -39,8 +39,8 @@ class DurationType extends AbstractType
     {
         $resolver->setDefaults([
             'labels' => [
-                'hours' => 'Heures',
-                'minutes' => 'Minutes',
+                'hours' => false,
+                'minutes' => false,
             ],
             'widget' => 'integer',
             'with_years' => false,

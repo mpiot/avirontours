@@ -24,8 +24,7 @@ enum SportType: string
     case Rowing = 'rowing';
     case Running = 'running';
     case Ergometer = 'ergometer';
-    case WorkoutEndurance = 'workout_endurance';
-    case WorkoutStrength = 'workout_strength';
+    case WeightTraining = 'weight_training';
     case Swimming = 'swimming';
     case GeneralPhysicalPreparation = 'general_physical_preparation';
     case Strengthening = 'strengthening';
@@ -39,11 +38,10 @@ enum SportType: string
             self::Rowing => 'Aviron',
             self::Running => 'Course à pied',
             self::Ergometer => 'Ergomètre',
-            self::WorkoutEndurance => 'Musculation (Endurance)',
-            self::WorkoutStrength => 'Musculation (Force)',
+            self::WeightTraining => 'Musculation',
             self::Swimming => 'Natation',
             self::GeneralPhysicalPreparation => 'PPG',
-            self::Strengthening => 'Renforcement',
+            self::Strengthening => 'Renforcement / Gainage',
             self::Cycling => 'Vélo',
             self::Yoga => 'Yoga',
         };

@@ -23,7 +23,6 @@ namespace App\EventListener;
 use App\Entity\LogbookEntry;
 use App\Entity\Training;
 use App\Enum\SportType;
-use App\Enum\TrainingType;
 use App\Util\DurationManipulator;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
@@ -106,7 +105,7 @@ class AutomaticTrainingCreator
                 ->setDuration($duration)
                 ->setDistance($distance)
                 ->setSport(SportType::Rowing)
-                ->setType(TrainingType::B1)
+                ->setFeeling(1)
             ;
 
             $this->trainings[] = $training;
