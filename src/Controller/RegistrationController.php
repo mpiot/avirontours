@@ -38,7 +38,7 @@ use Symfony\Component\Mime\Part\File;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class RegistrationController extends AbstractController
+class RegistrationController extends AbstractPublicController
 {
     #[Route(path: '/register/{slug}', name: 'app_register')]
     public function register(
