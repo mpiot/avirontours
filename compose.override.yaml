@@ -1,18 +1,19 @@
-version: '3'
-
 services:
 ###> doctrine/doctrine-bundle ###
-    database:
-        ports:
-          - "127.0.0.1:5432:5432"
+  database:
+    ports:
+      - "127.0.0.1:5432:5432"
 ###< doctrine/doctrine-bundle ###
 
-###> symfony/mailer ###
-    mailer:
-        image: schickling/mailcatcher
-        ports:
-            - "127.0.0.1:1025:1025"
-            - "127.0.0.1:1080:1080"
+  ###> symfony/mailer ###
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
 
 ###> symfony/mercure-bundle ###

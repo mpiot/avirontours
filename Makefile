@@ -12,7 +12,7 @@ NPM      = npm
 .DEFAULT_GOAL : help
 .PHONY        : help
 .PHONY        : start stop restart
-.PHONY        : docker-start docker-stop docker-up docker-down
+.PHONY        : docker-start docker-stop docker-up docker-down docker-list
 .PHONY        : db-reset db-fixtures
 .PHONY        : tests lint validate-schema phpunit
 
@@ -50,6 +50,8 @@ docker-up: ## Create and start containers
 docker-down: ## Stop and remove resources
 	@$(DOCKER_COMPOSE) down -v --remove-orphans
 
+docker-list: ## List containers
+	@$(DOCKER_COMPOSE) ps -a
 
 ##
 ## Database 🛢️
