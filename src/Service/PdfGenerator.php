@@ -27,14 +27,10 @@ use Twig\Environment;
 
 use function Symfony\Component\String\u;
 
-class PdfGenerator
+readonly class PdfGenerator
 {
-    private const CHROME_BINARY = 'google-chrome-stable';
-
-    public function __construct(
-        private readonly Environment $twig,
-        private readonly string $projectDir,
-    ) {
+    public function __construct(private string $projectDir, private Environment $twig)
+    {
     }
 
     public function twigToPdf(string $view, array $parameters, string $outFile): string
@@ -62,13 +58,10 @@ class PdfGenerator
 
         // Generate the .pdf file
         $process = new Process([
-            self::CHROME_BINARY,
-            '--headless=old',
-            '--disable-gpu',
-            '--run-all-compositor-stages-before-draw',
-            '--no-pdf-header-footer',
-            "--print-to-pdf={$outFile}",
+            "{$this->projectDir}/bin/html-print.mjs",
+            'pdf',
             $tmpFile,
+            $outFile,
         ]);
         $process->run();
 
