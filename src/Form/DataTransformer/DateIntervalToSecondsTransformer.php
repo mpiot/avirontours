@@ -30,7 +30,7 @@ class DateIntervalToSecondsTransformer implements DataTransformerInterface
      *
      * @param int $value
      */
-    public function transform($value): \DateInterval
+    public function transform($value): ?\DateInterval
     {
         return DurationManipulator::tenthSecondsToDateInterval($value);
     }
@@ -40,7 +40,7 @@ class DateIntervalToSecondsTransformer implements DataTransformerInterface
      *
      * @param \DateInterval $value
      */
-    public function reverseTransform($value): int
+    public function reverseTransform($value): ?int
     {
         return DurationManipulator::dateIntervalToTenthSeconds($value);
     }

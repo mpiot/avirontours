@@ -52,10 +52,6 @@
                         <th>Membre</th>
                         <th>Nombre de séances</th>
                         <th>Distance</th>
-                        <th>Aérobie</th>
-                        <th>Transition aérobie/anaérobie</th>
-                        <th>Anaérobie lactique</th>
-                        <th>Anaérobie alactique</th>
                         <th>Sensation</th>
                     </tr>
                     </thead>
@@ -79,18 +75,6 @@
                                 {{ sum }} km
                             </td>
                             <td>
-                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::Aerobic')) / user.trainingsDuration * 100)|round}}%
-                            </td>
-                            <td>
-                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::Threshold')) / user.trainingsDuration * 100)|round}}%
-                            </td>
-                            <td>
-                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::LacticAnaerobic')) / user.trainingsDuration * 100)|round}}%
-                            </td>
-                            <td>
-                                {{ (user.trainingsDuration(constant('App\\Enum\\EnergyPathwayType::AlacticAnaerobic')) / user.trainingsDuration * 100)|round}}%
-                            </td>
-                            <td>
                                 {% set feeling = user.trainingsFeeling %}
                                 <div class="progress">
                                     <div class="progress-bar {{ feeling < 0.4 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ feeling * 100 }}%" aria-valuenow="{{ feeling * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -99,7 +83,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="8" class="text-center">Pas d'entraînement</td>
+                            <td colspan="4" class="text-center">Pas d'entraînement</td>
                         </tr>
                     {% endfor %}
                     </tbody>

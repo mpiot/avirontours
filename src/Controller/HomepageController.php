@@ -39,7 +39,6 @@ class HomepageController extends AbstractController
         return $this->render('homepage/homepage.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),
             'physicalQualitiesChart' => $physicalQualitiesChart->chart($this->getUser()),
-            'trainingsPathwaysChart' => $trainingsChart->pathways($this->getUser()),
             'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);
     }

@@ -69,7 +69,6 @@ class TrainingController extends AbstractController
         return $this->render('admin/training/list.html.twig', [
             'user' => $user,
             'trainings' => $trainingRepository->findUserPaginated($user, $request->query->getInt('page', 1)),
-            'trainingsPathwaysChart' => $trainingsChart->pathways($user),
             'trainingsSportsChart' => $trainingsChart->sports($user),
         ]);
     }

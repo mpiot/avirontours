@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Enum\SportType;
-use App\Enum\TrainingType;
 use App\Factory\LicenseFactory;
 use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellDamageCategoryFactory;
@@ -477,14 +476,12 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $this->assertSame(12200, $training->getDistance());
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame(SportType::Rowing, $training->getSport());
-        $this->assertSame(TrainingType::B1, $training->getType());
         $training = TrainingFactory::repository()->last();
         $this->assertSame($entry->getCrewMembers()->last(), $training->getUser());
         $this->assertSame('2022-01-15 14:30:00', $training->getTrainedAt()->format('Y-m-d H:i:s'));
         $this->assertSame(12200, $training->getDistance());
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame(SportType::Rowing, $training->getSport());
-        $this->assertSame(TrainingType::B1, $training->getType());
     }
 
     public function testFinishLogbookWithDamageEntry(): void

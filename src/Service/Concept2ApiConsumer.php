@@ -22,7 +22,6 @@ use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Entity\User;
 use App\Enum\SportType;
-use App\Enum\TrainingType;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
@@ -58,7 +57,6 @@ class Concept2ApiConsumer
         $training = new Training($user);
         $training
             ->setSport(SportType::Ergometer)
-            ->setType(TrainingType::B1)
             ->setTrainedAt(new \DateTime($result['date']))
             ->setDuration($result['time'])
             ->setDistance($result['distance'])

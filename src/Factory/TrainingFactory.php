@@ -22,7 +22,6 @@ namespace App\Factory;
 
 use App\Entity\Training;
 use App\Enum\SportType;
-use App\Enum\TrainingType;
 use App\Repository\TrainingRepository;
 use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -74,7 +73,6 @@ final class TrainingFactory extends PersistentProxyObjectFactory
             'duration' => self::faker()->numberBetween(12000, 72000),
             'distance' => self::faker()->numberBetween(8000, 20000),
             'sport' => self::faker()->randomElement(SportType::cases()),
-            'type' => self::faker()->randomElement(TrainingType::cases()),
             'feeling' => self::faker()->randomFloat(1, 0, 1),
             'comment' => self::faker()->optional()->text(),
         ];

@@ -1,28 +1,31 @@
 {{ form_start(form) }}
     {{ form_errors(form) }}
 
+    {{ form_row(form.sport) }}
     {{ form_row(form.trainedAt) }}
 
     <div class="row">
         <div class="col">
-            {{ form_row(form.sport) }}
+            <fieldset class="mb-3">
+                <legend class="col-form-label required pt-0">{{ form.duration.vars.label }}</legend>
+                {{ form_errors(form.duration) }}
+                <div id="{{ form.duration.vars.id }}" class="mt-n1">
+                    <div class="row">
+                        <div class="col">
+                            {{ form_row(form.duration.hours, { attr: { 'inputmode': 'numeric', 'placeholder': 'h' } }) }}
+                        </div>
+                        <div class="col">
+                            {{ form_row(form.duration.minutes, { attr: { 'inputmode': 'numeric', 'placeholder': 'm' } }) }}
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
         </div>
 
         <div class="col">
-            {{ form_row(form.type) }}
+            {{ form_row(form.distance, { attr: { 'inputmode': 'numeric' } }) }}
         </div>
     </div>
-
-    <div class="mb-3">
-        {{ form.duration.vars.label }}
-        <div id="{{ form.duration.vars.id }}" class="row">
-            {{ form_errors(form.duration) }}
-            <div class="col">{{ form_row(form.duration.hours) }}</div>
-            <div class="col">{{ form_row(form.duration.minutes) }}</div>
-        </div>
-    </div>
-
-    {{ form_row(form.distance) }}
 
     <div class="row">
         <div class="col">
