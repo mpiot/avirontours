@@ -78,38 +78,19 @@ class TrainingType extends AbstractType
                 'label' => 'RPE - Perception de l\'effort',
                 'choices' => [
                     'N/A' => null,
-                    '1 - Très très facile' => 1,
-                    '2 - 😁 Facile' => 2,
-                    '3 - Modéré' => 3,
-                    '4 - 😐 Assez dur' => 4,
-                    '5 - Dur' => 5,
-                    '6 - 😕 Vraiment dur' => 6,
-                    '7 - Très dur' => 7,
-                    '8 - 😣 Extrêmement dur' => 8,
-                    '9 - Presque maximal' => 9,
-                    '10 - 😖 Maximal' => 10,
+                    '<span class="d-block" style="background-color: rgba(86, 233, 233, .5);">1 - Très très facile</span>' => 1,
+                    '<span class="d-block" style="background-color: rgba(86, 233, 170, .5);">2 - 😁 Facile</span>' => 2,
+                    '<span class="d-block" style="background-color: rgba(86, 233, 100, .5);">3 - Modéré</span>' => 3,
+                    '<span class="d-block" style="background-color: rgba(126, 211, 33, .5);">4 - 😐 Assez dur</span>' => 4,
+                    '<span class="d-block" style="background-color: rgba(255, 250, 45, .5);">5 - Dur</span>' => 5,
+                    '<span class="d-block" style="background-color: rgba(255, 200, 45, .5);">6 - 😕 Vraiment dur</span>' => 6,
+                    '<span class="d-block" style="background-color: rgba(255, 150, 45, .5);">7 - Très dur</span>' => 7,
+                    '<span class="d-block" style="background-color: rgba(255, 100, 45, .5);">8 - 😣 Extrêmement dur</span>' => 8,
+                    '<span class="d-block" style="background-color: rgba(210, 50, 50, .5);">9 - Presque maximal</span>' => 9,
+                    '<span class="d-block" style="background-color: rgba(210, 0, 50, .5);">10 - 😖 Maximal</span>' => 10,
                 ],
-                'choice_attr' => function (?int $choice) {
-                    $color = match ($choice) {
-                        1 => 'rgba(86, 233, 233, .5)',
-                        2 => 'rgba(86, 233, 170, .5)',
-                        3 => 'rgba(86, 233, 100, .5)',
-                        4 => 'rgba(126, 211, 33, .5)',
-                        5 => 'rgba(255, 250, 45, .5)',
-                        6 => 'rgba(255, 200, 45, .5)',
-                        7 => 'rgba(255, 150, 45, .5)',
-                        8 => 'rgba(255, 100, 45, .5)',
-                        9 => 'rgba(210, 50, 50, .5)',
-                        10 => 'rgba(210, 0, 50, .5)',
-                        default => null,
-                    };
-
-                    if (null === $color) {
-                        return [];
-                    }
-
-                    return ['style' => "background-color: {$color};"];
-                },
+                'options_as_html' => true,
+                'autocomplete' => true,
             ])
             ->add('comment', TextareaType::class, [
                 'label' => 'Commentaire',
