@@ -1,30 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Carnet d'entraînements{% endblock %}
+{% block title %}Mes entraînements{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item active">Carnet d'entraînements</li>
+    <li class="breadcrumb-item active">Mes entraînements</li>
 {% endblock %}
 
 {% block body %}
     <div class="d-flex">
-        <h1>Carnet d'entraînements</h1>
+        <h1>Mes entraînements</h1>
 
         <div class="ms-auto align-self-center">
             <div class="btn-group" role="group">
-                <a href="{{ path('training_new') }}" class="btn btn-outline-primary">
-                    <span class="fas fa-plus"></span> Ajouter un entraînement
+                <a
+                    href="{{ path('training_new') }}"
+                    class="btn btn-outline-primary"
+                >
+                    <span class="fas fa-plus"></span> Ajouter
                 </a>
 
-                <a href="{{ path('training_import_concept_logbook') }}" class="btn btn-outline-secondary {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}">
-                    <span class="fa fa-sync"></span> Sync ErgData
-                </a>
+                <div class="btn-group align-self-center" role="group">
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    ></button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a
+                                href="{{ path('training_import_concept_logbook') }}"
+                                class="dropdown-item {%- if app.user.concept2RefreshToken is null %} disabled{% endif %}"
+                            >
+                                <span class="fa fa-sync"></span> Sync ErgData
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow">
+    <div class="card border-0 shadow mt-3">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -46,7 +65,13 @@
                                     <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.sport.label }}</a>
                                 </td>
                                 <td>{{ training.formattedDuration }}</td>
-                                <td>{{ training.distance ? training.distance|format_number : '-' }} m</td>
+                                <td>
+                                    {% if training.distance is not null %}
+                                        {{ training.distance|format_number }} m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
                                 <td>{{ training.comment|u.truncate(25, '...') }}</td>
                                 <td class="text-end">
                                     <a class="btn btn-outline-warning btn-sm rounded-pill"

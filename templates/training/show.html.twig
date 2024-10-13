@@ -4,7 +4,7 @@
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Carnet d'entraînements</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Mes entraînements</a></li>
     <li class="breadcrumb-item active">{{ training.trainedAt|date('d/m/Y - H:i') }} - {{ training.sport.label }}</li>
 {% endblock %}
 

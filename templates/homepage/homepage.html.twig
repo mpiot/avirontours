@@ -9,8 +9,21 @@
                     {{ render_chart(logbookChart) }}
                 </div>
             </div>
+        </div>
 
-            {% if app.user.physiology is not null %}
+        {% if trainingsSportsChart is not null %}
+            <div class="col-xl-4">
+                <div class="card border-0 shadow mb-3">
+                    <div class="card-body">
+                        <span class="h4">Répartition des sports</span>
+                        {{ render_chart(trainingsSportsChart) }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if app.user.physiology is not null %}
+            <div class="col-xl-6">
                 <div class="card border-0 shadow mb-3">
                     <div class="card-body">
                         <span class="h4">Ma physiologie</span>
@@ -40,17 +53,6 @@
                                     <span>{{ app.user.physiology.maximumOxygenConsumption ?? '-' }} ml/min/kg</span>
                                 </li>
                             </ul>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-
-        {% if physicalQualitiesChart is not null %}
-            <div class="col-xl-6">
-                <div class="card border-0 shadow mb-3">
-                    <div class="card-body">
-                        <span class="h4">Mes qualités physiques</span>
-                        {{ render_chart(physicalQualitiesChart) }}
                     </div>
                 </div>
             </div>

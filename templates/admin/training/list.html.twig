@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Carnet d'entraînements de {{ user.fullname }}{% endblock %}
+{% block title %}Mes entraînements de {{ user.fullname }}{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Carnet d'entraînements de {{ user.fullname }}</h1>
+    <h1>Mes entraînements de {{ user.fullname }}</h1>
 
     {% if trainingsSportsChart is not null %}
         <div class="card border-0 shadow mb-3">
