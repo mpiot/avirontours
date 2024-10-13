@@ -75,6 +75,13 @@ final class TrainingChart
                 ],
             ],
         ]);
+        $chart->setOptions([
+            'plugins' => [
+                'legend' => [
+                    'position' => 'right',
+                ],
+            ],
+        ]);
 
         return $chart;
     }
