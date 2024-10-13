@@ -52,11 +52,18 @@ final class TrainingChart
         $rowingTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Rowing === $training->getSport())) / $totalDuration;
         $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Ergometer === $training->getSport())) / $totalDuration;
         $weightTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::WeightTraining === $training->getSport())) / $totalDuration;
-        $otherSportTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [SportType::Rowing, SportType::Ergometer, SportType::WeightTraining], true))) / $totalDuration;
+        $strengtheningTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Strengthening === $training->getSport())) / $totalDuration;
+        $otherSportTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [SportType::Rowing, SportType::Ergometer, SportType::WeightTraining, SportType::Strengthening], true))) / $totalDuration;
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
         $chart->setData([
-            'labels' => ['Aviron', 'Ergomètre', 'Musculation', 'Autres'],
+            'labels' => [
+                SportType::Rowing->label(),
+                SportType::Ergometer->label(),
+                SportType::WeightTraining->label(),
+                SportType::Strengthening->label(),
+                SportType::Other->label(),
+            ],
             'datasets' => [
                 [
                     'label' => '',
@@ -64,12 +71,14 @@ final class TrainingChart
                         $rowingTrainingsRatio * 100,
                         $ergometerTrainingsRatio * 100,
                         $weightTrainingsRatio * 100,
+                        $strengtheningTrainingsRatio * 100,
                         $otherSportTrainingsRatio * 100,
                     ],
                     'backgroundColor' => [
                         'rgb(70, 199, 238)',
                         'rgb(249, 191, 28)',
                         'rgb(176, 42, 55)',
+                        'rgb(210, 103, 240)',
                         'rgb(194, 202, 202)',
                     ],
                 ],
