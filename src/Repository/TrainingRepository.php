@@ -37,7 +37,7 @@ use Knp\Component\Pager\PaginatorInterface;
  */
 class TrainingRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
+    public function __construct(ManagerRegistry $registry, private readonly PaginatorInterface $paginator)
     {
         parent::__construct($registry, Training::class);
     }
@@ -59,12 +59,13 @@ class TrainingRepository extends ServiceEntityRepository
         );
     }
 
-    public function findForUser(?User $user = null, ?\DateTime $from = null, ?\DateTime $to = null): array
+    public function findForUser(?User $user = null, ?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): array
     {
         $query = $this->createQueryBuilder('training')
             ->innerJoin('training.user', 'user')
             ->where('user.id = :user_id')
             ->andWhere('training.trainedAt BETWEEN :from AND :to')
+            ->orderBy('training.trainedAt', 'DESC')
             ->setParameters([
                 'user_id' => $user->getId(),
                 'from' => $from,

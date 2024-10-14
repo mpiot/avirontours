@@ -81,8 +81,17 @@ class TrainingControllerTest extends AppWebTestCase
     public function testIndexTrainings(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        TrainingFactory::createMany(6, ['user' => $user]);
-        TrainingFactory::createMany(3);
+        TrainingFactory::createMany(6, [
+            'trainedAt' => TrainingFactory::faker()->dateTimeThisMonth(),
+            'user' => $user,
+        ]);
+        TrainingFactory::createMany(6, [
+            'trainedAt' => new \DateTime('-2 months'),
+            'user' => $user,
+        ]);
+        TrainingFactory::createMany(3, [
+            'trainedAt' => TrainingFactory::faker()->dateTimeThisMonth(),
+        ]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -90,7 +99,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/training');
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(6, $crawler->filter('table > tbody > tr'));
+        $this->assertCount(6, $crawler->filterXPath('//div[@id="training-list"]//div[starts-with(@id, "training-")]'));
     }
 
     public function testShowTraining(): void

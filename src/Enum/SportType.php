@@ -46,4 +46,15 @@ enum SportType: string
             self::Yoga => 'Yoga',
         };
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Other, self::Running, self::Swimming, self::GeneralPhysicalPreparation, self::Cycling , self::Yoga => 'rgb(194, 202, 202)',
+            self::Rowing => 'rgb(70, 199, 238)',
+            self::Ergometer => 'rgb(249, 191, 28)',
+            self::WeightTraining => 'rgb(176, 42, 55)',
+            self::Strengthening => 'rgb(210, 103, 240)',
+        };
+    }
 }
