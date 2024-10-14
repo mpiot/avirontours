@@ -41,7 +41,7 @@ enum SportType: string
             self::WeightTraining => 'Musculation',
             self::Swimming => 'Natation',
             self::GeneralPhysicalPreparation => 'PPG',
-            self::Strengthening => 'Renforcement / Gainage',
+            self::Strengthening => 'Gainage / Renforcement',
             self::Cycling => 'Vélo',
             self::Yoga => 'Yoga',
         };
@@ -55,6 +55,20 @@ enum SportType: string
             self::Ergometer => 'rgb(249, 191, 28)',
             self::WeightTraining => 'rgb(176, 42, 55)',
             self::Strengthening => 'rgb(210, 103, 240)',
+        };
+    }
+
+    public function icon(): string
+    {
+        return match ($this) {
+            self::Other, self::Ergometer, self::GeneralPhysicalPreparation => 'mdi:human-handsup',
+            self::Rowing => 'mdi:rowing',
+            self::Running => 'mdi:run',
+            self::WeightTraining => 'mdi:weight-lifter',
+            self::Swimming => 'mdi:swim',
+            self::Strengthening => 'mdi:human',
+            self::Cycling => 'mdi:bike',
+            self::Yoga => 'mdi:yoga',
         };
     }
 }
