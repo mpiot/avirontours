@@ -25,16 +25,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-class Concept2ImportMessageHandler
+readonly class Concept2ImportMessageHandler
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly Concept2ApiConsumer $apiConsumer,
-        private readonly UserRepository $userRepository,
+        private EntityManagerInterface $entityManager,
+        private Concept2ApiConsumer $apiConsumer,
+        private UserRepository $userRepository,
     ) {
     }
 
-    public function __invoke(Concept2ImportMessage $message)
+    public function __invoke(Concept2ImportMessage $message): void
     {
         $user = $this->userRepository->find($message->getUserId());
         if (null === $user) {

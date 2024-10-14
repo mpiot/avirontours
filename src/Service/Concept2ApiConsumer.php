@@ -30,10 +30,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Concept2ApiConsumer
 {
-    public const API_URL = 'https://log.concept2.com/api';
+    public const string API_URL = 'https://log.concept2.com/api';
 
-    public function __construct(private readonly ClientRegistry $clientRegistry, private readonly ManagerRegistry $managerRegistry, private readonly HttpClientInterface $httpClient)
-    {
+    public function __construct(
+        private readonly ClientRegistry $clientRegistry,
+        private readonly ManagerRegistry $managerRegistry,
+        private readonly HttpClientInterface $httpClient,
+    ) {
     }
 
     public function getTrainings(User $user, ?\DateTimeInterface $startAt): array
@@ -60,6 +63,7 @@ class Concept2ApiConsumer
             ->setTrainedAt(new \DateTime($result['date']))
             ->setDuration($result['time'])
             ->setDistance($result['distance'])
+            ->setFeeling(5)
             ->setStrokeRate($result['stroke_rate'])
             ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
             ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
