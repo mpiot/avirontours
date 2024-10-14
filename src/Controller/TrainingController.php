@@ -31,6 +31,7 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -40,10 +41,27 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
-    public function index(Request $request, TrainingRepository $trainingRepository): Response
-    {
+    public function index(
+        TrainingRepository $trainingRepository,
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^\d{4}-\d{2}-\d{2}$#'])] ?string $endAt = null,
+    ): Response {
+        $endAt = null !== $endAt ? new \DateTimeImmutable($endAt) : new \DateTimeImmutable('now');
+        $endAt = $endAt->modify('sunday this week')->setTime(0, 0);
+
+        $startAt = $endAt->modify('-1 month')->modify('monday this week');
+
+        $weeks = new \DatePeriod(
+            $startAt,
+            new \DateInterval('P1W'),
+            $endAt,
+            \DatePeriod::INCLUDE_END_DATE
+        );
+
         return $this->render('training/index.html.twig', [
-            'trainings' => $trainingRepository->findUserPaginated($this->getUser(), $request->query->getInt('page', 1)),
+            'startAt' => $startAt,
+            'endAt' => $endAt,
+            'weeks' => $weeks,
+            'trainings' => $trainingRepository->findForUser($this->getUser(), $startAt, $endAt),
         ]);
     }
 

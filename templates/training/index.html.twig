@@ -20,7 +20,7 @@
                     <span class="fas fa-plus"></span> Ajouter
                 </a>
 
-                <div class="btn-group align-self-center" role="group">
+                <div class="btn-group" role="group">
                     <button
                         type="button"
                         class="btn btn-outline-primary dropdown-toggle"
@@ -45,52 +45,77 @@
 
     <div class="card border-0 shadow mt-3">
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Sport</th>
-                        <th>Durée</th>
-                        <th>Distance</th>
-                        <th>Commentaire</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {% for training in trainings %}
-                            <tr>
-                                <td>{{ training.trainedAt|date('d/m/Y') }}</td>
-                                <td>
-                                    <a href="{{ path('training_show', {'id': training.id}) }}">{{ training.sport.label }}</a>
-                                </td>
-                                <td>{{ training.formattedDuration }}</td>
-                                <td>
-                                    {% if training.distance is not null %}
-                                        {{ training.distance|format_number }} m
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td>{{ training.comment|u.truncate(25, '...') }}</td>
-                                <td class="text-end">
-                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                       href="{{ path('training_edit', {'id': training.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="6" class="text-center">Pas d'entraînements</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <a
+                    href="{{ path('training_index', { 'endAt': endAt.modify('-1 week')|date('Y-m-d') }) }}"
+                    class="btn btn-sm btn-outline-secondary"
+                >
+                    <<
+                </a>
 
-                {% if trainings|length < trainings.totalItemCount %}
-                    {{ knp_pagination_render(trainings) }}
-                {% endif %}
+                <span class="mx-5 text-center">
+                    Du {{ startAt|date('d/m/Y') }} au {{ endAt|date('d/m/Y') }}
+                </span>
+
+                <a
+                    href="{{ path('training_index', { 'endAt': endAt.modify('+1 day')|date('Y-m-d') }) }}"
+                    class="btn btn-sm btn-outline-secondary"
+                >
+                    >>
+                </a>
+            </div>
+
+            <div id="training-list" class="d-flex flex-column-reverse">
+                {% for week in weeks %}
+                    <div class="mb-3">
+                       <span class="fs-5">
+                             Semaine {{ week|date('W - Y') }}
+                       </span>
+
+                        {% set weekNumber = week|date('W') %}
+                        {% for training in trainings|filter(t => weekNumber == t.trainedAt|date('W')) %}
+                            <div
+                                id="training-{{ training.id }}"
+                                class="row g-0 border border-secondary-subtle rounded mb-1 position-relative"
+                            >
+                                <div class="col-1 d-flex" style="background: {{ training.sport.color }}">
+                                    <span class="align-self-center mx-auto fs-1 text-white">
+                                        {{ training.sport.label|u.truncate(1).upper }}
+                                    </span>
+                                </div>
+                                <div class="col p-1">
+                                    <div class="d-flex align-items-center">
+                                        <a
+                                            href="{{ path('training_show', { id: training.id }) }}"
+                                            class="link-dark text-decoration-none stretched-link"
+                                        >
+                                            {{ training.sport.label }}
+                                        </a>
+
+                                        <span class="ms-auto text-secondary small">
+                                            {{ training.trainedAt|format_datetime('medium', 'none', locale: 'fr') }}
+                                        </span>
+                                    </div>
+
+
+                                    <div class="d-flex align-items-center text-secondary small">
+                                        <div>
+                                            <span class="far fa-clock"></span> {{ training.formattedDuration }}
+                                        </div>
+
+                                        <div class="ms-3">
+                                            <span class="fas fa-ruler"></span> {{ training.distance ? training.distance|format_number : '-' }} m
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div>
+                                Pas d'entraînement
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
