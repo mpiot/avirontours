@@ -80,7 +80,7 @@
                             >
                                 <div class="col-1 d-flex" style="background: {{ training.sport.color }}">
                                     <span class="align-self-center mx-auto fs-1 text-white">
-                                        {{ training.sport.label|u.truncate(1).upper }}
+                                        <twig:ux:icon name="{{ training.sport.icon }}" width="32" height="32" />
                                     </span>
                                 </div>
                                 <div class="col p-1">
