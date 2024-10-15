@@ -61,9 +61,10 @@ enum SportType: string
     public function icon(): string
     {
         return match ($this) {
-            self::Other, self::Ergometer, self::GeneralPhysicalPreparation => 'mdi:human-handsup',
+            self::Other, self::GeneralPhysicalPreparation => 'mdi:human-handsup',
             self::Rowing => 'mdi:rowing',
             self::Running => 'mdi:run',
+            self::Ergometer => 'concept2',
             self::WeightTraining => 'mdi:weight-lifter',
             self::Swimming => 'mdi:swim',
             self::Strengthening => 'mdi:human',
