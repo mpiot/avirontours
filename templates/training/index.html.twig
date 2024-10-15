@@ -78,10 +78,8 @@
                                 id="training-{{ training.id }}"
                                 class="row g-0 border border-secondary-subtle rounded mb-1 position-relative"
                             >
-                                <div class="col-1 d-flex" style="background: {{ training.sport.color }}">
-                                    <span class="align-self-center mx-auto fs-1 text-white">
-                                        <twig:ux:icon name="{{ training.sport.icon }}" width="32" height="32" />
-                                    </span>
+                                <div class="col-2 col-md-1 text-white d-flex justify-content-center align-items-center" style="background: {{ training.sport.color }}">
+                                    <twig:ux:icon name="{{ training.sport.icon }}" width="32" height="32" />
                                 </div>
                                 <div class="col p-1">
                                     <div class="d-flex align-items-center">
@@ -93,7 +91,7 @@
                                         </a>
 
                                         <span class="ms-auto text-secondary small">
-                                            {{ training.trainedAt|format_datetime('medium', 'none', locale: 'fr') }}
+                                            {{ training.trainedAt|format_datetime(pattern: 'cccc dd MMM')|capitalize }}
                                         </span>
                                     </div>
 
