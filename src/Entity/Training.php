@@ -159,11 +159,19 @@ class Training
 
     public function getPace(): ?int
     {
+        if (null === $this->distance) {
+            return null;
+        }
+
         return (int) round(500 * ($this->duration / $this->distance));
     }
 
-    public function getFormattedPace(): string
+    public function getFormattedPace(): ?string
     {
+        if (null === $this->getPace()) {
+            return null;
+        }
+
         return DurationManipulator::formatTenthSeconds($this->getPace());
     }
 

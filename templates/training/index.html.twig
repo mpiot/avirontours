@@ -95,14 +95,36 @@
                                         </span>
                                     </div>
 
-
                                     <div class="d-flex align-items-center text-secondary small">
                                         <div>
-                                            <span class="far fa-clock"></span> {{ training.formattedDuration }}
+                                            <twig:ux:icon name="mdi:stopwatch-outline" /> {{ training.formattedDuration }}
                                         </div>
 
                                         <div class="ms-3">
-                                            <span class="fas fa-ruler"></span> {{ training.distance ? training.distance|format_number : '-' }} m
+                                            <twig:ux:icon name="mdi:arrow-left-right" />
+                                            {% if training.distance is not null %}
+                                                {{ training.distance|format_number }} m
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="ms-3">
+                                            <twig:ux:icon name="mdi:speedometer" />
+                                            {% if training.formattedPace is not null %}
+                                                {{ training.formattedPace }} / 500m
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="ms-3">
+                                            <twig:ux:icon name="mdi:heart-pulse" />
+                                            {% if training.averageHeartRate is not null %}
+                                                {{ training.averageHeartRate }} bpm (max: {{ training.maxHeartRate }})
+                                            {% else %}
+                                                -
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
