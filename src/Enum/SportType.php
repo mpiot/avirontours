@@ -41,7 +41,7 @@ enum SportType: string
             self::WeightTraining => 'Musculation',
             self::Swimming => 'Natation',
             self::GeneralPhysicalPreparation => 'PPG',
-            self::Strengthening => 'Gainage / Renforcement',
+            self::Strengthening => 'Gainage / Renfo.',
             self::Cycling => 'Vélo',
             self::Yoga => 'Yoga',
         };
