@@ -46,10 +46,11 @@ class Training
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $trainedAt;
 
-    #[Assert\NotNull]
+    #[Assert\DisableAutoMapping]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $duration = null;
 
+    #[Assert\GreaterThan(0)]
     #[Assert\LessThanOrEqual(400000, message: 'Un entraînement doit faire 400km maximum.')]
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $distance = null;
@@ -159,7 +160,7 @@ class Training
 
     public function getPace(): ?int
     {
-        if (null === $this->distance) {
+        if (null === $this->distance || null === $this->duration) {
             return null;
         }
 
@@ -177,6 +178,10 @@ class Training
 
     public function getAverageWatt(): ?int
     {
+        if (null === $this->getPace()) {
+            return null;
+        }
+
         $paceInSeconds = $this->getPace() / 10;
 
         // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
