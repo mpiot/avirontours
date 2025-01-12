@@ -46,8 +46,7 @@ class TrainingController extends AbstractController
         #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^\d{4}-\d{2}-\d{2}$#'])] ?string $endAt = null,
     ): Response {
         $endAt = null !== $endAt ? new \DateTimeImmutable($endAt) : new \DateTimeImmutable('now');
-        $endAt = $endAt->modify('sunday this week')->setTime(0, 0);
-
+        $endAt = $endAt->modify('sunday this week')->setTime(23, 59);
         $startAt = $endAt->modify('-1 month')->modify('monday this week');
 
         $weeks = new \DatePeriod(
