@@ -57,11 +57,49 @@ class TrainingController extends AbstractController
             \DatePeriod::INCLUDE_END_DATE
         );
 
+        $data = [];
+        $trainings = $trainingRepository->findForUser($this->getUser(), $startAt, $endAt);
+        foreach ($weeks as $week) {
+            $weekTrainings = array_filter(
+                $trainings,
+                fn (Training $training) => $week->format('W') === $training->getTrainedAt()->format('W'),
+            );
+
+            $categorizedTrainings = [];
+            foreach ($weekTrainings as $training) {
+                if (false === \array_key_exists($training->getSport()->value, $categorizedTrainings)) {
+                    $categorizedTrainings[$training->getSport()->value] = [
+                        'sport' => $training->getSport(),
+                        'sessions' => 0,
+                        'duration' => 0,
+                        'distance' => 0,
+                    ];
+                }
+
+                ++$categorizedTrainings[$training->getSport()->value]['sessions'];
+                $categorizedTrainings[$training->getSport()->value]['duration'] += $training->getDuration();
+                $categorizedTrainings[$training->getSport()->value]['distance'] += $training->getDistance();
+            }
+
+            $duration = array_reduce($weekTrainings, fn (int $carry, Training $training) => $carry + $training->getDuration(), 0);
+            $duration = (int) round($duration / 10);
+
+            $data[] = [
+                'week' => $week,
+                'trainings' => $weekTrainings,
+                'summary' => [
+                    'sessions' => \count($weekTrainings),
+                    'duration' => $duration,
+                    'sports' => $categorizedTrainings,
+                ],
+            ];
+        }
+
         return $this->render('training/index.html.twig', [
             'startAt' => $startAt,
             'endAt' => $endAt,
             'weeks' => $weeks,
-            'trainings' => $trainingRepository->findForUser($this->getUser(), $startAt, $endAt),
+            'data' => $data,
         ]);
     }
 

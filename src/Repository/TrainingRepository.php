@@ -59,6 +59,9 @@ class TrainingRepository extends ServiceEntityRepository
         );
     }
 
+    /**
+     * @return Training[]
+     */
     public function findForUser(?User $user = null, ?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): array
     {
         $query = $this->createQueryBuilder('training')

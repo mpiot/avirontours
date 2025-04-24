@@ -19,6 +19,7 @@
 namespace App\Twig\Extension;
 
 use App\Util\BarcodeGenerator;
+use App\Util\DurationManipulator;
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
@@ -35,6 +36,11 @@ class AppRuntime implements RuntimeExtensionInterface, ServiceSubscriberInterfac
     public function generateQrCode(string $text, int $width = -1, int $height = -1): string
     {
         return BarcodeGenerator::qrCode($text, $width, $height);
+    }
+
+    public function formatSeconds(int $seconds): string
+    {
+        return DurationManipulator::formatSeconds($seconds);
     }
 
     public function getEncoreEntryCssSource(string $entryName): string

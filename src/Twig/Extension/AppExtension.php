@@ -28,6 +28,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('qrCode', [AppRuntime::class, 'generateQrCode']),
+            new TwigFilter('format_seconds', [AppRuntime::class, 'formatSeconds']),
         ];
     }
 
