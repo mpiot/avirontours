@@ -76,7 +76,7 @@ class TrainingController extends AbstractController
                 }
 
                 ++$categorizedTrainings[$training->getSport()->value]['sessions'];
-                $categorizedTrainings[$training->getSport()->value]['duration'] += $training->getDuration();
+                $categorizedTrainings[$training->getSport()->value]['duration'] += (int) round($training->getDuration() / 10);
                 $categorizedTrainings[$training->getSport()->value]['distance'] += $training->getDistance();
             }
 
