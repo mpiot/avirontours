@@ -20,7 +20,9 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Shell;
 use App\Entity\ShellDamage;
+use App\Entity\ShellDamageCategory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -43,7 +45,7 @@ class ShellDamageFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             ShellDamageCategoryFixtures::class,
@@ -54,8 +56,8 @@ class ShellDamageFixtures extends Fixture implements DependentFixtureInterface
     private function getShellDamageData(): array
     {
         return [
-            [$this->getReference('ShellDamage Category High'), $this->getReference('Single highly damaged'), 'A description...'],
-            [$this->getReference('ShellDamage Category Medium'), $this->getReference('Single medium damaged'), 'A description...'],
+            [$this->getReference('ShellDamage Category High', ShellDamageCategory::class), $this->getReference('Single highly damaged', Shell::class), 'A description...'],
+            [$this->getReference('ShellDamage Category Medium', ShellDamageCategory::class), $this->getReference('Single medium damaged', Shell::class), 'A description...'],
         ];
     }
 }

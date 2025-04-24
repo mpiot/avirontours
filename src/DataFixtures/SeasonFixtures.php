@@ -47,11 +47,10 @@ class SeasonFixtures extends Fixture
                 ;
                 $season->addSeasonCategory($seasonCategory);
 
-                $this->addReference($name.'-'.$categoryName, $seasonCategory);
+                $this->addReference("{$name}-{$categoryName}", $seasonCategory);
             }
 
             $manager->persist($season);
-            $this->addReference($name, $season);
         }
 
         $manager->flush();

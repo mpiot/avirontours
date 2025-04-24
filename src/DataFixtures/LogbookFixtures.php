@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\LogbookEntry;
+use App\Entity\Shell;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -48,7 +50,7 @@ class LogbookFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UserFixtures::class,
@@ -59,8 +61,8 @@ class LogbookFixtures extends Fixture implements DependentFixtureInterface
     private function getShellData(): array
     {
         return [
-            [$this->getReference('Double'), [$this->getReference('on-water.user'), $this->getReference('super-admin.user')], new \DateTime('+1 hour'), 10],
-            [$this->getReference('Single medium damaged'), [$this->getReference('admin.user')], null, null],
+            [$this->getReference('Double', Shell::class), [$this->getReference('on-water.user', User::class), $this->getReference('super-admin.user', User::class)], new \DateTime('+1 hour'), 10],
+            [$this->getReference('Single medium damaged', Shell::class), [$this->getReference('admin.user', User::class)], null, null],
         ];
     }
 }
