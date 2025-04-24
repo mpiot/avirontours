@@ -81,7 +81,7 @@ jobs:
               run: SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate bin/phpunit --coverage-clover coverage-report.xml --log-junit tests-report.xml
 
             - name: Upload reports
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: reports
                   path: |
@@ -98,10 +98,11 @@ jobs:
         steps:
             - uses: actions/checkout@v4
               with:
-                  fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+                  # Disabling shallow clones is recommended for improving the relevancy of reporting
+                  fetch-depth: 0
 
             - name: Download Coverage Reports
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: reports
 
@@ -109,8 +110,7 @@ jobs:
               run: |
                   sed -i 's#/home/runner/work/apps/apps#/github/workspace#g' coverage-report.xml
 
-            - name: SonarCloud Scan
-              uses: SonarSource/sonarcloud-github-action@master
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@master
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
