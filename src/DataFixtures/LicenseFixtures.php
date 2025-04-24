@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\MedicalCertificate;
+use App\Entity\SeasonCategory;
+use App\Entity\User;
 use App\Factory\LicenseFactory;
 use App\Factory\MedicalCertificateFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -58,12 +60,12 @@ class LicenseFixtures extends Fixture implements DependentFixtureInterface
     private function getSeasonData(): array
     {
         return [
-            [$this->getReference('2018-Adulte'), $this->getReference('on-water.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2018-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
-            [$this->getReference('2018-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
-            [$this->getReference('2019-Adulte'), $this->getReference('on-water.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
-            [$this->getReference('2019-Adulte'), $this->getReference('outdated.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
-            [$this->getReference('2019-Indoor'), $this->getReference('indoor.user'), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2018-Adulte', SeasonCategory::class), $this->getReference('on-water.user', User::class), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2018-Adulte', SeasonCategory::class), $this->getReference('outdated.user', User::class), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2018-Indoor', SeasonCategory::class), $this->getReference('indoor.user', User::class), MedicalCertificate::TYPE_CERTIFICATE, MedicalCertificate::LEVEL_PRACTICE, true],
+            [$this->getReference('2019-Adulte', SeasonCategory::class), $this->getReference('on-water.user', User::class), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_COMPETITION, true],
+            [$this->getReference('2019-Adulte', SeasonCategory::class), $this->getReference('outdated.user', User::class), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, false],
+            [$this->getReference('2019-Indoor', SeasonCategory::class), $this->getReference('indoor.user', User::class), MedicalCertificate::TYPE_ATTESTATION, MedicalCertificate::LEVEL_PRACTICE, true],
         ];
     }
 }
