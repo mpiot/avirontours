@@ -106,7 +106,7 @@
                                                     <span class="ms-1">{{ datum.duration|format_seconds }}</span>
                                                 </div>
 
-                                                {% if datum.distance is not null %}
+                                                {% if datum.distance is not same as(0) %}
                                                     <div class="d-flex align-items-center ms-3">
                                                         <twig:ux:icon name="mdi:arrow-left-right" />
                                                         <span class="ms-1">{{ (datum.distance / 1000)|round }} km</span>
