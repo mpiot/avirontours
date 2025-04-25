@@ -53,7 +53,7 @@ class SeasonCategoryRepository extends ServiceEntityRepository
 
         if (null !== $user) {
             $unavailableSeasons = $this->getEntityManager()->getRepository(Season::class)->findUnavailableSeasonForUser($user);
-            if (!empty($unavailableSeasons)) {
+            if ([] !== $unavailableSeasons) {
                 $queryBuilder
                     ->andWhere($queryBuilder->expr()->notIn('season.id', ':unavailableSeasons'))
                     ->setParameter('unavailableSeasons', $unavailableSeasons)

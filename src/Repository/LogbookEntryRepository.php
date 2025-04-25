@@ -73,11 +73,9 @@ class LogbookEntryRepository extends ServiceEntityRepository
             ->andWhere('logbook_entry.date BETWEEN :firstDay AND :lastDay')
             ->andWhere('logbook_entry.endAt IS NOT NULL')
             ->groupBy('month')
-            ->setParameters([
-                'user' => $user,
-                'firstDay' => $firstDay->format('Y-m-d'),
-                'lastDay' => $lastDay->format('Y-m-d'),
-            ])
+            ->setParameter('user', $user)
+            ->setParameter('firstDay', $firstDay->format('Y-m-d'))
+            ->setParameter('lastDay', $lastDay->format('Y-m-d'))
             ->getQuery()
         ;
 

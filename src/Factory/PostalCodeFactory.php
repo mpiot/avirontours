@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -20,10 +22,9 @@ namespace App\Factory;
 
 use App\Entity\PostalCode;
 use App\Repository\PostalCodeRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<PostalCode>
@@ -44,25 +45,25 @@ use Zenstruck\Foundry\Proxy;
  * @method static PostalCode[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static PostalCode[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        PostalCode&Proxy<PostalCode> create(array|callable $attributes = [])
- * @phpstan-method static PostalCode&Proxy<PostalCode> createOne(array $attributes = [])
- * @phpstan-method static PostalCode&Proxy<PostalCode> find(object|array|mixed $criteria)
- * @phpstan-method static PostalCode&Proxy<PostalCode> findOrCreate(array $attributes)
- * @phpstan-method static PostalCode&Proxy<PostalCode> first(string $sortedField = 'id')
- * @phpstan-method static PostalCode&Proxy<PostalCode> last(string $sortedField = 'id')
- * @phpstan-method static PostalCode&Proxy<PostalCode> random(array $attributes = [])
- * @phpstan-method static PostalCode&Proxy<PostalCode> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<PostalCode, EntityRepository> repository()
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> all()
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> findBy(array $attributes)
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<PostalCode&Proxy<PostalCode>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<PostalCode> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<PostalCode> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<PostalCode> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<PostalCode> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<PostalCode> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<PostalCode> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<PostalCode> random(array $attributes = [])
+ * @phpstan-method static Proxy<PostalCode> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<PostalCode> repository()
+ * @phpstan-method static list<Proxy<PostalCode>> all()
+ * @phpstan-method static list<Proxy<PostalCode>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<PostalCode>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<PostalCode>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<PostalCode>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<PostalCode>> randomSet(int $number, array $attributes = [])
  */
 final class PostalCodeFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'postalCode' => self::faker()->postcode(),

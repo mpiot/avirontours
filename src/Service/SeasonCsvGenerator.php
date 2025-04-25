@@ -37,7 +37,7 @@ class SeasonCsvGenerator
     {
         $licenses = $this->licenseRepository->findForContactExport($season);
 
-        if (empty($licenses)) {
+        if ([] === $licenses) {
             return null;
         }
 
@@ -76,7 +76,7 @@ class SeasonCsvGenerator
     public function exportPayments(Season $season): ?string
     {
         $licenses = $this->licenseRepository->findForPaymentsExport($season);
-        if (empty($licenses)) {
+        if ([] === $licenses) {
             return null;
         }
 
@@ -129,7 +129,7 @@ class SeasonCsvGenerator
     {
         $licenses = $this->licenseRepository->findForLicenseExport($season);
 
-        if (empty($licenses)) {
+        if ([] === $licenses) {
             return null;
         }
 
@@ -216,7 +216,7 @@ class SeasonCsvGenerator
         }
 
         // Else, this is an attestation: we must return the date of the latest Certificate we have
-        /** @var License|bool $latestLicenceWithCertificate */
+        /** @var License|false $latestLicenceWithCertificate */
         $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license) {
             return MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType();
         })->last();

@@ -1,0 +1,7 @@
+parameters:
+    ignoreErrors:
+        -
+            identifier: doctrine.associationType
+
+        -
+            identifier: doctrine.columnType

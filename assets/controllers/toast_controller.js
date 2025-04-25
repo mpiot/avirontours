@@ -3,8 +3,8 @@ import { Toast } from 'bootstrap';
 
 export default class extends Controller {
     static values = {
+        initShow: Boolean,
         options: Object,
-        initShow: Boolean
     };
 
     /**

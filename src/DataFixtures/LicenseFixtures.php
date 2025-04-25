@@ -45,7 +45,7 @@ class LicenseFixtures extends Fixture implements DependentFixtureInterface
                 ]),
             ], ...$states)->create();
 
-            $this->addReference($seasonCategory->getSeason()->getName().'-'.$seasonCategory->getName().'-'.$user->getFullName(), $license->object());
+            $this->addReference($seasonCategory->getSeason()->getName().'-'.$seasonCategory->getName().'-'.$user->getFullName(), $license->_real());
         }
     }
 

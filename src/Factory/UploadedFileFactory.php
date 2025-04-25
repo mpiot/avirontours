@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -24,27 +26,27 @@ use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\File\File;
 use Zenstruck\Foundry\Object\Instantiator;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
+use Zenstruck\Foundry\Persistence\Proxy;
+use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 
 /**
  * @extends PersistentProxyObjectFactory<UploadedFile>
  *
- * @method        UploadedFile|Proxy                     create(array|callable $attributes = [])
- * @method static UploadedFile|Proxy                     createOne(array $attributes = [])
- * @method static UploadedFile|Proxy                     find(object|array|mixed $criteria)
- * @method static UploadedFile|Proxy                     findOrCreate(array $attributes)
- * @method static UploadedFile|Proxy                     first(string $sortedField = 'id')
- * @method static UploadedFile|Proxy                     last(string $sortedField = 'id')
- * @method static UploadedFile|Proxy                     random(array $attributes = [])
- * @method static UploadedFile|Proxy                     randomOrCreate(array $attributes = [])
- * @method static UploadedFileRepository|RepositoryProxy repository()
- * @method static UploadedFile[]|Proxy[]                 all()
- * @method static UploadedFile[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static UploadedFile[]|Proxy[]                 createSequence(iterable|callable $sequence)
- * @method static UploadedFile[]|Proxy[]                 findBy(array $attributes)
- * @method static UploadedFile[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static UploadedFile[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method        UploadedFile|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
+ * @method static UploadedFile|Proxy                                createOne(array $attributes = [])
+ * @method static UploadedFile|Proxy                                find(object|array|mixed $criteria)
+ * @method static UploadedFile|Proxy                                findOrCreate(array $attributes)
+ * @method static UploadedFile|Proxy                                first(string $sortedField = 'id')
+ * @method static UploadedFile|Proxy                                last(string $sortedField = 'id')
+ * @method static UploadedFile|Proxy                                random(array $attributes = [])
+ * @method static UploadedFile|Proxy                                randomOrCreate(array $attributes = [])
+ * @method static UploadedFileRepository|ProxyRepositoryDecorator   repository()
+ * @method static UploadedFile[]|Proxy[]                            all()
+ * @method static UploadedFile[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
+ * @method static UploadedFile[]|Proxy[]                            createSequence(iterable|callable $sequence)
+ * @method static UploadedFile[]|Proxy[]                            findBy(array $attributes)
+ * @method static UploadedFile[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
+ * @method static UploadedFile[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
  * @phpstan-method        Proxy<UploadedFile> create(array|callable $attributes = [])
  * @phpstan-method static Proxy<UploadedFile> createOne(array $attributes = [])
@@ -54,7 +56,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @phpstan-method static Proxy<UploadedFile> last(string $sortedField = 'id')
  * @phpstan-method static Proxy<UploadedFile> random(array $attributes = [])
  * @phpstan-method static Proxy<UploadedFile> randomOrCreate(array $attributes = [])
- * @phpstan-method static RepositoryProxy<UploadedFile> repository()
+ * @phpstan-method static ProxyRepositoryDecorator<UploadedFile> repository()
  * @phpstan-method static list<Proxy<UploadedFile>> all()
  * @phpstan-method static list<Proxy<UploadedFile>> createMany(int $number, array|callable $attributes = [])
  * @phpstan-method static list<Proxy<UploadedFile>> createSequence(iterable|callable $sequence)
@@ -97,7 +99,7 @@ final class UploadedFileFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),

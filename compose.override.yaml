@@ -1,6 +1,8 @@
+
 services:
 ###> doctrine/doctrine-bundle ###
   database:
+    command: postgres -c max_locks_per_transaction=128
     ports:
       - "127.0.0.1:5432:5432"
 ###< doctrine/doctrine-bundle ###

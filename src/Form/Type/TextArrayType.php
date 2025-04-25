@@ -20,18 +20,16 @@ declare(strict_types=1);
 
 namespace App\Form\Type;
 
-use App\Form\DataTransformer\NonUserCrewMemberArrayToStringTransformer;
+use App\Form\DataTransformer\ArrayToStringTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class NonUserCrewMemberType extends AbstractType
+class TextArrayType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->addModelTransformer(new NonUserCrewMemberArrayToStringTransformer(), true)
-        ;
+        $builder->addModelTransformer(new ArrayToStringTransformer());
     }
 
     public function getParent(): string

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -41,10 +43,8 @@ class PostalCodeRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('postal_code')
             ->where('postal_code.postalCode = :postal_code AND postal_code.city = :city')
-            ->setParameters([
-                'postal_code' => $postalCode,
-                'city' => $city,
-            ])
+            ->setParameter('postal_code', $postalCode)
+            ->setParameter('city', $city)
             ->getQuery()
             ->getOneOrNullResult()
         ;

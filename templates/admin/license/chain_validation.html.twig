@@ -32,7 +32,7 @@
 
                             <div class="card-body">
                                 Nom Prénom : {{ license.user.fullName }}<br>
-                                Date de naissance: {{ license.user.birthday|date('d/m/Y') }} ({{ license.user.age }} ans)
+                                Date de naissance: {{ license.user.birthday|format_date('short') }} ({{ license.user.age }} ans)
                             </div>
                         </div>
 
@@ -43,7 +43,7 @@
                                 </div>
 
                                 <div class="card-body">
-                                    Date du certificat: {{ previous_licence.medicalCertificate.date|date('d/m/Y') }}<br>
+                                    Date du certificat: {{ previous_licence.medicalCertificate.date|format_date('short') }}<br>
                                     Type de certificat : {{ previous_licence.medicalCertificate.textType }}<br>
                                     Niveau de certificat: {{ previous_licence.medicalCertificate.textLevel }}
                                 </div>
@@ -60,7 +60,7 @@
                             </div>
 
                             <div class="card-body">
-                                Date du certificat: {{ license.medicalCertificate.date|date('d/m/Y') }}<br>
+                                Date du certificat: {{ license.medicalCertificate.date|format_date('short') }}<br>
                                 Type de certificat : {{ license.medicalCertificate.textType }}<br>
                                 Niveau de certificat: {{ license.medicalCertificate.textLevel }}
                             </div>

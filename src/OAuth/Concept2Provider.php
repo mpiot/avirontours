@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -59,10 +61,11 @@ class Concept2Provider extends AbstractProvider
     protected function checkResponse(ResponseInterface $response, $data): void
     {
         if ($response->getStatusCode() >= 400) {
-            throw new IdentityProviderException($data['message'] ?: $response->getReasonPhrase(), $response->getStatusCode(), (string) $response->getBody());
+            throw new IdentityProviderException($data['message'] ?? $response->getReasonPhrase(), $response->getStatusCode(), (string) $response->getBody());
         }
+
         if (isset($data['error'])) {
-            throw new IdentityProviderException($data['error'] ?: $response->getReasonPhrase(), $response->getStatusCode(), (string) $response->getBody());
+            throw new IdentityProviderException($data['error'], $response->getStatusCode(), (string) $response->getBody());
         }
     }
 

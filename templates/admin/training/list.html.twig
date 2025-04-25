@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Mes entraînements de {{ user.fullname }}{% endblock %}
+{% block title %}Entraînements de {{ user.fullname }}{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
@@ -41,7 +41,7 @@
                     <tbody>
                     {% for training in trainings %}
                         <tr>
-                            <td>{{ training.trainedAt|date('d/m/Y - H:i') }}</td>
+                            <td>{{ training.trainedAt|format_date('short') }}</td>
                             <td>
                                 <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}">{{ training.sport.label }}</a>
                             </td>

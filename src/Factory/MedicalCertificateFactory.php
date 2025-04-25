@@ -22,11 +22,10 @@ namespace App\Factory;
 
 use App\Entity\MedicalCertificate;
 use App\Repository\MedicalCertificateRepository;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\File\File;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<MedicalCertificate>
@@ -47,25 +46,25 @@ use Zenstruck\Foundry\Proxy;
  * @method static MedicalCertificate[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static MedicalCertificate[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        MedicalCertificate&Proxy<MedicalCertificate> create(array|callable $attributes = [])
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> createOne(array $attributes = [])
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> find(object|array|mixed $criteria)
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> findOrCreate(array $attributes)
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> first(string $sortedField = 'id')
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> last(string $sortedField = 'id')
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> random(array $attributes = [])
- * @phpstan-method static MedicalCertificate&Proxy<MedicalCertificate> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<MedicalCertificate, EntityRepository> repository()
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> all()
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> findBy(array $attributes)
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<MedicalCertificate&Proxy<MedicalCertificate>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<MedicalCertificate> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<MedicalCertificate> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<MedicalCertificate> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<MedicalCertificate> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<MedicalCertificate> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<MedicalCertificate> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<MedicalCertificate> random(array $attributes = [])
+ * @phpstan-method static Proxy<MedicalCertificate> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<MedicalCertificate> repository()
+ * @phpstan-method static list<Proxy<MedicalCertificate>> all()
+ * @phpstan-method static list<Proxy<MedicalCertificate>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<MedicalCertificate>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<MedicalCertificate>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<MedicalCertificate>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<MedicalCertificate>> randomSet(int $number, array $attributes = [])
  */
 final class MedicalCertificateFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),

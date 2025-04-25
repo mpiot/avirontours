@@ -1,3 +1,4 @@
+# Read the documentation: https://github.com/1up-lab/OneupFlysystemBundle
 oneup_flysystem:
     adapters:
         private_uploads:
@@ -11,5 +12,6 @@ oneup_flysystem:
     filesystems:
         private_uploads:
             adapter: private_uploads
+
         uploads:
             adapter: uploads

@@ -1,0 +1,62 @@
+- name: Rollback
+  hosts: all
+  serial: 1
+
+  vars:
+      deploy_to: "/mnt/data/my.avirontours.fr"
+      rollback_to_release: ""
+      remove_rolled_back: true
+
+  tasks:
+      - name: Get releases path
+        command: echo "{{ deploy_to }}/releases"
+        check_mode: no
+        register: releases_path
+
+      - name: Get number of releases
+        shell: echo `ls -1t {{ releases_path.stdout }} | wc -l`
+        register: versions_count
+
+      - name: Check if there is more than one release
+        fail:
+            msg: "Could not roll back the code because there is no prior release"
+        when: versions_count.stdout|int <= 1
+
+      - name: Get current release version
+        shell: echo `ls -1t {{ releases_path.stdout }} | head -n 1`
+        register: current_release_version
+
+      - stat:
+            path: "{{ releases_path.stdout }}/{{ rollback_to_release }}"
+        register: stat_rollback_release_version
+        when: rollback_to_release != ""
+
+      - name: Check that the provided rollback release exists
+        fail:
+            msg: "Specified rollback version does not exist"
+        when: rollback_to_release != "" and (stat_rollback_release_version.stat.exists is not defined or stat_rollback_release_version.stat.isdir == false)
+
+      - name: Get previous releases version
+        shell: echo `ls -1t {{ releases_path.stdout }} | head -n 2 | tail -n 1`
+        register: previous_release_version
+
+      - name: Get rollback release version
+        set_fact:
+            rollback_release_version: "{{ rollback_to_release if rollback_to_release != '' else previous_release_version.stdout }}"
+
+      - name: Get release path
+        command: echo "{{ releases_path.stdout }}/{{ rollback_release_version }}"
+        check_mode: no
+        register: release_path
+
+      - name: Change symlink from current release to a previous one
+        file:
+            state: link
+            path: "{{ deploy_to }}/current"
+            src: "./releases/{{ rollback_release_version }}"
+
+      - name: Remove rolled back version
+        file:
+            state: absent
+            path: "{{ releases_path.stdout }}/{{ current_release_version.stdout }}"
+        when: remove_rolled_back

@@ -2,6 +2,7 @@
 
 return [
     'APP_LOGBOOK_USER_PASSWORD' => null,
+    'APP_SECRET' => null,
     'DATABASE_URL' => null,
     'MAILER_DSN' => null,
     'OAUTH_CONCEPT2_ID' => null,

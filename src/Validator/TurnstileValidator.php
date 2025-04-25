@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -47,8 +49,8 @@ class TurnstileValidator extends ConstraintValidator
         $request = $this->requestStack->getCurrentRequest();
         $turnstileResponse = $request->request->get('cf-turnstile-response');
 
-        if (empty($turnstileResponse)) {
-            $this->context->buildViolation($constraint->noResponseMessage)->addviolation();
+        if (null === $turnstileResponse || '' === $turnstileResponse || 0 === $turnstileResponse) {
+            $this->context->buildViolation($constraint->noResponseMessage)->addViolation();
 
             return;
         }
@@ -66,7 +68,7 @@ class TurnstileValidator extends ConstraintValidator
         $content = $response->toArray();
 
         if (false === $content['success']) {
-            $this->context->buildViolation($constraint->message)->addviolation();
+            $this->context->buildViolation($constraint->message)->addViolation();
         }
     }
 }

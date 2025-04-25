@@ -76,7 +76,7 @@ class AutomaticTrainingCreator
 
     public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
     {
-        if (empty($this->trainings)) {
+        if ([] === $this->trainings) {
             return;
         }
 

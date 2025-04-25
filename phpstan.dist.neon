@@ -1,7 +1,9 @@
 includes:
-    #- phpstan-baseline.neon
+    - phpstan-baseline.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - vendor/phpstan/phpstan-doctrine/extension.neon
     - vendor/phpstan/phpstan-doctrine/rules.neon
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
     - vendor/phpstan/phpstan-symfony/extension.neon
     - vendor/phpstan/phpstan-symfony/rules.neon
 
@@ -13,9 +15,12 @@ parameters:
         - public/
         - src/
     excludePaths:
-        - src/DataFixtures
-        - src/Factory
+        - tests/*
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+        constantHassers: false
     scanDirectories:
         - var/cache/dev/Symfony/Config
+    bootstrapFiles:
+        - vendor/autoload.php
+        - src/Kernel.php

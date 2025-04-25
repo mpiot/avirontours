@@ -38,8 +38,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Se connecter', [
-            'username' => 'firstname.lastname',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'firstname.lastname',
+            '_password' => UserFactory::PASSWORD,
         ]);
 
         $this->assertResponseRedirects('/');
@@ -58,8 +58,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Se connecter', [
-            'username' => 'FIRSTNAME.LASTNAME',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'FIRSTNAME.LASTNAME',
+            '_password' => UserFactory::PASSWORD,
         ]);
 
         $this->assertResponseRedirects('/');
@@ -78,8 +78,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Se connecter', [
-            'username' => 'firstname.lastname ',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'firstname.lastname ',
+            '_password' => UserFactory::PASSWORD,
         ]);
 
         $this->assertResponseRedirects('/');
@@ -98,8 +98,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Se connecter', [
-            'username' => 'IDoNotExist',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'IDoNotExist',
+            '_password' => UserFactory::PASSWORD,
         ]);
         $this->assertResponseRedirects('/login');
         $crawler = $client->followRedirect();
@@ -117,8 +117,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Se connecter', [
-            'username' => 'firstname.lastname',
-            'password' => 'IDoNotExist',
+            '_username' => 'firstname.lastname',
+            '_password' => 'IDoNotExist',
         ]);
 
         $this->assertResponseRedirects('/login');
@@ -138,8 +138,8 @@ class SecurityControllerTest extends AppWebTestCase
 
         for ($i = 0; $i < 5; ++$i) {
             $client->submitForm('Se connecter', [
-                'username' => 'firstname.lastname',
-                'password' => 'IDoNotExist',
+                '_username' => 'firstname.lastname',
+                '_password' => 'IDoNotExist',
             ]);
 
             $this->assertResponseRedirects('/login');
@@ -148,8 +148,8 @@ class SecurityControllerTest extends AppWebTestCase
         }
 
         $client->submitForm('Se connecter', [
-            'username' => 'firstname.lastname',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'firstname.lastname',
+            '_password' => UserFactory::PASSWORD,
         ]);
 
         $this->assertResponseRedirects('/login');
@@ -169,8 +169,8 @@ class SecurityControllerTest extends AppWebTestCase
 
         for ($i = 0; $i < 25; ++$i) {
             $client->submitForm('Se connecter', [
-                'username' => faker()->userName(),
-                'password' => 'IDoNotExist',
+                '_username' => faker()->userName(),
+                '_password' => 'IDoNotExist',
             ]);
 
             $this->assertResponseRedirects('/login');
@@ -178,8 +178,8 @@ class SecurityControllerTest extends AppWebTestCase
         }
 
         $client->submitForm('Se connecter', [
-            'username' => 'firstname.lastname',
-            'password' => UserFactory::PASSWORD,
+            '_username' => 'firstname.lastname',
+            '_password' => UserFactory::PASSWORD,
         ]);
 
         $this->assertResponseRedirects('/login');

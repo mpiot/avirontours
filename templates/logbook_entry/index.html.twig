@@ -60,9 +60,9 @@
                                     {%- endfor -%}
                                 {% endif %}
                             </td>
-                            <td>{{ logbook_entry.date|date('d/m/Y') }}</td>
-                            <td>{{ logbook_entry.startAt|date('H:i') }}</td>
-                            <td>{{ logbook_entry.endAt ? logbook_entry.endAt|date('H:i') }}</td>
+                            <td>{{ logbook_entry.date|format_date('short') }}</td>
+                            <td>{{ logbook_entry.startAt|format_datetime('none', 'short') }}</td>
+                            <td>{{ logbook_entry.endAt ? logbook_entry.endAt|format_datetime('none', 'short') }}</td>
                             <td>
                                 {% if logbook_entry.coveredDistance %}
                                     {{ logbook_entry.coveredDistance }} km
