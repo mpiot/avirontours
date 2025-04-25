@@ -25,7 +25,7 @@ use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
-use App\Repository\TrainingRepository;
+use App\Service\TrainingHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -42,63 +42,17 @@ class TrainingController extends AbstractController
 {
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
     public function index(
-        TrainingRepository $trainingRepository,
-        #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^\d{4}-\d{2}-\d{2}$#'])] ?string $endAt = null,
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^\d{4}-\d{2}-\d{2}$#'])] ?string $endAt,
+        TrainingHelper $trainingHelper,
     ): Response {
         $endAt = null !== $endAt ? new \DateTimeImmutable($endAt) : new \DateTimeImmutable('now');
         $endAt = $endAt->modify('sunday this week')->setTime(23, 59);
         $startAt = $endAt->modify('-1 month')->modify('monday this week');
 
-        $weeks = new \DatePeriod(
-            $startAt,
-            new \DateInterval('P1W'),
-            $endAt,
-            \DatePeriod::INCLUDE_END_DATE
-        );
-
-        $data = [];
-        $trainings = $trainingRepository->findForUser($this->getUser(), $startAt, $endAt);
-        foreach ($weeks as $week) {
-            $weekTrainings = array_filter(
-                $trainings,
-                fn (Training $training) => $week->format('W') === $training->getTrainedAt()->format('W'),
-            );
-
-            $categorizedTrainings = [];
-            foreach ($weekTrainings as $training) {
-                if (false === \array_key_exists($training->getSport()->value, $categorizedTrainings)) {
-                    $categorizedTrainings[$training->getSport()->value] = [
-                        'sport' => $training->getSport(),
-                        'sessions' => 0,
-                        'duration' => 0,
-                        'distance' => 0,
-                    ];
-                }
-
-                ++$categorizedTrainings[$training->getSport()->value]['sessions'];
-                $categorizedTrainings[$training->getSport()->value]['duration'] += (int) round($training->getDuration() / 10);
-                $categorizedTrainings[$training->getSport()->value]['distance'] += $training->getDistance();
-            }
-
-            $duration = array_reduce($weekTrainings, fn (int $carry, Training $training) => $carry + $training->getDuration(), 0);
-            $duration = (int) round($duration / 10);
-
-            $data[] = [
-                'week' => $week,
-                'trainings' => $weekTrainings,
-                'summary' => [
-                    'sessions' => \count($weekTrainings),
-                    'duration' => $duration,
-                    'sports' => $categorizedTrainings,
-                ],
-            ];
-        }
-
         return $this->render('training/index.html.twig', [
             'startAt' => $startAt,
             'endAt' => $endAt,
-            'weeks' => $weeks,
-            'data' => $data,
+            'data' => $trainingHelper->getTrainingsSummary($this->getUser(), $startAt, $endAt),
         ]);
     }
 

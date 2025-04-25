@@ -73,11 +73,7 @@
                        </span>
 
                         <div class="row g-0 border border-primary-subtle rounded mb-1 position-relative" style="border-style: dashed !important;">
-                            <div class="col-2 col-md-1 text-white d-flex justify-content-center align-items-center bg-secondary-subtle">
-                                <twig:ux:icon name="bi:bar-chart-line" width="32" height="32" />
-                            </div>
-
-                            <div class="col p-2 small">
+                            <div class="col p-3 small">
                                 <div class="d-flex align-items-center text-secondary">
                                     <div class="d-flex align-items-center">
                                         <twig:ux:icon name="bi:speedometer" />
@@ -93,25 +89,27 @@
                                 {% if datum.summary.sports is not empty %}
                                     <div class="text-secondary mt-3">
                                         {% for datum in datum.summary.sports %}
-                                            {{ datum.sport.label }}
+                                            <div class="mt-1">
+                                                {{ datum.sport.label }}
 
-                                            <div class="col d-flex">
-                                                <div class="d-flex align-items-center">
-                                                    <twig:ux:icon name="bi:speedometer" />
-                                                    <span class="ms-1">{{ datum.sessions }} sessions</span>
-                                                </div>
-
-                                                <div class="d-flex align-items-center ms-3">
-                                                    <twig:ux:icon name="mdi:stopwatch-outline" />
-                                                    <span class="ms-1">{{ datum.duration|format_seconds }}</span>
-                                                </div>
-
-                                                {% if datum.distance is not same as(0) %}
-                                                    <div class="d-flex align-items-center ms-3">
-                                                        <twig:ux:icon name="mdi:arrow-left-right" />
-                                                        <span class="ms-1">{{ (datum.distance / 1000)|round }} km</span>
+                                                <div class="d-flex ms-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <twig:ux:icon name="bi:speedometer" />
+                                                        <span class="ms-1">{{ datum.sessions }} sessions</span>
                                                     </div>
-                                                {% endif %}
+
+                                                    <div class="d-flex align-items-center ms-3">
+                                                        <twig:ux:icon name="mdi:stopwatch-outline" />
+                                                        <span class="ms-1">{{ datum.duration|format_seconds }}</span>
+                                                    </div>
+
+                                                    {% if datum.distance is not same as(0) %}
+                                                        <div class="d-flex align-items-center ms-3">
+                                                            <twig:ux:icon name="mdi:arrow-left-right" />
+                                                            <span class="ms-1">{{ (datum.distance / 1000)|round }} km</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         {% endfor %}
                                     </div>
