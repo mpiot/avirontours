@@ -60,10 +60,8 @@ class ShellRepository extends ServiceEntityRepository
             ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalSessions', 'DESC')
             ->groupBy('shell')
-            ->setParameters([
-                'today' => $today->format('Y-m-d'),
-                'p30days' => $today->modify('-30 days')->format('Y-m-d'),
-            ])
+            ->setParameter('today', $today->format('Y-m-d'))
+            ->setParameter('p30days', $today->modify('-30 days')->format('Y-m-d'))
             ->getQuery()
             ->setMaxResults(10)
         ;
@@ -71,13 +69,13 @@ class ShellRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findOnWaterShells(?array $shells = null)
+    public function findOnWaterShells(?array $shells = null): array
     {
         $qb = $this->createQueryBuilder('shell')
             ->innerJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
         ;
 
-        if (!empty($shells)) {
+        if (null !== $shells && [] !== $shells) {
             $qb
                 ->andWhere('shell IN (:shells)')
                 ->setParameter('shells', $shells)
@@ -87,7 +85,7 @@ class ShellRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findDamagedShells(?int $priority = null, ?array $shells = null)
+    public function findDamagedShells(?int $priority = null, ?array $shells = null): array
     {
         $qb = $this->createQueryBuilder('shell')
             ->innerJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')
@@ -101,7 +99,7 @@ class ShellRepository extends ServiceEntityRepository
             ;
         }
 
-        if (!empty($shells)) {
+        if (null !== $shells && [] !== $shells) {
             $qb
                 ->andWhere('shell IN (:shells)')
                 ->setParameter('shells', $shells)

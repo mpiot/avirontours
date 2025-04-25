@@ -14,7 +14,7 @@ NPM      = npm
 .PHONY        : start stop restart
 .PHONY        : docker-start docker-stop docker-up docker-down docker-list
 .PHONY        : db-reset db-fixtures
-.PHONY        : tests lint validate-schema phpunit
+.PHONY        : tests lint validate-schema phpunit coverage
 
 # Help display
 help:
@@ -85,4 +85,8 @@ validate-schema: ## Test the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
 phpunit: ## Run tests
-	@SYMFONY_DEPRECATIONS_HELPER=weak FOUNDRY_RESET_MODE=migrate $(PHP) vendor/bin/phpunit
+	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit
+
+coverage: ## Run tests with HTML coverage report
+	@rm -Rf var/coverage-report
+	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit --coverage-html=var/coverage-report

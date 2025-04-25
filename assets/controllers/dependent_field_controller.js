@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus';
-import axios from 'axios';
 import { useDebounce } from 'stimulus-use';
 
 export default class extends Controller {
@@ -79,20 +78,16 @@ export default class extends Controller {
             }
         }
 
-        try {
-            const response = await axios({
-                method: form.method,
-                url: form.action,
-                data: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
+        const response = await fetch(form.action, {
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            method: form.method,
+        });
+        const data = await response.text();
 
-            this.replaceTargetContent(response.data);
-        } catch (error) {
-            this.replaceTargetContent(error.response.data);
-        }
+        this.replaceTargetContent(data);
     }
 
     /**

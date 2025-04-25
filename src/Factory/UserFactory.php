@@ -22,10 +22,9 @@ namespace App\Factory;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<User>
@@ -46,21 +45,21 @@ use Zenstruck\Foundry\Proxy;
  * @method static User[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static User[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        User&Proxy<User> create(array|callable $attributes = [])
- * @phpstan-method static User&Proxy<User> createOne(array $attributes = [])
- * @phpstan-method static User&Proxy<User> find(object|array|mixed $criteria)
- * @phpstan-method static User&Proxy<User> findOrCreate(array $attributes)
- * @phpstan-method static User&Proxy<User> first(string $sortedField = 'id')
- * @phpstan-method static User&Proxy<User> last(string $sortedField = 'id')
- * @phpstan-method static User&Proxy<User> random(array $attributes = [])
- * @phpstan-method static User&Proxy<User> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<User, EntityRepository> repository()
- * @phpstan-method static list<User&Proxy<User>> all()
- * @phpstan-method static list<User&Proxy<User>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<User&Proxy<User>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<User&Proxy<User>> findBy(array $attributes)
- * @phpstan-method static list<User&Proxy<User>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<User&Proxy<User>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<User> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<User> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<User> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<User> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<User> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<User> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<User> random(array $attributes = [])
+ * @phpstan-method static Proxy<User> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<User> repository()
+ * @phpstan-method static list<Proxy<User>> all()
+ * @phpstan-method static list<Proxy<User>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<User>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<User>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<User>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<User>> randomSet(int $number, array $attributes = [])
  */
 final class UserFactory extends PersistentProxyObjectFactory
 {
@@ -95,7 +94,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'password' => '$argon2id$v=19$m=10,t=3,p=1$504u7GDCM160iitiwetjvQ$6MguL3z0WsHOSxjKI6NhcPi4QdBFNlff/xrck+m975I',

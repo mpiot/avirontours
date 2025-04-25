@@ -24,11 +24,6 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class KilometersToMetersTransformer implements DataTransformerInterface
 {
-    /**
-     * Transforms an integer (meters) to a float (kilometers).
-     *
-     * @param ?int $value
-     */
     public function transform($value): ?float
     {
         if (null === $value) {
@@ -38,11 +33,6 @@ class KilometersToMetersTransformer implements DataTransformerInterface
         return $value / 1000;
     }
 
-    /**
-     * Transforms a float (kilometers) to an integer (meters).
-     *
-     * @param ?float $value
-     */
     public function reverseTransform($value): ?int
     {
         if (null === $value) {

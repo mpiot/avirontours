@@ -22,10 +22,9 @@ namespace App\Factory;
 
 use App\Entity\Season;
 use App\Repository\SeasonRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<Season>
@@ -46,21 +45,21 @@ use Zenstruck\Foundry\Proxy;
  * @method static Season[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static Season[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        Season&Proxy<Season> create(array|callable $attributes = [])
- * @phpstan-method static Season&Proxy<Season> createOne(array $attributes = [])
- * @phpstan-method static Season&Proxy<Season> find(object|array|mixed $criteria)
- * @phpstan-method static Season&Proxy<Season> findOrCreate(array $attributes)
- * @phpstan-method static Season&Proxy<Season> first(string $sortedField = 'id')
- * @phpstan-method static Season&Proxy<Season> last(string $sortedField = 'id')
- * @phpstan-method static Season&Proxy<Season> random(array $attributes = [])
- * @phpstan-method static Season&Proxy<Season> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<Season, EntityRepository> repository()
- * @phpstan-method static list<Season&Proxy<Season>> all()
- * @phpstan-method static list<Season&Proxy<Season>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Season&Proxy<Season>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Season&Proxy<Season>> findBy(array $attributes)
- * @phpstan-method static list<Season&Proxy<Season>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Season&Proxy<Season>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<Season> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<Season> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<Season> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<Season> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<Season> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Season> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Season> random(array $attributes = [])
+ * @phpstan-method static Proxy<Season> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<Season> repository()
+ * @phpstan-method static list<Proxy<Season>> all()
+ * @phpstan-method static list<Proxy<Season>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<Season>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<Season>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<Season>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<Season>> randomSet(int $number, array $attributes = [])
  */
 final class SeasonFactory extends PersistentProxyObjectFactory
 {
@@ -94,7 +93,7 @@ final class SeasonFactory extends PersistentProxyObjectFactory
         return $this->with(['seasonCategories' => SeasonCategoryFactory::new()->notDisplayed()->many(2, 5)]);
     }
 
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'name' => self::faker()->year(),

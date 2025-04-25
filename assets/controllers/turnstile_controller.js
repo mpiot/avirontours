@@ -3,8 +3,8 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['container'];
     static values = {
-        siteKey: String,
         action: String,
+        siteKey: String,
         theme: String
     };
 
@@ -22,8 +22,8 @@ export default class extends Controller {
     connect () {
         turnstile.ready(() => {
             this.turnstileId = turnstile.render(this.containerTarget, {
-                sitekey: this.siteKeyValue,
                 action: this.actionValue,
+                sitekey: this.siteKeyValue,
                 theme: this.themeValue
             });
         });

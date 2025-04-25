@@ -127,7 +127,7 @@ class LicenseController extends AbstractController
             $license->setPayedAt(new \DateTimeImmutable());
             $licenseWorkflow->apply($license, 'validate_payment', [
                 'time' => date('y-m-d H:i:s'),
-                'user' => $this->getUser()->getFullname(),
+                'user' => $this->getUser()->getFullName(),
             ]);
             $managerRegistry->getManager()->flush();
 
@@ -183,7 +183,7 @@ class LicenseController extends AbstractController
             try {
                 $licenseWorkflow->apply($license, $transitionName.'_medical_certificate', [
                     'time' => date('y-m-d H:i:s'),
-                    'user' => $this->getUser()->getFullname(),
+                    'user' => $this->getUser()->getFullName(),
                 ]);
                 $managerRegistry->getManager()->flush();
 
@@ -208,7 +208,7 @@ class LicenseController extends AbstractController
             try {
                 $licenseWorkflow->apply($license, 'validate_license', [
                     'time' => date('y-m-d H:i:s'),
-                    'user' => $this->getUser()->getFullname(),
+                    'user' => $this->getUser()->getFullName(),
                 ]);
                 $managerRegistry->getManager()->flush();
 

@@ -26,7 +26,7 @@ use App\Entity\Shell;
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
 use App\Entity\User;
-use App\Form\Type\NonUserCrewMemberType;
+use App\Form\Type\TextArrayType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -136,7 +136,7 @@ class LogbookEntryType extends AbstractType
 
         if ($this->security->isGranted('ROLE_LOGBOOK_ADMIN')) {
             $builder->get('crewMembers')->setRequired(false);
-            $builder->add('nonUserCrewMembers', NonUserCrewMemberType::class, [
+            $builder->add('nonUserCrewMembers', TextArrayType::class, [
                 'label' => 'Membres d\'équipage (sans utilisateur)',
                 'help' => 'John Doe, Foo Bar',
                 'required' => false,

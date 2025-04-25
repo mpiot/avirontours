@@ -1,8 +1,34 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import puppeteer from 'puppeteer';
 import path from 'path';
+import puppeteer from 'puppeteer';
+
+/**
+ * @param {string} urlString
+ * @returns {boolean}
+ */
+const isValidUrl = function (urlString) {
+    try {
+        return Boolean(new URL(urlString));
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * @param {string} url
+ * @returns {string}
+ */
+const normalizeUrl = function (url) {
+    let normalizedUrl = url;
+
+    if (false === isValidUrl(url)) {
+        normalizedUrl = `file://${path.resolve(url)}`;
+    }
+
+    return normalizedUrl;
+}
 
 const program = new Command();
 program
@@ -33,18 +59,19 @@ program.command('pdf')
         '- totalPages: total pages in the document.'
     )
     .action(async (source, destination, options) => {
-        source = normalizeUrl(source);
+        const normalizedSource = normalizeUrl(source);
 
-        const browser = await puppeteer.launch({ headless: 'shell', args: ['--no-sandbox'] });
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'shell' });
         const page = await browser.newPage();
 
-        await page.goto(source);
+        await page.goto(normalizedSource);
         await page.pdf({
             displayHeaderFooter: undefined !== options.headerTemplate || undefined !== options.footerTemplate,
-            headerTemplate: options.headerTemplate,
             footerTemplate: options.footerTemplate,
+            headerTemplate: options.headerTemplate,
+            landscape: true,
+            path: destination,
             printBackground: true,
-            path: destination
         });
 
         await browser.close();
@@ -54,13 +81,14 @@ program.command('screenshot')
     .description('Create a screenshot from HTML')
     .argument('<source>', 'The HTML source.')
     .argument('<destination>', 'The file path to save image.')
-    .action(async (source, destination, options) => {
-        source = normalizeUrl(source);
+    .action(async (source, destination) => {
+        const normalizedSource = normalizeUrl(source);
 
-        const browser = await puppeteer.launch({ headless: 'shell', args: ['--no-sandbox'] });
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'shell' });
         const page = await browser.newPage();
 
-        await page.goto(source);
+        await page.goto(normalizedSource);
+        await page.setViewport({ height: 1080, width: 1920 });
         await page.screenshot({
             path: destination
         });
@@ -69,27 +97,3 @@ program.command('screenshot')
     });
 
 program.parse();
-
-/**
- * @param {string} urlString
- * @returns {boolean}
- */
-function isValidUrl (urlString) {
-    try {
-        return Boolean(new URL(urlString));
-    } catch (exception) {
-        return false;
-    }
-}
-
-/**
- * @param {string} url
- * @returns {string}
- */
-function normalizeUrl (url) {
-    if (false === isValidUrl(url)) {
-        url = `file://${path.resolve(url)}`;
-    }
-
-    return url;
-}

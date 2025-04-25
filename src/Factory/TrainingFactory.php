@@ -23,10 +23,9 @@ namespace App\Factory;
 use App\Entity\Training;
 use App\Enum\SportType;
 use App\Repository\TrainingRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<Training>
@@ -47,25 +46,25 @@ use Zenstruck\Foundry\Proxy;
  * @method static Training[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static Training[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        Training&Proxy<Training> create(array|callable $attributes = [])
- * @phpstan-method static Training&Proxy<Training> createOne(array $attributes = [])
- * @phpstan-method static Training&Proxy<Training> find(object|array|mixed $criteria)
- * @phpstan-method static Training&Proxy<Training> findOrCreate(array $attributes)
- * @phpstan-method static Training&Proxy<Training> first(string $sortedField = 'id')
- * @phpstan-method static Training&Proxy<Training> last(string $sortedField = 'id')
- * @phpstan-method static Training&Proxy<Training> random(array $attributes = [])
- * @phpstan-method static Training&Proxy<Training> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<Training, EntityRepository> repository()
- * @phpstan-method static list<Training&Proxy<Training>> all()
- * @phpstan-method static list<Training&Proxy<Training>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Training&Proxy<Training>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Training&Proxy<Training>> findBy(array $attributes)
- * @phpstan-method static list<Training&Proxy<Training>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Training&Proxy<Training>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<Training> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<Training> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<Training> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<Training> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<Training> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Training> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Training> random(array $attributes = [])
+ * @phpstan-method static Proxy<Training> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<Training> repository()
+ * @phpstan-method static list<Proxy<Training>> all()
+ * @phpstan-method static list<Proxy<Training>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<Training>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<Training>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<Training>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<Training>> randomSet(int $number, array $attributes = [])
  */
 final class TrainingFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'user' => UserFactory::new(),

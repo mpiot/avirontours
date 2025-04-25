@@ -69,11 +69,9 @@ class TrainingRepository extends ServiceEntityRepository
             ->where('user.id = :user_id')
             ->andWhere('training.trainedAt BETWEEN :from AND :to')
             ->orderBy('training.trainedAt', 'DESC')
-            ->setParameters([
-                'user_id' => $user->getId(),
-                'from' => $from,
-                'to' => $to,
-            ])
+            ->setParameter('user_id', $user->getId())
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
             ->getQuery()
         ;
 

@@ -39,11 +39,11 @@
     <div class="d-flex flex-column align-items-end">
         <p>
             Fait à Tours,<br>
-            le {{ 'now'|date('d/m/Y') }}
+            le {{ 'now'|format_date('short') }}
         </p>
 
         <p class="mt-n4">
-            <img src="data:image/webp;base64,{{ treasurerStamp }}"/>
+            <img src="data:image/webp;base64,{{ treasurer_stamp }}"/>
         </p>
     </div>
 {% endblock %}

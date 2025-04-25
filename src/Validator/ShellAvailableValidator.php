@@ -47,7 +47,7 @@ class ShellAvailableValidator extends ConstraintValidator
         }
 
         $unavailableShells = $this->shellRepository->findOnWaterShells([$value]);
-        if (!empty($unavailableShells)) {
+        if ([] !== $unavailableShells) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation()
             ;

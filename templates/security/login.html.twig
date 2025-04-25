@@ -17,27 +17,27 @@
 
         {% if app.user %}
             <div class="mb-3">
-                Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ logout_path() }}">Logout</a>
             </div>
         {% endif %}
 
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="usernameInput" name="username" placeholder="{{ last_username or 'Utilisateur' }}" value="{{ last_username }}">
-            <label for="usernameInput">Utilisateur</label>
-            <p id="usernameInput_help" class="form-text mb-0 help-text">Nom utilisateur: prenom.nom</p>
+            <input type="text" class="form-control" id="username" name="_username"  autocomplete="username" placeholder="Utilisateur" value="{{ last_username }}" required autofocus>
+            <label for="username">Utilisateur</label>
+            <p id="username_help" class="form-text mb-0 help-text">Nom utilisateur: prenom.nom</p>
         </div>
 
         <div class="form-floating">
-            <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Mot de passe">
-            <label for="passwordInput">Mot de passe</label>
+            <input type="password" class="form-control" id="password" name="_password"  autocomplete="current-password" placeholder="Mot de passe" required>
+            <label for="password">Mot de passe</label>
         </div>
 
         <div class="form-check form-switch my-3">
-            <input class="form-check-input" type="checkbox" id="rememberMeInput" name="_remember_me">
-            <label class="form-check-label" for="rememberMeInput">Se souvenir de moi</label>
+            <input class="form-check-input" type="checkbox" id="remember_me" name="_remember_me">
+            <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
         </div>
 
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
         <div class="d-grid gap-2">
             <button class="btn btn-lg btn-primary" type="submit">Se connecter</button>

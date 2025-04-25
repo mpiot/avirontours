@@ -48,7 +48,7 @@ class ShellNotDamagedValidator extends ConstraintValidator
         }
 
         $unavailableShells = $this->shellRepository->findDamagedShells(ShellDamageCategory::PRIORITY_HIGH, [$value]);
-        if (!empty($unavailableShells)) {
+        if ([] !== $unavailableShells) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation()
             ;

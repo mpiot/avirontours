@@ -92,7 +92,7 @@
                         <a class="nav-link link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link link-secondary" href="{{ path('release_notes') }}">Aviron Tours - v{{ APP_VERSION }}</a>
+                        <a class="nav-link link-secondary" href="{{ path('release_notes') }}">Aviron Tours - v{{ app_version }}</a>
                     </li>
                 </ul>
             </nav>
@@ -120,7 +120,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" href="{{ path('app_logout') }}">
+                            <a class="nav-link text-light" href="{{ logout_path() }}" data-turbo="false">
                                 <span class="fas fa-sign-out-alt"></span> Se déconnecter
                             </a>
                         </li>

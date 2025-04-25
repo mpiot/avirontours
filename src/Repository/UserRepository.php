@@ -27,7 +27,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
@@ -40,25 +40,35 @@ use function Symfony\Component\String\u;
  *
  * @extends ServiceEntityRepository<User>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserLoaderInterface
 {
     public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
     {
         parent::__construct($registry, User::class);
     }
 
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(\sprintf('Instances of "%s" are not supported.', $user::class));
-        }
-
+        \assert($user instanceof User);
         $user->setPassword($newHashedPassword);
-        $this->_em->persist($user);
-        $this->_em->flush();
+
+        $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
+
+    public function loadUserByIdentifier(string $identifier): ?User
+    {
+        $em = $this->getEntityManager();
+
+        return $em
+            ->createQuery(/* @lang DQL */
+                'SELECT user
+                FROM App\Entity\User user
+                WHERE user.username = :username'
+            )
+            ->setParameter('username', u($identifier)->ascii()->trim()->lower()->replace(' ', '-')->toString())
+            ->getOneOrNullResult()
+        ;
     }
 
     public function findUserProfile(User $user)
@@ -107,10 +117,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->addSelect('trainings')
             ->orderBy('app_user.firstName', 'ASC')
             ->addOrderBy('app_user.lastName', 'ASC')
-            ->setParameters([
-                'from' => $from,
-                'to' => $to,
-            ])
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
         ;
 
         if (null !== $group) {
@@ -146,10 +154,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalDistance', 'DESC')
             ->groupBy('app_user.id')
-            ->setParameters([
-                'today' => $today->format('Y-m-d'),
-                'p30days' => $today->modify('-30 days')->format('Y-m-d'),
-            ])
+            ->setParameter('today', $today->format('Y-m-d'))
+            ->setParameter('p30days', $today->modify('-30 days')->format('Y-m-d'))
             ->getQuery()
             ->setMaxResults(10)
         ;
@@ -168,10 +174,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('logbook_entries.endAt IS NOT NULL')
             ->orderBy('totalSessions', 'DESC')
             ->groupBy('app_user.id')
-            ->setParameters([
-                'today' => $today->format('Y-m-d'),
-                'p30days' => $today->modify('-30 days')->format('Y-m-d'),
-            ])
+            ->setParameter('today', $today->format('Y-m-d'))
+            ->setParameter('p30days', $today->modify('-30 days')->format('Y-m-d'))
             ->getQuery()
             ->setMaxResults(10)
         ;
@@ -191,10 +195,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $query = $this->createQueryBuilder('user')
             ->where('LOWER(user.firstName) = :firstName')
             ->andWhere('LOWER(user.lastName) = :lastName')
-            ->setParameters([
-                'firstName' => $firstName,
-                'lastName' => $lastName,
-            ])
+            ->setParameter('firstName', $firstName)
+            ->setParameter('lastName', $lastName)
             ->getQuery()
         ;
 
@@ -207,7 +209,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->innerJoin('user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')
         ;
 
-        if (!empty($users)) {
+        if (null !== $users && [] !== $users) {
             $qb
                 ->where('user IN (:users)')
                 ->setParameter('users', $users)

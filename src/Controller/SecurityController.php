@@ -29,7 +29,7 @@ class SecurityController extends AbstractPublicController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
+        if (null !== $this->getUser()) {
             return $this->redirectToRoute('homepage');
         }
         // get the login error if there is one

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -18,11 +20,10 @@
 
 namespace App\Message;
 
-class Concept2ImportMessage
+readonly class Concept2ImportMessage
 {
     public function __construct(private int $userId)
     {
-        $this->userId = $userId;
     }
 
     public function getUserId(): int

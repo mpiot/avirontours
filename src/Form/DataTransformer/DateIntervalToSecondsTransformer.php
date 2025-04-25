@@ -25,21 +25,11 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class DateIntervalToSecondsTransformer implements DataTransformerInterface
 {
-    /**
-     * Transforms an integer (seconds) to a DateInterval.
-     *
-     * @param int $value
-     */
     public function transform($value): ?\DateInterval
     {
         return DurationManipulator::tenthSecondsToDateInterval($value);
     }
 
-    /**
-     * Transforms a DateInterval to an integer (seconds).
-     *
-     * @param \DateInterval $value
-     */
     public function reverseTransform($value): ?int
     {
         return DurationManipulator::dateIntervalToTenthSeconds($value);

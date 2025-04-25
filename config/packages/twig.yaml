@@ -1,17 +1,11 @@
 twig:
     file_name_pattern: '*.twig'
-    date:
-        format: d/m/Y
-        interval_format: '%%d days'
     form_themes:
         - 'bootstrap_5_layout.html.twig'
         - 'form/_turnstile.html.twig'
-    paths:
-        '%kernel.project_dir%/assets/images': images
     globals:
-        APP_VERSION: '%env(APP_VERSION)%'
-        projectDir: '%kernel.project_dir%'
-        treasurerStamp:  '%env(TREASURER_STAMP)%'
+        app_version: '%app_version%'
+        treasurer_stamp:  '%treasurer_stamp%'
 
 when@test:
     twig:

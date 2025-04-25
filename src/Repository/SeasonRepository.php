@@ -54,7 +54,7 @@ class SeasonRepository extends ServiceEntityRepository
         ;
 
         $unavailableSeasons = $this->findUnavailableSeasonForUser($user);
-        if (!empty($unavailableSeasons)) {
+        if ([] !== $unavailableSeasons) {
             $queryBuilder
                 ->andWhere($queryBuilder->expr()->notIn('season.id', ':unavailableSeasons'))
                 ->setParameter('unavailableSeasons', $unavailableSeasons)
@@ -64,7 +64,7 @@ class SeasonRepository extends ServiceEntityRepository
         return new Paginator($queryBuilder->getQuery());
     }
 
-    public function findUnavailableSeasonForUser(User $user)
+    public function findUnavailableSeasonForUser(User $user): array
     {
         $query = $this->createQueryBuilder('unavailable_season')
             ->select(['unavailable_season.id'])

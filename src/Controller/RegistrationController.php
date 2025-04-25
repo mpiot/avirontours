@@ -49,7 +49,7 @@ class RegistrationController extends AbstractPublicController
         FileUploader $fileUploader,
         MailerInterface $mailer,
     ): Response {
-        if ($this->getUser()) {
+        if (null !== $this->getUser()) {
             return $this->redirectToRoute('profile_show');
         }
 

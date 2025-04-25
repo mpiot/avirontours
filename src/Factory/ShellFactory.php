@@ -22,10 +22,9 @@ namespace App\Factory;
 
 use App\Entity\Shell;
 use App\Repository\ShellRepository;
-use Doctrine\ORM\EntityRepository;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
-use Zenstruck\Foundry\Proxy;
 
 /**
  * @extends PersistentProxyObjectFactory<Shell>
@@ -46,25 +45,25 @@ use Zenstruck\Foundry\Proxy;
  * @method static Shell[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
  * @method static Shell[]|Proxy[]                            randomSet(int $number, array $attributes = [])
  *
- * @phpstan-method        Shell&Proxy<Shell> create(array|callable $attributes = [])
- * @phpstan-method static Shell&Proxy<Shell> createOne(array $attributes = [])
- * @phpstan-method static Shell&Proxy<Shell> find(object|array|mixed $criteria)
- * @phpstan-method static Shell&Proxy<Shell> findOrCreate(array $attributes)
- * @phpstan-method static Shell&Proxy<Shell> first(string $sortedField = 'id')
- * @phpstan-method static Shell&Proxy<Shell> last(string $sortedField = 'id')
- * @phpstan-method static Shell&Proxy<Shell> random(array $attributes = [])
- * @phpstan-method static Shell&Proxy<Shell> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<Shell, EntityRepository> repository()
- * @phpstan-method static list<Shell&Proxy<Shell>> all()
- * @phpstan-method static list<Shell&Proxy<Shell>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Shell&Proxy<Shell>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Shell&Proxy<Shell>> findBy(array $attributes)
- * @phpstan-method static list<Shell&Proxy<Shell>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Shell&Proxy<Shell>> randomSet(int $number, array $attributes = [])
+ * @phpstan-method        Proxy<Shell> create(array|callable $attributes = [])
+ * @phpstan-method static Proxy<Shell> createOne(array $attributes = [])
+ * @phpstan-method static Proxy<Shell> find(object|array|mixed $criteria)
+ * @phpstan-method static Proxy<Shell> findOrCreate(array $attributes)
+ * @phpstan-method static Proxy<Shell> first(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Shell> last(string $sortedField = 'id')
+ * @phpstan-method static Proxy<Shell> random(array $attributes = [])
+ * @phpstan-method static Proxy<Shell> randomOrCreate(array $attributes = [])
+ * @phpstan-method static ProxyRepositoryDecorator<Shell> repository()
+ * @phpstan-method static list<Proxy<Shell>> all()
+ * @phpstan-method static list<Proxy<Shell>> createMany(int $number, array|callable $attributes = [])
+ * @phpstan-method static list<Proxy<Shell>> createSequence(iterable|callable $sequence)
+ * @phpstan-method static list<Proxy<Shell>> findBy(array $attributes)
+ * @phpstan-method static list<Proxy<Shell>> randomRange(int $min, int $max, array $attributes = [])
+ * @phpstan-method static list<Proxy<Shell>> randomSet(int $number, array $attributes = [])
  */
 final class ShellFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array|callable
+    protected function defaults(): array
     {
         return [
             'name' => self::faker()->name(),

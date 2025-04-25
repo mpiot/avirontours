@@ -52,7 +52,7 @@ class CrewAvailableValidator extends ConstraintValidator
         }
 
         $unavailableUsers = $this->userRepository->findOnWaterUsers($value->toArray());
-        if (!empty($unavailableUsers)) {
+        if ([] !== $unavailableUsers) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', implode(', ', $unavailableUsers))
                 ->addViolation()

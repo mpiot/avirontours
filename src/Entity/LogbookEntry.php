@@ -246,6 +246,7 @@ class LogbookEntry
         if ($this->getCrewMembers()->isEmpty()) {
             return;
         }
+
         $invalidCrewMembers = [];
         foreach ($this->getCrewMembers() as $crewMember) {
             if ($crewMember->getLicenses()->isEmpty()) {
@@ -257,7 +258,8 @@ class LogbookEntry
                 $invalidCrewMembers[] = $crewMember->getFullName();
             }
         }
-        if (!empty($invalidCrewMembers)) {
+
+        if ([] !== $invalidCrewMembers) {
             $context->buildViolation('Certains membres d\'équipage ont atteint leur limite de nombre de sorties: {{ invalidMembers }}.')
                 ->setParameter('{{ invalidMembers }}', implode(', ', $invalidCrewMembers))
                 ->atPath('crewMembers')

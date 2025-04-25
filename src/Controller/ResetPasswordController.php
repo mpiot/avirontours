@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * Copyright 2020 Mathieu Piot
  *
@@ -48,11 +50,8 @@ class ResetPasswordController extends AbstractController
     ) {
     }
 
-    /**
-     * Display & process form to request a password reset.
-     */
     #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, MailerInterface $mailer, TranslatorInterface $translator): Response
+    public function request(Request $request, MailerInterface $mailer): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
@@ -71,9 +70,6 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    /**
-     * Confirmation page after a user has requested a password reset.
-     */
     #[Route('/check-email', name: 'app_check_email')]
     public function checkEmail(): Response
     {
@@ -88,13 +84,14 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    /**
-     * Validates and process the reset URL that the user clicked in their email.
-     */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
-    {
-        if ($token) {
+    public function reset(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        TranslatorInterface $translator,
+        ?string $token = null,
+    ): Response {
+        if (null !== $token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
             // loaded in a browser and potentially leaking the token to 3rd party JavaScript.
             $this->storeTokenInSession($token);
@@ -109,6 +106,8 @@ class ResetPasswordController extends AbstractController
 
         try {
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
+
+            \assert($user instanceof User);
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('reset_password_error', \sprintf(
                 '%s - %s',
@@ -147,14 +146,16 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $usernameFormData, MailerInterface $mailer): RedirectResponse
-    {
+    private function processSendingPasswordResetEmail(
+        string $usernameFormData,
+        MailerInterface $mailer,
+    ): RedirectResponse {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'username' => $usernameFormData,
         ]);
 
         // Do not reveal whether a user account was found or not.
-        if (!$user) {
+        if (null === $user) {
             return $this->redirectToRoute('app_check_email');
         }
 

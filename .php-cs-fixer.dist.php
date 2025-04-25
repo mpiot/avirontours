@@ -80,6 +80,7 @@ return (new PhpCsFixer\Config())
         // PHPDoc
         'align_multiline_comment' => ['comment_type' => 'all_multiline'],
         'phpdoc_order' => true,
+        'phpdoc_separation' => ['groups' => [['Annotation', 'NamedArgumentConstructor', 'Target'], ['author', 'copyright', 'license'], ['category', 'package', 'subpackage'], ['property', 'property-read', 'property-write'], ['deprecated', 'link', 'see', 'since'], ['ts-oq', 'urs']]],
         'phpdoc_to_comment' => false,
         'phpdoc_var_annotation_correct_order' => true,
         // PHPUnit
@@ -89,6 +90,7 @@ return (new PhpCsFixer\Config())
         'no_useless_return' => true,
         'return_assignment' => true,
         // Strict
+        'declare_strict_types' => true,
         'strict_comparison' => true,
         'strict_param' => true,
         // String Notation
