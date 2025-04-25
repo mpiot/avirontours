@@ -3,7 +3,7 @@
   serial: 1
 
   vars:
-      deploy_from: "/tmp/apps_build/"
+      deploy_from: "/tmp/symfony_build/"
       deploy_to: "/mnt/data/my.avirontours.fr"
       keep_releases: 3
       shared_paths:
@@ -113,7 +113,7 @@
             chdir: "{{ release_path.stdout }}"
 
       - name: Clean up unused environment files
-        ansible.builtin.command: "rm .env .env.prod .env.staging .env.test .env.{{symfony_env}}.local"
+        ansible.builtin.command: "rm .env .env.prod .env.test .env.{{symfony_env}}.local"
         args:
             chdir: "{{ release_path.stdout }}"
 
@@ -139,11 +139,8 @@
       - name: Restart service PHP
         ansible.builtin.command: sudo systemctl restart php8.3-fpm
 
-      - name: Restart messenger-consume-async:*
-        ansible.builtin.command: sudo supervisorctl restart messenger-consume-async:*
-
-      - name: Restart messenger-consume-scheduler_default:*
-        ansible.builtin.command: sudo supervisorctl restart messenger-consume-scheduler_default:*
+      - name: Restart messenger-consume:*
+        ansible.builtin.command: sudo supervisorctl restart messenger-consume:*
 
       - name: Clean up releases
         ansible.builtin.shell: ls -1dt {{ deploy_to }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf

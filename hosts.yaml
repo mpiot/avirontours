@@ -1,0 +1,6 @@
+prod:
+    hosts:
+        rhea.avirontours.fr:
+    vars:
+        git_version: develop
+        symfony_env: prod
