@@ -50,11 +50,11 @@ class LicensePaymentType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $this->formModifier($event->getForm(), $event->getData()?->getMethod());
         });
 
-        $builder->get('method')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->get('method')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $this->formModifier($event->getForm()->getParent(), $event->getForm()->getData());
         });
     }

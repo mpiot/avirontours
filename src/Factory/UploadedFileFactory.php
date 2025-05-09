@@ -115,7 +115,7 @@ final class UploadedFileFactory extends PersistentProxyObjectFactory
         return $this
             // ->afterInstantiate(function(UploadFile $uploadFile): void {})
             ->instantiateWith(Instantiator::withoutConstructor()->allowExtra('file'))
-            ->afterInstantiate(function (UploadedFile $uploadedFile, array $attributes) {
+            ->afterInstantiate(function (UploadedFile $uploadedFile, array $attributes): void {
                 $uploadedFileReference = $this->fileUploader->upload($attributes['file'], $uploadedFile->getVisibility());
 
                 $uploadedFile
