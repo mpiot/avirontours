@@ -23,6 +23,8 @@ use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\Symfony\CodeQuality\Rector\Class_\InlineClassRoutePrefixRector;
+use Rector\Symfony\CodeQuality\Rector\MethodCall\LiteralGetToRequestClassConstantRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -44,13 +46,15 @@ return RectorConfig::configure()
         rectorPreset: false,
         phpunitCodeQuality: false,
         doctrineCodeQuality: true,
-        symfonyCodeQuality: false,
+        symfonyCodeQuality: true,
         symfonyConfigs: false,
     )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
         ClassPropertyAssignToConstructorPromotionRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        InlineClassRoutePrefixRector::class,
+        LiteralGetToRequestClassConstantRector::class,
         ReadOnlyPropertyRector::class,
         SimplifyBoolIdenticalTrueRector::class,
     ])
