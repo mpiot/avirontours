@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -39,7 +39,7 @@ class Concept2OauthController extends AbstractController
 
     #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'my.avirontours.fr')]
     #[Route('/oauth/concept-logbook')]
-    public function connectCheckAction(ClientRegistry $clientRegistry, ManagerRegistry $managerRegistry)
+    public function connectCheckAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager)
     {
         /** @var OAuth2Client $client */
         $client = $clientRegistry->getClient('concept2');
@@ -47,7 +47,7 @@ class Concept2OauthController extends AbstractController
         try {
             $accessToken = $client->getAccessToken();
             $this->getUser()->setConcept2RefreshToken($accessToken->getRefreshToken());
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Votre compte Concept2 a bien été connecté.');
         } catch (IdentityProviderException $e) {
@@ -58,10 +58,10 @@ class Concept2OauthController extends AbstractController
     }
 
     #[Route('/oauth/concept-logbook/unconnect', name: 'oauth_concept2_unconnect')]
-    public function unconnectAction(ClientRegistry $clientRegistry, ManagerRegistry $managerRegistry)
+    public function unconnectAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager)
     {
         $this->getUser()->setConcept2RefreshToken(null);
-        $managerRegistry->getManager()->flush();
+        $entityManager->flush();
 
         $this->addFlash('success', 'Votre compte Concept2 a bien été déconnecté.');
 

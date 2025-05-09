@@ -66,18 +66,18 @@ final class GroupFactory extends PersistentProxyObjectFactory
     public function withMembers(): self
     {
         return $this->with([
-            'members' => UserFactory::new()->many(1, 20),
+            'members' => UserFactory::new()->many(1),
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->text(),
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this;

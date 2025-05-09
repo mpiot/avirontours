@@ -139,11 +139,11 @@ class UserType extends AbstractType
             ]);
         }
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $this->formModifier($event->getForm(), $event->getData()->getPostalCode());
         });
 
-        $builder->get('postalCode')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+        $builder->get('postalCode')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $this->formModifier($event->getForm()->getParent(), $event->getForm()->getData());
         });
     }

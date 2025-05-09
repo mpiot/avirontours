@@ -63,7 +63,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class PhysiologyFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         $max = self::faker()->numberBetween(180, 2150);
 
@@ -79,7 +79,7 @@ final class PhysiologyFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

@@ -30,9 +30,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLogin(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -50,9 +51,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithCaps(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -70,9 +72,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithSpaces(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -90,9 +93,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithBadUsername(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -109,9 +113,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithBadPassword(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -129,9 +134,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithBadUsernameAndIPTooManyTimes(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
@@ -160,9 +166,10 @@ class SecurityControllerTest extends AppWebTestCase
     public function testLoginWithIPTooManyTimes(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
+        $ipv4 = faker()->ipv4();
 
         static::ensureKernelShutdown();
-        $client = static::createClient([], ['REMOTE_ADDR' => faker()->ipv4()]);
+        $client = static::createClient([], ['REMOTE_ADDR' => $ipv4]);
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();

@@ -28,7 +28,7 @@ use App\Notification\ShellDamageNotification;
 use App\Repository\LogbookEntryRepository;
 use App\Repository\ShellRepository;
 use App\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,14 +50,13 @@ class LogbookEntryController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'logbook_entry_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $managerRegistry): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $logbookEntry = new LogbookEntry();
         $form = $this->createForm(LogbookEntryStartType::class, $logbookEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($logbookEntry);
             $entityManager->flush();
 
@@ -72,7 +71,7 @@ class LogbookEntryController extends AbstractController
     }
 
     #[Route(path: '/{id}/finish', name: 'logbook_entry_finish', methods: ['GET', 'POST'])]
-    public function finish(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
+    public function finish(Request $request, EntityManagerInterface $entityManager, LogbookEntry $logbookEntry, NotifierInterface $notifier): Response
     {
         if (null !== $logbookEntry->getEndAt()) {
             throw $this->createNotFoundException();
@@ -82,7 +81,7 @@ class LogbookEntryController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             // send an email to admins if there is damage
             foreach ($logbookEntry->getShellDamages() as $shellDamage) {
@@ -103,13 +102,13 @@ class LogbookEntryController extends AbstractController
 
     #[Route(path: '/{id}/edit', name: 'logbook_entry_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_LOGBOOK_ADMIN')]
-    public function edit(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, LogbookEntry $logbookEntry): Response
     {
         $form = $this->createForm(LogbookEntryType::class, $logbookEntry);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'La sortie a été modifiée avec succès.');
 
@@ -124,10 +123,9 @@ class LogbookEntryController extends AbstractController
 
     #[Route(path: '/{id}', name: 'logbook_entry_delete', methods: ['POST'])]
     #[IsGranted('ROLE_LOGBOOK_ADMIN')]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, LogbookEntry $logbookEntry): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, LogbookEntry $logbookEntry): Response
     {
         if ($this->isCsrfTokenValid('delete'.$logbookEntry->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($logbookEntry);
             $entityManager->flush();
 

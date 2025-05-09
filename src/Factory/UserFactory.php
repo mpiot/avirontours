@@ -29,21 +29,21 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
 /**
  * @extends PersistentProxyObjectFactory<User>
  *
- * @method        User|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static User|Proxy                                createOne(array $attributes = [])
- * @method static User|Proxy                                find(object|array|mixed $criteria)
- * @method static User|Proxy                                findOrCreate(array $attributes)
- * @method static User|Proxy                                first(string $sortedField = 'id')
- * @method static User|Proxy                                last(string $sortedField = 'id')
- * @method static User|Proxy                                random(array $attributes = [])
- * @method static User|Proxy                                randomOrCreate(array $attributes = [])
- * @method static UserRepository|ProxyRepositoryDecorator   repository()
- * @method static User[]|Proxy[]                            all()
- * @method static User[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static User[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static User[]|Proxy[]                            findBy(array $attributes)
- * @method static User[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static User[]|Proxy[]                            randomSet(int $number, array $attributes = [])
+ * @method        User|Proxy                              create(array|callable $attributes = [])
+ * @method static User|Proxy                              createOne(array $attributes = [])
+ * @method static User|Proxy                              find(object|array|mixed $criteria)
+ * @method static User|Proxy                              findOrCreate(array $attributes)
+ * @method static User|Proxy                              first(string $sortedField = 'id')
+ * @method static User|Proxy                              last(string $sortedField = 'id')
+ * @method static User|Proxy                              random(array $attributes = [])
+ * @method static User|Proxy                              randomOrCreate(array $attributes = [])
+ * @method static UserRepository|ProxyRepositoryDecorator repository()
+ * @method static User[]|Proxy[]                          all()
+ * @method static User[]|Proxy[]                          createMany(int $number, array|callable $attributes = [])
+ * @method static User[]|Proxy[]                          createSequence(iterable|callable $sequence)
+ * @method static User[]|Proxy[]                          findBy(array $attributes)
+ * @method static User[]|Proxy[]                          randomRange(int $min, int $max, array $attributes = [])
+ * @method static User[]|Proxy[]                          randomSet(int $number, array $attributes = [])
  *
  * @phpstan-method        Proxy<User> create(array|callable $attributes = [])
  * @phpstan-method static Proxy<User> createOne(array $attributes = [])
@@ -94,7 +94,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'password' => '$argon2id$v=19$m=10,t=3,p=1$504u7GDCM160iitiwetjvQ$6MguL3z0WsHOSxjKI6NhcPi4QdBFNlff/xrck+m975I',
@@ -112,7 +112,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

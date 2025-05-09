@@ -29,7 +29,7 @@ use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
 use App\Form\SportProfileConfirurationType;
 use App\Form\WorkoutMaximumLoadType;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -40,14 +40,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class SportProfileController extends AbstractController
 {
     #[Route(path: '/physiology', name: 'sport_profile_physiology', methods: ['GET', 'POST'])]
-    public function physiology(Request $request, ManagerRegistry $managerRegistry): Response
+    public function physiology(Request $request, EntityManagerInterface $entityManager): Response
     {
         $physiology = $this->getUser()->getPhysiology() ?? new Physiology($this->getUser());
         $form = $this->createForm(PhysiologyType::class, $physiology);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Ma physiologie a été modifiée avec succès.');
 
@@ -60,14 +60,14 @@ class SportProfileController extends AbstractController
     }
 
     #[Route(path: '/anatomy', name: 'sport_profile_anatomy', methods: ['GET', 'POST'])]
-    public function anatomy(Request $request, ManagerRegistry $managerRegistry): Response
+    public function anatomy(Request $request, EntityManagerInterface $entityManager): Response
     {
         $anatomy = $this->getUser()->getAnatomy() ?? new Anatomy($this->getUser());
         $form = $this->createForm(AnatomyType::class, $anatomy);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Mon anatomie a été modifiée avec succès.');
 
@@ -80,14 +80,14 @@ class SportProfileController extends AbstractController
     }
 
     #[Route(path: '/physical-qualities', name: 'sport_profile_physical_qualities', methods: ['GET', 'POST'])]
-    public function physicalQualities(Request $request, ManagerRegistry $managerRegistry): Response
+    public function physicalQualities(Request $request, EntityManagerInterface $entityManager): Response
     {
         $physicalQualities = $this->getUser()->getPhysicalQualities() ?? new PhysicalQualities($this->getUser());
         $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Mes qualités physiques ont été modifiées avec succès.');
 
@@ -100,14 +100,14 @@ class SportProfileController extends AbstractController
     }
 
     #[Route(path: '/workout-maximum-load', name: 'sport_profile_workout_maximum_load', methods: ['GET', 'POST'])]
-    public function workoutMaximumLoad(Request $request, ManagerRegistry $managerRegistry): Response
+    public function workoutMaximumLoad(Request $request, EntityManagerInterface $entityManager): Response
     {
         $workoutMaximumLoad = $this->getUser()->getWorkoutMaximumLoad() ?? new WorkoutMaximumLoad($this->getUser());
         $form = $this->createForm(WorkoutMaximumLoadType::class, $workoutMaximumLoad);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Mes 1RM on été modifiées avec succès.');
 
@@ -120,13 +120,13 @@ class SportProfileController extends AbstractController
     }
 
     #[Route(path: '/configuration', name: 'sport_profile_configuration', methods: ['GET', 'POST'])]
-    public function configuration(Request $request, ManagerRegistry $managerRegistry): Response
+    public function configuration(Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(SportProfileConfirurationType::class, $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'La configuration du profil sportif a été modifiée avec succès.');
 

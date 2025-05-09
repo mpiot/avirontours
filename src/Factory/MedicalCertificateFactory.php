@@ -64,7 +64,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class MedicalCertificateFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),
@@ -76,7 +76,7 @@ final class MedicalCertificateFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

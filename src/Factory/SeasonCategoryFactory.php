@@ -73,7 +73,7 @@ final class SeasonCategoryFactory extends PersistentProxyObjectFactory
         return $this->with(['displayed' => false]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->sentence(),
@@ -84,7 +84,7 @@ final class SeasonCategoryFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

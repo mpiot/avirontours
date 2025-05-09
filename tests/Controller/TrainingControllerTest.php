@@ -28,6 +28,8 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Zenstruck\Foundry\faker;
+
 class TrainingControllerTest extends AppWebTestCase
 {
     /**
@@ -82,7 +84,7 @@ class TrainingControllerTest extends AppWebTestCase
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         TrainingFactory::createMany(6, [
-            'trainedAt' => TrainingFactory::faker()->dateTimeThisMonth(),
+            'trainedAt' => faker()->dateTimeThisMonth(),
             'user' => $user,
         ]);
         TrainingFactory::createMany(6, [
@@ -90,7 +92,7 @@ class TrainingControllerTest extends AppWebTestCase
             'user' => $user,
         ]);
         TrainingFactory::createMany(3, [
-            'trainedAt' => TrainingFactory::faker()->dateTimeThisMonth(),
+            'trainedAt' => faker()->dateTimeThisMonth(),
         ]);
 
         static::ensureKernelShutdown();

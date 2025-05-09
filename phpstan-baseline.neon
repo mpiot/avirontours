@@ -5,3 +5,7 @@ parameters:
 
         -
             identifier: doctrine.columnType
+
+        -
+            identifier: return.unusedType
+            path: src/Factory
