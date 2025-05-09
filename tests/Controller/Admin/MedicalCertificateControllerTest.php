@@ -24,7 +24,7 @@ use App\Factory\MedicalCertificateFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class MedicalCertificateControllerTest extends AppWebTestCase
+final class MedicalCertificateControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void

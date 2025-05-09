@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-class TrainingControllerTest extends AppWebTestCase
+final class TrainingControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void

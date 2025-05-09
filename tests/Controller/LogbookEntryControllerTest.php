@@ -33,7 +33,7 @@ use App\Tests\AppWebTestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogbookEntryControllerTest extends AppWebTestCase
+final class LogbookEntryControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void

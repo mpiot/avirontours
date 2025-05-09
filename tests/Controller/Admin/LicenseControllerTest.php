@@ -30,7 +30,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class LicenseControllerTest extends AppWebTestCase
+final class LicenseControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]

@@ -25,7 +25,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\Uid\Uuid;
 
-class PaymentAttestationControllerTest extends AppWebTestCase
+final class PaymentAttestationControllerTest extends AppWebTestCase
 {
     public function testDownloadPaymentAttestation(): void
     {

@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-class RegistrationControllerTest extends AppWebTestCase
+final class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration(): void
     {

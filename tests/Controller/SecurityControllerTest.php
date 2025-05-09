@@ -25,7 +25,7 @@ use App\Tests\AppWebTestCase;
 
 use function Zenstruck\Foundry\faker;
 
-class SecurityControllerTest extends AppWebTestCase
+final class SecurityControllerTest extends AppWebTestCase
 {
     public function testLogin(): void
     {

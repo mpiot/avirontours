@@ -25,7 +25,7 @@ use App\Factory\ShellDamageCategoryFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ShellDamageCategoryControllerTest extends AppWebTestCase
+final class ShellDamageCategoryControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void

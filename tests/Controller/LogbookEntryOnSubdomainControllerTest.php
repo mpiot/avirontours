@@ -31,7 +31,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
+final class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessUnauthorizedForAnonymousUser(string $method, string $url): void

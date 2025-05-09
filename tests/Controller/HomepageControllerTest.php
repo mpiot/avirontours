@@ -29,7 +29,7 @@ use App\Tests\AppWebTestCase;
 
 use function Zenstruck\Foundry\faker;
 
-class HomepageControllerTest extends AppWebTestCase
+final class HomepageControllerTest extends AppWebTestCase
 {
     public function testAsAnonymousUserICannotShowHomepage(): void
     {

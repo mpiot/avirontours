@@ -26,7 +26,7 @@ use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class SeasonControllerTest extends AppWebTestCase
+final class SeasonControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     #[\PHPUnit\Framework\Attributes\DataProvider('paymentAdminUrlProvider')]
