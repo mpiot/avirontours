@@ -50,7 +50,7 @@ class UserType extends AbstractType
     {
         $builder
             ->add('subscriptionDate', DateType::class, [
-                'label' => 'Date d\'inscription',
+                'label' => "Date d'inscription",
                 'widget' => 'single_text',
             ])
             ->add('gender', ChoiceType::class, [

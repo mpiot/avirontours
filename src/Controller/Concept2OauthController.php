@@ -50,7 +50,7 @@ class Concept2OauthController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre compte Concept2 a bien été connecté.');
-        } catch (IdentityProviderException $e) {
+        } catch (IdentityProviderException $identityProviderException) {
             $this->addFlash('error', 'Une erreur est survenue lors de la connexion de votre compte Concept2.');
         }
 

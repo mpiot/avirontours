@@ -43,7 +43,9 @@ use function Symfony\Component\String\u;
 class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, \Stringable
 {
     public const NUM_ITEMS = 20;
+
     public const GENDER_FEMALE = 'f';
+
     public const GENDER_MALE = 'm';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
@@ -127,11 +129,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: 'App\Entity\License', cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: License::class, cascade: ['remove'])]
     #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
 
-    #[ORM\ManyToMany(targetEntity: 'App\Entity\LogbookEntry', mappedBy: 'crewMembers')]
+    #[ORM\ManyToMany(targetEntity: LogbookEntry::class, mappedBy: 'crewMembers')]
     private Collection $logbookEntries;
 
     #[ORM\OneToOne(targetEntity: Physiology::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -448,9 +450,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getFormattedAddress(): string
     {
-        $address = "{$this->getLaneNumber()}, {$this->getLaneType()} {$this->getLaneName()}\n";
+        $address = \sprintf('%s, %s %s%s', $this->getLaneNumber(), $this->getLaneType(), $this->getLaneName(), \PHP_EOL);
 
-        return $address."{$this->getPostalCode()} {$this->getCity()}";
+        return $address.\sprintf('%s %s', $this->getPostalCode(), $this->getCity());
     }
 
     public function getFirstLegalGuardian(): ?LegalGuardian
@@ -739,7 +741,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $slugger = new AsciiSlugger('fr');
         $firstName = $slugger->slug($this->firstName)->lower();
         $lastName = $slugger->slug($this->lastName)->lower();
-        $this->username = "{$firstName}.{$lastName}";
+        $this->username = \sprintf('%s.%s', $firstName, $lastName);
     }
 
     public static function getAvailableCivilities(): array

@@ -40,7 +40,7 @@ final class PhysicalQualitiesChart
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_RADAR);
         $chart->setData([
-            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', 'Force d\'endurance', 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
+            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', "Force d'endurance", 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
             'datasets' => [
                 [
                     'label' => '',

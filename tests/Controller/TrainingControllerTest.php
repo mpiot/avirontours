@@ -98,6 +98,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
+
         $crawler = $client->request('GET', '/training');
 
         $this->assertResponseIsSuccessful();

@@ -36,7 +36,7 @@ class ShellDamage
     private ?int $id = null;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\ShellDamageCategory')]
+    #[ORM\ManyToOne(targetEntity: ShellDamageCategory::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?ShellDamageCategory $category = null;
 
@@ -53,11 +53,11 @@ class ShellDamage
     private ?\DateTimeInterface $repairEndAt = null;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Shell', inversedBy: 'shellDamages')]
+    #[ORM\ManyToOne(targetEntity: Shell::class, inversedBy: 'shellDamages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Shell $shell = null;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\LogbookEntry', inversedBy: 'shellDamages')]
+    #[ORM\ManyToOne(targetEntity: LogbookEntry::class, inversedBy: 'shellDamages')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private ?LogbookEntry $logbookEntry = null;
 

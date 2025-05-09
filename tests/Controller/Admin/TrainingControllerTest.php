@@ -110,7 +110,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $crawler = $client->request('GET', "/admin/training/{$user->getId()}");
+        $crawler = $client->request('GET', '/admin/training/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertCount(6, $crawler->filter('table > tbody > tr'));
@@ -124,7 +124,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', "/admin/training/{$user->getId()}/{$training->getId()}");
+        $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
 
         $this->assertResponseIsSuccessful();
     }

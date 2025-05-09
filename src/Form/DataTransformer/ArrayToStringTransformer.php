@@ -27,7 +27,9 @@ use function Symfony\Component\String\u;
 class ArrayToStringTransformer implements DataTransformerInterface
 {
     public const string FLOAT = 'float';
+
     public const string INT = 'int';
+
     public const string STRING = 'string';
 
     public function __construct(private readonly string $type = self::STRING, private readonly string $delimiter = ',')

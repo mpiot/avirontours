@@ -53,6 +53,7 @@ class ImportPostalCodeCommand extends Command
 
         // Count number of lines
         $file->seek(\PHP_INT_MAX);
+
         $nbLines = $file->key();
         $file->rewind();
 
@@ -96,6 +97,7 @@ class ImportPostalCodeCommand extends Command
         foreach ($this->client->stream($response) as $chunk) {
             fwrite($fileHandler, $chunk->getContent());
         }
+
         fclose($fileHandler);
 
         return new \SplFileObject($filename, 'r');

@@ -47,7 +47,7 @@ class SeasonFixtures extends Fixture
                 ;
                 $season->addSeasonCategory($seasonCategory);
 
-                $this->addReference("{$name}-{$categoryName}", $seasonCategory);
+                $this->addReference(\sprintf('%s-%s', $name, $categoryName), $seasonCategory);
             }
 
             $manager->persist($season);

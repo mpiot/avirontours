@@ -65,6 +65,7 @@ readonly class TrainingHelper
                 $categorizedTrainings[$training->getSport()->value]['duration'] += (int) round($training->getDuration() / 10);
                 $categorizedTrainings[$training->getSport()->value]['distance'] += $training->getDistance();
             }
+
             usort(
                 $categorizedTrainings,
                 fn (array $a, array $b): int => $this->translator->trans($a['sport']->label()) <=> $this->translator->trans($b['sport']->label())

@@ -385,6 +385,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($license->getUser());
+
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -443,6 +444,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($users[0]->getUser());
+
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();

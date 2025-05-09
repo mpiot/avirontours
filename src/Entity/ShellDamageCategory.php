@@ -29,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ShellDamageCategory
 {
     public const PRIORITY_HIGH = 0;
+
     public const PRIORITY_MEDIUM = 1;
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]

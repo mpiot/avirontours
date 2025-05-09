@@ -31,6 +31,7 @@ use function Symfony\Component\String\u;
 class FileUploader
 {
     public const string PUBLIC = 'public';
+
     public const string PRIVATE = 'private';
 
     public function __construct(

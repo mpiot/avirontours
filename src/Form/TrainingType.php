@@ -75,7 +75,7 @@ class TrainingType extends AbstractType
                 'placeholder' => '-- Sélectionner un choix --',
             ])
             ->add('ratedPerceivedExertion', ChoiceType::class, [
-                'label' => 'RPE - Perception de l\'effort',
+                'label' => "RPE - Perception de l'effort",
                 'choices' => [
                     'N/A' => null,
                     '<span class="d-block" style="background-color: rgba(86, 233, 233, .5);">1 - Très très facile</span>' => 1,

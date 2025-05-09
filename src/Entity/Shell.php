@@ -31,16 +31,27 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Shell
 {
     public const ROWING_TYPE_BOTH = 'both';
+
     public const ROWING_TYPE_SCULL = 'scull';
+
     public const ROWING_TYPE_SWEEP = 'sweep';
+
     public const WEIGHT_CATEGORY_50 = 50;
+
     public const WEIGHT_CATEGORY_60 = 60;
+
     public const WEIGHT_CATEGORY_70 = 70;
+
     public const WEIGHT_CATEGORY_80 = 80;
+
     public const WEIGHT_CATEGORY_90 = 90;
+
     public const RIGGER_MATERIAL_ALUMINIUM = 'aluminum';
+
     public const RIGGER_MATERIAL_CARBON = 'carbon';
+
     public const RIGGER_POSITION_BACK = 'back';
+
     public const RIGGER_POSITION_FRONT = 'front';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
@@ -71,7 +82,7 @@ class Shell
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $abbreviation = null;
 
-    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\LogbookEntry')]
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: LogbookEntry::class)]
     private Collection $logbookEntries;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -103,7 +114,7 @@ class Shell
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $personalBoat = false;
 
-    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: 'App\Entity\ShellDamage', cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: ShellDamage::class, cascade: ['remove'])]
     private Collection $shellDamages;
 
     public function __construct()

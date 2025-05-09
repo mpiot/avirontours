@@ -48,12 +48,12 @@ class License
     private Uuid $uuid;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\SeasonCategory', inversedBy: 'licenses')]
+    #[ORM\ManyToOne(targetEntity: SeasonCategory::class, inversedBy: 'licenses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?SeasonCategory $seasonCategory;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\User', inversedBy: 'licenses')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'licenses')]
     #[ORM\JoinColumn(name: 'app_user', nullable: false)]
     private ?User $user;
 
@@ -65,7 +65,7 @@ class License
 
     #[Assert\NotNull(groups: ['Default', 'registration'])]
     #[Assert\Valid(groups: ['Default', 'registration'])]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: MedicalCertificate::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?MedicalCertificate $medicalCertificate = null;
 

@@ -41,13 +41,13 @@ class LogbookEntry
     #[Assert\NotNull(groups: ['start', 'edit'])]
     #[AppAssert\ShellAvailable(groups: ['start'])]
     #[AppAssert\ShellNotDamaged(groups: ['start'])]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Shell', inversedBy: 'logbookEntries')]
+    #[ORM\ManyToOne(targetEntity: Shell::class, inversedBy: 'logbookEntries')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Shell $shell = null;
 
     #[Assert\NotNull(groups: ['start', 'edit'])]
     #[AppAssert\CrewAvailable(groups: ['start'])]
-    #[ORM\ManyToMany(targetEntity: 'App\Entity\User', inversedBy: 'logbookEntries')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'logbookEntries')]
     private Collection $crewMembers;
 
     #[ORM\Column(type: Types::JSON)]
@@ -72,7 +72,7 @@ class LogbookEntry
     private ?float $coveredDistance = null;
 
     #[Assert\Valid]
-    #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: 'App\Entity\ShellDamage', cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: ShellDamage::class, cascade: ['persist'])]
     private Collection $shellDamages;
 
     public function __construct()
@@ -231,6 +231,7 @@ class LogbookEntry
         if (null === $this->getShell()) {
             return;
         }
+
         $numberCrewMembers = $this->getCrewMembers()->count() + \count($this->nonUserCrewMembers);
         if ($numberCrewMembers !== $this->getShell()->getCrewSize()) {
             $context->buildViolation('Le nombre de membre d\'équipage ne correspond pas au nombre de place.')

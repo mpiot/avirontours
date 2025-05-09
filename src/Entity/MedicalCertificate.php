@@ -29,9 +29,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MedicalCertificate
 {
     public const TYPE_CERTIFICATE = 'certificate';
+
     public const TYPE_ATTESTATION = 'attestation';
+
     public const LEVEL_PRACTICE = 'practice';
+
     public const LEVEL_COMPETITION = 'competition';
+
     public const LEVEL_UPGRADE = 'upgrade';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]

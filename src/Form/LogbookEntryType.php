@@ -83,7 +83,7 @@ class LogbookEntryType extends AbstractType
                             ->leftJoin('seasonCategory.season', 'season')
                             ->andWhere('seasonCategory.licenseType = :licenseType')
                             ->andWhere('season.active = true')
-                            ->andWhere('JSON_GET_FIELD_AS_TEXT(licenses.marking, \'validated\') = \'1\'')
+                            ->andWhere("JSON_GET_FIELD_AS_TEXT(licenses.marking, 'validated') = '1'")
                             ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL)
                         ;
                     }

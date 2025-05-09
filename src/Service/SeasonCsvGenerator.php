@@ -88,14 +88,16 @@ class SeasonCsvGenerator
                 if (false === \array_key_exists($header, $counter)) {
                     $counter[$header] = 0;
                 }
+
                 $count = ++$counter[$header];
-                $header = 1 === $count ? $header : "{$header} {$count}";
+                $header = 1 === $count ? $header : \sprintf('%s %d', $header, $count);
 
                 if (false === \in_array($header, $headers, true)) {
                     $headers[] = $header;
                 }
             }
         }
+
         sort($headers);
         array_unshift($headers, 'Prénom', 'Nom');
 
@@ -111,8 +113,9 @@ class SeasonCsvGenerator
                 if (false === \array_key_exists($paymentMethod, $counter)) {
                     $counter[$paymentMethod] = 0;
                 }
+
                 $count = ++$counter[$paymentMethod];
-                $paymentMethod = 1 === $count ? $paymentMethod : "{$paymentMethod} {$count}";
+                $paymentMethod = 1 === $count ? $paymentMethod : \sprintf('%s %d', $paymentMethod, $count);
 
                 $tmpData[$paymentMethod] = $payment->getAmount() / 100;
             }

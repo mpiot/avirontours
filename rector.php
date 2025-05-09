@@ -18,7 +18,6 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
 
@@ -29,12 +28,10 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
-    ->withTypeCoverageLevel(50)
-    ->withDeadCodeLevel(50)
     ->withCodeQualityLevel(50)
-    ->withRules([
-        InlineConstructorDefaultToPropertyRector::class,
-    ])
+    ->withCodingStyleLevel(25)
+    ->withDeadCodeLevel(50)
+    ->withTypeCoverageLevel(50)
     ->withSkip([
         SimplifyBoolIdenticalTrueRector::class,
     ])

@@ -67,7 +67,7 @@ class LogbookEntryRepository extends ServiceEntityRepository
         $firstDay = $lastDay->modify('-'.($nbMonths - 1).' months')->modify('first day of this month');
 
         $query = $this->createQueryBuilder('logbook_entry')
-            ->select('DATE_PART(\'month\', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session')
+            ->select("DATE_PART('month', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session")
             ->leftJoin('logbook_entry.crewMembers', 'crew_members')
             ->andWhere('crew_members = :user')
             ->andWhere('logbook_entry.date BETWEEN :firstDay AND :lastDay')

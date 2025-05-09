@@ -47,6 +47,7 @@ class TrainingController extends AbstractController
     ): Response {
         $endAt = null !== $endAt ? new \DateTimeImmutable($endAt) : new \DateTimeImmutable('now');
         $endAt = $endAt->modify('sunday this week')->setTime(23, 59);
+
         $startAt = $endAt->modify('-1 month')->modify('monday this week');
 
         return $this->render('training/index.html.twig', [
