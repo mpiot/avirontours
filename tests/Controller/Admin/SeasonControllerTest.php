@@ -33,7 +33,7 @@ class SeasonControllerTest extends AppWebTestCase
      * @dataProvider paymentAdminUrlProvider
      * @dataProvider adminUrlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -47,7 +47,7 @@ class SeasonControllerTest extends AppWebTestCase
      * @dataProvider paymentAdminUrlProvider
      * @dataProvider adminUrlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -66,7 +66,7 @@ class SeasonControllerTest extends AppWebTestCase
      * @dataProvider adminUrlProvider
      * @dataProvider paymentAdminUrlProvider
      */
-    public function testAccessDeniedForMedicalCertificateAdmin($method, $url): void
+    public function testAccessDeniedForMedicalCertificateAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -84,7 +84,7 @@ class SeasonControllerTest extends AppWebTestCase
     /**
      * @dataProvider adminUrlProvider
      */
-    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();

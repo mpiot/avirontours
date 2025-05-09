@@ -35,7 +35,7 @@ class TrainingControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $training = TrainingFactory::createOne();
@@ -52,7 +52,7 @@ class TrainingControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForUnlicensedUser($method, $url): void
+    public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         $user = UserFactory::createOne();
 

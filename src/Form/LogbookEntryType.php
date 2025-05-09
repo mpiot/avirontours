@@ -49,7 +49,7 @@ class LogbookEntryType extends AbstractType
             ->add('shell', EntityType::class, [
                 'label' => 'Bâteau',
                 'class' => Shell::class,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
                     return $er->createQueryBuilder('shell')
                         ->select('shell')
                         ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
@@ -59,7 +59,7 @@ class LogbookEntryType extends AbstractType
                         ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
                     ;
                 },
-                'choice_label' => function (Shell $shell) {
+                'choice_label' => function (Shell $shell): string {
                     return $shell->getFullName().$this->shellSuffixes($shell);
                 },
                 'options_as_html' => true,
@@ -69,7 +69,7 @@ class LogbookEntryType extends AbstractType
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
                 'class' => User::class,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
                     $qb = $er->createQueryBuilder('app_user')
                         ->leftJoin('app_user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
                         ->orderBy('app_user.firstName', 'ASC')
@@ -90,7 +90,7 @@ class LogbookEntryType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => function (User $user) {
+                'choice_label' => function (User $user): string {
                     return $user->getFullName().$this->crewSuffixes($user);
                 },
                 'options_as_html' => true,
@@ -168,7 +168,7 @@ class LogbookEntryType extends AbstractType
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
         }
 
-        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
+        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage): bool => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
         }
 

@@ -36,7 +36,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessUnauthorizedForAnonymousUser($method, $url): void
+    public function testAccessUnauthorizedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
@@ -53,7 +53,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessForbidden($method, $url): void
+    public function testAccessForbidden(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();

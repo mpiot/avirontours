@@ -39,7 +39,7 @@ class Concept2OauthController extends AbstractController
 
     #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'my.avirontours.fr')]
     #[Route('/oauth/concept-logbook')]
-    public function connectCheckAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager)
+    public function connectCheckAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         /** @var OAuth2Client $client */
         $client = $clientRegistry->getClient('concept2');
@@ -58,7 +58,7 @@ class Concept2OauthController extends AbstractController
     }
 
     #[Route('/oauth/concept-logbook/unconnect', name: 'oauth_concept2_unconnect')]
-    public function unconnectAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager)
+    public function unconnectAction(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $this->getUser()->setConcept2RefreshToken(null);
         $entityManager->flush();

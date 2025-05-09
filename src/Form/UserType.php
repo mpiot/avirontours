@@ -158,7 +158,7 @@ class UserType extends AbstractType
     public function formModifier(FormInterface $form, ?string $postalCode = null): void
     {
         $cities = null === $postalCode ? [] : $this->repository->findBy(['postalCode' => $postalCode]);
-        $cities = array_map(fn (PostalCode $postalCode) => $postalCode->getCity(), $cities);
+        $cities = array_map(fn (PostalCode $postalCode): ?string => $postalCode->getCity(), $cities);
 
         $form->add('city', ChoiceType::class, [
             'label' => 'Ville',

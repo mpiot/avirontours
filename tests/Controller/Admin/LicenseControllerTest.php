@@ -38,7 +38,7 @@ class LicenseControllerTest extends AppWebTestCase
      * @dataProvider medicalCertificateAdminUrlProvider
      * @dataProvider paymentsAdminUrlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -53,7 +53,7 @@ class LicenseControllerTest extends AppWebTestCase
      * @dataProvider medicalCertificateAdminUrlProvider
      * @dataProvider paymentsAdminUrlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
             $season = SeasonFactory::createOne();
@@ -79,7 +79,7 @@ class LicenseControllerTest extends AppWebTestCase
      * @dataProvider adminUrlProvider
      * @dataProvider paymentsAdminUrlProvider
      */
-    public function testAccessDeniedForMedicalCertificateAdmin($method, $url): void
+    public function testAccessDeniedForMedicalCertificateAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
             $season = SeasonFactory::createOne();
@@ -105,7 +105,7 @@ class LicenseControllerTest extends AppWebTestCase
      * @dataProvider adminUrlProvider
      * @dataProvider medicalCertificateAdminUrlProvider
      */
-    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
             $season = SeasonFactory::createOne();

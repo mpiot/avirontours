@@ -42,7 +42,7 @@ class TrainingRepository extends ServiceEntityRepository
         parent::__construct($registry, Training::class);
     }
 
-    public function findUserPaginated(User $user, $page = 1): PaginationInterface
+    public function findUserPaginated(User $user, int $page = 1): PaginationInterface
     {
         $query = $this->createQueryBuilder('training')
             ->innerJoin('training.user', 'user')

@@ -49,7 +49,7 @@ class ArrayToStringTransformer implements DataTransformerInterface
             return [];
         }
 
-        $array = array_map(function ($part) {
+        $array = array_map(function ($part): string {
             return trim($part->toString());
         }, u($value)->split($this->delimiter));
 

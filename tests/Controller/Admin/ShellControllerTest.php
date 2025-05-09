@@ -31,7 +31,7 @@ class ShellControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -43,7 +43,7 @@ class ShellControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $shell = ShellFactory::createOne();

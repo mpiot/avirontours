@@ -71,7 +71,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
 
-    public function findUserProfile(User $user)
+    public function findUserProfile(User $user): mixed
     {
         $query = $this->createQueryBuilder('user')
             ->leftJoin('user.licenses', 'license')->addSelect('license')
@@ -87,7 +87,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query->getOneOrNullResult();
     }
 
-    public function findPaginated($query = null, $page = 1): PaginationInterface
+    public function findPaginated($query = null, int $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')
             ->orderBy('app_user.firstName', 'ASC')
@@ -110,7 +110,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         );
     }
 
-    public function findUsersTrainings(?\DateTime $from = null, ?\DateTime $to = null, ?Group $group = null, $query = null, $page = 1): PaginationInterface
+    public function findUsersTrainings(?\DateTime $from = null, ?\DateTime $to = null, ?Group $group = null, $query = null, int $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('app_user')
             ->innerJoin('app_user.trainings', 'trainings', Join::WITH, 'trainings.trainedAt BETWEEN :from AND :to')
@@ -183,7 +183,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query->getResult();
     }
 
-    public function findForUniqueness($args): array
+    public function findForUniqueness(array $args): array
     {
         if (null === $args['firstName'] || null === $args['lastName']) {
             return [];

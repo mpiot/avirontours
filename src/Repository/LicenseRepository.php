@@ -46,7 +46,7 @@ class LicenseRepository extends ServiceEntityRepository
         parent::__construct($registry, License::class);
     }
 
-    public function findLastUserSeason(User $user)
+    public function findLastUserSeason(User $user): mixed
     {
         $query = $this->createQueryBuilder('license')
             ->innerJoin('license.user', 'user')
@@ -99,7 +99,7 @@ class LicenseRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findBySeasonPaginated(Season $season, $query = null, $page = 1): PaginationInterface
+    public function findBySeasonPaginated(Season $season, $query = null, int $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('license')
             ->addSelect(

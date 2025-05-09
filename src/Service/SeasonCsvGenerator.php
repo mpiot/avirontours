@@ -217,7 +217,7 @@ class SeasonCsvGenerator
 
         // Else, this is an attestation: we must return the date of the latest Certificate we have
         /** @var License|false $latestLicenceWithCertificate */
-        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license) {
+        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license): bool {
             return MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType();
         })->last();
 

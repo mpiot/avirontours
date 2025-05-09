@@ -29,7 +29,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -41,7 +41,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $medicalCertificate = MedicalCertificateFactory::createOne();
@@ -59,7 +59,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $medicalCertificate = MedicalCertificateFactory::createOne();

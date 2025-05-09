@@ -129,7 +129,7 @@ class License
         return $this;
     }
 
-    public function getMarking()
+    public function getMarking(): array
     {
         return $this->marking;
     }
@@ -145,7 +145,7 @@ class License
         ;
     }
 
-    public function setMarking($marking, $context = []): void
+    public function setMarking(array $marking, $context = []): void
     {
         $this->marking = $marking;
         $this->transitionContexts[] = [
@@ -160,7 +160,7 @@ class License
         return $this->transitionContexts;
     }
 
-    public function setTransitionContexts($transitionContexts): void
+    public function setTransitionContexts(array $transitionContexts): void
     {
         $this->transitionContexts = $transitionContexts;
     }
@@ -243,7 +243,7 @@ class License
 
     public function getPaymentsAmount(): int
     {
-        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment) => $carrier + $payment->getAmount(), 0);
+        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment): int => $carrier + $payment->getAmount(), 0);
     }
 
     public function getPayedAt(): ?\DateTimeImmutable

@@ -636,7 +636,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function getTrainingsDuration(): int
     {
         return $this->trainings->reduce(
-            fn ($carry, Training $training) => $carry + $training->getDuration(),
+            fn ($carry, Training $training): float|int => $carry + $training->getDuration(),
             0
         );
     }

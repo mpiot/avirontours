@@ -28,7 +28,7 @@ class SportProfileControllerTest extends AppWebTestCase
     /**
      * @dataProvider urlProvider
      */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();

@@ -41,7 +41,7 @@ class ShellDamageRepository extends ServiceEntityRepository
         parent::__construct($registry, ShellDamage::class);
     }
 
-    public function findAllPaginated($page = 1): PaginationInterface
+    public function findAllPaginated(int $page = 1): PaginationInterface
     {
         $query = $this->createQueryBuilder('shell_damage')
             ->addSelect(
