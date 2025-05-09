@@ -23,6 +23,9 @@ use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector;
 use Rector\Symfony\CodeQuality\Rector\Class_\InlineClassRoutePrefixRector;
 use Rector\Symfony\CodeQuality\Rector\MethodCall\LiteralGetToRequestClassConstantRector;
 
@@ -44,13 +47,16 @@ return RectorConfig::configure()
         strictBooleans: true,
         carbon: false,
         rectorPreset: false,
-        phpunitCodeQuality: false,
+        phpunitCodeQuality: true,
         doctrineCodeQuality: true,
         symfonyCodeQuality: true,
         symfonyConfigs: true,
     )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
+        AddInstanceofAssertForNullableInstanceRector::class,
+        AssertEmptyNullableObjectToAssertInstanceofRector::class,
+        AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineClassRoutePrefixRector::class,
