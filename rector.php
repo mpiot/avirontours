@@ -47,7 +47,7 @@ return RectorConfig::configure()
         phpunitCodeQuality: false,
         doctrineCodeQuality: true,
         symfonyCodeQuality: true,
-        symfonyConfigs: false,
+        symfonyConfigs: true,
     )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
