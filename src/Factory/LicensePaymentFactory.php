@@ -64,7 +64,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class LicensePaymentFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'method' => self::faker()->randomElement(PaymentMethod::cases()),
@@ -72,7 +72,7 @@ final class LicensePaymentFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         return $this
             // ->afterInstantiate(function(LicensePayment $licensePayment): void {})

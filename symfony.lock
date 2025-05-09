@@ -875,9 +875,6 @@
     "zenstruck/assert": {
         "version": "v1.0.1"
     },
-    "zenstruck/callback": {
-        "version": "v1.4.1"
-    },
     "zenstruck/foundry": {
         "version": "1.21",
         "recipe": {

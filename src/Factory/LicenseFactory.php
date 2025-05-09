@@ -121,12 +121,12 @@ final class LicenseFactory extends PersistentProxyObjectFactory
     public function withPayments(): self
     {
         return $this->with([
-            'payments' => LicensePaymentFactory::new()->many(1, 5),
+            'payments' => LicensePaymentFactory::new()->many(1),
             'payedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeThisYear()),
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
@@ -146,7 +146,7 @@ final class LicenseFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

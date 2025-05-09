@@ -63,7 +63,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class ShellDamageCategoryFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->name(),
@@ -71,7 +71,7 @@ final class ShellDamageCategoryFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

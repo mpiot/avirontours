@@ -92,7 +92,7 @@ final class ShellDamageFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'category' => ShellDamageCategoryFactory::new(),
@@ -104,7 +104,7 @@ final class ShellDamageFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

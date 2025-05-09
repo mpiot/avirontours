@@ -63,7 +63,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class WorkoutMaximumLoadFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'user' => UserFactory::new(),
@@ -75,7 +75,7 @@ final class WorkoutMaximumLoadFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

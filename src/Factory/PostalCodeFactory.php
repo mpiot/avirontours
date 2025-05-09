@@ -63,7 +63,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class PostalCodeFactory extends PersistentProxyObjectFactory
 {
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'postalCode' => self::faker()->postcode(),
@@ -71,7 +71,7 @@ final class PostalCodeFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         return $this;
         // ->afterInstantiate(function(PostalCode $postalCode): void {})

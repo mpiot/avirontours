@@ -97,7 +97,7 @@ final class LogbookEntryFactory extends PersistentProxyObjectFactory
     public function withDamages(): self
     {
         return $this->with([
-            'shellDamages' => ShellDamageFactory::new()->many(1, 3),
+            'shellDamages' => ShellDamageFactory::new()->many(1),
         ]);
     }
 
@@ -108,7 +108,7 @@ final class LogbookEntryFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         $shell = ShellFactory::new();
         $finished = self::faker()->boolean();
@@ -118,11 +118,11 @@ final class LogbookEntryFactory extends PersistentProxyObjectFactory
             'crewMembers' => UserFactory::new()->many(2),
             'endAt' => $finished ? new \DateTime('+1 hour') : null,
             'coveredDistance' => $finished ? self::faker()->numberBetween(2, 20) : null,
-            'shellDamages' => ShellDamageFactory::new()->many(0, 3),
+            'shellDamages' => ShellDamageFactory::new()->many(1),
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

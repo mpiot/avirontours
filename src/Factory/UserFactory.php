@@ -94,7 +94,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'password' => '$argon2id$v=19$m=10,t=3,p=1$504u7GDCM160iitiwetjvQ$6MguL3z0WsHOSxjKI6NhcPi4QdBFNlff/xrck+m975I',
@@ -112,7 +112,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

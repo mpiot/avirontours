@@ -99,7 +99,7 @@ final class UploadedFileFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
@@ -110,17 +110,24 @@ final class UploadedFileFactory extends PersistentProxyObjectFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
-    protected function initialize(): self
+    protected function initialize(): static
     {
         return $this
             // ->afterInstantiate(function(UploadFile $uploadFile): void {})
             ->instantiateWith(Instantiator::withoutConstructor()->allowExtra('file'))
-            ->afterInstantiate(function (UploadedFile &$uploadedFile, array $attributes) {
-                $uploadedFile = $this->fileUploader->upload($attributes['file'], $uploadedFile->getVisibility());
+            ->afterInstantiate(function (UploadedFile $uploadedFile, array $attributes) {
+                $uploadedFileReference = $this->fileUploader->upload($attributes['file'], $uploadedFile->getVisibility());
+
                 $uploadedFile
+                    ->setFilename($uploadedFileReference->getFilename())
+                    ->setMimeType($uploadedFileReference->getMimeType())
+                    ->setOriginalFilename($uploadedFileReference->getOriginalFilename())
+                    ->setVisibility($uploadedFileReference->getVisibility())
                     ->setCreatedAt($attributes['createdAt'])
                     ->setUpdatedAt($attributes['updatedAt'])
                 ;
+
+                unset($uploadedFileReference);
             })
         ;
     }

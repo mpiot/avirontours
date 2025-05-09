@@ -85,25 +85,25 @@ final class SeasonFactory extends PersistentProxyObjectFactory
 
     public function seasonCategoriesDisplayed(): self
     {
-        return $this->with(['seasonCategories' => SeasonCategoryFactory::new()->displayed()->many(2, 5)]);
+        return $this->with(['seasonCategories' => SeasonCategoryFactory::new()->displayed()->many(2)]);
     }
 
     public function seasonCategoriesNotDisplayed(): self
     {
-        return $this->with(['seasonCategories' => SeasonCategoryFactory::new()->notDisplayed()->many(2, 5)]);
+        return $this->with(['seasonCategories' => SeasonCategoryFactory::new()->notDisplayed()->many(2)]);
     }
 
-    protected function defaults(): array
+    protected function defaults(): array|callable
     {
         return [
             'name' => self::faker()->year(),
             'active' => self::faker()->boolean(),
             'subscriptionEnabled' => self::faker()->boolean(),
-            'seasonCategories' => SeasonCategoryFactory::new()->many(2, 5),
+            'seasonCategories' => SeasonCategoryFactory::new()->many(2),
         ];
     }
 
-    protected function initialize(): self
+    protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
         return $this;

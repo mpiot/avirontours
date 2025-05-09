@@ -21,18 +21,19 @@ declare(strict_types=1);
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
 use Rector\CodeQuality\Rector\If_\CombineIfRector;
 use Rector\Config\RectorConfig;
-use Rector\Set\ValueObject\SetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withPaths([
         __DIR__.'/src',
         __DIR__.'/tests',
-    ]);
-
-    $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-    $rectorConfig->rule(CombineIfRector::class);
-
-    $rectorConfig->sets([
-        SetList::DEAD_CODE,
-    ]);
-};
+    ])
+    // uncomment to reach your current PHP version
+    // ->withPhpSets()
+    ->withTypeCoverageLevel(0)
+    ->withDeadCodeLevel(0)
+    ->withCodeQualityLevel(0)
+    ->withRules([
+        InlineConstructorDefaultToPropertyRector::class,
+        CombineIfRector::class,
+    ])
+;
