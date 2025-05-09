@@ -26,12 +26,10 @@ use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ShellControllerTest extends AppWebTestCase
+final class ShellControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,10 +38,8 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $shell = ShellFactory::createOne();
@@ -56,17 +52,6 @@ class ShellControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/shell'];
-        yield ['GET', '/admin/shell/{id}'];
-        yield ['GET', '/admin/shell/new'];
-        yield ['POST', '/admin/shell/new'];
-        yield ['GET', '/admin/shell/{id}/edit'];
-        yield ['POST', '/admin/shell/{id}/edit'];
-        yield ['POST', '/admin/shell/{id}'];
     }
 
     public function testIndexShells(): void
@@ -203,5 +188,16 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/admin/shell');
         ShellFactory::assert()->notExists($shell);
         ShellDamageFactory::assert()->notExists($shellDamage);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/shell'];
+        yield ['GET', '/admin/shell/{id}'];
+        yield ['GET', '/admin/shell/new'];
+        yield ['POST', '/admin/shell/new'];
+        yield ['GET', '/admin/shell/{id}/edit'];
+        yield ['POST', '/admin/shell/{id}/edit'];
+        yield ['POST', '/admin/shell/{id}'];
     }
 }

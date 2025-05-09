@@ -25,7 +25,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\Uid\Uuid;
 
-class PaymentAttestationControllerTest extends AppWebTestCase
+final class PaymentAttestationControllerTest extends AppWebTestCase
 {
     public function testDownloadPaymentAttestation(): void
     {
@@ -37,7 +37,7 @@ class PaymentAttestationControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user->_real());
-        $client->request('GET', "/payment-attestation/download/{$license->getId()}");
+        $client->request('GET', '/payment-attestation/download/'.$license->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/pdf');
@@ -49,7 +49,7 @@ class PaymentAttestationControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $crawler = $client->request('GET', "/payment-attestation/check/{$license->getUuid()}");
+        $crawler = $client->request('GET', '/payment-attestation/check/'.$license->getUuid());
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Attestation de paiement Nom - Prénom: ', $crawler->filter('div.border-success')->text());
@@ -63,7 +63,7 @@ class PaymentAttestationControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $crawler = $client->request('GET', "/payment-attestation/check/{$uuid->toRfc4122()}");
+        $crawler = $client->request('GET', '/payment-attestation/check/'.$uuid->toRfc4122());
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('Attestation de paiement Nous n\'avons trouvé aucune licence.', $crawler->filter('div.border-danger')->text());

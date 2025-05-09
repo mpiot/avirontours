@@ -41,7 +41,7 @@ class PhysicalQualitiesType extends AbstractType
                 'label' => 'Force explosive',
             ])
             ->add('enduranceStrength', PhysicalQualityType::class, [
-                'label' => 'Force d\'endurance',
+                'label' => "Force d'endurance",
             ])
             ->add('maximumStrength', PhysicalQualityType::class, [
                 'label' => 'Force maximum',

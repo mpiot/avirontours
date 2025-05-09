@@ -32,7 +32,7 @@ class ResetPasswordRequestFormType extends AbstractType
     {
         $builder
             ->add('username', TextType::class, [
-                'label' => 'Nom d\'utilisateur',
+                'label' => "Nom d'utilisateur",
                 'constraints' => [
                     new NotBlank(),
                 ],

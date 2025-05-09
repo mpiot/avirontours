@@ -86,7 +86,7 @@ class ShellMileageUpdater
         $this->oldCoveredDistance = $logbookEntry->getCoveredDistance();
         $this->newCoveredDistance = $logbookEntry->getCoveredDistance();
 
-        if (true === $args->hasChangedField('coveredDistance')) {
+        if ($args->hasChangedField('coveredDistance')) {
             $this->oldCoveredDistance = $args->getOldValue('coveredDistance');
             $this->newCoveredDistance = $args->getNewValue('coveredDistance');
         }
@@ -94,7 +94,7 @@ class ShellMileageUpdater
         // Set shells
         $this->newShell = $logbookEntry->getShell();
 
-        if (true === $args->hasChangedField('shell')) {
+        if ($args->hasChangedField('shell')) {
             $this->oldShell = $args->getOldValue('shell');
             $this->newShell = $args->getNewValue('shell');
         }

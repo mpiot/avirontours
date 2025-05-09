@@ -71,6 +71,9 @@ class Training
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    /**
+     * @var Collection<int, TrainingPhase>
+     */
     #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingPhase::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $trainingPhases;
 
@@ -130,7 +133,7 @@ class Training
             return null;
         }
 
-        if (true === $displayTenth) {
+        if ($displayTenth) {
             return DurationManipulator::formatTenthSeconds($this->duration);
         }
 

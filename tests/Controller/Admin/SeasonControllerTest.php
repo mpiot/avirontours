@@ -26,14 +26,12 @@ use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class SeasonControllerTest extends AppWebTestCase
+final class SeasonControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     * @dataProvider paymentAdminUrlProvider
-     * @dataProvider adminUrlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentAdminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -42,12 +40,10 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     * @dataProvider paymentAdminUrlProvider
-     * @dataProvider adminUrlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentAdminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -62,11 +58,9 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider adminUrlProvider
-     * @dataProvider paymentAdminUrlProvider
-     */
-    public function testAccessDeniedForMedicalCertificateAdmin($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentAdminUrlProvider')]
+    public function testAccessDeniedForMedicalCertificateAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -81,10 +75,8 @@ class SeasonControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider adminUrlProvider
-     */
-    public function testAccessDeniedForPaymentsAdmin($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $season = SeasonFactory::createOne();
@@ -97,27 +89,6 @@ class SeasonControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season'];
-        yield ['GET', '/admin/season/{id}'];
-    }
-
-    public function paymentAdminUrlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/{id}/export/payment'];
-    }
-
-    public function adminUrlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/new'];
-        yield ['POST', '/admin/season/new'];
-        yield ['GET', '/admin/season/{id}/edit'];
-        yield ['POST', '/admin/season/{id}/edit'];
-        yield ['GET', '/admin/season/{id}/export/contact'];
-        yield ['GET', '/admin/season/{id}/export/license'];
     }
 
     public function testIndexSeasons(): void
@@ -302,5 +273,26 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season'];
+        yield ['GET', '/admin/season/{id}'];
+    }
+
+    public static function paymentAdminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{id}/export/payment'];
+    }
+
+    public static function adminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/new'];
+        yield ['POST', '/admin/season/new'];
+        yield ['GET', '/admin/season/{id}/edit'];
+        yield ['POST', '/admin/season/{id}/edit'];
+        yield ['GET', '/admin/season/{id}/export/contact'];
+        yield ['GET', '/admin/season/{id}/export/license'];
     }
 }

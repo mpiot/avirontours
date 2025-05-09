@@ -25,12 +25,10 @@ use App\Factory\ShellDamageCategoryFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ShellDamageCategoryControllerTest extends AppWebTestCase
+final class ShellDamageCategoryControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -39,10 +37,8 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $category = ShellDamageCategoryFactory::createOne();
@@ -55,16 +51,6 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/shell-damage-category'];
-        yield ['GET', '/admin/shell-damage-category/new'];
-        yield ['POST', '/admin/shell-damage-category/new'];
-        yield ['GET', '/admin/shell-damage-category/{id}/edit'];
-        yield ['POST', '/admin/shell-damage-category/{id}/edit'];
-        yield ['POST', '/admin/shell-damage-category/{id}'];
     }
 
     public function testIndexShellDamageCategorys(): void
@@ -155,5 +141,15 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/shell-damage-category');
         ShellDamageCategoryFactory::repository()->assert()->notExists($category);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/shell-damage-category'];
+        yield ['GET', '/admin/shell-damage-category/new'];
+        yield ['POST', '/admin/shell-damage-category/new'];
+        yield ['GET', '/admin/shell-damage-category/{id}/edit'];
+        yield ['POST', '/admin/shell-damage-category/{id}/edit'];
+        yield ['POST', '/admin/shell-damage-category/{id}'];
     }
 }

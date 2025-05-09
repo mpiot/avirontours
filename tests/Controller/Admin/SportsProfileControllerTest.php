@@ -24,12 +24,10 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class SportsProfileControllerTest extends AppWebTestCase
+final class SportsProfileControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -38,10 +36,8 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $user = UserFactory::createOne();
@@ -54,15 +50,6 @@ class SportsProfileControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/sports-profile'];
-        yield ['GET', '/admin/sports-profile/{id}/physiology'];
-        yield ['GET', '/admin/sports-profile/{id}/anatomy'];
-        yield ['GET', '/admin/sports-profile/{id}/physical-qualities'];
-        yield ['GET', '/admin/sports-profile/{id}/workout-maximum-load'];
     }
 
     public function testIndexUsers(): void
@@ -197,5 +184,14 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertSame(3, $user->getWorkoutMaximumLoad()->getSquat());
         $this->assertSame(4, $user->getWorkoutMaximumLoad()->getLegPress());
         $this->assertSame(5, $user->getWorkoutMaximumLoad()->getClean());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/sports-profile'];
+        yield ['GET', '/admin/sports-profile/{id}/physiology'];
+        yield ['GET', '/admin/sports-profile/{id}/anatomy'];
+        yield ['GET', '/admin/sports-profile/{id}/physical-qualities'];
+        yield ['GET', '/admin/sports-profile/{id}/workout-maximum-load'];
     }
 }

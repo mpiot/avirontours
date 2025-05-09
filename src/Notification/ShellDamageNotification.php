@@ -54,6 +54,7 @@ class ShellDamageNotification extends Notification implements EmailNotificationI
         return $message;
     }
 
+    #[\Override]
     public function getChannels(RecipientInterface $recipient): array
     {
         return ['email'];

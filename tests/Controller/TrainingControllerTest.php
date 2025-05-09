@@ -30,12 +30,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-class TrainingControllerTest extends AppWebTestCase
+final class TrainingControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $training = TrainingFactory::createOne();
@@ -49,10 +47,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForUnlicensedUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         $user = UserFactory::createOne();
 
@@ -67,17 +63,6 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/training'];
-        yield ['GET', '/training/{id}'];
-        yield ['GET', '/training/new'];
-        yield ['POST', '/training/new'];
-        yield ['GET', '/training/{id}/edit'];
-        yield ['POST', '/training/{id}/edit'];
-        yield ['POST', '/training/{id}'];
     }
 
     public function testIndexTrainings(): void
@@ -98,6 +83,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
+
         $crawler = $client->request('GET', '/training');
 
         $this->assertResponseIsSuccessful();
@@ -354,5 +340,16 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/training');
 
         TrainingFactory::repository()->assert()->notExists($training);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/training'];
+        yield ['GET', '/training/{id}'];
+        yield ['GET', '/training/new'];
+        yield ['POST', '/training/new'];
+        yield ['GET', '/training/{id}/edit'];
+        yield ['POST', '/training/{id}/edit'];
+        yield ['POST', '/training/{id}'];
     }
 }

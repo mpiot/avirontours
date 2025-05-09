@@ -24,9 +24,9 @@ use App\Entity\User;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-final class PhysicalQualitiesChart
+final readonly class PhysicalQualitiesChart
 {
-    public function __construct(private readonly ChartBuilderInterface $chartBuilder)
+    public function __construct(private ChartBuilderInterface $chartBuilder)
     {
     }
 
@@ -40,7 +40,7 @@ final class PhysicalQualitiesChart
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_RADAR);
         $chart->setData([
-            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', 'Force d\'endurance', 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
+            'labels' => ['Proprioception', 'Poids/Puissance', 'Force explosive', "Force d'endurance", 'Force maximale', 'Résistance', 'Gainage', 'Souplesse', 'Récupération'],
             'datasets' => [
                 [
                     'label' => '',

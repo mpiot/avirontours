@@ -44,6 +44,7 @@ class RegistrationMedicalCertificateType extends AbstractType
         });
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return MedicalCertificateType::class;

@@ -134,9 +134,10 @@ class SeasonController extends AbstractController
             fwrite($outputStream, $csv);
         });
         $response->headers->set('Content-Type', 'text/csv');
+
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
-            "season_contact_{$season->getName()}.csv"
+            \sprintf('season_contact_%s.csv', $season->getName())
         );
         $response->headers->set('Content-Disposition', $disposition);
 
@@ -159,6 +160,7 @@ class SeasonController extends AbstractController
             fwrite($outputStream, $csv);
         });
         $response->headers->set('Content-Type', 'text/csv');
+
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
             'season_payments_'.$season->getName().'_'.(new \DateTime())->format('YmdHis').'.csv'
@@ -184,6 +186,7 @@ class SeasonController extends AbstractController
             fwrite($outputStream, $csv);
         });
         $response->headers->set('Content-Type', 'text/csv');
+
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_ATTACHMENT,
             'season_licenses_'.$season->getName().'_'.(new \DateTime())->format('YmdHis').'.csv'

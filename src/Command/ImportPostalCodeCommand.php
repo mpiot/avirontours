@@ -37,7 +37,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportPostalCodeCommand extends Command
 {
-    private const DATASET_URL = 'https://www.data.gouv.fr/fr/datasets/r/0f8ae8bd-9c0a-4a62-9be5-4798cbac07ff';
+    private const string DATASET_URL = 'https://www.data.gouv.fr/fr/datasets/r/0f8ae8bd-9c0a-4a62-9be5-4798cbac07ff';
 
     public function __construct(
         private readonly HttpClientInterface $client,
@@ -53,6 +53,7 @@ class ImportPostalCodeCommand extends Command
 
         // Count number of lines
         $file->seek(\PHP_INT_MAX);
+
         $nbLines = $file->key();
         $file->rewind();
 
@@ -96,6 +97,7 @@ class ImportPostalCodeCommand extends Command
         foreach ($this->client->stream($response) as $chunk) {
             fwrite($fileHandler, $chunk->getContent());
         }
+
         fclose($fileHandler);
 
         return new \SplFileObject($filename, 'r');

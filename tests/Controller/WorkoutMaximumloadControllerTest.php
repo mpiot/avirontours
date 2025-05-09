@@ -24,23 +24,16 @@ use App\Factory\LicenseFactory;
 use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
 
-class WorkoutMaximumloadControllerTest extends AppWebTestCase
+final class WorkoutMaximumloadControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request($method, $url);
 
         $this->assertResponseRedirects('/login');
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/workout-maximum-load'];
     }
 
     public function testShowWorkoutMaximumLoad(): void
@@ -68,5 +61,10 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $client->request('GET', '/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/workout-maximum-load'];
     }
 }

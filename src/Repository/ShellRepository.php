@@ -39,7 +39,7 @@ class ShellRepository extends ServiceEntityRepository
         parent::__construct($registry, Shell::class);
     }
 
-    public function findAllNameOrdered()
+    public function findAllNameOrdered(): mixed
     {
         $query = $this->createQueryBuilder('shell')
             ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
@@ -49,7 +49,7 @@ class ShellRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findTop10Sessions()
+    public function findTop10Sessions(): mixed
     {
         $today = new \DateTime();
 

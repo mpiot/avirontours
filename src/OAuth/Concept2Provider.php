@@ -46,6 +46,7 @@ class Concept2Provider extends AbstractProvider
         return 'https://log.concept2.com/api/users/me';
     }
 
+    #[\Override]
     public function getAccessToken($grant, array $options = []): AccessTokenInterface|AccessToken
     {
         $scopeString = implode(',', self::SCOPES);

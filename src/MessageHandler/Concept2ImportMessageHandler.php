@@ -47,6 +47,7 @@ readonly class Concept2ImportMessageHandler
         foreach ($trainings as $training) {
             $this->entityManager->persist($training);
         }
+
         $user->setConcept2LastImportAt(new \DateTimeImmutable());
         $this->entityManager->flush();
     }

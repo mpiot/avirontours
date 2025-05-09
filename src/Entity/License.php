@@ -48,14 +48,14 @@ class License
     private Uuid $uuid;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\SeasonCategory', inversedBy: 'licenses')]
+    #[ORM\ManyToOne(targetEntity: SeasonCategory::class, inversedBy: 'licenses')]
     #[ORM\JoinColumn(nullable: false)]
     private ?SeasonCategory $seasonCategory;
 
     #[Assert\NotNull]
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\User', inversedBy: 'licenses')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'licenses')]
     #[ORM\JoinColumn(name: 'app_user', nullable: false)]
-    private ?User $user;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $marking = [];
@@ -65,7 +65,7 @@ class License
 
     #[Assert\NotNull(groups: ['Default', 'registration'])]
     #[Assert\Valid(groups: ['Default', 'registration'])]
-    #[ORM\OneToOne(targetEntity: 'App\Entity\MedicalCertificate', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: MedicalCertificate::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?MedicalCertificate $medicalCertificate = null;
 
@@ -79,6 +79,9 @@ class License
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $logbookEntryLimit = null;
 
+    /**
+     * @var Collection<int, LicensePayment>
+     */
     #[Assert\Count(min: 1, groups: ['validate_payment'])]
     #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
@@ -129,7 +132,7 @@ class License
         return $this;
     }
 
-    public function getMarking()
+    public function getMarking(): array
     {
         return $this->marking;
     }
@@ -145,7 +148,7 @@ class License
         ;
     }
 
-    public function setMarking($marking, $context = []): void
+    public function setMarking(array $marking, $context = []): void
     {
         $this->marking = $marking;
         $this->transitionContexts[] = [
@@ -160,7 +163,7 @@ class License
         return $this->transitionContexts;
     }
 
-    public function setTransitionContexts($transitionContexts): void
+    public function setTransitionContexts(array $transitionContexts): void
     {
         $this->transitionContexts = $transitionContexts;
     }
@@ -243,7 +246,7 @@ class License
 
     public function getPaymentsAmount(): int
     {
-        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment) => $carrier + $payment->getAmount(), 0);
+        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment): int => $carrier + $payment->getAmount(), 0);
     }
 
     public function getPayedAt(): ?\DateTimeImmutable

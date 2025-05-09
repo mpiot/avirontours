@@ -26,12 +26,10 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserControllerTest extends AppWebTestCase
+final class UserControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -40,10 +38,8 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $user = UserFactory::createOne();
@@ -56,17 +52,6 @@ class UserControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/user'];
-        yield ['GET', '/admin/user/{id}'];
-        yield ['GET', '/admin/user/new'];
-        yield ['POST', '/admin/user/new'];
-        yield ['GET', '/admin/user/{id}/edit'];
-        yield ['POST', '/admin/user/{id}/edit'];
-        yield ['POST', '/admin/user/{id}'];
     }
 
     public function testIndexUsers(): void
@@ -309,5 +294,16 @@ class UserControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/user');
         UserFactory::repository()->assert()->notExists($user);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/user'];
+        yield ['GET', '/admin/user/{id}'];
+        yield ['GET', '/admin/user/new'];
+        yield ['POST', '/admin/user/new'];
+        yield ['GET', '/admin/user/{id}/edit'];
+        yield ['POST', '/admin/user/{id}/edit'];
+        yield ['POST', '/admin/user/{id}'];
     }
 }

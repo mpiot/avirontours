@@ -46,7 +46,7 @@ class LicenseRepository extends ServiceEntityRepository
         parent::__construct($registry, License::class);
     }
 
-    public function findLastUserSeason(User $user)
+    public function findLastUserSeason(User $user): mixed
     {
         $query = $this->createQueryBuilder('license')
             ->innerJoin('license.user', 'user')
@@ -81,7 +81,7 @@ class LicenseRepository extends ServiceEntityRepository
         $qb = $this->findBySeasonQueryBuilder($season)
             ->orderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
-            ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'validated\') = \'1\'')
+            ->andWhere("JSON_GET_FIELD_AS_TEXT(license.marking, 'validated') = '1'")
         ;
 
         return $qb->getQuery()->getResult();
@@ -93,13 +93,13 @@ class LicenseRepository extends ServiceEntityRepository
         $qb = $this->findBySeasonQueryBuilder($season)
             ->orderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
-            ->andWhere('JSON_GET_FIELD_AS_TEXT(license.marking, \'medical_certificate_validated\') = \'1\' AND JSON_GET_FIELD_AS_TEXT(license.marking, \'payment_validated\') = \'1\'')
+            ->andWhere("JSON_GET_FIELD_AS_TEXT(license.marking, 'medical_certificate_validated') = '1' AND JSON_GET_FIELD_AS_TEXT(license.marking, 'payment_validated') = '1'")
         ;
 
         return $qb->getQuery()->getResult();
     }
 
-    public function findBySeasonPaginated(Season $season, $query = null, $page = 1): PaginationInterface
+    public function findBySeasonPaginated(Season $season, $query = null, int $page = 1): PaginationInterface
     {
         $qb = $this->createQueryBuilder('license')
             ->addSelect(
@@ -208,7 +208,7 @@ class LicenseRepository extends ServiceEntityRepository
             ->innerJoin('license.seasonCategory', 'season_category')
             ->innerJoin('season_category.season', 'season')
             ->where('season.id = :season')
-            ->andWhere('JSON_TYPEOF(license.marking) = \'array\' OR JSON_GET_FIELD_AS_TEXT(license.marking, \'wait_medical_certificate_validation\') = \'1\'')
+            ->andWhere("JSON_TYPEOF(license.marking) = 'array' OR JSON_GET_FIELD_AS_TEXT(license.marking, 'wait_medical_certificate_validation') = '1'")
             ->orderBy('license.id', 'ASC')
             ->setParameter('season', $season->getId())
             ->setMaxResults(1)

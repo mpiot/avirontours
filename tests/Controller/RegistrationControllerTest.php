@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-class RegistrationControllerTest extends AppWebTestCase
+final class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration(): void
     {
@@ -49,11 +49,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'registration[user][postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
+        $form = $crawler->selectButton("S'inscrire")->form([
             'registration[user][gender]' => 'm',
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
@@ -142,7 +142,7 @@ class RegistrationControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'registration[user][firstName]' => '',
             'registration[user][lastName]' => '',
             'registration[user][email]' => '',
@@ -210,11 +210,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'registration[user][postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
+        $form = $crawler->selectButton("S'inscrire")->form([
             'registration[user][gender]' => 'm',
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
@@ -274,11 +274,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'registration[user][postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
+        $form = $crawler->selectButton("S'inscrire")->form([
             'registration[user][gender]' => 'm',
             'registration[user][firstName]' => 'John',
             'registration[user][lastName]' => 'Doe',
@@ -336,11 +336,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'registration[user][postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
+        $form = $crawler->selectButton("S'inscrire")->form([
             'registration[user][gender]' => 'm',
             'registration[user][firstName]' => $license->getUser()->getFirstName(),
             'registration[user][lastName]' => $license->getUser()->getLastName(),
@@ -434,6 +434,7 @@ class RegistrationControllerTest extends AppWebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user->_real());
+
         $crawler = $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseIsSuccessful();
@@ -445,11 +446,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertNotNull($crawler->filter('#renew_user_birthday')->attr('disabled'));
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('S\'inscrire', [
+        $crawler = $client->submitForm("S'inscrire", [
             'renew[user][postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('S\'inscrire')->form([
+        $form = $crawler->selectButton("S'inscrire")->form([
             'renew[user][email]' => 'john.doe@avirontours.fr',
             'renew[user][phoneNumber]' => '0102030405',
             'renew[user][laneNumber]' => '100',

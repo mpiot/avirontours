@@ -41,7 +41,7 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
-    public function findRenewSeason(User $user)
+    public function findRenewSeason(User $user): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('season');
         $queryBuilder

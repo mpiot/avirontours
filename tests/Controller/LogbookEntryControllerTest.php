@@ -33,12 +33,10 @@ use App\Tests\AppWebTestCase;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogbookEntryControllerTest extends AppWebTestCase
+final class LogbookEntryControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
@@ -52,10 +50,8 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForUnlicensedUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
             $logbookEntry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
@@ -68,19 +64,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/logbook-entry'];
-        yield ['GET', '/logbook-entry/new'];
-        yield ['POST', '/logbook-entry/new'];
-        yield ['GET', '/logbook-entry/{id}/finish'];
-        yield ['POST', '/logbook-entry/{id}/finish'];
-        yield ['GET', '/logbook-entry/statistics'];
-        yield ['GET', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}'];
     }
 
     public function testIndexLogbookEntries(): void
@@ -385,6 +368,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($license->getUser());
+
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -443,6 +427,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($users[0]->getUser());
+
         $crawler = $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -707,5 +692,18 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ShellDamageFactory::assert()->exists($shellDamage);
         $this->assertNull($shellDamage->getLogbookEntry());
         $this->assertSame(0.0, $shell->getMileage());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/logbook-entry'];
+        yield ['GET', '/logbook-entry/new'];
+        yield ['POST', '/logbook-entry/new'];
+        yield ['GET', '/logbook-entry/{id}/finish'];
+        yield ['POST', '/logbook-entry/{id}/finish'];
+        yield ['GET', '/logbook-entry/statistics'];
+        yield ['GET', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}'];
     }
 }

@@ -49,19 +49,14 @@ class LogbookEntryType extends AbstractType
             ->add('shell', EntityType::class, [
                 'label' => 'Bâteau',
                 'class' => Shell::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('shell')
-                        ->select('shell')
-                        ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
-                        ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
-                        ->leftJoin('shell_damages.category', 'category')->addSelect('category')
-                        ->where('shell.enabled = true')
-                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
-                    ;
-                },
-                'choice_label' => function (Shell $shell) {
-                    return $shell->getFullName().$this->shellSuffixes($shell);
-                },
+                'query_builder' => fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
+                    ->select('shell')
+                    ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
+                    ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
+                    ->leftJoin('shell_damages.category', 'category')->addSelect('category')
+                    ->where('shell.enabled = true')
+                    ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
+                'choice_label' => fn (Shell $shell): string => $shell->getFullName().$this->shellSuffixes($shell),
                 'options_as_html' => true,
                 'placeholder' => '--- Sélectionner un bâteau ---',
                 'autocomplete' => true,
@@ -69,7 +64,7 @@ class LogbookEntryType extends AbstractType
             ->add('crewMembers', EntityType::class, [
                 'label' => 'Membres d\'équipage',
                 'class' => User::class,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
                     $qb = $er->createQueryBuilder('app_user')
                         ->leftJoin('app_user.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
                         ->orderBy('app_user.firstName', 'ASC')
@@ -83,16 +78,14 @@ class LogbookEntryType extends AbstractType
                             ->leftJoin('seasonCategory.season', 'season')
                             ->andWhere('seasonCategory.licenseType = :licenseType')
                             ->andWhere('season.active = true')
-                            ->andWhere('JSON_GET_FIELD_AS_TEXT(licenses.marking, \'validated\') = \'1\'')
+                            ->andWhere("JSON_GET_FIELD_AS_TEXT(licenses.marking, 'validated') = '1'")
                             ->setParameter('licenseType', SeasonCategory::LICENSE_TYPE_ANNUAL)
                         ;
                     }
 
                     return $qb;
                 },
-                'choice_label' => function (User $user) {
-                    return $user->getFullName().$this->crewSuffixes($user);
-                },
+                'choice_label' => fn (User $user): string => $user->getFullName().$this->crewSuffixes($user),
                 'options_as_html' => true,
                 'multiple' => true,
                 'help' => 'Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.',
@@ -168,7 +161,7 @@ class LogbookEntryType extends AbstractType
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
         }
 
-        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage) => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
+        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage): bool => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
         }
 

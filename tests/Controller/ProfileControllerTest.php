@@ -26,25 +26,16 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class ProfileControllerTest extends AppWebTestCase
+final class ProfileControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request($method, $url);
 
         $this->assertResponseRedirects('/login');
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/profile'];
-        yield ['GET', '/profile/edit'];
-        yield ['GET', '/profile/edit-password'];
     }
 
     public function testShowProfile(): void
@@ -229,5 +220,12 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#change_password_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(2, $crawler->filter('.invalid-feedback'));
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/profile'];
+        yield ['GET', '/profile/edit'];
+        yield ['GET', '/profile/edit-password'];
     }
 }

@@ -35,16 +35,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 class SeasonCategory
 {
     public const LICENSE_TYPE_ANNUAL = 'A';
+
     public const LICENSE_TYPE_UNIVERSITY = 'U';
+
     public const LICENSE_TYPE_INDOOR = 'I';
+
     public const LICENSE_TYPE_DISCOVERY_7D = 'D_7D';
+
     public const LICENSE_TYPE_DISCOVERY_30D = 'D_30D';
+
     public const LICENSE_TYPE_DISCOVERY_90D = 'D_90D';
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Season', inversedBy: 'seasonCategories')]
+    #[ORM\ManyToOne(targetEntity: Season::class, inversedBy: 'seasonCategories')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Season $season = null;
 
@@ -63,7 +68,10 @@ class SeasonCategory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: 'App\Entity\License')]
+    /**
+     * @var Collection<int, License>
+     */
+    #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: License::class)]
     private Collection $licenses;
 
     #[Gedmo\Slug(fields: ['name'])]

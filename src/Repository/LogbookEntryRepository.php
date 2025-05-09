@@ -42,7 +42,7 @@ class LogbookEntryRepository extends ServiceEntityRepository
         parent::__construct($registry, LogbookEntry::class);
     }
 
-    public function findAllPaginated($page = 1): PaginationInterface
+    public function findAllPaginated(int $page = 1): PaginationInterface
     {
         $query = $this->createQueryBuilder('logbook_entry')
             ->addSelect('CASE WHEN logbook_entry.endAt IS NULL THEN 1 ELSE 0 END as HIDDEN end_is_null')
@@ -61,13 +61,13 @@ class LogbookEntryRepository extends ServiceEntityRepository
         );
     }
 
-    public function findStatsByMonth(User $user, int $nbMonths = 12)
+    public function findStatsByMonth(User $user, int $nbMonths = 12): mixed
     {
         $lastDay = new \DateTimeImmutable();
         $firstDay = $lastDay->modify('-'.($nbMonths - 1).' months')->modify('first day of this month');
 
         $query = $this->createQueryBuilder('logbook_entry')
-            ->select('DATE_PART(\'month\', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session')
+            ->select("DATE_PART('month', logbook_entry.date) AS month, SUM(logbook_entry.coveredDistance) as distance, COUNT(logbook_entry) as session")
             ->leftJoin('logbook_entry.crewMembers', 'crew_members')
             ->andWhere('crew_members = :user')
             ->andWhere('logbook_entry.date BETWEEN :firstDay AND :lastDay')

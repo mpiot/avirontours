@@ -23,27 +23,16 @@ namespace App\Tests\Controller;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 
-class SportProfileControllerTest extends AppWebTestCase
+final class SportProfileControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request($method, $url);
 
         $this->assertResponseRedirects('/login');
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/sport-profile/physiology'];
-        yield ['GET', '/sport-profile/anatomy'];
-        yield ['GET', '/sport-profile/physical-qualities'];
-        yield ['GET', '/sport-profile/workout-maximum-load'];
-        yield ['GET', '/sport-profile/configuration'];
     }
 
     public function testNewPhysiology(): void
@@ -187,5 +176,14 @@ class SportProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertTrue($user->getAutomaticTraining());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/sport-profile/physiology'];
+        yield ['GET', '/sport-profile/anatomy'];
+        yield ['GET', '/sport-profile/physical-qualities'];
+        yield ['GET', '/sport-profile/workout-maximum-load'];
+        yield ['GET', '/sport-profile/configuration'];
     }
 }

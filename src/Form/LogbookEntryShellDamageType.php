@@ -35,6 +35,7 @@ class LogbookEntryShellDamageType extends AbstractType
         ;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return ShellDamageType::class;

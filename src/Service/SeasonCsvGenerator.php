@@ -88,14 +88,16 @@ class SeasonCsvGenerator
                 if (false === \array_key_exists($header, $counter)) {
                     $counter[$header] = 0;
                 }
+
                 $count = ++$counter[$header];
-                $header = 1 === $count ? $header : "{$header} {$count}";
+                $header = 1 === $count ? $header : \sprintf('%s %d', $header, $count);
 
                 if (false === \in_array($header, $headers, true)) {
                     $headers[] = $header;
                 }
             }
         }
+
         sort($headers);
         array_unshift($headers, 'Prénom', 'Nom');
 
@@ -111,8 +113,9 @@ class SeasonCsvGenerator
                 if (false === \array_key_exists($paymentMethod, $counter)) {
                     $counter[$paymentMethod] = 0;
                 }
+
                 $count = ++$counter[$paymentMethod];
-                $paymentMethod = 1 === $count ? $paymentMethod : "{$paymentMethod} {$count}";
+                $paymentMethod = 1 === $count ? $paymentMethod : \sprintf('%s %d', $paymentMethod, $count);
 
                 $tmpData[$paymentMethod] = $payment->getAmount() / 100;
             }
@@ -217,9 +220,7 @@ class SeasonCsvGenerator
 
         // Else, this is an attestation: we must return the date of the latest Certificate we have
         /** @var License|false $latestLicenceWithCertificate */
-        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license) {
-            return MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType();
-        })->last();
+        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(fn (License $license): bool => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType())->last();
 
         // If we do not retrieve a licence with a medical certificate
         // 1. For user over or equal to 18 years old, return a mistake

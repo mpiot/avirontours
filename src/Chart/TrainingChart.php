@@ -30,11 +30,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-final class TrainingChart
+final readonly class TrainingChart
 {
     public function __construct(
-        private readonly TrainingRepository $trainingRepository,
-        private readonly ChartBuilderInterface $chartBuilder,
+        private TrainingRepository $trainingRepository,
+        private ChartBuilderInterface $chartBuilder,
     ) {
     }
 
@@ -51,11 +51,11 @@ final class TrainingChart
         }
 
         $totalDuration = TrainingCalculator::getDuration($trainings);
-        $rowingTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Rowing === $training->getSport())) / $totalDuration;
-        $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Ergometer === $training->getSport())) / $totalDuration;
-        $weightTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::WeightTraining === $training->getSport())) / $totalDuration;
-        $strengtheningTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => SportType::Strengthening === $training->getSport())) / $totalDuration;
-        $otherSportTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training) => false === \in_array($training->getSport(), [SportType::Rowing, SportType::Ergometer, SportType::WeightTraining, SportType::Strengthening], true))) / $totalDuration;
+        $rowingTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training): bool => SportType::Rowing === $training->getSport())) / $totalDuration;
+        $ergometerTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training): bool => SportType::Ergometer === $training->getSport())) / $totalDuration;
+        $weightTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training): bool => SportType::WeightTraining === $training->getSport())) / $totalDuration;
+        $strengtheningTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training): bool => SportType::Strengthening === $training->getSport())) / $totalDuration;
+        $otherSportTrainingsRatio = TrainingCalculator::getDuration($trainings->filter(fn (Training $training): bool => false === \in_array($training->getSport(), [SportType::Rowing, SportType::Ergometer, SportType::WeightTraining, SportType::Strengthening], true))) / $totalDuration;
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
         $chart->setData([

@@ -37,7 +37,7 @@ enum PaymentMethod: string
             self::VacationCheck => 'Chèques vacance',
             self::Online => 'En ligne (HelloAsso)',
             self::Cash => 'Liquide',
-            self::PassSport => 'Pass\'Sport',
+            self::PassSport => "Pass'Sport",
             self::BankTransfer => 'Virement',
             self::Yelp => 'Yelp',
         };

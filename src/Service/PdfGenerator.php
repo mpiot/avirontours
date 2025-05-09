@@ -46,7 +46,7 @@ readonly class PdfGenerator
         // 1. use absolute local path for assets
         // 2. remove integrity checks
         $content = u($content)
-            ->replace('/build', "{$this->projectDir}/public/build")
+            ->replace('/build', $this->projectDir.'/public/build')
             ->replaceMatches('#integrity="[\w\-\+\/]+"#', '')
             ->toString()
         ;
@@ -58,7 +58,7 @@ readonly class PdfGenerator
 
         // Generate the .pdf file
         $process = new Process([
-            "{$this->projectDir}/bin/html-print.mjs",
+            $this->projectDir.'/bin/html-print.mjs',
             'pdf',
             $tmpFile,
             $outFile,

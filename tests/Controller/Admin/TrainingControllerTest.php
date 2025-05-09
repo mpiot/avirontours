@@ -28,12 +28,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-class TrainingControllerTest extends AppWebTestCase
+final class TrainingControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForAnonymousUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -42,10 +40,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
-    public function testAccessDeniedForRegularUser($method, $url): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{user-id}')) {
             $user = UserFactory::createOne();
@@ -63,13 +59,6 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/training'];
-        yield ['GET', '/admin/training/{user-id}'];
-        yield ['GET', '/admin/training/{user-id}/{id}'];
     }
 
     public function testIndexTrainings(): void
@@ -110,7 +99,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $crawler = $client->request('GET', "/admin/training/{$user->getId()}");
+        $crawler = $client->request('GET', '/admin/training/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertCount(6, $crawler->filter('table > tbody > tr'));
@@ -124,8 +113,15 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $this->logIn($client, 'ROLE_SPORT_ADMIN');
-        $client->request('GET', "/admin/training/{$user->getId()}/{$training->getId()}");
+        $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/training'];
+        yield ['GET', '/admin/training/{user-id}'];
+        yield ['GET', '/admin/training/{user-id}/{id}'];
     }
 }

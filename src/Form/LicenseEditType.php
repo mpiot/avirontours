@@ -46,6 +46,7 @@ class LicenseEditType extends AbstractType
         }
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return LicenseType::class;

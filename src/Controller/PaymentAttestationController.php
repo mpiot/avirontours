@@ -66,7 +66,7 @@ class PaymentAttestationController extends AbstractController
     public function check(string $uuid, LicenseRepository $licenseRepository): Response
     {
         $license = null;
-        if (true === Uuid::isValid($uuid)) {
+        if (Uuid::isValid($uuid)) {
             $license = $licenseRepository->findOneBy(['uuid' => $uuid]);
         }
 

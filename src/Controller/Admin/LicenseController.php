@@ -172,7 +172,7 @@ class LicenseController extends AbstractController
         methods: ['GET']
     )]
     #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
-    public function medicalCertificateAction(
+    public function medicalCertificate(
         License $license,
         string $transitionName,
         Request $request,
@@ -188,7 +188,7 @@ class LicenseController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException $error) {
+            } catch (NotEnabledTransitionException) {
                 throw $this->createAccessDeniedException();
             }
         }
@@ -213,7 +213,7 @@ class LicenseController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException $error) {
+            } catch (NotEnabledTransitionException) {
                 throw $this->createAccessDeniedException();
             }
         }

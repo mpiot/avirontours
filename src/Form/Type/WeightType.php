@@ -33,6 +33,7 @@ class WeightType extends AbstractType
         ]);
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return IntegerType::class;

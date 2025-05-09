@@ -36,6 +36,7 @@ class RegistrationLicenseType extends AbstractType
         ;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return LicenseType::class;

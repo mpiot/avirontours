@@ -61,6 +61,7 @@ class RegistrationUserType extends AbstractType
         ;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return UserType::class;

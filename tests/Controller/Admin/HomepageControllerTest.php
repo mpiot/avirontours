@@ -23,7 +23,7 @@ namespace App\Tests\Controller\Admin;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class HomepageControllerTest extends AppWebTestCase
+final class HomepageControllerTest extends AppWebTestCase
 {
     public function testIndex(): void
     {

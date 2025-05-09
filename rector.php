@@ -18,22 +18,50 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
-use Rector\CodeQuality\Rector\If_\CombineIfRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
+use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAssertInstanceofRector;
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector;
+use Rector\Symfony\CodeQuality\Rector\Class_\InlineClassRoutePrefixRector;
+use Rector\Symfony\CodeQuality\Rector\MethodCall\LiteralGetToRequestClassConstantRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/src',
         __DIR__.'/tests',
     ])
-    // uncomment to reach your current PHP version
-    // ->withPhpSets()
-    ->withTypeCoverageLevel(0)
-    ->withDeadCodeLevel(0)
-    ->withCodeQualityLevel(0)
-    ->withRules([
-        InlineConstructorDefaultToPropertyRector::class,
-        CombineIfRector::class,
+    ->withPhpSets()
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+        typeDeclarations: true,
+        privatization: true,
+        naming: false,
+        instanceOf: true,
+        earlyReturn: true,
+        strictBooleans: true,
+        carbon: false,
+        rectorPreset: true,
+        phpunitCodeQuality: true,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: true,
+        symfonyConfigs: true,
+    )
+    ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
+    ->withSkip([
+        AddInstanceofAssertForNullableInstanceRector::class,
+        AssertEmptyNullableObjectToAssertInstanceofRector::class,
+        AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
+        FlipTypeControlToUseExclusiveTypeRector::class,
+        InlineClassRoutePrefixRector::class,
+        LiteralGetToRequestClassConstantRector::class,
+        ReadOnlyPropertyRector::class,
+        SimplifyBoolIdenticalTrueRector::class,
     ])
 ;
