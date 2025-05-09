@@ -161,7 +161,7 @@ class ResetPasswordController extends AbstractController
 
         try {
             $resetToken = $this->resetPasswordHelper->generateResetToken($user);
-        } catch (ResetPasswordExceptionInterface $resetPasswordException) {
+        } catch (ResetPasswordExceptionInterface) {
             return $this->redirectToRoute('app_check_email');
         }
 

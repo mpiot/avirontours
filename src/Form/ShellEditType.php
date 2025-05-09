@@ -32,6 +32,7 @@ class ShellEditType extends AbstractType
         $builder->get('yolette')->setDisabled(true);
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return ShellType::class;

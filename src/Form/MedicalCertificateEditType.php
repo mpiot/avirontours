@@ -45,6 +45,7 @@ class MedicalCertificateEditType extends AbstractType
         ;
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return MedicalCertificateType::class;

@@ -55,7 +55,7 @@ class License
     #[Assert\NotNull]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'licenses')]
     #[ORM\JoinColumn(name: 'app_user', nullable: false)]
-    private ?User $user;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::JSON)]
     private array $marking = [];

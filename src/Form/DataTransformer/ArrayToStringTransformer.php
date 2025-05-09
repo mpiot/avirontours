@@ -51,9 +51,10 @@ class ArrayToStringTransformer implements DataTransformerInterface
             return [];
         }
 
-        $array = array_map(function ($part): string {
-            return trim($part->toString());
-        }, u($value)->split($this->delimiter));
+        $array = array_map(
+            fn ($part): string => trim($part->toString()),
+            u($value)->split($this->delimiter)
+        );
 
         return match ($this->type) {
             self::FLOAT => $this->castAsFloats($array),

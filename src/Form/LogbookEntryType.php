@@ -49,19 +49,14 @@ class LogbookEntryType extends AbstractType
             ->add('shell', EntityType::class, [
                 'label' => 'Bâteau',
                 'class' => Shell::class,
-                'query_builder' => function (EntityRepository $er): \Doctrine\ORM\QueryBuilder {
-                    return $er->createQueryBuilder('shell')
-                        ->select('shell')
-                        ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
-                        ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
-                        ->leftJoin('shell_damages.category', 'category')->addSelect('category')
-                        ->where('shell.enabled = true')
-                        ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC')
-                    ;
-                },
-                'choice_label' => function (Shell $shell): string {
-                    return $shell->getFullName().$this->shellSuffixes($shell);
-                },
+                'query_builder' => fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
+                    ->select('shell')
+                    ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
+                    ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
+                    ->leftJoin('shell_damages.category', 'category')->addSelect('category')
+                    ->where('shell.enabled = true')
+                    ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
+                'choice_label' => fn (Shell $shell): string => $shell->getFullName().$this->shellSuffixes($shell),
                 'options_as_html' => true,
                 'placeholder' => '--- Sélectionner un bâteau ---',
                 'autocomplete' => true,
@@ -90,9 +85,7 @@ class LogbookEntryType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => function (User $user): string {
-                    return $user->getFullName().$this->crewSuffixes($user);
-                },
+                'choice_label' => fn (User $user): string => $user->getFullName().$this->crewSuffixes($user),
                 'options_as_html' => true,
                 'multiple' => true,
                 'help' => 'Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.',

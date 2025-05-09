@@ -30,11 +30,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-final class TrainingChart
+final readonly class TrainingChart
 {
     public function __construct(
-        private readonly TrainingRepository $trainingRepository,
-        private readonly ChartBuilderInterface $chartBuilder,
+        private TrainingRepository $trainingRepository,
+        private ChartBuilderInterface $chartBuilder,
     ) {
     }
 

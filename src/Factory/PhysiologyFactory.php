@@ -79,6 +79,7 @@ final class PhysiologyFactory extends PersistentProxyObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization

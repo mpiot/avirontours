@@ -61,11 +61,13 @@ class TurnstileType extends AbstractType
         $view->vars['turnstileTheme'] = $options['turnstile_theme'];
     }
 
+    #[\Override]
     public function getBlockPrefix(): string
     {
         return 'turnstile';
     }
 
+    #[\Override]
     public function getParent(): ?string
     {
         return TextType::class;

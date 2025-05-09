@@ -63,7 +63,7 @@ use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
  */
 final class UserFactory extends PersistentProxyObjectFactory
 {
-    public const PASSWORD = 'engage';
+    public const string PASSWORD = 'engage';
 
     public function major(): self
     {
@@ -112,6 +112,7 @@ final class UserFactory extends PersistentProxyObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization

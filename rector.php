@@ -18,17 +18,18 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
+use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
+use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/src',
         __DIR__.'/tests',
     ])
-    // uncomment to reach your current PHP version
-    // ->withPhpSets()
+    ->withPhpSets()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
@@ -37,7 +38,9 @@ return RectorConfig::configure()
     )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
-        SimplifyBoolIdenticalTrueRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
+        ReadOnlyPropertyRector::class,
+        SimplifyBoolIdenticalTrueRector::class,
     ])
 ;

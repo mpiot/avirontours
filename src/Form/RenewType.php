@@ -36,6 +36,7 @@ class RenewType extends AbstractType
         $builder->remove('turnstile');
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return RegistrationType::class;

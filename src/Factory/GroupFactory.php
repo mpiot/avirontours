@@ -77,6 +77,7 @@ final class GroupFactory extends PersistentProxyObjectFactory
         ];
     }
 
+    #[\Override]
     protected function initialize(): static
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization

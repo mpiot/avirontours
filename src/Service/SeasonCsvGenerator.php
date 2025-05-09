@@ -220,9 +220,7 @@ class SeasonCsvGenerator
 
         // Else, this is an attestation: we must return the date of the latest Certificate we have
         /** @var License|false $latestLicenceWithCertificate */
-        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(function (License $license): bool {
-            return MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType();
-        })->last();
+        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(fn (License $license): bool => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType())->last();
 
         // If we do not retrieve a licence with a medical certificate
         // 1. For user over or equal to 18 years old, return a mistake

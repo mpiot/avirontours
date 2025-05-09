@@ -50,6 +50,7 @@ class LogbookEntryStartType extends AbstractType
         });
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return LogbookEntryType::class;

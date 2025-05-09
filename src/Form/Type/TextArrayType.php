@@ -32,6 +32,7 @@ class TextArrayType extends AbstractType
         $builder->addModelTransformer(new ArrayToStringTransformer());
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return TextType::class;

@@ -24,9 +24,9 @@ use App\Entity\User;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-final class PhysicalQualitiesChart
+final readonly class PhysicalQualitiesChart
 {
-    public function __construct(private readonly ChartBuilderInterface $chartBuilder)
+    public function __construct(private ChartBuilderInterface $chartBuilder)
     {
     }
 

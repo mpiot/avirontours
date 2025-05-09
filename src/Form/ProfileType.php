@@ -40,6 +40,7 @@ class ProfileType extends AbstractType
         $builder->get('birthday')->setDisabled(true);
     }
 
+    #[\Override]
     public function getParent(): string
     {
         return UserType::class;

@@ -188,7 +188,7 @@ class LicenseController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException $error) {
+            } catch (NotEnabledTransitionException) {
                 throw $this->createAccessDeniedException();
             }
         }
@@ -213,7 +213,7 @@ class LicenseController extends AbstractController
                 $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException $error) {
+            } catch (NotEnabledTransitionException) {
                 throw $this->createAccessDeniedException();
             }
         }
