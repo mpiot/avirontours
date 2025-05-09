@@ -45,13 +45,13 @@ class ShellAbbreviationGenerator
     private function getScullAbbreviation(int $numberRower, bool $coxed, bool $yolette): string
     {
         $abbreviation = $numberRower;
-        if (true === $yolette) {
+        if ($yolette) {
             $abbreviation = $numberRower.'Y';
         }
 
         $abbreviation .= 'x';
 
-        if (true === $coxed) {
+        if ($coxed) {
             $abbreviation .= '+';
         }
 
@@ -61,11 +61,11 @@ class ShellAbbreviationGenerator
     private function getSweepAbbreviation(int $numberRower, bool $coxed, bool $yolette): string
     {
         $abbreviation = $numberRower;
-        if (true === $yolette) {
+        if ($yolette) {
             $abbreviation = $numberRower.'Y';
         }
 
-        if (true === $coxed) {
+        if ($coxed) {
             $abbreviation .= '+';
         } else {
             $abbreviation .= '-';

@@ -130,7 +130,7 @@ class Training
             return null;
         }
 
-        if (true === $displayTenth) {
+        if ($displayTenth) {
             return DurationManipulator::formatTenthSeconds($this->duration);
         }
 

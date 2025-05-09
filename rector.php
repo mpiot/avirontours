@@ -19,7 +19,7 @@ declare(strict_types=1);
  */
 
 use Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector;
-use Rector\CodeQuality\Rector\If_\CombineIfRector;
+use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
@@ -31,9 +31,11 @@ return RectorConfig::configure()
     // ->withPhpSets()
     ->withTypeCoverageLevel(50)
     ->withDeadCodeLevel(50)
-    ->withCodeQualityLevel(0)
+    ->withCodeQualityLevel(50)
     ->withRules([
         InlineConstructorDefaultToPropertyRector::class,
-        CombineIfRector::class,
+    ])
+    ->withSkip([
+        SimplifyBoolIdenticalTrueRector::class,
     ])
 ;
