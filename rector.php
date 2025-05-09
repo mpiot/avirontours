@@ -19,6 +19,7 @@ declare(strict_types=1);
  */
 
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\Config\RectorConfig;
 
 return RectorConfig::configure()
@@ -28,12 +29,15 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
-    ->withCodeQualityLevel(50)
-    ->withCodingStyleLevel(25)
-    ->withDeadCodeLevel(50)
-    ->withTypeCoverageLevel(50)
+    ->withPreparedSets(
+        deadCode: true,
+        codeQuality: true,
+        codingStyle: true,
+        typeDeclarations: true,
+    )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
         SimplifyBoolIdenticalTrueRector::class,
+        FlipTypeControlToUseExclusiveTypeRector::class,
     ])
 ;
