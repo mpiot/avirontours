@@ -40,6 +40,9 @@ class Season
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $name = null;
 
+    /**
+     * @var Collection<int, SeasonCategory>
+     */
     #[Assert\Count(min: 1)]
     #[ORM\OneToMany(mappedBy: 'season', targetEntity: SeasonCategory::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $seasonCategories;

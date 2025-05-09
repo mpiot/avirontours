@@ -38,6 +38,9 @@ class Group
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
+    /**
+     * @var Collection<int, User>
+     */
     #[Assert\Count(min: 1)]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups')]
     #[ORM\OrderBy(value: ['firstName' => 'asc', 'lastName' => 'asc'])]

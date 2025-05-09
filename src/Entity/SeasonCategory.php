@@ -68,6 +68,9 @@ class SeasonCategory
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    /**
+     * @var Collection<int, License>
+     */
     #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: License::class)]
     private Collection $licenses;
 

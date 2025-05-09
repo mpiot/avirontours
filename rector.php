@@ -35,6 +35,17 @@ return RectorConfig::configure()
         codeQuality: true,
         codingStyle: true,
         typeDeclarations: true,
+        privatization: true,
+        naming: false,
+        instanceOf: true,
+        earlyReturn: true,
+        strictBooleans: true,
+        carbon: false,
+        rectorPreset: false,
+        phpunitCodeQuality: false,
+        doctrineCodeQuality: true,
+        symfonyCodeQuality: false,
+        symfonyConfigs: false,
     )
     ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([

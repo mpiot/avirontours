@@ -82,6 +82,9 @@ class Shell
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $abbreviation = null;
 
+    /**
+     * @var Collection<int, LogbookEntry>
+     */
     #[ORM\OneToMany(mappedBy: 'shell', targetEntity: LogbookEntry::class)]
     private Collection $logbookEntries;
 
@@ -114,6 +117,9 @@ class Shell
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $personalBoat = false;
 
+    /**
+     * @var Collection<int, ShellDamage>
+     */
     #[ORM\OneToMany(mappedBy: 'shell', targetEntity: ShellDamage::class, cascade: ['remove'])]
     private Collection $shellDamages;
 

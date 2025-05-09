@@ -79,6 +79,9 @@ class License
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $logbookEntryLimit = null;
 
+    /**
+     * @var Collection<int, LicensePayment>
+     */
     #[Assert\Count(min: 1, groups: ['validate_payment'])]
     #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]

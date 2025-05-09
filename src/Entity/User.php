@@ -129,10 +129,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
 
+    /**
+     * @var Collection<int, License>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: License::class, cascade: ['remove'])]
     #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
 
+    /**
+     * @var Collection<int, LogbookEntry>
+     */
     #[ORM\ManyToMany(targetEntity: LogbookEntry::class, mappedBy: 'crewMembers')]
     private Collection $logbookEntries;
 
@@ -148,19 +154,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToOne(targetEntity: WorkoutMaximumLoad::class, cascade: ['persist', 'remove'])]
     private ?WorkoutMaximumLoad $workoutMaximumLoad = null;
 
+    /**
+     * @var Collection<int, Training>
+     */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Training::class)]
     private Collection $trainings;
 
+    /**
+     * @var Collection<int, Group>
+     */
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private Collection $groups;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $automaticTraining = false;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $concept2RefreshToken = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $concept2LastImportAt = null;
 
     public function __construct()

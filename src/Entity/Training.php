@@ -71,6 +71,9 @@ class Training
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    /**
+     * @var Collection<int, TrainingPhase>
+     */
     #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingPhase::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $trainingPhases;
 

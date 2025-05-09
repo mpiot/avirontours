@@ -45,6 +45,9 @@ class LogbookEntry
     #[ORM\JoinColumn(nullable: false)]
     private ?Shell $shell = null;
 
+    /**
+     * @var Collection<int, User>
+     */
     #[Assert\NotNull(groups: ['start', 'edit'])]
     #[AppAssert\CrewAvailable(groups: ['start'])]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'logbookEntries')]
@@ -71,6 +74,9 @@ class LogbookEntry
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $coveredDistance = null;
 
+    /**
+     * @var Collection<int, ShellDamage>
+     */
     #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'logbookEntry', targetEntity: ShellDamage::class, cascade: ['persist'])]
     private Collection $shellDamages;
