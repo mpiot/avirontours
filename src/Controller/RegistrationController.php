@@ -26,7 +26,7 @@ use App\Form\RegistrationType;
 use App\Form\RenewType;
 use App\Repository\SeasonCategoryRepository;
 use App\Service\FileUploader;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Form\ClearableErrorsInterface;
@@ -45,7 +45,7 @@ class RegistrationController extends AbstractPublicController
         #[MapEntity(expr: 'repository.findSubscriptionSeasonCategory(slug)')] SeasonCategory $seasonCategory,
         string $publicDir,
         Request $request,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
         MailerInterface $mailer,
     ): Response {
@@ -63,7 +63,6 @@ class RegistrationController extends AbstractPublicController
             $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
             $registration->license->setUser($registration->user);
 
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($registration->user);
             $entityManager->persist($registration->license);
             $entityManager->flush();
@@ -108,7 +107,7 @@ class RegistrationController extends AbstractPublicController
         string $publicDir,
         Request $request,
         SeasonCategoryRepository $seasonCategoryRepository,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
         MailerInterface $mailer,
     ): Response {
@@ -127,7 +126,6 @@ class RegistrationController extends AbstractPublicController
             $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
             $registration->license->setUser($registration->user);
 
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($registration->license);
             $entityManager->flush();
 

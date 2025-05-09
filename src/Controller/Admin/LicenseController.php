@@ -28,7 +28,7 @@ use App\Form\LicensePaymentType;
 use App\Form\LicenseType;
 use App\Repository\LicenseRepository;
 use App\Service\FileUploader;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\ClearableErrorsInterface;
@@ -48,7 +48,7 @@ class LicenseController extends AbstractController
     public function new(
         #[MapEntity(mapping: ['seasonId' => 'id'])] Season $season,
         Request $request,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
     ): Response {
         $license = new License();
@@ -60,7 +60,6 @@ class LicenseController extends AbstractController
             $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
             $license->getMedicalCertificate()->setUploadedFile($uploadedFile);
 
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($license);
             $entityManager->flush();
 
@@ -81,7 +80,7 @@ class LicenseController extends AbstractController
     public function edit(
         License $license,
         Request $request,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
     ): Response {
         $form = $this->createForm(LicenseEditType::class, $license, ['season' => $license->getSeasonCategory()->getSeason()]);
@@ -93,7 +92,7 @@ class LicenseController extends AbstractController
                 $license->getMedicalCertificate()->setUploadedFile($uploadedFile);
             }
 
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
@@ -111,10 +110,10 @@ class LicenseController extends AbstractController
     #[Route(path: '/{id}/validate-payment', name: 'license_validate_payment', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function validatePayment(
-        Request $request,
-        ManagerRegistry $managerRegistry,
-        WorkflowInterface $licenseWorkflow,
+        EntityManagerInterface $entityManager,
         License $license,
+        Request $request,
+        WorkflowInterface $licenseWorkflow,
     ): Response {
         if (false === $licenseWorkflow->can($license, 'validate_payment')) {
             throw $this->createNotFoundException();
@@ -129,7 +128,8 @@ class LicenseController extends AbstractController
                 'time' => date('y-m-d H:i:s'),
                 'user' => $this->getUser()->getFullName(),
             ]);
-            $managerRegistry->getManager()->flush();
+
+            $entityManager->flush();
 
             $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
@@ -177,7 +177,7 @@ class LicenseController extends AbstractController
         string $transitionName,
         Request $request,
         WorkflowInterface $licenseWorkflow,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
     ): Response {
         if ($this->isCsrfTokenValid('license-medical-certificate-action', (string) $request->query->get('_token'))) {
             try {
@@ -185,7 +185,7 @@ class LicenseController extends AbstractController
                     'time' => date('y-m-d H:i:s'),
                     'user' => $this->getUser()->getFullName(),
                 ]);
-                $managerRegistry->getManager()->flush();
+                $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
             } catch (NotEnabledTransitionException $error) {
@@ -202,7 +202,7 @@ class LicenseController extends AbstractController
         License $license,
         Request $request,
         WorkflowInterface $licenseWorkflow,
-        ManagerRegistry $managerRegistry,
+        EntityManagerInterface $entityManager,
     ): Response {
         if ($this->isCsrfTokenValid('license-validate', (string) $request->query->get('_token'))) {
             try {
@@ -210,7 +210,7 @@ class LicenseController extends AbstractController
                     'time' => date('y-m-d H:i:s'),
                     'user' => $this->getUser()->getFullName(),
                 ]);
-                $managerRegistry->getManager()->flush();
+                $entityManager->flush();
 
                 $this->addFlash('success', 'La licence a été modifiée avec succès.');
             } catch (NotEnabledTransitionException $error) {
@@ -223,10 +223,9 @@ class LicenseController extends AbstractController
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, License $license): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, License $license): Response
     {
         if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($license);
             $entityManager->flush();
 

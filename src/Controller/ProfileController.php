@@ -24,7 +24,7 @@ use App\Form\ChangePasswordType;
 use App\Form\ProfileType;
 use App\Repository\SeasonRepository;
 use App\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,14 +46,13 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/edit', name: 'profile_edit', methods: ['GET|POST'])]
-    public function edit(Request $request, ManagerRegistry $managerRegistry): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre profil a été modifié avec succès.');
@@ -71,7 +70,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/edit-password', name: 'profile_edit_password', methods: ['GET|POST'])]
-    public function editPassword(Request $request, ManagerRegistry $managerRegistry, UserPasswordHasherInterface $passwordHasher): Response
+    public function editPassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
         $form = $this->createForm(ChangePasswordType::class, $user);
@@ -80,8 +79,6 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword($passwordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
-
-            $entityManager = $managerRegistry->getManager();
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre mot de passe a été modifié avec succès.');

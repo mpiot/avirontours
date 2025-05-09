@@ -24,7 +24,7 @@ use App\Controller\AbstractController;
 use App\Entity\ShellDamage;
 use App\Form\ShellDamageType;
 use App\Repository\ShellDamageRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -43,14 +43,13 @@ class ShellDamageController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'shell_damage_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $managerRegistry): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $shellDamage = new ShellDamage();
         $form = $this->createForm(ShellDamageType::class, $shellDamage);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($shellDamage);
             $entityManager->flush();
 
@@ -65,13 +64,13 @@ class ShellDamageController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'shell_damage_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ManagerRegistry $managerRegistry, ShellDamage $shellDamage): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, ShellDamage $shellDamage): Response
     {
         $form = $this->createForm(ShellDamageType::class, $shellDamage);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'L\'avarie  a été modifiée avec succès.');
 
@@ -85,10 +84,9 @@ class ShellDamageController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['POST'])]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, ShellDamage $shellDamage): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, ShellDamage $shellDamage): Response
     {
         if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($shellDamage);
             $entityManager->flush();
 

@@ -25,7 +25,7 @@ use App\Entity\User;
 use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,14 +48,13 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $managerRegistry): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -82,13 +81,13 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ManagerRegistry $managerRegistry, User $user): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, User $user): Response
     {
         $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'L\'utilisateur a été modifié avec succès.');
 
@@ -106,10 +105,9 @@ class UserController extends AbstractController
     }
 
     #[Route(path: '/{id}', name: 'user_delete', methods: ['POST'])]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, User $user): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, User $user): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
 

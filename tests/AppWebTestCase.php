@@ -25,7 +25,7 @@ use App\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\AbstractBrowser;
-use Zenstruck\Foundry\Proxy;
+use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -34,12 +34,8 @@ abstract class AppWebTestCase extends WebTestCase
     use Factories;
     use ResetDatabase;
 
-    /**
-     * @return User|Proxy
-     */
-    protected function logIn(AbstractBrowser $client, string $role): Proxy
+    protected function logIn(AbstractBrowser $client, string $role): User|Proxy
     {
-        /** @var User|Proxy $user */
         $user = UserFactory::new(['roles' => [$role]])
             ->major()
             ->create()

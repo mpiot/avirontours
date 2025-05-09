@@ -421,7 +421,7 @@ class LicenseControllerTest extends AppWebTestCase
         $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
 
         $this->assertResponseRedirects();
-        $this->assertSame(['wait_medical_certificate_validation' => 1, 'payment_validated' => 1], $license->getMarking());
+        $this->assertSame(['wait_medical_certificate_validation' => 1, 'payment_validated' => 1], $license->_refresh()->getMarking());
         $this->assertNotNull($license->getPayedAt());
         $this->assertCount(3, $license->getPayments());
         $this->assertSame(PaymentMethod::Check, $license->getPayments()->get(0)->getMethod());

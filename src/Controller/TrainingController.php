@@ -26,7 +26,7 @@ use App\Entity\TrainingPhase;
 use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
 use App\Service\TrainingHelper;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,14 +57,13 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/new', name: 'training_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $managerRegistry): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $training = new Training($this->getUser());
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->persist($training);
             $entityManager->flush();
 
@@ -113,13 +112,13 @@ class TrainingController extends AbstractController
 
     #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
-    public function edit(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
+    public function edit(Request $request, EntityManagerInterface $entityManager, Training $training): Response
     {
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $managerRegistry->getManager()->flush();
+            $entityManager->flush();
 
             $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
 
@@ -134,10 +133,9 @@ class TrainingController extends AbstractController
 
     #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
-    public function delete(Request $request, ManagerRegistry $managerRegistry, Training $training): Response
+    public function delete(Request $request, EntityManagerInterface $entityManager, Training $training): Response
     {
         if ($this->isCsrfTokenValid('delete'.$training->getId(), (string) $request->request->get('_token'))) {
-            $entityManager = $managerRegistry->getManager();
             $entityManager->remove($training);
             $entityManager->flush();
 
