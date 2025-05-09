@@ -33,9 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessUnauthorizedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -50,9 +48,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessForbidden(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -69,13 +65,6 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $client->request($method, $url, server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}'];
     }
 
     public function testIndexLogbookEntries(): void
@@ -516,5 +505,12 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $this->assertNull($entry->getShellDamages()->first()->getDescription());
         $this->assertSame($categories[1]->getId(), $entry->getShellDamages()->last()->getCategory()->getId());
         $this->assertSame('A little description', $entry->getShellDamages()->last()->getDescription());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}'];
     }
 }

@@ -32,6 +32,7 @@ return RectorConfig::configure()
     ->withCodingStyleLevel(25)
     ->withDeadCodeLevel(50)
     ->withTypeCoverageLevel(50)
+    ->withComposerBased(twig: true, doctrine: true, phpunit: true, symfony: true)
     ->withSkip([
         SimplifyBoolIdenticalTrueRector::class,
     ])

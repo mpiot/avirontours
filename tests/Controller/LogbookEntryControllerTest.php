@@ -35,9 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogbookEntryControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -52,9 +50,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -68,19 +64,6 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/logbook-entry'];
-        yield ['GET', '/logbook-entry/new'];
-        yield ['POST', '/logbook-entry/new'];
-        yield ['GET', '/logbook-entry/{id}/finish'];
-        yield ['POST', '/logbook-entry/{id}/finish'];
-        yield ['GET', '/logbook-entry/statistics'];
-        yield ['GET', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}/edit'];
-        yield ['POST', '/logbook-entry/{id}'];
     }
 
     public function testIndexLogbookEntries(): void
@@ -709,5 +692,18 @@ class LogbookEntryControllerTest extends AppWebTestCase
         ShellDamageFactory::assert()->exists($shellDamage);
         $this->assertNull($shellDamage->getLogbookEntry());
         $this->assertSame(0.0, $shell->getMileage());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/logbook-entry'];
+        yield ['GET', '/logbook-entry/new'];
+        yield ['POST', '/logbook-entry/new'];
+        yield ['GET', '/logbook-entry/{id}/finish'];
+        yield ['POST', '/logbook-entry/{id}/finish'];
+        yield ['GET', '/logbook-entry/statistics'];
+        yield ['GET', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}/edit'];
+        yield ['POST', '/logbook-entry/{id}'];
     }
 }

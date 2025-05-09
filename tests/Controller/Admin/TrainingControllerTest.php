@@ -30,9 +30,7 @@ use function Zenstruck\Foundry\faker;
 
 class TrainingControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -42,9 +40,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{user-id}')) {
@@ -63,13 +59,6 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/training'];
-        yield ['GET', '/admin/training/{user-id}'];
-        yield ['GET', '/admin/training/{user-id}/{id}'];
     }
 
     public function testIndexTrainings(): void
@@ -127,5 +116,12 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/training'];
+        yield ['GET', '/admin/training/{user-id}'];
+        yield ['GET', '/admin/training/{user-id}/{id}'];
     }
 }

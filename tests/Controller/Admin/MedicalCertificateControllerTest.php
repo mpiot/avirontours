@@ -26,9 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MedicalCertificateControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -38,9 +36,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -56,9 +52,7 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -74,11 +68,6 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/medical-certificate/{id}/download'];
-    }
-
     public function testDownloadMedicalCertificate(): void
     {
         $medicalCertificate = MedicalCertificateFactory::createOne();
@@ -89,5 +78,10 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/medical-certificate/'.$medicalCertificate->getId().'/download');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/medical-certificate/{id}/download'];
     }
 }

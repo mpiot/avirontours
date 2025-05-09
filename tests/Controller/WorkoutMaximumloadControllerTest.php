@@ -26,9 +26,7 @@ use App\Tests\AppWebTestCase;
 
 class WorkoutMaximumloadControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -36,11 +34,6 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseRedirects('/login');
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/workout-maximum-load'];
     }
 
     public function testShowWorkoutMaximumLoad(): void
@@ -68,5 +61,10 @@ class WorkoutMaximumloadControllerTest extends AppWebTestCase
         $client->request('GET', '/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/workout-maximum-load'];
     }
 }

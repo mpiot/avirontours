@@ -32,12 +32,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LicenseControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     * @dataProvider adminUrlProvider
-     * @dataProvider medicalCertificateAdminUrlProvider
-     * @dataProvider paymentsAdminUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('medicalCertificateAdminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentsAdminUrlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -47,12 +45,10 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     * @dataProvider adminUrlProvider
-     * @dataProvider medicalCertificateAdminUrlProvider
-     * @dataProvider paymentsAdminUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('medicalCertificateAdminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentsAdminUrlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
@@ -75,10 +71,8 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider adminUrlProvider
-     * @dataProvider paymentsAdminUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('paymentsAdminUrlProvider')]
     public function testAccessDeniedForMedicalCertificateAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
@@ -101,10 +95,8 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @dataProvider adminUrlProvider
-     * @dataProvider medicalCertificateAdminUrlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('adminUrlProvider')]
+    #[\PHPUnit\Framework\Attributes\DataProvider('medicalCertificateAdminUrlProvider')]
     public function testAccessDeniedForPaymentsAdmin(string $method, string $url): void
     {
         if (mb_strpos($url, '{season_id}')) {
@@ -125,33 +117,6 @@ class LicenseControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/{season_id}/license/new'];
-        yield ['POST', '/admin/season/{season_id}/license/new'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/edit'];
-        yield ['POST', '/admin/season/{season_id}/license/{id}/edit'];
-    }
-
-    public function paymentsAdminUrlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/{season_id}/license/{id}/validate-payment'];
-        yield ['POST', '/admin/season/{season_id}/license/{id}/validate-payment'];
-    }
-
-    public function medicalCertificateAdminUrlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/validate'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/reject'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/unreject'];
-    }
-
-    public function adminUrlProvider(): \Generator
-    {
-        yield ['GET', '/admin/season/{season_id}/license/{id}/validate'];
     }
 
     public function testNewLicense(): void
@@ -640,5 +605,32 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
         LicenseFactory::repository()->assert()->notExists($license);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{season_id}/license/new'];
+        yield ['POST', '/admin/season/{season_id}/license/new'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/edit'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/edit'];
+    }
+
+    public static function paymentsAdminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{season_id}/license/{id}/validate-payment'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/validate-payment'];
+    }
+
+    public static function medicalCertificateAdminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/validate'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/reject'];
+        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/unreject'];
+    }
+
+    public static function adminUrlProvider(): \Generator
+    {
+        yield ['GET', '/admin/season/{season_id}/license/{id}/validate'];
     }
 }

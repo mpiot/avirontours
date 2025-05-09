@@ -27,9 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GroupControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -39,9 +37,7 @@ class GroupControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -55,17 +51,6 @@ class GroupControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/group'];
-        yield ['GET', '/admin/group/{id}'];
-        yield ['GET', '/admin/group/new'];
-        yield ['POST', '/admin/group/new'];
-        yield ['GET', '/admin/group/{id}/edit'];
-        yield ['POST', '/admin/group/{id}/edit'];
-        yield ['POST', '/admin/group/{id}'];
     }
 
     public function testIndexGroups(): void
@@ -173,5 +158,16 @@ class GroupControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/group');
         GroupFactory::repository()->assert()->notExists($group);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/group'];
+        yield ['GET', '/admin/group/{id}'];
+        yield ['GET', '/admin/group/new'];
+        yield ['POST', '/admin/group/new'];
+        yield ['GET', '/admin/group/{id}/edit'];
+        yield ['POST', '/admin/group/{id}/edit'];
+        yield ['POST', '/admin/group/{id}'];
     }
 }

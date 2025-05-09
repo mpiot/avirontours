@@ -28,9 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ShellDamageControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -40,9 +38,7 @@ class ShellDamageControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -56,16 +52,6 @@ class ShellDamageControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/admin/shell-damage'];
-        yield ['GET', '/admin/shell-damage/new'];
-        yield ['POST', '/admin/shell-damage/new'];
-        yield ['GET', '/admin/shell-damage/{id}/edit'];
-        yield ['POST', '/admin/shell-damage/{id}/edit'];
-        yield ['POST', '/admin/shell-damage/{id}'];
     }
 
     public function testIndexShellDamages(): void
@@ -184,5 +170,15 @@ class ShellDamageControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/admin/shell-damage');
 
         ShellDamageFactory::repository()->assert()->notExists($damage);
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/admin/shell-damage'];
+        yield ['GET', '/admin/shell-damage/new'];
+        yield ['POST', '/admin/shell-damage/new'];
+        yield ['GET', '/admin/shell-damage/{id}/edit'];
+        yield ['POST', '/admin/shell-damage/{id}/edit'];
+        yield ['POST', '/admin/shell-damage/{id}'];
     }
 }

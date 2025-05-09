@@ -25,9 +25,7 @@ use App\Tests\AppWebTestCase;
 
 class SportProfileControllerTest extends AppWebTestCase
 {
-    /**
-     * @dataProvider urlProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -35,15 +33,6 @@ class SportProfileControllerTest extends AppWebTestCase
         $client->request($method, $url);
 
         $this->assertResponseRedirects('/login');
-    }
-
-    public function urlProvider(): \Generator
-    {
-        yield ['GET', '/sport-profile/physiology'];
-        yield ['GET', '/sport-profile/anatomy'];
-        yield ['GET', '/sport-profile/physical-qualities'];
-        yield ['GET', '/sport-profile/workout-maximum-load'];
-        yield ['GET', '/sport-profile/configuration'];
     }
 
     public function testNewPhysiology(): void
@@ -187,5 +176,14 @@ class SportProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertTrue($user->getAutomaticTraining());
+    }
+
+    public static function urlProvider(): \Generator
+    {
+        yield ['GET', '/sport-profile/physiology'];
+        yield ['GET', '/sport-profile/anatomy'];
+        yield ['GET', '/sport-profile/physical-qualities'];
+        yield ['GET', '/sport-profile/workout-maximum-load'];
+        yield ['GET', '/sport-profile/configuration'];
     }
 }
