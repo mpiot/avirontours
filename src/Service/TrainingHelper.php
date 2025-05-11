@@ -77,7 +77,6 @@ readonly class TrainingHelper
 
             // Define ratio
             foreach ($categorizedTrainings as &$categorizedTraining) {
-                dump(round($categorizedTraining['duration'] / $duration));
                 $categorizedTraining['ratio'] = round($categorizedTraining['duration'] / $duration, 2);
             }
 
