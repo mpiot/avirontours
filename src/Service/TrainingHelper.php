@@ -58,6 +58,7 @@ readonly class TrainingHelper
                         'sessions' => 0,
                         'duration' => 0,
                         'distance' => 0,
+                        'ratio' => 0,
                     ];
                 }
 
@@ -73,6 +74,12 @@ readonly class TrainingHelper
 
             $duration = array_reduce($weekTrainings, fn (int $carry, Training $training): int => $carry + $training->getDuration(), 0);
             $duration = (int) round($duration / 10);
+
+            // Define ratio
+            foreach ($categorizedTrainings as &$categorizedTraining) {
+                dump(round($categorizedTraining['duration'] / $duration));
+                $categorizedTraining['ratio'] = round($categorizedTraining['duration'] / $duration, 2);
+            }
 
             $data[] = [
                 'week' => $week,
