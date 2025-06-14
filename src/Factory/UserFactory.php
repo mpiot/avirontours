@@ -80,17 +80,17 @@ final class UserFactory extends PersistentProxyObjectFactory
         ]);
     }
 
-    public function withAnnualActiveLicense(): self
+    public function withValidAnnualActiveLicense(): self
     {
         return $this->with([
-            'licenses' => LicenseFactory::new()->annualActive()->many(1),
+            'licenses' => LicenseFactory::new()->annualActive()->withValidLicense()->many(1),
         ]);
     }
 
-    public function withAnnualInactiveLicense(): self
+    public function withValidAnnualInactiveLicense(): self
     {
         return $this->with([
-            'licenses' => LicenseFactory::new()->annualInactive()->many(1),
+            'licenses' => LicenseFactory::new()->annualInactive()->withValidLicense()->many(1),
         ]);
     }
 

@@ -29,11 +29,12 @@ use App\Factory\ShellFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 final class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessUnauthorizedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -48,7 +49,7 @@ final class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessForbidden(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -370,9 +371,10 @@ final class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         LogbookEntryFactory::repository()->assert()->count(1);
     }
 
-    public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser(): void
+    public function testNewLogbookEntryWithNonUserCrewMember(): void
     {
-        LicenseFactory::new()->annualActive()->withValidLicense()->create();
+        $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -380,10 +382,50 @@ final class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
             'PHP_AUTH_USER' => 'logbook',
             'PHP_AUTH_PW' => 'engage',
         ]);
-        $crawler = $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+
+        $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
+            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe',
+            'logbook_entry_start[startAt]' => '09:00',
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $logBookEntry = LogbookEntryFactory::repository()->last();
+
+        $this->assertCount(1, $logBookEntry->getCrewMembers());
+        $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
+    }
+
+    public function testNewLogbookEntryWithOnlyNonUserCrewMembers(): void
+    {
+        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+        $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(0, $crawler->filter('#logbook_entry_start_nonUserCrewMembers'));
+
+        $client->submitForm('Sauver', [
+            'logbook_entry_start[shell]' => $shell->getId(),
+            'logbook_entry_start[crewMembers]' => [],
+            'logbook_entry_start[nonUserCrewMembers]' => 'John Doe, Foo Bar',
+            'logbook_entry_start[startAt]' => '09:00',
+        ]);
+
+        $this->assertResponseRedirects();
+
+        $logBookEntry = LogbookEntryFactory::repository()->last();
+
+        $this->assertCount(0, $logBookEntry->getCrewMembers());
+        $this->assertCount(2, $logBookEntry->getNonUserCrewMembers());
     }
 
     public function testUserListLogbookEntryForm(): void
