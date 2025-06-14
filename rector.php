@@ -28,6 +28,7 @@ use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEmptyNullableObjectToAsse
 use Rector\PHPUnit\CodeQuality\Rector\MethodCall\AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector;
 use Rector\Symfony\CodeQuality\Rector\Class_\InlineClassRoutePrefixRector;
 use Rector\Symfony\CodeQuality\Rector\MethodCall\LiteralGetToRequestClassConstantRector;
+use Rector\Symfony\Symfony73\Rector\Class_\InvokableCommandInputAttributeRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -60,6 +61,7 @@ return RectorConfig::configure()
         ClassPropertyAssignToConstructorPromotionRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineClassRoutePrefixRector::class,
+        InvokableCommandInputAttributeRector::class,
         LiteralGetToRequestClassConstantRector::class,
         ReadOnlyPropertyRector::class,
         SimplifyBoolIdenticalTrueRector::class,
