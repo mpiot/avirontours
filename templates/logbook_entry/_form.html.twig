@@ -5,9 +5,7 @@
 
     {{ form_row(form.crewMembers) }}
 
-    {% if form.nonUserCrewMembers is defined %}
-        {{ form_row(form.nonUserCrewMembers) }}
-    {% endif %}
+    {{ form_row(form.nonUserCrewMembers) }}
 
     {{ form_row(form.startAt) }}
 
