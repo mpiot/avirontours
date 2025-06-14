@@ -3,145 +3,145 @@
   serial: 1
 
   vars:
-      deploy_from: "/tmp/symfony_build/"
-      deploy_to: "/mnt/data/my.avirontours.fr"
-      keep_releases: 3
-      shared_paths:
-          - public/uploads
-          - var/log
-          - var/sessions
-          - var/uploads
-      shared_files:
-          - config/secrets/{{ symfony_env }}/{{ symfony_env }}.decrypt.private.php
+    deploy_from: "/tmp/symfony_build/"
+    deploy_to: "/mnt/data/my.avirontours.fr"
+    keep_releases: 3
+    shared_paths:
+      - public/uploads
+      - var/log
+      - var/sessions
+      - var/uploads
+    shared_files:
+      - config/secrets/{{ symfony_env }}/{{ symfony_env }}.decrypt.private.php
 
   tasks:
-      - name: Ensure deployment base path exists
-        ansible.builtin.file:
-            state: directory
-            path: "{{ deploy_to }}"
+    - name: Ensure deployment base path exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ deploy_to }}"
 
-      - name: Ensure releases folder exists
-        ansible.builtin.file:
-            state: directory
-            path: "{{ deploy_to }}/releases"
+    - name: Ensure releases folder exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ deploy_to }}/releases"
 
-      - name: Ensure shared elements folder exists
-        ansible.builtin.file:
-            state: directory
-            path: "{{ deploy_to }}/shared"
+    - name: Ensure shared elements folder exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ deploy_to }}/shared"
 
-      - name: Ensure shared paths exists
-        ansible.builtin.file:
-            state: directory
-            path: "{{ deploy_to }}/shared/{{ item }}"
-        loop: "{{ shared_paths | flatten }}"
+    - name: Ensure shared paths exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ deploy_to }}/shared/{{ item }}"
+      loop: "{{ shared_paths | flatten }}"
 
-      - name: Ensure basedir shared files exists
-        ansible.builtin.file:
-            state: directory
-            path: "{{ deploy_to }}/shared/{{ item | dirname }}"
-        loop: "{{ shared_files | flatten }}"
+    - name: Ensure basedir shared files exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ deploy_to }}/shared/{{ item | dirname }}"
+      loop: "{{ shared_files | flatten }}"
 
-      - name: Pull the project in local build directory
-        ansible.builtin.git:
-            repo: "git@github.com:mpiot/avirontours.git"
-            dest: "{{ deploy_from }}"
-            version: "{{ git_version }}"
-            force: true
-            depth: 1
-        delegate_to: 127.0.0.1
+    - name: Pull the project in local build directory
+      ansible.builtin.git:
+        repo: "git@github.com:mpiot/avirontours.git"
+        dest: "{{ deploy_from }}"
+        version: "{{ git_version }}"
+        force: true
+        depth: 1
+      delegate_to: 127.0.0.1
 
-      - name: Install PHP vendors
-        ansible.builtin.shell: APP_ENV={{symfony_env}} symfony composer install --no-dev --optimize-autoloader
-        args:
-            chdir: "{{ deploy_from }}"
-        delegate_to: 127.0.0.1
+    - name: Install PHP vendors
+      ansible.builtin.shell: APP_ENV={{symfony_env}} symfony composer install --no-dev --optimize-autoloader
+      args:
+        chdir: "{{ deploy_from }}"
+      delegate_to: 127.0.0.1
 
-      - name: Install JS node_modules
-        ansible.builtin.command: npm ci
-        args:
-            chdir: "{{ deploy_from }}"
-        delegate_to: 127.0.0.1
+    - name: Install JS node_modules
+      ansible.builtin.command: npm ci
+      args:
+        chdir: "{{ deploy_from }}"
+      delegate_to: 127.0.0.1
 
-      - name: Build assets
-        ansible.builtin.command: npm run build
-        args:
-            chdir: "{{ deploy_from }}"
-        delegate_to: 127.0.0.1
+    - name: Build assets
+      ansible.builtin.command: npm run build
+      args:
+        chdir: "{{ deploy_from }}"
+      delegate_to: 127.0.0.1
 
-      - name: Get release version
-        ansible.builtin.set_fact:
-            release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
-        run_once: true
-        delegate_to: 127.0.0.1
+    - name: Get release version
+      ansible.builtin.set_fact:
+        release_version: "{{ lookup('pipe', 'date -u +%Y%m%d%H%M%SZ') }}"
+      run_once: true
+      delegate_to: 127.0.0.1
 
-      - name: Get release path
-        ansible.builtin.command: echo "{{ deploy_to }}/releases/{{ release_version }}"
-        check_mode: no
-        register: release_path
+    - name: Get release path
+      ansible.builtin.command: echo "{{ deploy_to }}/releases/{{ release_version }}"
+      check_mode: no
+      register: release_path
 
-      - name: Rsync application files to remote release path
-        ansible.builtin.synchronize:
-            src: "{{ deploy_from }}"
-            dest: "{{ release_path.stdout }}"
-            recursive: yes
-            delete: yes
-            archive: yes
-            compress: yes
+    - name: Rsync application files to remote release path
+      ansible.builtin.synchronize:
+        src: "{{ deploy_from }}"
+        dest: "{{ release_path.stdout }}"
+        recursive: yes
+        delete: yes
+        archive: yes
+        compress: yes
 
-      - name: Ensure shared paths targets are absent
-        ansible.builtin.file:
-            state: absent
-            path: "{{ release_path.stdout }}/{{ item }}"
-        loop: "{{ (shared_paths | flatten ) + (shared_files | flatten) }}"
+    - name: Ensure shared paths targets are absent
+      ansible.builtin.file:
+        state: absent
+        path: "{{ release_path.stdout }}/{{ item }}"
+      loop: "{{ (shared_paths | flatten ) + (shared_files | flatten) }}"
 
-      - name: Create soft links for shared paths and files
-        ansible.builtin.file:
-            state: link
-            path: "{{ release_path.stdout }}/{{ item }}"
-            src: "{{ item | regex_replace('[^\\/]+', '..') }}/../shared/{{ item }}"
-        loop: "{{ (shared_paths | flatten ) + (shared_files | flatten) }}"
+    - name: Create soft links for shared paths and files
+      ansible.builtin.file:
+        state: link
+        path: "{{ release_path.stdout }}/{{ item }}"
+        src: "{{ item | regex_replace('[^\\/]+', '..') }}/../shared/{{ item }}"
+      loop: "{{ (shared_paths | flatten ) + (shared_files | flatten) }}"
 
-      - name: Decrypt secrets to local
-        ansible.builtin.command: "bin/console secrets:decrypt-to-local --force --env={{symfony_env}}"
-        args:
-            chdir: "{{ release_path.stdout }}"
+    - name: Decrypt secrets to local
+      ansible.builtin.command: "bin/console secrets:decrypt-to-local --force --env={{symfony_env}}"
+      args:
+        chdir: "{{ release_path.stdout }}"
 
-      - name: Dump environment
-        ansible.builtin.command: "composer dump-env {{symfony_env}}"
-        args:
-            chdir: "{{ release_path.stdout }}"
+    - name: Dump environment
+      ansible.builtin.command: "composer dump-env {{symfony_env}}"
+      args:
+        chdir: "{{ release_path.stdout }}"
 
-      - name: Clean up unused environment files
-        ansible.builtin.command: "rm .env .env.prod .env.test .env.{{symfony_env}}.local"
-        args:
-            chdir: "{{ release_path.stdout }}"
+    - name: Clean up unused environment files
+      ansible.builtin.command: "rm .env .env.prod .env.test .env.{{symfony_env}}.local"
+      args:
+        chdir: "{{ release_path.stdout }}"
 
-      - name: Clear the cache
-        ansible.builtin.command: "bin/console cache:clear"
-        args:
-            chdir: "{{ release_path.stdout }}"
+    - name: Clear the cache
+      ansible.builtin.command: "bin/console cache:clear"
+      args:
+          chdir: "{{ release_path.stdout }}"
 
-      - name: Warmup the cache
-        ansible.builtin.command: "bin/console cache:warmup"
-        args:
-            chdir: "{{ release_path.stdout }}"
+    - name: Warmup the cache
+      ansible.builtin.command: "bin/console cache:warmup"
+      args:
+          chdir: "{{ release_path.stdout }}"
 
-      - name: Apply database migrations
-        ansible.builtin.command: "{{ release_path.stdout }}/bin/console doctrine:migrations:migrate --allow-no-migration --all-or-nothing --no-interaction"
+    - name: Apply database migrations
+      ansible.builtin.command: "{{ release_path.stdout }}/bin/console doctrine:migrations:migrate --allow-no-migration --all-or-nothing --no-interaction"
 
-      - name: Change symlink to new release
-        ansible.builtin.file:
-            state: link
-            path: "{{ deploy_to }}/current"
-            src: "./releases/{{ release_version }}"
+    - name: Change symlink to new release
+      ansible.builtin.file:
+        state: link
+        path: "{{ deploy_to }}/current"
+        src: "./releases/{{ release_version }}"
 
-      - name: Restart service PHP
-        ansible.builtin.command: sudo systemctl restart php8.3-fpm
+    - name: Restart service PHP
+      ansible.builtin.command: sudo systemctl restart php8.3-fpm
 
-      - name: Restart messenger-consume:*
-        ansible.builtin.command: sudo supervisorctl restart messenger-consume:*
+    - name: Restart messenger-consume:*
+      ansible.builtin.command: sudo supervisorctl restart messenger-consume:*
 
-      - name: Clean up releases
-        ansible.builtin.shell: ls -1dt {{ deploy_to }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
-        when: keep_releases | int > 0
+    - name: Clean up releases
+      ansible.builtin.shell: ls -1dt {{ deploy_to }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
+      when: keep_releases | int > 0
