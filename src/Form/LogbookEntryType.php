@@ -91,6 +91,12 @@ class LogbookEntryType extends AbstractType
                 'help' => 'Si un membre n\'apparaît pas dans la liste, demander à un administrateur de créer votre sortie.',
                 'help_html' => true,
                 'autocomplete' => true,
+                'required' => false,
+            ])
+            ->add('nonUserCrewMembers', TextArrayType::class, [
+                'label' => 'Membres d\'équipage (sans utilisateur)',
+                'help' => 'John Doe, Foo Bar',
+                'required' => false,
             ])
             ->add('startAt', TimeType::class, [
                 'label' => 'Heure de départ',
@@ -126,15 +132,6 @@ class LogbookEntryType extends AbstractType
                 ],
             ])
         ;
-
-        if ($this->security->isGranted('ROLE_LOGBOOK_ADMIN')) {
-            $builder->get('crewMembers')->setRequired(false);
-            $builder->add('nonUserCrewMembers', TextArrayType::class, [
-                'label' => 'Membres d\'équipage (sans utilisateur)',
-                'help' => 'John Doe, Foo Bar',
-                'required' => false,
-            ]);
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

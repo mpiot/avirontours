@@ -67,14 +67,14 @@ final class LogbookEntryFactory extends PersistentProxyObjectFactory
     public function withActiveCrew(int $number): self
     {
         return $this->with([
-            'crewMembers' => UserFactory::new()->withAnnualActiveLicense()->many($number),
+            'crewMembers' => UserFactory::new()->withValidAnnualActiveLicense()->many($number),
         ]);
     }
 
     public function withInactiveCrew(int $number): self
     {
         return $this->with([
-            'crewMembers' => UserFactory::new()->withAnnualInactiveLicense()->many($number),
+            'crewMembers' => UserFactory::new()->withValidAnnualInactiveLicense()->many($number),
         ]);
     }
 

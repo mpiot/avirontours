@@ -31,11 +31,12 @@ use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 final class LogbookEntryControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -50,7 +51,7 @@ final class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -68,9 +69,11 @@ final class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testIndexLogbookEntries(): void
     {
+        $licence = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($licence->getUser());
         $client->request('GET', '/logbook-entry');
 
         $this->assertResponseIsSuccessful();
@@ -321,7 +324,7 @@ final class LogbookEntryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($license->getUser());
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -339,11 +342,11 @@ final class LogbookEntryControllerTest extends AppWebTestCase
     public function testNewLogbookEntryWithNonUserCrewMember(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
-        $license = LicenseFactory::new()->annualInactive()->withInvalidLicense()->create();
+        $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($license->getUser());
         $client->request('GET', '/logbook-entry/new');
 
         $client->submitForm('Sauver', [
@@ -361,27 +364,14 @@ final class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertCount(1, $logBookEntry->getNonUserCrewMembers());
     }
 
-    public function testNewLogbookEntryWithNonUserCrewMemberNoAvailableForUser(): void
+    public function testNewLogbookEntryWithOnlyNonUserCrewMembers(): void
     {
+        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
         $license = LicenseFactory::new()->annualActive()->withValidLicense()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($license->getUser());
-
-        $crawler = $client->request('GET', '/logbook-entry/new');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(0, $crawler->filter('#logbook_entry_start_nonUserCrewMembers'));
-    }
-
-    public function testNewLogbookEntryWithOnlyNonUserCrewMembers(): void
-    {
-        $shell = ShellFactory::new(['numberRowers' => 2, 'coxed' => false])->create();
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
         $client->request('GET', '/logbook-entry/new');
 
         $this->assertResponseIsSuccessful();
@@ -575,11 +565,11 @@ final class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testFinishLogbookEntry(): void
     {
-        $entry = LogbookEntryFactory::new()->notFinished()->create();
+        $entry = LogbookEntryFactory::new()->notFinished()->withActiveCrew(1)->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($entry->getCrewMembers()->get(0));
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
 
         $this->assertResponseIsSuccessful();
@@ -599,14 +589,14 @@ final class LogbookEntryControllerTest extends AppWebTestCase
     public function testFinishLogbookEntryWithAutomaticTraining(): void
     {
         $entry = LogbookEntryFactory::new([
-            'crewMembers' => UserFactory::new(['automaticTraining' => true])->many(2),
+            'crewMembers' => UserFactory::new(['automaticTraining' => true])->withValidAnnualActiveLicense()->many(2),
             'date' => new \DateTime('2022-01-15'),
             'startAt' => new \DateTime('14:30'),
         ])->notFinished()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($entry->getCrewMembers()->get(0));
         $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
 
         $this->assertResponseIsSuccessful();
@@ -638,12 +628,14 @@ final class LogbookEntryControllerTest extends AppWebTestCase
 
     public function testFinishLogbookWithDamageEntry(): void
     {
-        $entry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->create();
+        $entry = LogbookEntryFactory::new()->notFinished()->withoutDamages()->withActiveCrew(1)->create();
+
         $categories = ShellDamageCategoryFactory::createMany(2);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_LOGBOOK_ADMIN');
+        $client->loginUser($entry->getCrewMembers()->get(0));
+
         $crawler = $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
 
         $this->assertResponseIsSuccessful();
