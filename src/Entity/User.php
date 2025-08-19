@@ -542,7 +542,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     /**
-     * @return Collection|LogbookEntry[]
+     * @return Collection<int, LogbookEntry>
      */
     public function getLogbookEntries(): Collection
     {
@@ -550,7 +550,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     /**
-     * @return ReadableCollection<int, License>
+     * @return Collection<int, License>
      */
     public function getLicenses(): ReadableCollection
     {
@@ -640,7 +640,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     /**
-     * @return Collection|Training[]
+     * @return Collection<int, Training>
      */
     public function getTrainings(): Collection
     {
@@ -670,7 +670,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     }
 
     /**
-     * @return Collection|Group[]
+     * @return Collection<int, Group>
      */
     public function getGroups(): Collection
     {

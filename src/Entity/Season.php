@@ -81,7 +81,7 @@ class Season
     }
 
     /**
-     * @return Collection|SeasonCategory[]
+     * @return Collection<int, SeasonCategory>
      */
     public function getSeasonCategories(): Collection
     {

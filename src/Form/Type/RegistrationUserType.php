@@ -47,7 +47,7 @@ class RegistrationUserType extends AbstractType
                 'hash_property_path' => 'password',
                 'constraints' => [
                     new NotBlank(),
-                    new Length(['min' => 6, 'max' => 4096]),
+                    new Length(min: 6, max: 4096),
                     new NotCompromisedPassword(),
                 ],
                 'attr' => ['autocomplete' => 'new-password'],

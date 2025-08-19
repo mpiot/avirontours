@@ -228,7 +228,7 @@ class Shell
     }
 
     /**
-     * @return Collection|LogbookEntry[]
+     * @return Collection<int, LogbookEntry>
      */
     public function getLogbookEntries(): Collection
     {
@@ -402,7 +402,7 @@ class Shell
     }
 
     /**
-     * @return Collection|ShellDamage[]
+     * @return Collection<int, ShellDamage>
      */
     public function getShellDamages(): Collection
     {

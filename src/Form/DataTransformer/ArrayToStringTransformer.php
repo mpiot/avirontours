@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
+use Symfony\Component\String\AbstractString;
 
 use function Symfony\Component\String\u;
 
@@ -52,7 +53,7 @@ class ArrayToStringTransformer implements DataTransformerInterface
         }
 
         $array = array_map(
-            fn ($part): string => trim($part->toString()),
+            fn (AbstractString $part): string => trim($part->toString()),
             u($value)->split($this->delimiter)
         );
 

@@ -48,9 +48,9 @@ class ChangePasswordType extends AbstractType
                 'first_options' => [
                     'label' => 'Mot de passe',
                     'constraints' => [
-                        new NotBlank(['groups' => 'resetPassword']),
-                        new Length(['min' => 6, 'max' => 4096, 'groups' => 'resetPassword']),
-                        new NotCompromisedPassword(['groups' => 'resetPassword']),
+                        new NotBlank(groups: ['resetPassword']),
+                        new Length(min: 6, max: 4096, groups: ['resetPassword']),
+                        new NotCompromisedPassword(groups: ['resetPassword']),
                     ],
                     'attr' => ['autocomplete' => 'new-password'],
                 ],
