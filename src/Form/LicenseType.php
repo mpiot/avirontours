@@ -90,7 +90,7 @@ class LicenseType extends AbstractType
                 ],
             ])
             ->add('optionalInsurance', CheckboxType::class, [
-                'label' => 'Je souhaites souscrire l\'Option I.A. Sport (+12,80 €).',
+                'label' => 'Je souhaites souscrire l\'Option I.A. Sport+ (14,15 €).',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
