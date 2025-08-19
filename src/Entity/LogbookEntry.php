@@ -107,7 +107,7 @@ class LogbookEntry
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection<int, User>
      */
     public function getCrewMembers(): Collection
     {
@@ -200,7 +200,7 @@ class LogbookEntry
     }
 
     /**
-     * @return Collection|ShellDamage[]
+     * @return Collection<int, ShellDamage>
      */
     public function getShellDamages(): Collection
     {

@@ -163,7 +163,7 @@ class SeasonCategory
     }
 
     /**
-     * @return Collection|License[]
+     * @return Collection<int, License>
      */
     public function getLicenses(): Collection
     {

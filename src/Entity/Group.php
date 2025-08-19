@@ -69,7 +69,7 @@ class Group
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection<int, User>
      */
     public function getMembers(): Collection
     {

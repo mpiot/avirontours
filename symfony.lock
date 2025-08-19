@@ -35,9 +35,6 @@
             "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
         }
     },
-    "doctrine/cache": {
-        "version": "2.1.1"
-    },
     "doctrine/collections": {
         "version": "1.6.8"
     },
@@ -682,12 +679,12 @@
         "version": "v3.0.0"
     },
     "symfony/stimulus-bundle": {
-        "version": "2.24",
+        "version": "2.29",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.20",
-            "ref": "3acc494b566816514a6873a89023a35440b6386d"
+            "ref": "e058471c5502e549c1404ebdd510099107bb5549"
         },
         "files": [
             "assets/bootstrap.js",
@@ -772,21 +769,24 @@
         ]
     },
     "symfony/ux-turbo": {
-        "version": "2.26",
+        "version": "2.29",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.20",
-            "ref": "c85ff94da66841d7ff087c19cbcd97a2df744ef9"
-        }
+            "ref": "287f7c6eb6e9b65e422d34c00795b360a787380b"
+        },
+        "files": [
+            "config/packages/ux_turbo.yaml"
+        ]
     },
     "symfony/ux-twig-component": {
-        "version": "2.24",
+        "version": "2.29",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.13",
-            "ref": "9b627037a510e20eddb559e06050a34854ce51d6"
+            "ref": "f367ae2a1faf01c503de2171f1ec22567febeead"
         },
         "files": [
             "config/packages/twig_component.yaml"
@@ -819,7 +819,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "7.3",
-            "ref": "5b2b543e13942495c0003f67780cb4448af9e606"
+            "ref": "a363460c1b0b4a4d0242f2ce1a843ca0f6ac9026"
         },
         "files": [
             "config/packages/web_profiler.yaml",
@@ -908,7 +908,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.6",
-            "ref": "3c7f73fdbf04b3a00e0664b0b9cc6fdebbb50a8a"
+            "ref": "50321333fa5e12324ac1d5a2aeb65fb276a6f9c8"
         },
         "files": [
             "config/packages/zenstruck_foundry.yaml",

@@ -45,9 +45,7 @@ class RegistrationType extends AbstractType
                 'label' => 'J\'atteste savoir nager 25m avec un départ plongé.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.',
-                    ]),
+                    new IsTrue(message: 'Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.'),
                 ],
                 'mapped' => false,
             ])
@@ -55,9 +53,7 @@ class RegistrationType extends AbstractType
                 'label' => 'J\'atteste avoir lu le règlement intérieur et je l\'accepte dans son intégralité.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.',
-                    ]),
+                    new IsTrue(message: 'Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.'),
                 ],
                 'mapped' => false,
             ])
