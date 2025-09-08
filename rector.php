@@ -18,9 +18,11 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
+use Rector\CodeQuality\Rector\Class_\ConvertStaticToSelfRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\Identical\SimplifyBoolIdenticalTrueRector;
 use Rector\Config\RectorConfig;
+use Rector\DeadCode\Rector\FunctionLike\NarrowTooWideReturnTypeRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php81\Rector\Property\ReadOnlyPropertyRector;
 use Rector\PHPUnit\CodeQuality\Rector\ClassMethod\AddInstanceofAssertForNullableInstanceRector;
@@ -59,10 +61,12 @@ return RectorConfig::configure()
         AssertEmptyNullableObjectToAssertInstanceofRector::class,
         AssertEqualsOrAssertSameFloatParameterToSpecificMethodsTypeRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
+        ConvertStaticToSelfRector::class,
         FlipTypeControlToUseExclusiveTypeRector::class,
         InlineClassRoutePrefixRector::class,
         InvokableCommandInputAttributeRector::class,
         LiteralGetToRequestClassConstantRector::class,
+        NarrowTooWideReturnTypeRector::class,
         ReadOnlyPropertyRector::class,
         SimplifyBoolIdenticalTrueRector::class,
     ])
