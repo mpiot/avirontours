@@ -37,7 +37,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Workflow\Exception\NotEnabledTransitionException;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[Route(path: '/admin/season/{seasonId}/license')]
@@ -179,19 +178,17 @@ class LicenseController extends AbstractController
         WorkflowInterface $licenseWorkflow,
         EntityManagerInterface $entityManager,
     ): Response {
-        if ($this->isCsrfTokenValid('license-medical-certificate-action', (string) $request->query->get('_token'))) {
-            try {
-                $licenseWorkflow->apply($license, $transitionName.'_medical_certificate', [
-                    'time' => date('y-m-d H:i:s'),
-                    'user' => $this->getUser()->getFullName(),
-                ]);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException) {
-                throw $this->createAccessDeniedException();
-            }
+        if (false === $licenseWorkflow->can($license, $transitionName.'_medical_certificate')) {
+            throw $this->createNotFoundException();
         }
+
+        $licenseWorkflow->apply($license, $transitionName.'_medical_certificate', [
+            'time' => date('y-m-d H:i:s'),
+            'user' => $this->getUser()->getFullName(),
+        ]);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
         return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
     }
@@ -204,19 +201,17 @@ class LicenseController extends AbstractController
         WorkflowInterface $licenseWorkflow,
         EntityManagerInterface $entityManager,
     ): Response {
-        if ($this->isCsrfTokenValid('license-validate', (string) $request->query->get('_token'))) {
-            try {
-                $licenseWorkflow->apply($license, 'validate_license', [
-                    'time' => date('y-m-d H:i:s'),
-                    'user' => $this->getUser()->getFullName(),
-                ]);
-                $entityManager->flush();
-
-                $this->addFlash('success', 'La licence a été modifiée avec succès.');
-            } catch (NotEnabledTransitionException) {
-                throw $this->createAccessDeniedException();
-            }
+        if (false === $licenseWorkflow->can($license, 'validate_license')) {
+            throw $this->createNotFoundException();
         }
+
+        $licenseWorkflow->apply($license, 'validate_license', [
+            'time' => date('y-m-d H:i:s'),
+            'user' => $this->getUser()->getFullName(),
+        ]);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
         return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
     }

@@ -214,7 +214,7 @@
                                         <div class="d-flex justify-content-end align-items-center">
                                             <div class="btn-group-vertical btn-group-sm me-3" role="group">
                                                 {% if workflow_can(license, 'unreject_medical_certificate') %}
-                                                    <a class="btn btn-danger" href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject', _token: csrf_token('license-medical-certificate-action') }) }}">
+                                                    <a class="btn btn-danger" href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}">
                                                         Passer le certificat en attente de validation
                                                     </a>
                                                 {% endif %}
@@ -226,7 +226,7 @@
                                                 {% endif %}
 
                                                 {% if workflow_can(license, 'validate_license') %}
-                                                    <a class="btn btn-primary" href="{{ path('license_validate', { seasonId: season.id, id: license.id, _token: csrf_token('license-validate') }) }}">
+                                                    <a class="btn btn-primary" href="{{ path('license_validate', { seasonId: season.id, id: license.id }) }}">
                                                         Valider la licence
                                                     </a>
                                                 {% endif %}
