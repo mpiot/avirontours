@@ -212,7 +212,11 @@
                                     <td>{{ license.optionalInsurance ? 'Oui' : 'Non' }}</td>
                                     <td>
                                         <div class="d-flex justify-content-end align-items-center">
-                                            <div class="btn-group-vertical btn-group-sm me-3" role="group">
+                                            <div
+                                                class="btn-group-vertical btn-group-sm me-3"
+                                                role="group"
+                                                data-turbo-prefetch="false"
+                                            >
                                                 {% if workflow_can(license, 'unreject_medical_certificate') %}
                                                     <a class="btn btn-danger" href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}">
                                                         Passer le certificat en attente de validation
