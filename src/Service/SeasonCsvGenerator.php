@@ -23,6 +23,7 @@ namespace App\Service;
 use App\Entity\License;
 use App\Entity\MedicalCertificate;
 use App\Entity\Season;
+use App\Entity\SeasonCategory;
 use App\Repository\LicenseRepository;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
@@ -141,60 +142,53 @@ class SeasonCsvGenerator
             $user = $license->getUser();
 
             $data[] = [
-                'CodeAdherent' => $user->getLicenseNumber(),
+                'Code adhérent' => $user->getLicenseNumber(),
                 'Civilité' => $user->getTextCivility(),
-                'NomUsage' => $user->getLastName(),
-                'Prenom' => $user->getFirstName(),
-                'Prenom2' => '',
-                'Prenom3' => '',
-                'NomNaissance' => '',
-                'Nationalite' => $user->getNationality(),
-                'DateNaissance' => $user->getBirthday()->format('d/m/Y'),
-                'PaysNaissance' => '',
-                'DeptNaissance' => '',
-                'VilleNaissance' => '',
-                'NomPere' => '',
-                'PrenomPere' => '',
-                'NomMere' => '',
-                'PrenomMere' => '',
-                'NumeroVoie' => $user->getLaneNumber(),
-                'TypeVoie' => $user->getLaneType(),
-                'LibelleVoie' => $user->getLaneName(),
-                'ImmBatRes' => '',
-                'AptEtageEsc' => '',
-                'Lieudit' => '',
-                'Cp' => $user->getPostalCode(),
-                'Ville' => $user->getCity(),
-                'Pays' => 'FR',
-                'Telephone' => '',
-                'Autre telephone' => '',
-                'Mobile' => '',
-                'AutreMobile' => '',
-                'Email' => $user->getEmail(),
-                'AutreEmail' => '',
-                'Fax' => '',
-                'UtilisationAdresse' => $license->getFederationEmailAllowed() ? 'Oui' : 'Non',
-                'SituationFamille' => '',
-                'Profession' => '',
-                'CategSocioPro' => '',
-                'DateSouscription' => (new \DateTime())->format('d/m/Y'),
-                'TypeLicence' => $license->getSeasonCategory()->getLicenseType(),
-                'code manifestation' => '',
-                'AssuranceIASportPlus' => $license->getOptionalInsurance() ? 'Oui' : 'Non',
-                'Date certificat "Pratique"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_PRACTICE),
-                'Medecin certificat "Pratique"' => '',
-                'N° Medecin du certificat "Pratique"' => '',
-                'Attestation santé "pratique"' => $this->getAttestationValue($license, MedicalCertificate::LEVEL_PRACTICE),
-                'Date certificat "Compétition"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_COMPETITION),
-                'Medecin certificat "Compétition"' => '',
-                'N° Medecin du certificat "Compétition"' => '',
-                'Attestation santé "compétition"' => $this->getAttestationValue($license, MedicalCertificate::LEVEL_COMPETITION),
-                'Date certificat "Surclassement"' => $this->getMedicalCertificateDate($license, MedicalCertificate::LEVEL_UPGRADE),
-                'Medecin certificat "Surclassement"' => '',
-                'N° Medecin du certificat "Surclassement"' => '',
-                'Entreprise' => 'Non',
-                'Nom Entreprise' => '',
-                'Pratiquant' => 'Oui',
+                'Nom' => $user->getLastName(),
+                'Prénom' => $user->getFirstName(),
+                'Date de naissance' => $user->getBirthday()->format('d/m/Y'),
+                'Nom de naissance' => '',
+                'Pays de naissance' => '',
+                'Nationalité' => $user->getNationality(),
+                'Département de naissance' => '',
+                'Commune de naissance' => '',
+                'Lieu de naissance' => '',
+                'N° de voie' => '',
+                'Type de voie' => '',
+                'Nom de voie' => '',
+                'Bâtiment' => '',
+                'Escalier' => '',
+                'Lieu dit' => '',
+                'Code postal' => '',
+                'Commune' => '',
+                'Pays' => '',
+                'Mail' => $user->getEmail(),
+                'Mail pro' => '',
+                'Tél. fixe' => '',
+                'Tél. fixe secondaire' => '',
+                'Tél. mobile' => '',
+                'Tél. mobile secondaire' => '',
+                'Nom du représentant légal' => $user->getFirstLegalGuardian()?->getLastName() ?? '',
+                'Prénom du représentant légal' => $user->getFirstLegalGuardian()?->getFirstName() ?? '',
+                'Tél. du représentant légal' => $user->getFirstLegalGuardian()?->getPhoneNumber() ?? '',
+                'Mail du représentant légal' => $user->getFirstLegalGuardian()?->getEmail() ?? '',
+                'Nom du représentant légal secondaire' => $user->getSecondLegalGuardian()?->getLastName() ?? '',
+                'Prénom du représentant légal secondaire' => $user->getSecondLegalGuardian()?->getFirstName() ?? '',
+                'Tél. du représentant légal secondaire' => $user->getSecondLegalGuardian()?->getPhoneNumber() ?? '',
+                'Mail du représentant légal secondaire' => $user->getSecondLegalGuardian()?->getEmail() ?? '',
+                'Attestation Natation' => '',
+                'Avec IA' => 'Non',
+                'Type de licence' => $this->getLicenceType($license),
+                'Date de début de validité' => (new \DateTime())->format('d/m/Y'),
+                'Manifestation' => '',
+                'Honorabilite' => '',
+                'Questionnaire Santé Négatif' => $this->getAttestationValue($license),
+                'Nom du médecin' => '',
+                'RPPS du médecin' => '',
+                'Date Certificat Médical' => $this->getMedicalCertificateDate($license),
+                'Certificat Médical validé' => 'Oui',
+                'AVIRON' => 'Oui',
+                'I.A. Sport+' => $license->getOptionalInsurance() ? 'Oui' : 'Non',
             ];
         }
 
@@ -206,13 +200,8 @@ class SeasonCsvGenerator
         return str_replace(\chr(127), '', $csv);
     }
 
-    private function getMedicalCertificateDate(License $license, string $level): string
+    private function getMedicalCertificateDate(License $license): string
     {
-        // Check the level
-        if ($level !== $license->getMedicalCertificate()->getLevel()) {
-            return '';
-        }
-
         // If this is a Certificate
         if (MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType()) {
             return $license->getMedicalCertificate()->getDate()->format('d/m/Y');
@@ -232,13 +221,27 @@ class SeasonCsvGenerator
         return $latestLicenceWithCertificate->getMedicalCertificate()->getDate()->format('d/m/Y');
     }
 
-    private function getAttestationValue(License $license, string $level): string
+    private function getAttestationValue(License $license): string
     {
-        // Check the level
-        if ($level !== $license->getMedicalCertificate()->getLevel()) {
-            return '';
-        }
-
         return MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() ? 'Oui' : 'Non';
+    }
+
+    private function getLicenceType(License $license): string
+    {
+        $seasonCategory = $license->getSeasonCategory()->getLicenseType();
+        $level = MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? 'practice' : 'competition';
+
+        return match ([$seasonCategory, $level]) {
+            [SeasonCategory::LICENSE_TYPE_ANNUAL, 'practice'] => 'AL',
+            [SeasonCategory::LICENSE_TYPE_ANNUAL, 'competition'] => 'AC',
+            [SeasonCategory::LICENSE_TYPE_INDOOR, 'practice'] => 'IL',
+            [SeasonCategory::LICENSE_TYPE_INDOOR, 'competition'] => 'IC',
+            [SeasonCategory::LICENSE_TYPE_UNIVERSITY, 'practice'] => 'UL',
+            [SeasonCategory::LICENSE_TYPE_UNIVERSITY, 'competition'] => 'UC',
+            [SeasonCategory::LICENSE_TYPE_DISCOVERY_7D, 'practice'], [SeasonCategory::LICENSE_TYPE_DISCOVERY_7D, 'competition'] => 'D7',
+            [SeasonCategory::LICENSE_TYPE_DISCOVERY_30D, 'practice'], [SeasonCategory::LICENSE_TYPE_DISCOVERY_30D, 'competition'] => 'D30',
+            [SeasonCategory::LICENSE_TYPE_DISCOVERY_90D, 'practice'], [SeasonCategory::LICENSE_TYPE_DISCOVERY_90D, 'competition'] => 'D90',
+            default => '',
+        };
     }
 }
