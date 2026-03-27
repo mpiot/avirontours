@@ -86,7 +86,7 @@ class ShellDamageController extends AbstractController
     #[Route(path: '/{id}', name: 'shell_damage_delete', methods: ['POST'])]
     public function delete(Request $request, EntityManagerInterface $entityManager, ShellDamage $shellDamage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shellDamage->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($shellDamage);
             $entityManager->flush();
 

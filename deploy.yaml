@@ -3,7 +3,7 @@
   serial: 1
 
   vars:
-    deploy_from: "/tmp/symfony_build/"
+    deploy_from: "/tmp/symfony_build"
     deploy_to: "/mnt/data/my.avirontours.fr"
     keep_releases: 3
     shared_paths:
@@ -82,7 +82,7 @@
 
     - name: Rsync application files to remote release path
       ansible.builtin.synchronize:
-        src: "{{ deploy_from }}"
+        src: "{{ deploy_from }}/"
         dest: "{{ release_path.stdout }}"
         recursive: yes
         delete: yes
@@ -137,7 +137,7 @@
         src: "./releases/{{ release_version }}"
 
     - name: Restart service PHP
-      ansible.builtin.command: sudo systemctl restart php8.3-fpm
+      ansible.builtin.command: sudo systemctl restart php8.4-fpm
 
     - name: Restart messenger-consume:*
       ansible.builtin.command: sudo supervisorctl restart messenger-consume:*

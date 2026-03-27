@@ -1,5 +1,5 @@
 <form method="post" action="{{ path('season_delete', {'id': season.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet éléménet ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ season.id) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('submit') }}">
 
     {% block buttons %}
         <button class="btn btn-outline-danger btn-sm">

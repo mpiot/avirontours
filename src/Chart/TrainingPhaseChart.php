@@ -37,7 +37,7 @@ final class TrainingPhaseChart
             [
                 'label' => 'Pace',
                 'yAxisID' => 'pace',
-                'data' => array_map(fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10), $trainingPhase->getPaces()),
+                'data' => array_map(static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10), $trainingPhase->getPaces()),
                 'borderColor' => 'rgb(124,181,236, 1)',
             ],
             [
@@ -111,7 +111,7 @@ final class TrainingPhaseChart
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels' => array_map(fn (int $tenthSeconds): string => DurationManipulator::formatSeconds((int) round($tenthSeconds / 10)), $trainingPhase->getTimes()),
+            'labels' => array_map(static fn (int $tenthSeconds): string => DurationManipulator::formatSeconds((int) round($tenthSeconds / 10)), $trainingPhase->getTimes()),
             'datasets' => $datasets,
         ]);
 

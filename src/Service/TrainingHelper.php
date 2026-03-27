@@ -47,7 +47,7 @@ readonly class TrainingHelper
         foreach ($weeks as $week) {
             $weekTrainings = array_filter(
                 $trainings,
-                fn (Training $training): bool => $week->format('W') === $training->getTrainedAt()->format('W'),
+                static fn (Training $training): bool => $week->format('W') === $training->getTrainedAt()->format('W'),
             );
 
             $categorizedTrainings = [];
@@ -72,7 +72,7 @@ readonly class TrainingHelper
                 fn (array $a, array $b): int => $this->translator->trans($a['sport']->label()) <=> $this->translator->trans($b['sport']->label())
             );
 
-            $duration = array_reduce($weekTrainings, fn (int $carry, Training $training): int => $carry + $training->getDuration(), 0);
+            $duration = array_reduce($weekTrainings, static fn (int $carry, Training $training): int => $carry + $training->getDuration(), 0);
             $duration = (int) round($duration / 10);
 
             // Define ratio

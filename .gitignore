@@ -8,6 +8,7 @@ protected_files/*
 /.env.local.php
 /.env.*.local
 /compose.override.yaml
+/config/reference.php
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/

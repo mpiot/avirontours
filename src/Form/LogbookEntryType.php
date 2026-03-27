@@ -49,7 +49,7 @@ class LogbookEntryType extends AbstractType
             ->add('shell', EntityType::class, [
                 'label' => 'Bâteau',
                 'class' => Shell::class,
-                'query_builder' => fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
+                'query_builder' => static fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
                     ->select('shell')
                     ->leftJoin('shell.logbookEntries', 'logbook_entries', 'WITH', 'logbook_entries.endAt is NULL')->addSelect('logbook_entries')
                     ->leftJoin('shell.shellDamages', 'shell_damages', 'WITH', 'shell_damages.repairEndAt is NULL')->addSelect('shell_damages')
@@ -158,7 +158,7 @@ class LogbookEntryType extends AbstractType
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
         }
 
-        if (false === $shell->getShellDamages()->filter(fn (ShellDamage $damage): bool => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
+        if (false === $shell->getShellDamages()->filter(static fn (ShellDamage $damage): bool => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
             $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
         }
 

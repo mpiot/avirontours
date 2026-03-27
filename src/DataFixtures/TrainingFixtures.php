@@ -30,7 +30,7 @@ class TrainingFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        TrainingFactory::createMany(300, fn (): array => [
+        TrainingFactory::createMany(300, static fn (): array => [
             'user' => UserFactory::random(),
         ]);
     }
