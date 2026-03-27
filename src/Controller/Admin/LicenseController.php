@@ -220,7 +220,7 @@ class LicenseController extends AbstractController
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, EntityManagerInterface $entityManager, License $license): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$license->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($license);
             $entityManager->flush();
 

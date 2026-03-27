@@ -108,7 +108,7 @@ class SeasonController extends AbstractController
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function delete(Request $request, EntityManagerInterface $entityManager, Season $season): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$season->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($season);
             $entityManager->flush();
 

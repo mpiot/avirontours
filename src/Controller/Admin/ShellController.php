@@ -95,7 +95,7 @@ class ShellController extends AbstractController
     #[Route(path: '/{id}', name: 'shell_delete', methods: ['POST'])]
     public function delete(Request $request, EntityManagerInterface $entityManager, Shell $shell): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shell->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($shell);
             $entityManager->flush();
 

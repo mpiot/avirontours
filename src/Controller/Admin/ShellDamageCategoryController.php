@@ -86,7 +86,7 @@ class ShellDamageCategoryController extends AbstractController
     #[Route(path: '/{id}', name: 'shell_damage_category_delete', methods: ['POST'])]
     public function delete(Request $request, EntityManagerInterface $entityManager, ShellDamageCategory $shellDamageCategory): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$shellDamageCategory->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($shellDamageCategory);
             $entityManager->flush();
 

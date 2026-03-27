@@ -94,7 +94,7 @@ class GroupController extends AbstractController
     #[Route(path: '/{id}', name: 'group_delete', methods: ['POST'])]
     public function delete(Request $request, EntityManagerInterface $entityManager, Group $group): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$group->getId(), (string) $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($group);
             $entityManager->flush();
 
