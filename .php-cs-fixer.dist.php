@@ -30,6 +30,7 @@ $finder = (new PhpCsFixer\Finder())
         'config/reference.php',
         'src/Kernel.php',
         'tests/bootstrap.php',
+        'config/reference.php',
     ])
 ;
 
