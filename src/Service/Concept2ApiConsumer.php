@@ -81,17 +81,15 @@ class Concept2ApiConsumer
         $strokeData = $this->getStrokeData($accessToken, $result['id']);
 
         // If there is no interval, or only one, create it
+        // Validate stroke data count
         if (
-            false === \array_key_exists('intervals', $result['workout'])
-            || 1 === \count($result['workout']['intervals'])
+            (false === \array_key_exists('intervals', $result['workout']) || 1 === \count($result['workout']['intervals']))
+            && 1 === \count($strokeData)
         ) {
             $trainingPhase = $this->createTrainingPhase(
                 $result,
                 $strokeData[0]
             );
-            if (null === $trainingPhase) {
-                return $training;
-            }
 
             $training->addTrainingPhase($trainingPhase);
 
@@ -99,16 +97,16 @@ class Concept2ApiConsumer
         }
 
         // Else, create many phases, and split the strokeData in the number of phases
-        foreach ($result['workout']['intervals'] as $key => $intervalData) {
-            $trainingPhase = $this->createTrainingPhase(
-                $intervalData,
-                $strokeData[$key] ?? null
-            );
-            if (null === $trainingPhase) {
-                continue;
-            }
+        // Check the number of intervals match the number of stroke data
+        if (\count($result['workout']['intervals']) === \count($strokeData)) {
+            foreach ($result['workout']['intervals'] as $key => $intervalData) {
+                $trainingPhase = $this->createTrainingPhase(
+                    $intervalData,
+                    $strokeData[$key] ?? null
+                );
 
-            $training->addTrainingPhase($trainingPhase);
+                $training->addTrainingPhase($trainingPhase);
+            }
         }
 
         return $training;
@@ -117,20 +115,7 @@ class Concept2ApiConsumer
     private function createTrainingPhase(
         array $intervalData,
         ?array $strokeData,
-    ): ?TrainingPhase {
-        if (
-            null === $strokeData
-            || false === \array_key_exists('time', $strokeData)
-            || false === \array_key_exists('distance', $strokeData)
-            || false === \array_key_exists('stroke_rate', $strokeData)
-            || false === \array_key_exists('times', $strokeData)
-            || false === \array_key_exists('distances', $strokeData)
-            || false === \array_key_exists('paces', $strokeData)
-            || false === \array_key_exists('strokeRates', $strokeData)
-        ) {
-            return null;
-        }
-
+    ): TrainingPhase {
         $trainingPhase = new TrainingPhase();
         $trainingPhase
             ->setDuration($intervalData['time'])
