@@ -50,4 +50,9 @@ abstract class AppWebTestCase extends WebTestCase
     {
         return static::getContainer()->get('doctrine')->getManager();
     }
+
+    protected static function getIpV4(): string
+    {
+        return long2ip(random_int(0, 4294967295));
+    }
 }
