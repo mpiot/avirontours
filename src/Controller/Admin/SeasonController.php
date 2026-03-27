@@ -129,7 +129,7 @@ class SeasonController extends AbstractController
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
 
-        $response = new StreamedResponse(function () use ($csv): void {
+        $response = new StreamedResponse(static function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
         });
@@ -155,7 +155,7 @@ class SeasonController extends AbstractController
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
 
-        $response = new StreamedResponse(function () use ($csv): void {
+        $response = new StreamedResponse(static function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
         });
@@ -181,7 +181,7 @@ class SeasonController extends AbstractController
             return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
         }
 
-        $response = new StreamedResponse(function () use ($csv): void {
+        $response = new StreamedResponse(static function () use ($csv): void {
             $outputStream = fopen('php://output', 'w');
             fwrite($outputStream, $csv);
         });

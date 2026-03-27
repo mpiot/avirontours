@@ -35,7 +35,7 @@ class RegistrationMedicalCertificateType extends AbstractType
             ->get('file')->setRequired(true)
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
+        $builder->addEventListener(FormEvents::POST_SUBMIT, static function (FormEvent $event): void {
             /** @var MedicalCertificate $data */
             $data = $event->getData();
             $data->setType(MedicalCertificate::TYPE_CERTIFICATE);

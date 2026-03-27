@@ -146,7 +146,7 @@ class LogbookEntry
 
     public function getFullCrew(): array
     {
-        $crewMembers = $this->crewMembers->map(fn (User $user): string => $user->getFullName())->toArray();
+        $crewMembers = $this->crewMembers->map(static fn (User $user): string => $user->getFullName())->toArray();
 
         return array_merge($crewMembers, $this->nonUserCrewMembers);
     }

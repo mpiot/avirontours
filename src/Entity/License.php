@@ -246,7 +246,7 @@ class License
 
     public function getPaymentsAmount(): int
     {
-        return $this->payments->reduce(fn (int $carrier, LicensePayment $payment): int => $carrier + $payment->getAmount(), 0);
+        return $this->payments->reduce(static fn (int $carrier, LicensePayment $payment): int => $carrier + $payment->getAmount(), 0);
     }
 
     public function getPayedAt(): ?\DateTimeImmutable

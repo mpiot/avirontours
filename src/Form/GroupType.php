@@ -40,7 +40,7 @@ class GroupType extends AbstractType
             ->add('members', EntityType::class, [
                 'label' => 'Membres',
                 'class' => User::class,
-                'query_builder' => fn (EntityRepository $repository): \Doctrine\ORM\QueryBuilder => $repository->createQueryBuilder('app_user')
+                'query_builder' => static fn (EntityRepository $repository): \Doctrine\ORM\QueryBuilder => $repository->createQueryBuilder('app_user')
                     ->orderBy('app_user.firstName', 'ASC')
                     ->addOrderBy('app_user.lastName', 'ASC'),
                 'choice_label' => 'fullName',

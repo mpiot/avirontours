@@ -53,7 +53,7 @@ class ArrayToStringTransformer implements DataTransformerInterface
         }
 
         $array = array_map(
-            fn (AbstractString $part): string => trim($part->toString()),
+            static fn (AbstractString $part): string => mb_trim($part->toString()),
             u($value)->split($this->delimiter)
         );
 

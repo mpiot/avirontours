@@ -41,7 +41,7 @@ class LicenseType extends AbstractType
             ->add('user', EntityType::class, [
                 'label' => 'Utilisateur',
                 'class' => User::class,
-                'query_builder' => fn (EntityRepository $repository): \Doctrine\ORM\QueryBuilder => $repository->createQueryBuilder('app_user')
+                'query_builder' => static fn (EntityRepository $repository): \Doctrine\ORM\QueryBuilder => $repository->createQueryBuilder('app_user')
                     ->orderBy('app_user.firstName', 'ASC')
                     ->addOrderBy('app_user.lastName', 'ASC'),
                 'choice_label' => 'fullName',
@@ -50,7 +50,7 @@ class LicenseType extends AbstractType
             ->add('seasonCategory', EntityType::class, [
                 'label' => 'Catégorie',
                 'class' => SeasonCategory::class,
-                'query_builder' => function (EntityRepository $repository) use ($options): \Doctrine\ORM\QueryBuilder {
+                'query_builder' => static function (EntityRepository $repository) use ($options): \Doctrine\ORM\QueryBuilder {
                     $qb = $repository->createQueryBuilder('season_category')
                         ->innerJoin('season_category.season', 'season')
                         ->orderBy('season.name', 'DESC')
@@ -66,7 +66,7 @@ class LicenseType extends AbstractType
 
                     return $qb;
                 },
-                'choice_label' => fn (SeasonCategory $seasonCategory): string => $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName(),
+                'choice_label' => static fn (SeasonCategory $seasonCategory): string => $seasonCategory->getSeason()->getName().' - '.$seasonCategory->getName(),
                 'placeholder' => '--- Choisissez une catégorie ---',
             ])
             ->add('logbookEntryLimit', IntegerType::class, [
