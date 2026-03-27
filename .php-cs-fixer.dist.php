@@ -19,14 +19,18 @@ $fileHeaderComment = <<<'COMMENT'
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
     ->exclude('bin')
-    ->exclude('config')
+    ->exclude('config/secrets')
     ->exclude('migrations')
     ->exclude('node_modules')
     ->exclude('public')
-    ->notName('Kernel.php')
-    ->notName('bootstrap.php')
     ->exclude('var')
-    ->exclude('vendor')
+    ->notPath([
+        'config/bundles.php',
+        'config/preload.php',
+        'config/reference.php',
+        'src/Kernel.php',
+        'tests/bootstrap.php',
+    ])
 ;
 
 return (new PhpCsFixer\Config())
