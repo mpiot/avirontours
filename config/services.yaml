@@ -6,11 +6,11 @@
 parameters:
     app_version: '2.0.0-0.44.1'
     treasurer_stamp: '%env(TREASURER_STAMP)%'
-    logbook_host: '%env(string:key:host:url:APP_LOGBOOK_URI)%'
+    logbook_host: '%env(string:key:host:url:DEFAULT_LOGBOOK_URI)%'
     uploads_dir_name: 'uploads'
     uploads_private_dir: '%kernel.project_dir%/var/%uploads_dir_name%'
     uploads_public_dir: '%kernel.project_dir%/public/%uploads_dir_name%'
-    uploads_base_url: '%env(APP_DEFAULT_URL)%/%uploads_dir_name%'
+    uploads_base_url: '%env(DEFAULT_URI)%/%uploads_dir_name%'
 
 services:
     # default configuration for services in *this* file
