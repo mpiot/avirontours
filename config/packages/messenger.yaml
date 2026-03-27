@@ -23,7 +23,7 @@ framework:
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
-            App\Message\Concept2ImportMessage: sync
+            App\Message\Concept2ImportMessage: async
 
 # when@test:
 #    framework:
