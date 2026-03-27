@@ -136,6 +136,7 @@ class TrainingController extends AbstractController
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function delete(Request $request, EntityManagerInterface $entityManager, Training $training): Response
     {
+        dump($this->isCsrfTokenValid('submit', (string) $request->request->get('_token')));
         if ($this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
             $entityManager->remove($training);
             $entityManager->flush();

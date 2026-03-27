@@ -1,5 +1,5 @@
 <form method="post" action="{{ path('user_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet éléménet ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('submit') }}">
+    <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
 
     {% block buttons %}
         <button class="btn btn-outline-danger btn-sm">

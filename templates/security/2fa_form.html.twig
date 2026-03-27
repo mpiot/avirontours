@@ -37,7 +37,7 @@
             </div>
         {% endif %}
         {% if isCsrfProtectionEnabled %}
-            <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+            <input type="hidden" name="{{ csrfParameterName }}" data-controller="csrf-protection" value="{{ csrf_token(csrfTokenId) }}">
         {% endif %}
 
         <div class="d-grid gap-2 mt-3">
