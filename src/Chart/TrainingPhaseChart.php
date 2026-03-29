@@ -31,13 +31,24 @@ final class TrainingPhaseChart
     {
     }
 
-    public function chart(TrainingPhase $trainingPhase)
+    public function chart(TrainingPhase $trainingPhase): ?Chart
     {
+        if (
+            null === $trainingPhase->getTimes()
+            || null === $trainingPhase->getPaces()
+            || null === $trainingPhase->getStrokeRates()
+        ) {
+            return null;
+        }
+
         $datasets = [
             [
                 'label' => 'Pace',
                 'yAxisID' => 'pace',
-                'data' => array_map(static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10), $trainingPhase->getPaces()),
+                'data' => array_map(
+                    static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10),
+                    $trainingPhase->getPaces()
+                ),
                 'borderColor' => 'rgb(124,181,236, 1)',
             ],
             [
@@ -57,8 +68,7 @@ final class TrainingPhaseChart
             'pace' => [
                 'type' => 'linear',
                 'position' => 'left',
-                'min' => 90,
-                'max' => 240,
+                'min' => 60,
                 'reverse' => true,
                 'title' => [
                     'display' => true,
@@ -96,7 +106,7 @@ final class TrainingPhaseChart
                 'type' => 'linear',
                 'display' => false,
                 'position' => 'right',
-                'min' => 25,
+                'min' => 40,
                 'title' => [
                     'display' => true,
                     'text' => 'Heart Rate',
@@ -111,7 +121,10 @@ final class TrainingPhaseChart
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $chart->setData([
-            'labels' => array_map(static fn (int $tenthSeconds): string => DurationManipulator::formatSeconds((int) round($tenthSeconds / 10)), $trainingPhase->getTimes()),
+            'labels' => array_map(
+                static fn (int $tenthSeconds): string => DurationManipulator::formatSeconds((int) round($tenthSeconds / 10)),
+                $trainingPhase->getTimes()
+            ),
             'datasets' => $datasets,
         ]);
 
