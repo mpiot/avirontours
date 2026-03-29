@@ -41,16 +41,16 @@ class TrainingPhase
     #[ORM\Column(type: Types::INTEGER)]
     private int $distance;
 
-    #[ORM\Column(type: 'integer[]')]
+    #[ORM\Column(type: 'integer[]', nullable: true)]
     private ?array $times = null;
 
-    #[ORM\Column(type: 'integer[]')]
+    #[ORM\Column(type: 'integer[]', nullable: true)]
     private ?array $distances = null;
 
-    #[ORM\Column(type: 'integer[]')]
+    #[ORM\Column(type: 'integer[]', nullable: true)]
     private ?array $paces = null;
 
-    #[ORM\Column(type: 'integer[]')]
+    #[ORM\Column(type: 'integer[]', nullable: true)]
     private ?array $strokeRates = null;
 
     #[ORM\Column(nullable: true)]

@@ -54,10 +54,41 @@ class Concept2ApiConsumer
         return $trainings;
     }
 
+    /**
+     * @return array<array{
+     *     t: int[],
+     *     d: int[],
+     *     p: int[],
+     *     spm: int[],
+     *     hr: int[],
+     * }>
+     */
+    public function getFormattedStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
+    {
+        $strokes = $this->getStrokeData($accessToken, $resultIdentifier);
+
+        $phaseKey = 0;
+        $maxTime = 0;
+        $formatedStrokes = [];
+        foreach ($strokes as $stroke) {
+            if ($maxTime > $stroke['t']) {
+                ++$phaseKey;
+            }
+
+            $formatedStrokes[$phaseKey]['t'][] = $stroke['t'];
+            $formatedStrokes[$phaseKey]['d'][] = $stroke['d'];
+            $formatedStrokes[$phaseKey]['p'][] = min($stroke['p'], 2400);
+            $formatedStrokes[$phaseKey]['spm'][] = min($stroke['spm'], 70);
+            $formatedStrokes[$phaseKey]['hr'][] = min($stroke['hr'], 300);
+
+            $maxTime = $stroke['t'];
+        }
+
+        return $formatedStrokes;
+    }
+
     private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
     {
-        dump($result);
-
         $averageHeartRate = $result['heart_rate']['average'] ?? null;
         $maxHeartRate = $result['heart_rate']['max'] ?? null;
 
@@ -78,17 +109,17 @@ class Concept2ApiConsumer
         }
 
         // Retrieve the stroke data to create phases
-        $strokeData = $this->getStrokeData($accessToken, $result['id']);
+        $strokeData = $this->getFormattedStrokeData($accessToken, $result['id']);
 
         // If there is no interval, or only one, create it
         // Validate stroke data count
         if (
-            (false === \array_key_exists('intervals', $result['workout']) || 1 === \count($result['workout']['intervals']))
-            && 1 === \count($strokeData)
+            false === \array_key_exists('intervals', $result['workout'])
+            || 1 === \count($result['workout']['intervals'])
         ) {
-            $trainingPhase = $this->createTrainingPhase(
+            $trainingPhase = $this->createTrainingPhaseFromFormatedStrokes(
                 $result,
-                $strokeData[0]
+                $strokeData[0] ?? null
             );
 
             $training->addTrainingPhase($trainingPhase);
@@ -98,21 +129,19 @@ class Concept2ApiConsumer
 
         // Else, create many phases, and split the strokeData in the number of phases
         // Check the number of intervals match the number of stroke data
-        if (\count($result['workout']['intervals']) === \count($strokeData)) {
-            foreach ($result['workout']['intervals'] as $key => $intervalData) {
-                $trainingPhase = $this->createTrainingPhase(
-                    $intervalData,
-                    $strokeData[$key] ?? null
-                );
+        foreach ($result['workout']['intervals'] as $key => $intervalData) {
+            $trainingPhase = $this->createTrainingPhaseFromFormatedStrokes(
+                $intervalData,
+                $strokeData[$key] ?? null
+            );
 
-                $training->addTrainingPhase($trainingPhase);
-            }
+            $training->addTrainingPhase($trainingPhase);
         }
 
         return $training;
     }
 
-    private function createTrainingPhase(
+    private function createTrainingPhaseFromFormatedStrokes(
         array $intervalData,
         ?array $strokeData,
     ): TrainingPhase {
@@ -124,19 +153,77 @@ class Concept2ApiConsumer
             ->setAverageHeartRate($intervalData['heart_rate']['average'] ?? null)
             ->setMaxHeartRate($intervalData['heart_rate']['max'] ?? null)
             ->setEndingHeartRate($intervalData['heart_rate']['ending'] ?? null)
-            ->setTimes($strokeData['times'])
-            ->setDistances($strokeData['distances'])
-            ->setPaces($strokeData['paces'])
-            ->setStrokeRates($strokeData['strokeRates'])
         ;
 
-        if (1 !== \count(array_unique($strokeData['heartRates'])) || 0 !== array_unique($strokeData['heartRates'])[0]) {
-            $trainingPhase->setHeartRates($strokeData['heartRates']);
+        if (null === $strokeData) {
+            return $trainingPhase;
+        }
+
+        $trainingPhase
+            ->setTimes($strokeData['t'] ?? null)
+            ->setDistances($strokeData['d'] ?? null)
+            ->setPaces($strokeData['p'] ?? null)
+            ->setStrokeRates($strokeData['spm'] ?? null)
+        ;
+
+        if (
+            1 !== \count(array_unique($strokeData['hr']))
+            || 0 !== array_unique($strokeData['hr'])[0]
+        ) {
+            $trainingPhase->setHeartRates($strokeData['hr']);
         }
 
         return $trainingPhase;
     }
 
+    /**
+     * @return array<array{
+     *     id: int,
+     *     user_id: int,
+     *     date: string,
+     *     timezone: ?string,
+     *     date_utc: ?string,
+     *     distance: int,
+     *     type: string,
+     *     time: int,
+     *     time_formatted: string,
+     *     workout_type: string,
+     *     source: string,
+     *     weight_class: string,
+     *     verified: bool,
+     *     ranked: bool,
+     *     comments: ?string,
+     *     privacy: string,
+     *     stroke_data: bool,
+     *     calories_total: int,
+     *     drag_factor: int,
+     *     stroke_count: int,
+     *     stroke_rate: int,
+     *     heart_rate: array{
+     *         min: int,
+     *         average: int,
+     *         max: int,
+     *         ending: int,
+     *     },
+     *     workout: array{
+     *         targets: array,
+     *         splits: array{
+     *             time: int,
+     *             distance: int,
+     *             calories_total: int,
+     *             wattminutes_total: int,
+     *             stroke_rate: int,
+     *             heart_rate: array{
+     *                 min: int,
+     *                 average: int,
+     *                 max: int,
+     *                 ending: int,
+     *              },
+     *         },
+     *     },
+     *     real_time: null
+     * }>
+     */
     private function getResults(AccessTokenInterface $accessToken, ?\DateTimeInterface $startAt): array
     {
         $query = ['type' => 'rower'];
@@ -159,6 +246,15 @@ class Concept2ApiConsumer
         return $response->toArray()['data'];
     }
 
+    /**
+     * @return array<array{
+     *     d: int,
+     *     p: int,
+     *     hr: int,
+     *     spm: int,
+     *     t: int,
+     * }>
+     */
     private function getStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
     {
         $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
@@ -172,24 +268,7 @@ class Concept2ApiConsumer
             throw new \Exception('The Logbook Api do not return successfully response.');
         }
 
-        $phaseKey = 0;
-        $maxTime = 0;
-        $strokeData = [];
-        foreach ($response->toArray()['data'] as $datum) {
-            if ($maxTime > $datum['t']) {
-                ++$phaseKey;
-            }
-
-            $strokeData[$phaseKey]['times'][] = $datum['t'];
-            $strokeData[$phaseKey]['distances'][] = $datum['d'];
-            $strokeData[$phaseKey]['paces'][] = min($datum['p'], 2400);
-            $strokeData[$phaseKey]['strokeRates'][] = min($datum['spm'], 70);
-            $strokeData[$phaseKey]['heartRates'][] = min($datum['hr'], 300);
-
-            $maxTime = $datum['t'];
-        }
-
-        return $strokeData;
+        return $response->toArray()['data'];
     }
 
     private function getAccessToken(User $user): AccessTokenInterface

@@ -1,7 +1,16 @@
 <turbo-frame id="training-phases">
     <div class="row">
-        <div class="col-lg-8 order-lg-0 order-1">
-            {{ render_chart(chart, {'data-controller': 'ergometer-chart'}) }}
+        <div class="col-lg-8 order-lg-0 order-1 d-flex flex-column align-items-center">
+            {% if chart is not null %}
+                {{ render_chart(chart, {'data-controller': 'ergometer-chart'}) }}
+            {% else %}
+                <div class="text-secondary mt-3">
+                    <twig:ux:icon name="tabler:chart-bar-off" height="100" width="100" />
+                    <div class="small">
+                        Pas de données
+                    </div>
+                </div>
+            {% endif %}
         </div>
 
         <div class="col-lg-4 order-lg-1 order-0">
