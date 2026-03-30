@@ -26,7 +26,6 @@ final class Version20230713185324 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE app_user RENAME COLUMN nationality TO birth_country');
     }
 }

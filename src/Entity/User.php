@@ -132,7 +132,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * @var Collection<int, License>
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: License::class, cascade: ['remove'])]
+    #[ORM\OneToMany(targetEntity: License::class, mappedBy: 'user', cascade: ['remove'])]
     #[ORM\OrderBy(value: ['id' => 'ASC'])]
     private Collection $licenses;
 
@@ -157,8 +157,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * @var Collection<int, Training>
      */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Training::class)]
+    #[ORM\OneToMany(targetEntity: Training::class, mappedBy: 'user')]
     private Collection $trainings;
+
+    /**
+     * @var Collection<int, Measure>
+     */
+    #[ORM\OneToMany(targetEntity: Measure::class, mappedBy: 'user')]
+    private Collection $measures;
 
     /**
      * @var Collection<int, Group>
@@ -181,6 +187,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         $this->logbookEntries = new ArrayCollection();
         $this->licenses = new ArrayCollection();
         $this->trainings = new ArrayCollection();
+        $this->measures = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
 
@@ -667,6 +674,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         }
 
         return $feeling / $this->trainings->count();
+    }
+
+    /**
+     * @return Collection<int, Measure>
+     */
+    public function getMeasures(): Collection
+    {
+        return $this->measures;
     }
 
     /**

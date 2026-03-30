@@ -29,7 +29,6 @@ final class Version20260329181224 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE training_phase ALTER times SET NOT NULL');
         $this->addSql('ALTER TABLE training_phase ALTER distances SET NOT NULL');
         $this->addSql('ALTER TABLE training_phase ALTER paces SET NOT NULL');
