@@ -27,7 +27,6 @@ final class Version20230714072209 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE shell_damage DROP CONSTRAINT fk_bd5c86f721c3af14');
         $this->addSql('ALTER TABLE shell_damage ADD CONSTRAINT fk_bd5c86f721c3af14 FOREIGN KEY (logbook_entry_id) REFERENCES logbook_entry (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
