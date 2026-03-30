@@ -29,7 +29,7 @@
     </p>
 
     <p class="mt-3">
-        Cette cotisation de {{ (license.paymentsAmount / 100)|format_currency('EUR') }} a été réglée le {{ license.payedAt|date }}.
+        Cette cotisation de {{ (license.paymentsAmount / 100)|format_currency('EUR') }} a été réglée le {{ license.payedAt|format_date('short') }}.
     </p>
 
     <p class="mt-3">
