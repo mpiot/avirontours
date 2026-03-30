@@ -106,7 +106,7 @@
                                                     {% if sportSummary.distance is not same as(0) %}
                                                         <div class="d-flex align-items-center ms-3">
                                                             <twig:ux:icon name="mdi:arrow-left-right" />
-                                                            <span class="ms-1">{{ (sportSummary.distance / 1000)|round }} km</span>
+                                                            <span class="ms-1">{{ (sportSummary.distance / 1000)|format_number({fraction_digit: 0}) }} km</span>
                                                         </div>
                                                     {% endif %}
                                                 </div>

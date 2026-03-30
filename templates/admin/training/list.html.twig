@@ -47,7 +47,10 @@
                             </td>
                             <td>{{ training.textType ?? '-' }}</td>
                             <td>{{ training.formattedDuration }}</td>
-                            <td>{{ training.distance ? training.distance|format_number : '-' }} km</td>
+                            <td>
+                                {{ training.distance ? (training.distance / 1000)|format_number({fraction_digit: 0}) : '-' }} km
+                            </td>
+
                             <td>{{ training.comment|u.truncate(25, '...') }}</td>
                         </tr>
                     {% else %}
