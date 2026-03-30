@@ -654,28 +654,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this->trainings;
     }
 
-    public function getTrainingsDuration(): int
-    {
-        return $this->trainings->reduce(
-            static fn ($carry, Training $training): float|int => $carry + $training->getDuration(),
-            0
-        );
-    }
-
-    public function getTrainingsFeeling(): ?float
-    {
-        if ($this->trainings->isEmpty()) {
-            return null;
-        }
-
-        $feeling = 0;
-        foreach ($this->trainings as $training) {
-            $feeling += $training->getFeeling();
-        }
-
-        return $feeling / $this->trainings->count();
-    }
-
     /**
      * @return Collection<int, Measure>
      */
