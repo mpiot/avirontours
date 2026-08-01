@@ -73,21 +73,29 @@
                                 data-turbo-prefetch="false"
                             >
                                 {% if workflow_can(license, 'validate_medical_certificate') %}
-                                    <a
-                                        class="btn btn-primary"
-                                        href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'validate' }) }}"
+                                    <form
+                                        method="post"
+                                        action="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'validate' }) }}"
+                                        class="d-grid"
                                     >
-                                        Valider le certificat médical
-                                    </a>
+                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                        <button type="submit" class="btn btn-primary">
+                                            Valider le certificat médical
+                                        </button>
+                                    </form>
                                 {% endif %}
 
                                 {% if workflow_can(license, 'reject_medical_certificate') %}
-                                    <a
-                                        class="btn btn-warning"
-                                        href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'reject' }) }}"
+                                    <form
+                                        method="post"
+                                        action="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'reject' }) }}"
+                                        class="d-grid"
                                     >
-                                        Rejeter le certificat médical
-                                    </a>
+                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                        <button type="submit" class="btn btn-warning">
+                                            Rejeter le certificat médical
+                                        </button>
+                                    </form>
                                 {% endif %}
                             </div>
                         </div>

@@ -57,8 +57,8 @@ class MedicalCertificateType extends AbstractType
                     new NotNull(),
                     new File(
                         maxSize: '3M',
-                        mimeTypes: ['application/pdf', 'application/x-pdf', 'image/*'],
-                        mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image.',
+                        mimeTypes: ['application/pdf', 'application/x-pdf', 'image/jpeg', 'image/png'],
+                        mimeTypesMessage: 'Le fichier doit être au format PDF ou bien une image (JPEG, PNG).',
                     ),
                 ],
                 'mapped' => false,

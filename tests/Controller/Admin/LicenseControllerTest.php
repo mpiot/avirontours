@@ -494,7 +494,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->clickLink('Valider le certificat médical');
+        $client->submitForm('Valider le certificat médical');
 
         $this->assertResponseRedirects(\sprintf('http://localhost/admin/season/%s/license/chain-medical-certificate-validation', $license->getSeasonCategory()->getSeason()->getId()));
         $this->assertSame([
@@ -514,7 +514,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->clickLink('Rejeter le certificat médical');
+        $client->submitForm('Rejeter le certificat médical');
 
         $this->assertResponseRedirects(\sprintf('http://localhost/admin/season/%s/license/chain-medical-certificate-validation', $license->getSeasonCategory()->getSeason()->getId()));
         $this->assertSame([
@@ -534,7 +534,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->clickLink('Passer le certificat en attente de validation');
+        $client->submitForm('Passer le certificat en attente de validation');
 
         $this->assertResponseRedirects('http://localhost/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
         $this->assertSame([
@@ -554,7 +554,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->clickLink('Valider la licence');
+        $client->submitForm('Valider la licence');
 
         $this->assertResponseRedirects('http://localhost/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
         $this->assertSame([
@@ -573,7 +573,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertCount(0, $crawler->selectLink('Valider la licence'));
+        $this->assertCount(0, $crawler->selectButton('Valider la licence'));
     }
 
     public function testValidateLicenseAsMedicalPaymentsAdmin(): void
@@ -587,7 +587,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertCount(0, $crawler->selectLink('Valider la licence'));
+        $this->assertCount(0, $crawler->selectButton('Valider la licence'));
     }
 
     public function testDeleteLicense(): void
@@ -624,13 +624,13 @@ class LicenseControllerTest extends AppWebTestCase
     public static function medicalCertificateAdminUrlProvider(): \Generator
     {
         yield ['GET', '/admin/season/{season_id}/license/chain-medical-certificate-validation'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/validate'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/reject'];
-        yield ['GET', '/admin/season/{season_id}/license/{id}/medical-certificate/unreject'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/medical-certificate/validate'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/medical-certificate/reject'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/medical-certificate/unreject'];
     }
 
     public static function adminUrlProvider(): \Generator
     {
-        yield ['GET', '/admin/season/{season_id}/license/{id}/validate'];
+        yield ['POST', '/admin/season/{season_id}/license/{id}/validate'];
     }
 }
