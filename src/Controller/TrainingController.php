@@ -79,6 +79,7 @@ class TrainingController extends AbstractController
     }
 
     #[Route(path: '/import/concept-logbook', name: 'training_import_concept_logbook')]
+    #[IsGranted(new Expression('null !== user.getConcept2RefreshToken()'))]
     public function importConceptLogbook(MessageBusInterface $bus): Response
     {
         $bus->dispatch(new Concept2ImportMessage($this->getUser()->getId()));

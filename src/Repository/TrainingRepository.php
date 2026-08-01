@@ -77,4 +77,19 @@ class TrainingRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
+
+    public function isConcept2ResultImported(User $user, int $concept2Id): bool
+    {
+        $count = (int) $this->createQueryBuilder('training')
+            ->select('COUNT(training.id)')
+            ->where('training.user = :user')
+            ->andWhere('training.concept2Id = :concept2Id')
+            ->setParameter('user', $user)
+            ->setParameter('concept2Id', $concept2Id)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return $count > 0;
+    }
 }

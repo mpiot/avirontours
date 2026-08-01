@@ -43,12 +43,16 @@ readonly class Concept2ImportMessageHandler
             return;
         }
 
+        // Capture "now" before fetching, as it becomes the "from" cursor of the next sync:
+        // stamping it afterwards would skip any result logged while this sync runs.
+        $importStartedAt = new \DateTimeImmutable();
+
         $trainings = $this->apiConsumer->getTrainings($user, $user->getConcept2LastImportAt());
         foreach ($trainings as $training) {
             $this->entityManager->persist($training);
         }
 
-        $user->setConcept2LastImportAt(new \DateTimeImmutable());
+        $user->setConcept2LastImportAt($importStartedAt);
         $this->entityManager->flush();
     }
 }

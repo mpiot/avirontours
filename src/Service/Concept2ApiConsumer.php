@@ -24,6 +24,7 @@ use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Entity\User;
 use App\Enum\SportType;
+use App\Repository\TrainingRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
@@ -34,10 +35,13 @@ class Concept2ApiConsumer
 {
     public const string API_URL = 'https://log.concept2.com/api';
 
+    private const int HTTP_TIMEOUT = 15;
+
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
         private readonly ManagerRegistry $managerRegistry,
         private readonly HttpClientInterface $httpClient,
+        private readonly TrainingRepository $trainingRepository,
     ) {
     }
 
@@ -48,6 +52,10 @@ class Concept2ApiConsumer
 
         $trainings = [];
         foreach ($results as $result) {
+            if ($this->trainingRepository->isConcept2ResultImported($user, $result['id'])) {
+                continue;
+            }
+
             $trainings[] = $this->createTraining($accessToken, $user, $result);
         }
 
@@ -94,6 +102,7 @@ class Concept2ApiConsumer
 
         $training = new Training($user);
         $training
+            ->setConcept2Id($result['id'])
             ->setSport(SportType::Ergometer)
             ->setTrainedAt(new \DateTime($result['date']))
             ->setDuration($result['time'])
@@ -231,12 +240,14 @@ class Concept2ApiConsumer
             $query['from'] = $startAt->format('Y-m-d H:i:s');
         }
 
+        // Sync only the first page, all page are too many results to sync
         $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results', self::API_URL), [
             'query' => $query,
             'headers' => [
                 'Accept' => 'application/json',
             ],
             'auth_bearer' => $accessToken->getToken(),
+            'timeout' => self::HTTP_TIMEOUT,
         ]);
 
         if (200 !== $response->getStatusCode()) {
@@ -262,6 +273,7 @@ class Concept2ApiConsumer
                 'Accept' => 'application/json',
             ],
             'auth_bearer' => $accessToken->getToken(),
+            'timeout' => self::HTTP_TIMEOUT,
         ]);
 
         if (200 !== $response->getStatusCode()) {
@@ -279,9 +291,12 @@ class Concept2ApiConsumer
         // Get an access token from the refreshToken
         $accessToken = $client->refreshAccessToken($user->getConcept2RefreshToken());
 
-        // Persist the new Refresh token
-        $user->setConcept2RefreshToken($accessToken->getRefreshToken());
-        $this->managerRegistry->getManager()->flush();
+        // Update the refresh token
+        $refreshToken = $accessToken->getRefreshToken();
+        if (null !== $refreshToken) {
+            $user->setConcept2RefreshToken($refreshToken);
+            $this->managerRegistry->getManager()->flush();
+        }
 
         return $accessToken;
     }
