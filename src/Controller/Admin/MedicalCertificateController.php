@@ -24,7 +24,6 @@ use App\Controller\AbstractController;
 use App\Entity\MedicalCertificate;
 use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,6 +37,9 @@ class MedicalCertificateController extends AbstractController
         $uploadedFile = $medicalCertificate->getUploadedFile();
         $path = $fileUploader->getAbsolutePath($uploadedFile);
 
-        return $this->file($path, $uploadedFile->getOriginalFilename(), ResponseHeaderBag::DISPOSITION_INLINE);
+        $response = $this->file($path, $uploadedFile->getOriginalFilename());
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+        return $response;
     }
 }

@@ -104,6 +104,10 @@ class TrainingController extends AbstractController
         TrainingPhase $trainingPhase,
         TrainingPhaseChart $trainingPhaseChart,
     ): Response {
+        if ($training !== $trainingPhase->getTraining()) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('training/_phase.html.twig', [
             'training' => $training,
             'active_phase' => $trainingPhase,

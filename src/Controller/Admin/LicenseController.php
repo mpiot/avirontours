@@ -168,7 +168,7 @@ class LicenseController extends AbstractController
     #[Route(
         path: '/{id}/medical-certificate/{transitionName<validate|reject|unreject>}',
         name: 'license_medical_certificate_action',
-        methods: ['GET']
+        methods: ['POST']
     )]
     #[IsGranted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN')]
     public function medicalCertificate(
@@ -178,6 +178,10 @@ class LicenseController extends AbstractController
         WorkflowInterface $licenseWorkflow,
         EntityManagerInterface $entityManager,
     ): Response {
+        if (false === $this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         if (false === $licenseWorkflow->can($license, $transitionName.'_medical_certificate')) {
             throw $this->createNotFoundException();
         }
@@ -190,10 +194,10 @@ class LicenseController extends AbstractController
 
         $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
-        return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        return $this->redirectAfterTransition($request, $license);
     }
 
-    #[Route(path: '/{id}/validate', name: 'license_validate', methods: ['GET'])]
+    #[Route(path: '/{id}/validate', name: 'license_validate', methods: ['POST'])]
     #[IsGranted('ROLE_SEASON_ADMIN')]
     public function validate(
         License $license,
@@ -201,6 +205,10 @@ class LicenseController extends AbstractController
         WorkflowInterface $licenseWorkflow,
         EntityManagerInterface $entityManager,
     ): Response {
+        if (false === $this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         if (false === $licenseWorkflow->can($license, 'validate_license')) {
             throw $this->createNotFoundException();
         }
@@ -213,7 +221,7 @@ class LicenseController extends AbstractController
 
         $this->addFlash('success', 'La licence a été modifiée avec succès.');
 
-        return new RedirectResponse($request->headers->get('referer'), Response::HTTP_SEE_OTHER);
+        return $this->redirectAfterTransition($request, $license);
     }
 
     #[Route(path: '/{id}', name: 'license_delete', methods: ['POST'])]
@@ -228,5 +236,20 @@ class LicenseController extends AbstractController
         }
 
         return $this->redirectToRoute('season_show', ['id' => $license->getSeasonCategory()->getSeason()->getId()]);
+    }
+
+    private function redirectAfterTransition(Request $request, License $license): RedirectResponse
+    {
+        $referer = $request->headers->get('referer');
+        $fallback = $this->generateUrl('season_show', [
+            'id' => $license->getSeasonCategory()->getSeason()->getId(),
+        ]);
+
+        $target = null !== $referer && str_starts_with($referer, $request->getSchemeAndHttpHost())
+            ? $referer
+            : $fallback
+        ;
+
+        return new RedirectResponse($target, Response::HTTP_SEE_OTHER);
     }
 }

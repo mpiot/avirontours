@@ -218,9 +218,12 @@
                                                 data-turbo-prefetch="false"
                                             >
                                                 {% if workflow_can(license, 'unreject_medical_certificate') %}
-                                                    <a class="btn btn-danger" href="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}">
-                                                        Passer le certificat en attente de validation
-                                                    </a>
+                                                    <form method="post" action="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}" class="d-grid">
+                                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                                        <button type="submit" class="btn btn-danger">
+                                                            Passer le certificat en attente de validation
+                                                        </button>
+                                                    </form>
                                                 {% endif %}
 
                                                 {% if workflow_can(license, 'validate_payment') %}
@@ -230,9 +233,12 @@
                                                 {% endif %}
 
                                                 {% if workflow_can(license, 'validate_license') %}
-                                                    <a class="btn btn-primary" href="{{ path('license_validate', { seasonId: season.id, id: license.id }) }}">
-                                                        Valider la licence
-                                                    </a>
+                                                    <form method="post" action="{{ path('license_validate', { seasonId: season.id, id: license.id }) }}" class="d-grid">
+                                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                                        <button type="submit" class="btn btn-primary">
+                                                            Valider la licence
+                                                        </button>
+                                                    </form>
                                                 {% endif %}
                                             </div>
 
