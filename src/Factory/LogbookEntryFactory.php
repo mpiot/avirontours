@@ -21,48 +21,13 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\LogbookEntry;
-use App\Repository\LogbookEntryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<LogbookEntry>
- *
- * @method        LogbookEntry|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static LogbookEntry|Proxy                                createOne(array $attributes = [])
- * @method static LogbookEntry|Proxy                                find(object|array|mixed $criteria)
- * @method static LogbookEntry|Proxy                                findOrCreate(array $attributes)
- * @method static LogbookEntry|Proxy                                first(string $sortedField = 'id')
- * @method static LogbookEntry|Proxy                                last(string $sortedField = 'id')
- * @method static LogbookEntry|Proxy                                random(array $attributes = [])
- * @method static LogbookEntry|Proxy                                randomOrCreate(array $attributes = [])
- * @method static LogbookEntryRepository|ProxyRepositoryDecorator   repository()
- * @method static LogbookEntry[]|Proxy[]                            all()
- * @method static LogbookEntry[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static LogbookEntry[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static LogbookEntry[]|Proxy[]                            findBy(array $attributes)
- * @method static LogbookEntry[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static LogbookEntry[]|Proxy[]                            randomSet(int $number, array $attributes = [])
- *
- * @phpstan-method        Proxy<LogbookEntry> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<LogbookEntry> createOne(array $attributes = [])
- * @phpstan-method static Proxy<LogbookEntry> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<LogbookEntry> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<LogbookEntry> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<LogbookEntry> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<LogbookEntry> random(array $attributes = [])
- * @phpstan-method static Proxy<LogbookEntry> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<LogbookEntry> repository()
- * @phpstan-method static list<Proxy<LogbookEntry>> all()
- * @phpstan-method static list<Proxy<LogbookEntry>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<LogbookEntry>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<LogbookEntry>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<LogbookEntry>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<LogbookEntry>> randomSet(int $number, array $attributes = [])
+ * @extends PersistentObjectFactory<LogbookEntry>
  */
-final class LogbookEntryFactory extends PersistentProxyObjectFactory
+final class LogbookEntryFactory extends PersistentObjectFactory
 {
     public function withActiveCrew(int $number): self
     {

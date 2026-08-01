@@ -1,10 +1,10 @@
-const {join} = require('path');
+import {join} from 'path';
 
 /**
  * @type {import("puppeteer").Configuration}
  */
-module.exports = {
-    cacheDirectory: join(__dirname, 'var', '.puppeteer.cache'),
+export default {
+    cacheDirectory: join(import.meta.dirname, '.cache', 'puppeteer'),
     chrome: {
         skipDownload: true,
     },

@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-final class RegistrationControllerTest extends AppWebTestCase
+class RegistrationControllerTest extends AppWebTestCase
 {
     public function testRegistration(): void
     {
@@ -90,6 +90,9 @@ final class RegistrationControllerTest extends AppWebTestCase
         $client->submit($form);
 
         $this->assertResponseRedirects('/register/confirmation');
+
+        self::getEntityManager()->clear();
+
         $this->assertQueuedEmailCount(1);
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
@@ -413,7 +416,7 @@ final class RegistrationControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/register/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseRedirects('/profile');
@@ -433,7 +436,7 @@ final class RegistrationControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
 
         $crawler = $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
@@ -500,7 +503,7 @@ final class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame('Artanis', $user->getSecondLegalGuardian()->getLastName());
         $this->assertSame('g.artanis@avirontours.fr', $user->getSecondLegalGuardian()->getEmail());
         $this->assertSame('0123456799', $user->getSecondLegalGuardian()->getPhoneNumber());
-        $this->assertCount(2, $user->_refresh()->getLicenses());
+        $this->assertCount(2, $user->getLicenses());
         $this->assertSame($season->getSeasonCategories()->first(), $user->getLicenses()->last()->getSeasonCategory());
         $this->assertTrue($user->getLicenses()->last()->getFederationEmailAllowed());
         $this->assertTrue($user->getLicenses()->last()->getOptionalInsurance());
@@ -520,7 +523,7 @@ final class RegistrationControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -532,7 +535,7 @@ final class RegistrationControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/renew/'.$season->getSeasonCategories()->first()->getSlug());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);

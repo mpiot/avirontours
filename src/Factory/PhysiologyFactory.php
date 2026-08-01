@@ -21,47 +21,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Physiology;
-use App\Repository\PhysiologyRepository;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Physiology>
- *
- * @method        Physiology|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static Physiology|Proxy                                createOne(array $attributes = [])
- * @method static Physiology|Proxy                                find(object|array|mixed $criteria)
- * @method static Physiology|Proxy                                findOrCreate(array $attributes)
- * @method static Physiology|Proxy                                first(string $sortedField = 'id')
- * @method static Physiology|Proxy                                last(string $sortedField = 'id')
- * @method static Physiology|Proxy                                random(array $attributes = [])
- * @method static Physiology|Proxy                                randomOrCreate(array $attributes = [])
- * @method static PhysiologyRepository|ProxyRepositoryDecorator   repository()
- * @method static Physiology[]|Proxy[]                            all()
- * @method static Physiology[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static Physiology[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static Physiology[]|Proxy[]                            findBy(array $attributes)
- * @method static Physiology[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static Physiology[]|Proxy[]                            randomSet(int $number, array $attributes = [])
- *
- * @phpstan-method        Proxy<Physiology> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<Physiology> createOne(array $attributes = [])
- * @phpstan-method static Proxy<Physiology> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<Physiology> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<Physiology> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<Physiology> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<Physiology> random(array $attributes = [])
- * @phpstan-method static Proxy<Physiology> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<Physiology> repository()
- * @phpstan-method static list<Proxy<Physiology>> all()
- * @phpstan-method static list<Proxy<Physiology>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<Physiology>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<Physiology>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<Physiology>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<Physiology>> randomSet(int $number, array $attributes = [])
+ * @extends PersistentObjectFactory<Physiology>
  */
-final class PhysiologyFactory extends PersistentProxyObjectFactory
+final class PhysiologyFactory extends PersistentObjectFactory
 {
     protected function defaults(): array|callable
     {

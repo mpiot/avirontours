@@ -1,0 +1,58 @@
+on:
+    workflow_call:
+
+permissions:
+    contents: read
+
+jobs:
+    phpunit:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:15.18-alpine
+                env:
+                    POSTGRES_USER: app
+                    POSTGRES_PASSWORD: '!ChangeMe!'
+                    POSTGRES_DB: app
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+              with:
+                  coverage: pcov
+
+            - name: Setup NodeJS
+              uses: ./.github/actions/setup-node
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Install JS dependencies
+              run: npm ci
+
+            - name: Build assets
+              run: npm run build
+
+            - name: Run tests with PHPUnit
+              run: bin/phpunit --do-not-fail-on-deprecation --coverage-clover var/phpunit-coverage-report.xml --log-junit var/phpunit-tests-report.xml --include-git-information
+
+            - name: Upload reports
+              uses: actions/upload-artifact@v7
+              with:
+                  name: phpunit-reports
+                  path: |
+                      var/phpunit-coverage-report.xml
+                      var/phpunit-tests-report.xml
+                  retention-days: 1

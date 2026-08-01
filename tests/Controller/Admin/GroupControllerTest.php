@@ -25,7 +25,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class GroupControllerTest extends AppWebTestCase
+class GroupControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -47,7 +47,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -59,7 +59,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group');
 
         $this->assertResponseIsSuccessful();
@@ -71,7 +71,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group/'.$group->getId());
 
         $this->assertResponseIsSuccessful();
@@ -84,7 +84,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group/new');
         $this->assertResponseIsSuccessful();
 
@@ -95,6 +95,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
 
+        self::getEntityManager()->clear();
         $group = GroupFactory::repository()->findOneBy(['name' => 'A new group']);
 
         $this->assertSame('A new group', $group->getName());
@@ -107,7 +108,7 @@ final class GroupControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group/new');
         $this->assertResponseIsSuccessful();
 
@@ -130,7 +131,7 @@ final class GroupControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group/'.$group->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -145,11 +146,11 @@ final class GroupControllerTest extends AppWebTestCase
 
     public function testDeleteGroup(): void
     {
-        $group = GroupFactory::createOne()->_disableAutoRefresh();
+        $group = GroupFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/group/'.$group->getId());
 
         $this->assertResponseIsSuccessful();

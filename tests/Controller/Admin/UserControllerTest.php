@@ -26,7 +26,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class UserControllerTest extends AppWebTestCase
+class UserControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -48,7 +48,7 @@ final class UserControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -58,7 +58,7 @@ final class UserControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user');
 
         $this->assertResponseIsSuccessful();
@@ -70,7 +70,7 @@ final class UserControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
@@ -85,7 +85,7 @@ final class UserControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user/new');
 
         $this->assertResponseIsSuccessful();
@@ -157,7 +157,7 @@ final class UserControllerTest extends AppWebTestCase
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user/new');
 
         $this->assertResponseIsSuccessful();
@@ -214,7 +214,7 @@ final class UserControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user/'.$user->getId().'/edit');
         $this->assertResponseIsSuccessful();
 
@@ -281,11 +281,11 @@ final class UserControllerTest extends AppWebTestCase
 
     public function testDeleteUser(): void
     {
-        $user = UserFactory::createOne()->_disableAutoRefresh();
+        $user = UserFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER_ADMIN');
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
         $client->request('GET', '/admin/user/'.$user->getId());
 
         $this->assertResponseIsSuccessful();

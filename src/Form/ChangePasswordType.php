@@ -38,7 +38,7 @@ class ChangePasswordType extends AbstractType
         $builder
             ->add('currentPassword', PasswordType::class, [
                 'label' => 'Mot de passe actuel',
-                'constraints' => new UserPassword(['groups' => 'resetPassword']),
+                'constraints' => new UserPassword(groups: ['resetPassword']),
                 'attr' => ['autocomplete' => 'current-password'],
                 'mapped' => false,
             ])

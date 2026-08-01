@@ -25,7 +25,7 @@ use App\Factory\ShellDamageCategoryFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ShellDamageCategoryControllerTest extends AppWebTestCase
+class ShellDamageCategoryControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -47,7 +47,7 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -57,7 +57,7 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category');
 
         $this->assertResponseIsSuccessful();
@@ -67,7 +67,7 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/new');
 
         $this->assertResponseIsSuccessful();
@@ -89,7 +89,7 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/new');
 
         $this->assertResponseIsSuccessful();
@@ -111,7 +111,7 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -128,11 +128,11 @@ final class ShellDamageCategoryControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamageCategory(): void
     {
-        $category = ShellDamageCategoryFactory::createOne()->_disableAutoRefresh();
+        $category = ShellDamageCategoryFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage-category/'.$category->getId().'/edit');
 
         $this->assertResponseIsSuccessful();

@@ -29,7 +29,7 @@ use App\Tests\AppWebTestCase;
 
 use function Zenstruck\Foundry\faker;
 
-final class HomepageControllerTest extends AppWebTestCase
+class HomepageControllerTest extends AppWebTestCase
 {
     public function testAsAnonymousUserICannotShowHomepage(): void
     {
@@ -44,7 +44,7 @@ final class HomepageControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
@@ -63,7 +63,7 @@ final class HomepageControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();

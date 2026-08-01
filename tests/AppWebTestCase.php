@@ -25,6 +25,7 @@ use App\Factory\UserFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\AbstractBrowser;
+use Symfony\Component\DomCrawler\Crawler;
 use Zenstruck\Foundry\Persistence\Proxy;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -34,25 +35,43 @@ abstract class AppWebTestCase extends WebTestCase
     use Factories;
     use ResetDatabase;
 
-    protected function logIn(AbstractBrowser $client, string $role): User|Proxy
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        error_reporting(\E_ALL);
+    }
+
+    protected function createAndLogin(AbstractBrowser $client, string $role): User|Proxy
     {
         $user = UserFactory::new(['roles' => [$role]])
             ->major()
             ->create()
         ;
 
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
 
         return $user;
+    }
+
+    protected function filterFormErrors(Crawler $crawler, string $selector, string $type = 'input', string $ancestorSelector = 'div', string $ancestorClass = 'mb-3'): Crawler
+    {
+        return $crawler->filterXPath(\sprintf(
+            '//%s[@id="%s"]/ancestor::%s[@class="%s"]/div[@class="invalid-feedback d-block"]',
+            $type,
+            $selector,
+            $ancestorSelector,
+            $ancestorClass
+        ));
+    }
+
+    protected function getIpV4(): string
+    {
+        return long2ip(random_int(0, 4294967295));
     }
 
     protected static function getEntityManager(): EntityManagerInterface
     {
         return static::getContainer()->get('doctrine')->getManager();
-    }
-
-    protected static function getIpV4(): string
-    {
-        return long2ip(random_int(0, 4294967295));
     }
 }

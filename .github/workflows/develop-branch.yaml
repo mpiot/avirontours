@@ -1,0 +1,23 @@
+name: Continuous Integration - Develop branch
+
+on:
+    push:
+        branches: [ develop ]
+
+permissions:
+    contents: read
+
+jobs:
+    tests-phpunit:
+        name: Tests
+
+        uses: ./.github/workflows/_phpunit.yaml
+
+    sonarqube:
+        name: SonarQube
+
+        needs: tests-phpunit
+
+        uses: ./.github/workflows/_sonarqube.yaml
+        secrets:
+            sonar_token: ${{ secrets.SONAR_TOKEN }}

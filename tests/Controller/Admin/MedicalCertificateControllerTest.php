@@ -24,7 +24,7 @@ use App\Factory\MedicalCertificateFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class MedicalCertificateControllerTest extends AppWebTestCase
+class MedicalCertificateControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -46,7 +46,7 @@ final class MedicalCertificateControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -62,7 +62,7 @@ final class MedicalCertificateControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -74,7 +74,7 @@ final class MedicalCertificateControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
         $client->request('GET', '/admin/medical-certificate/'.$medicalCertificate->getId().'/download');
 
         $this->assertResponseIsSuccessful();

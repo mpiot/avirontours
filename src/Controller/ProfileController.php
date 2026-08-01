@@ -70,8 +70,11 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/edit-password', name: 'profile_edit_password', methods: ['GET|POST'])]
-    public function editPassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
-    {
+    public function editPassword(
+        EntityManagerInterface $entityManager,
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+    ): Response {
         $user = $this->getUser();
         $form = $this->createForm(ChangePasswordType::class, $user);
         $form->handleRequest($request);

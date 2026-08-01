@@ -23,7 +23,7 @@ namespace App\Tests\Controller\Admin;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class HomepageControllerTest extends AppWebTestCase
+class HomepageControllerTest extends AppWebTestCase
 {
     public function testIndex(): void
     {
@@ -32,12 +32,12 @@ final class HomepageControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/login');
 
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/admin');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
 
-        $this->logIn($client, 'ROLE_ADMIN');
+        $this->createAndLogin($client, 'ROLE_ADMIN');
         $client->request('GET', '/admin');
 
         $this->assertResponseIsSuccessful();

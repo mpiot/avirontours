@@ -63,7 +63,7 @@ db-reset: ## Reset the database
 
 db-fixtures: db-reset ## Reset the database, then apply doctrine fixtures
 	rm -Rf public/uploads var/uploads
-	@$(CONSOLE) doctrine:fixtures:load -n
+	@$(CONSOLE) doctrine:fixtures:load --no-interaction --purge-with-truncate
 
 
 ##
@@ -74,14 +74,14 @@ tests: lint validate-schema phpunit ## Lint all, run PHP tests
 lint: ## Run lint on Yaml, Twig, Container, and PHP files
 	@$(COMPOSER) validate
 	@$(CONSOLE) lint:yaml --parse-tags config
-	@$(CONSOLE) lint:twig templates --env=prod
+	@$(CONSOLE) lint:twig templates
 	@$(CONSOLE) lint:container
 	@$(PHP) vendor/bin/rector process --dry-run
 	@$(PHP) vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
-	@$(PHP) vendor/bin/phpstan
+	@$(PHP) vendor/bin/phpstan --memory-limit=-1
 	@${NPM} run lint
 
-validate-schema: ## Test the doctrine schema
+validate-schema: ## Validate the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
 phpunit: ## Run tests

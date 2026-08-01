@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-final class TrainingControllerTest extends AppWebTestCase
+class TrainingControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -55,7 +55,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -67,7 +67,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/training');
 
         $this->assertResponseIsSuccessful();
@@ -81,7 +81,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', \sprintf('/admin/training?group=%s', $group->getId()));
 
         $this->assertResponseIsSuccessful();
@@ -98,7 +98,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $crawler = $client->request('GET', '/admin/training/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
@@ -112,7 +112,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
 
         $this->assertResponseIsSuccessful();

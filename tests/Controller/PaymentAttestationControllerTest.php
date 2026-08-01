@@ -25,7 +25,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\Uid\Uuid;
 
-final class PaymentAttestationControllerTest extends AppWebTestCase
+class PaymentAttestationControllerTest extends AppWebTestCase
 {
     public function testDownloadPaymentAttestation(): void
     {
@@ -36,7 +36,7 @@ final class PaymentAttestationControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/payment-attestation/download/'.$license->getId());
 
         $this->assertResponseIsSuccessful();

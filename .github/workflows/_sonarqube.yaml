@@ -1,0 +1,32 @@
+on:
+    workflow_call:
+        secrets:
+            sonar_token:
+                required: true
+
+permissions:
+    contents: read
+
+jobs:
+    sonarqube:
+        name: SonarQube
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  # Disabling shallow clones is recommended for improving the relevancy of reporting
+                  fetch-depth: 0
+
+            - name: Download Coverage Reports
+              uses: actions/download-artifact@v7
+              with:
+                  name: phpunit-reports
+
+            - name: Change Paths from PHPUnit reports
+              run: sed -i 's#/home/runner/work/apps/apps#/github/workspace#g' phpunit-coverage-report.xml
+
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@v7
+              env:
+                  SONAR_TOKEN: ${{ secrets.sonar_token }}

@@ -26,7 +26,7 @@ use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ShellDamageControllerTest extends AppWebTestCase
+class ShellDamageControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -48,7 +48,7 @@ final class ShellDamageControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -58,7 +58,7 @@ final class ShellDamageControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage');
 
         $this->assertResponseIsSuccessful();
@@ -71,7 +71,7 @@ final class ShellDamageControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage/new');
 
         $this->assertResponseIsSuccessful();
@@ -101,7 +101,7 @@ final class ShellDamageControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage/new');
 
         $this->assertResponseIsSuccessful();
@@ -131,7 +131,7 @@ final class ShellDamageControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage/'.$damage->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -156,11 +156,11 @@ final class ShellDamageControllerTest extends AppWebTestCase
 
     public function testDeleteShellDamage(): void
     {
-        $damage = ShellDamageFactory::createOne()->_disableAutoRefresh();
+        $damage = ShellDamageFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell-damage/'.$damage->getId().'/edit');
 
         $this->assertResponseIsSuccessful();

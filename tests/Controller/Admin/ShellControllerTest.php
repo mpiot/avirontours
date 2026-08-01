@@ -26,7 +26,7 @@ use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ShellControllerTest extends AppWebTestCase
+class ShellControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -48,7 +48,7 @@ final class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -58,7 +58,7 @@ final class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell');
 
         $this->assertResponseIsSuccessful();
@@ -70,7 +70,7 @@ final class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId());
 
         $this->assertResponseIsSuccessful();
@@ -80,7 +80,7 @@ final class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
@@ -107,7 +107,7 @@ final class ShellControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
@@ -141,7 +141,7 @@ final class ShellControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -171,14 +171,14 @@ final class ShellControllerTest extends AppWebTestCase
 
     public function testDeleteShell(): void
     {
-        $shell = ShellFactory::createOne()->_disableAutoRefresh();
+        $shell = ShellFactory::createOne();
         $shellDamage = ShellDamageFactory::createOne([
             'shell' => $shell,
-        ])->_disableAutoRefresh();
+        ]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_MATERIAL_ADMIN');
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
         $client->request('GET', '/admin/shell/'.$shell->getId());
 
         $this->assertResponseIsSuccessful();
