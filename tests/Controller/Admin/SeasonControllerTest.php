@@ -26,7 +26,7 @@ use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SeasonControllerTest extends AppWebTestCase
+class SeasonControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     #[\PHPUnit\Framework\Attributes\DataProvider('paymentAdminUrlProvider')]
@@ -52,7 +52,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -69,7 +69,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -85,7 +85,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -95,17 +95,17 @@ final class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season');
 
         $this->assertResponseIsSuccessful();
@@ -117,17 +117,17 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
 
-        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId());
 
         $this->assertResponseIsSuccessful();
@@ -137,7 +137,7 @@ final class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $crawler = $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -173,7 +173,7 @@ final class SeasonControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/new');
 
         $this->assertResponseIsSuccessful();
@@ -196,7 +196,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -211,11 +211,11 @@ final class SeasonControllerTest extends AppWebTestCase
 
     public function testDeleteSeason(): void
     {
-        $season = SeasonFactory::createOne()->_disableAutoRefresh();
+        $season = SeasonFactory::createOne();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/edit');
 
         $this->assertResponseIsSuccessful();
@@ -235,7 +235,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
 
         $this->assertResponseIsSuccessful();
@@ -251,7 +251,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_PAYMENTS_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/payment');
 
         $this->assertResponseIsSuccessful();
@@ -268,7 +268,7 @@ final class SeasonControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SEASON_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
         $client->request('GET', '/admin/season/'.$season->getId().'/export/license');
 
         $this->assertResponseIsSuccessful();

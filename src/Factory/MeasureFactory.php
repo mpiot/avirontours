@@ -22,12 +22,12 @@ namespace App\Factory;
 
 use App\Entity\Measure;
 use App\Enum\MeasureType;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<Measure>
+ * @extends PersistentObjectFactory<Measure>
  */
-final class MeasureFactory extends PersistentProxyObjectFactory
+final class MeasureFactory extends PersistentObjectFactory
 {
     #[\Override]
     protected function defaults(): array|callable

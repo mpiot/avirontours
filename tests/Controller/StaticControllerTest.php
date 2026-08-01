@@ -22,7 +22,7 @@ namespace App\Tests\Controller;
 
 use App\Tests\AppWebTestCase;
 
-final class StaticControllerTest extends AppWebTestCase
+class StaticControllerTest extends AppWebTestCase
 {
     public function testLegalNotice(): void
     {

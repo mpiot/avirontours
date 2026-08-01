@@ -1,0 +1,19 @@
+name: Setup PHP
+description: Install PHP with the project's fixed version and ini settings
+
+inputs:
+    coverage:
+        description: 'Coverage driver to enable (none, pcov, xdebug)'
+        required: false
+        default: none
+
+runs:
+    using: composite
+    steps:
+        - name: Install PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              coverage: ${{ inputs.coverage }}
+              php-version: 8.5
+              tools: composer:v2
+              ini-values: zend.assertions=1, date.timezone=Europe/Paris

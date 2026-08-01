@@ -22,47 +22,12 @@ namespace App\Factory;
 
 use App\Entity\License;
 use App\Entity\SeasonCategory;
-use App\Repository\LicenseRepository;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<License>
- *
- * @method        License|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static License|Proxy                                createOne(array $attributes = [])
- * @method static License|Proxy                                find(object|array|mixed $criteria)
- * @method static License|Proxy                                findOrCreate(array $attributes)
- * @method static License|Proxy                                first(string $sortedField = 'id')
- * @method static License|Proxy                                last(string $sortedField = 'id')
- * @method static License|Proxy                                random(array $attributes = [])
- * @method static License|Proxy                                randomOrCreate(array $attributes = [])
- * @method static LicenseRepository|ProxyRepositoryDecorator   repository()
- * @method static License[]|Proxy[]                            all()
- * @method static License[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static License[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static License[]|Proxy[]                            findBy(array $attributes)
- * @method static License[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static License[]|Proxy[]                            randomSet(int $number, array $attributes = [])
- *
- * @phpstan-method        Proxy<License> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<License> createOne(array $attributes = [])
- * @phpstan-method static Proxy<License> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<License> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<License> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<License> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<License> random(array $attributes = [])
- * @phpstan-method static Proxy<License> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<License> repository()
- * @phpstan-method static list<Proxy<License>> all()
- * @phpstan-method static list<Proxy<License>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<License>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<License>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<License>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<License>> randomSet(int $number, array $attributes = [])
+ * @extends PersistentObjectFactory<License>
  */
-final class LicenseFactory extends PersistentProxyObjectFactory
+final class LicenseFactory extends PersistentObjectFactory
 {
     public function annualActive(): self
     {

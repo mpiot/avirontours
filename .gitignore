@@ -4,6 +4,7 @@ protected_files/*
 ###< app ###
 
 ###> symfony/framework-bundle ###
+/.cache
 /.env.local
 /.env.local.php
 /.env.*.local

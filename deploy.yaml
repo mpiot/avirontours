@@ -120,12 +120,12 @@
     - name: Clear the cache
       ansible.builtin.command: "bin/console cache:clear"
       args:
-          chdir: "{{ release_path.stdout }}"
+        chdir: "{{ release_path.stdout }}"
 
     - name: Warmup the cache
       ansible.builtin.command: "bin/console cache:warmup"
       args:
-          chdir: "{{ release_path.stdout }}"
+        chdir: "{{ release_path.stdout }}"
 
     - name: Apply database migrations
       ansible.builtin.command: "{{ release_path.stdout }}/bin/console doctrine:migrations:migrate --allow-no-migration --all-or-nothing --no-interaction"
@@ -136,12 +136,11 @@
         path: "{{ deploy_to }}/current"
         src: "./releases/{{ release_version }}"
 
-    - name: Restart service PHP
-      ansible.builtin.command: sudo systemctl restart php8.4-fpm
+    - name: Reload PHP-FPM (graceful restart, zero downtime)
+      ansible.builtin.command: sudo /bin/systemctl reload php8.5-fpm
 
     - name: Restart messenger-consume:*
       ansible.builtin.command: sudo supervisorctl restart messenger-consume:*
 
     - name: Clean up releases
-      ansible.builtin.shell: ls -1dt {{ deploy_to }}/releases/* | tail -n +{{ keep_releases | int + 1 }} | xargs rm -rf
-      when: keep_releases | int > 0
+      ansible.builtin.command: sudo /usr/local/bin/clean-up-releases

@@ -1,0 +1,212 @@
+name: Continuous Integration - PR
+
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+            - ready_for_review
+
+permissions:
+    contents: read
+
+concurrency:
+    group: pull-request-${{ github.event.pull_request.number }}
+    cancel-in-progress: true
+
+jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+
+        if: false == github.event.pull_request.draft
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+
+            - name: Setup NodeJS
+              uses: ./.github/actions/setup-node
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Install JS dependencies
+              run: npm ci
+
+            - name: Validate Composer config
+              run: composer validate
+
+            - name: Audit dependencies
+              run: composer audit
+
+            - name: Lint YAML files
+              run: ./bin/console lint:yaml config --parse-tags
+
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint container
+              run: ./bin/console lint:container --no-debug
+
+            - name: Validate Doctrine schema entities
+              run: ./bin/console doctrine:schema:validate --skip-sync --no-interaction
+
+            - name: Run ESLint
+              run: npm run lint
+
+    rector:
+        name: Rector
+        runs-on: ubuntu-latest
+
+        if: false == github.event.pull_request.draft
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Run Rector
+              run: ./vendor/bin/rector process --dry-run
+
+    php-cs-fixer:
+        name: PHP Coding Standards Fixer
+        runs-on: ubuntu-latest
+
+        if: false == github.event.pull_request.draft
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Run PHP CS Fixer
+              run: ./vendor/bin/php-cs-fixer fix --dry-run --diff --no-interaction -v
+
+    php-stan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+
+        if: false == github.event.pull_request.draft
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: PHP Stan
+              run: ./vendor/bin/phpstan
+
+    migrations-and-fixtures:
+        name: Migrations & Fixtures
+        runs-on: ubuntu-latest
+
+        needs: [ lint, rector, php-cs-fixer, php-stan ]
+
+        services:
+            postgres:
+                image: postgres:15.18-alpine
+                env:
+                    POSTGRES_USER: app
+                    POSTGRES_PASSWORD: "!ChangeMe!"
+                    POSTGRES_DB: app
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Checkout develop branch code
+              uses: actions/checkout@v6
+              with:
+                  ref: develop
+
+            - name: Setup PHP
+              uses: ./.github/actions/setup-php
+
+            - name: Setup NodeJS
+              uses: ./.github/actions/setup-node
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Install JS dependencies
+              run: npm ci
+
+            - name: Build assets
+              run: npm run build
+
+            - name: Apply develop migrations
+              run: bin/console doctrine:migrations:migrate --no-interaction
+
+            - name: Load develop fixtures
+              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate --purge-exclusions acoustic_production_order_line_report --purge-exclusions product_production_order_line_report
+
+            - name: Switch to the PR branch
+              env:
+                  HEAD_REF: ${{ github.head_ref }}
+              run: |
+                  git fetch
+                  git switch "$HEAD_REF"
+
+            - name: Setup Composer
+              uses: ./.github/actions/setup-composer
+
+            - name: Install JS dependencies
+              run: npm ci
+
+            - name: Build assets
+              run: npm run build
+
+            - name: Clear cache
+              run: bin/console cache:clear
+
+            - name: Warmup cache
+              run: bin/console cache:warmup
+
+            - name: Apply migrations
+              run: bin/console doctrine:migrations:migrate --no-interaction
+
+            - name: Validate schema
+              run: bin/console doctrine:schema:validate
+
+            - name: Load fixtures
+              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate --purge-exclusions acoustic_production_order_line_report --purge-exclusions product_production_order_line_report
+
+    tests-phpunit:
+        name: Tests
+
+        needs: [ lint, rector, php-cs-fixer, php-stan ]
+
+        uses: ./.github/workflows/_phpunit.yaml
+
+    sonarqube:
+        name: SonarQube
+
+        needs: tests-phpunit
+
+        uses: ./.github/workflows/_sonarqube.yaml
+        secrets:
+            sonar_token: ${{ secrets.SONAR_TOKEN }}

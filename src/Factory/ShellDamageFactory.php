@@ -22,47 +22,12 @@ namespace App\Factory;
 
 use App\Entity\ShellDamage;
 use App\Entity\ShellDamageCategory;
-use App\Repository\ShellDamageRepository;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<ShellDamage>
- *
- * @method        ShellDamage|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static ShellDamage|Proxy                                createOne(array $attributes = [])
- * @method static ShellDamage|Proxy                                find(object|array|mixed $criteria)
- * @method static ShellDamage|Proxy                                findOrCreate(array $attributes)
- * @method static ShellDamage|Proxy                                first(string $sortedField = 'id')
- * @method static ShellDamage|Proxy                                last(string $sortedField = 'id')
- * @method static ShellDamage|Proxy                                random(array $attributes = [])
- * @method static ShellDamage|Proxy                                randomOrCreate(array $attributes = [])
- * @method static ShellDamageRepository|ProxyRepositoryDecorator   repository()
- * @method static ShellDamage[]|Proxy[]                            all()
- * @method static ShellDamage[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static ShellDamage[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static ShellDamage[]|Proxy[]                            findBy(array $attributes)
- * @method static ShellDamage[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static ShellDamage[]|Proxy[]                            randomSet(int $number, array $attributes = [])
- *
- * @phpstan-method        Proxy<ShellDamage> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<ShellDamage> createOne(array $attributes = [])
- * @phpstan-method static Proxy<ShellDamage> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<ShellDamage> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<ShellDamage> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<ShellDamage> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<ShellDamage> random(array $attributes = [])
- * @phpstan-method static Proxy<ShellDamage> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<ShellDamage> repository()
- * @phpstan-method static list<Proxy<ShellDamage>> all()
- * @phpstan-method static list<Proxy<ShellDamage>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<ShellDamage>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<ShellDamage>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<ShellDamage>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<ShellDamage>> randomSet(int $number, array $attributes = [])
+ * @extends PersistentObjectFactory<ShellDamage>
  */
-final class ShellDamageFactory extends PersistentProxyObjectFactory
+final class ShellDamageFactory extends PersistentObjectFactory
 {
     public function highlyDamaged(): self
     {

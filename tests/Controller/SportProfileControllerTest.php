@@ -23,7 +23,7 @@ namespace App\Tests\Controller;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 
-final class SportProfileControllerTest extends AppWebTestCase
+class SportProfileControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -41,7 +41,7 @@ final class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/sport-profile/physiology');
 
         $this->assertResponseIsSuccessful();
@@ -73,7 +73,7 @@ final class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/sport-profile/anatomy');
 
         $this->assertResponseIsSuccessful();
@@ -101,7 +101,7 @@ final class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/sport-profile/physical-qualities');
 
         $this->assertResponseIsSuccessful();
@@ -137,7 +137,7 @@ final class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/sport-profile/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();
@@ -165,7 +165,7 @@ final class SportProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request('GET', '/sport-profile/configuration');
 
         $this->assertResponseIsSuccessful();

@@ -26,7 +26,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class ProfileControllerTest extends AppWebTestCase
+class ProfileControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -42,7 +42,7 @@ final class ProfileControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/profile');
 
         $this->assertResponseIsSuccessful();
@@ -57,7 +57,7 @@ final class ProfileControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $user = $this->logIn($client, 'ROLE_USER');
+        $user = $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/profile/edit');
 
         $this->assertResponseIsSuccessful();
@@ -113,7 +113,7 @@ final class ProfileControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'on-water.user');
+        $this->createAndLogin($client, 'on-water.user');
         $client->request('GET', '/profile/edit');
 
         $this->assertResponseIsSuccessful();
@@ -155,8 +155,8 @@ final class ProfileControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'on-water.user');
-        $client->loginUser($user->_real());
+        $this->createAndLogin($client, 'on-water.user');
+        $client->loginUser($user);
         $client->request('GET', '/profile/edit');
 
         $this->assertResponseIsSuccessful();
@@ -184,7 +184,7 @@ final class ProfileControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $user = $this->logIn($client, 'ROLE_USER');
+        $user = $this->createAndLogin($client, 'ROLE_USER');
         $oldPassword = $user->getPassword();
         $client->request('GET', '/profile/edit-password');
 
@@ -200,11 +200,33 @@ final class ProfileControllerTest extends AppWebTestCase
         $this->assertNotSame($oldPassword, $user->getPassword());
     }
 
+    public function testEditPasswordWithBadCurrentPassword(): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $user = $this->createAndLogin($client, 'ROLE_USER');
+        $oldPassword = $user->getPassword();
+        $client->request('GET', '/profile/edit-password');
+
+        self::assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        $crawler = $client->submitForm('Modifier', [
+            'change_password[currentPassword]' => 'IDoNotExist',
+            'change_password[plainPassword][first]' => UserFactory::NEW_PASSWORD,
+            'change_password[plainPassword][second]' => UserFactory::NEW_PASSWORD,
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        self::assertCount(0, $crawler->filterXPath('//*[@class="alert alert-danger d-block"]'));
+        self::assertCount(1, $crawler->filterXPath('//*[@class="invalid-feedback d-block"]'));
+        self::assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $this->filterFormErrors($crawler, 'change_password_currentPassword')->text());
+    }
+
     public function testEditPasswordWithoutData(): void
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request('GET', '/profile/edit-password');
 
         $this->assertResponseIsSuccessful();
@@ -216,10 +238,10 @@ final class ProfileControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $crawler->filter('#change_password_currentPassword')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $crawler->filter('#change_password_plainPassword_first')->ancestors()->filter('.invalid-feedback')->text());
-        $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(2, $crawler->filter('.invalid-feedback'));
+        self::assertCount(0, $crawler->filterXPath('//*[@class="alert alert-danger d-block"]'));
+        self::assertCount(2, $crawler->filterXPath('//*[@class="invalid-feedback d-block"]'));
+        self::assertStringContainsString('Cette valeur doit être le mot de passe actuel de l\'utilisateur.', $this->filterFormErrors($crawler, 'change_password_currentPassword')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être vide.', $this->filterFormErrors($crawler, 'change_password_plainPassword_first')->text());
     }
 
     public static function urlProvider(): \Generator

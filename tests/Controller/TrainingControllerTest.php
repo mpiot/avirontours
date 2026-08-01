@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
-final class TrainingControllerTest extends AppWebTestCase
+class TrainingControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -59,7 +59,7 @@ final class TrainingControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $client->loginUser($user->_real());
+        $client->loginUser($user);
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -326,7 +326,7 @@ final class TrainingControllerTest extends AppWebTestCase
     {
         $training = TrainingFactory::createOne([
             'user' => $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser(),
-        ])->_disableAutoRefresh();
+        ]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();

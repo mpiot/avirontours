@@ -24,7 +24,7 @@ use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-final class SportsProfileControllerTest extends AppWebTestCase
+class SportsProfileControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
@@ -46,7 +46,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_USER');
+        $this->createAndLogin($client, 'ROLE_USER');
         $client->request($method, $url);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -56,7 +56,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
     {
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/sports-profile');
 
         $this->assertResponseIsSuccessful();
@@ -68,7 +68,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/sports-profile/'.$user->getId().'/physiology');
 
         $this->assertResponseIsSuccessful();
@@ -100,7 +100,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/sports-profile/'.$user->getId().'/anatomy');
 
         $this->assertResponseIsSuccessful();
@@ -128,7 +128,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/sports-profile/'.$user->getId().'/physical-qualities');
 
         $this->assertResponseIsSuccessful();
@@ -164,7 +164,7 @@ final class SportsProfileControllerTest extends AppWebTestCase
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $this->logIn($client, 'ROLE_SPORT_ADMIN');
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
         $client->request('GET', '/admin/sports-profile/'.$user->getId().'/workout-maximum-load');
 
         $this->assertResponseIsSuccessful();

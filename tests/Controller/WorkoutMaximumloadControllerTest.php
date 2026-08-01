@@ -24,7 +24,7 @@ use App\Factory\LicenseFactory;
 use App\Factory\WorkoutMaximumLoadFactory;
 use App\Tests\AppWebTestCase;
 
-final class WorkoutMaximumloadControllerTest extends AppWebTestCase
+class WorkoutMaximumloadControllerTest extends AppWebTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void

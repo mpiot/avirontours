@@ -1,0 +1,17 @@
+name: Setup NodeJS
+description: Install NodeJS with npm caching enabled
+
+inputs:
+    node-version:
+        description: 'NodeJS version to install'
+        required: false
+        default: '24'
+
+runs:
+    using: composite
+    steps:
+        - name: Install NodeJS
+          uses: actions/setup-node@v6
+          with:
+              node-version: ${{ inputs.node-version }}
+              cache: 'npm'

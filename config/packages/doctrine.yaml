@@ -6,8 +6,9 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
 
+        schema_filter: /^(?!sessions)/
+
         profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: true
 
         types:
             integer[]: MartinGeorgiev\Doctrine\DBAL\Types\IntegerArray
@@ -17,11 +18,8 @@ doctrine:
             _int4: integer[]
 
     orm:
-        auto_generate_proxy_classes: true
-        enable_lazy_ghost_objects: true
-        report_fields_where_declared: true
         validate_xml_mapping: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        naming_strategy: doctrine.orm.naming_strategy.underscore
         identity_generation_preferences:
             Doctrine\DBAL\Platforms\PostgreSQLPlatform: sequence
         auto_mapping: true
@@ -51,8 +49,6 @@ when@test:
 when@prod:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
-            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             query_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool

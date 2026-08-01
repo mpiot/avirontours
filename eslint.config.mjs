@@ -24,6 +24,7 @@ export default [
             'func-names': 'off',
             'id-length': 'off',
             'indent': ['error', 4],
+            'max-lines': 'off',
             'max-statements': 'off',
             'no-console': 'off',
             'no-continue': 'off',

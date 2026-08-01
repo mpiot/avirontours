@@ -21,47 +21,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\ShellDamageCategory;
-use App\Repository\ShellDamageCategoryRepository;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
-use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Persistence\ProxyRepositoryDecorator;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<ShellDamageCategory>
- *
- * @method        ShellDamageCategory|\Zenstruck\Foundry\Persistence\Proxy create(array|callable $attributes = [])
- * @method static ShellDamageCategory|Proxy                                createOne(array $attributes = [])
- * @method static ShellDamageCategory|Proxy                                find(object|array|mixed $criteria)
- * @method static ShellDamageCategory|Proxy                                findOrCreate(array $attributes)
- * @method static ShellDamageCategory|Proxy                                first(string $sortedField = 'id')
- * @method static ShellDamageCategory|Proxy                                last(string $sortedField = 'id')
- * @method static ShellDamageCategory|Proxy                                random(array $attributes = [])
- * @method static ShellDamageCategory|Proxy                                randomOrCreate(array $attributes = [])
- * @method static ShellDamageCategoryRepository|ProxyRepositoryDecorator   repository()
- * @method static ShellDamageCategory[]|Proxy[]                            all()
- * @method static ShellDamageCategory[]|Proxy[]                            createMany(int $number, array|callable $attributes = [])
- * @method static ShellDamageCategory[]|Proxy[]                            createSequence(iterable|callable $sequence)
- * @method static ShellDamageCategory[]|Proxy[]                            findBy(array $attributes)
- * @method static ShellDamageCategory[]|Proxy[]                            randomRange(int $min, int $max, array $attributes = [])
- * @method static ShellDamageCategory[]|Proxy[]                            randomSet(int $number, array $attributes = [])
- *
- * @phpstan-method        Proxy<ShellDamageCategory> create(array|callable $attributes = [])
- * @phpstan-method static Proxy<ShellDamageCategory> createOne(array $attributes = [])
- * @phpstan-method static Proxy<ShellDamageCategory> find(object|array|mixed $criteria)
- * @phpstan-method static Proxy<ShellDamageCategory> findOrCreate(array $attributes)
- * @phpstan-method static Proxy<ShellDamageCategory> first(string $sortedField = 'id')
- * @phpstan-method static Proxy<ShellDamageCategory> last(string $sortedField = 'id')
- * @phpstan-method static Proxy<ShellDamageCategory> random(array $attributes = [])
- * @phpstan-method static Proxy<ShellDamageCategory> randomOrCreate(array $attributes = [])
- * @phpstan-method static ProxyRepositoryDecorator<ShellDamageCategory> repository()
- * @phpstan-method static list<Proxy<ShellDamageCategory>> all()
- * @phpstan-method static list<Proxy<ShellDamageCategory>> createMany(int $number, array|callable $attributes = [])
- * @phpstan-method static list<Proxy<ShellDamageCategory>> createSequence(iterable|callable $sequence)
- * @phpstan-method static list<Proxy<ShellDamageCategory>> findBy(array $attributes)
- * @phpstan-method static list<Proxy<ShellDamageCategory>> randomRange(int $min, int $max, array $attributes = [])
- * @phpstan-method static list<Proxy<ShellDamageCategory>> randomSet(int $number, array $attributes = [])
+ * @extends PersistentObjectFactory<ShellDamageCategory>
  */
-final class ShellDamageCategoryFactory extends PersistentProxyObjectFactory
+final class ShellDamageCategoryFactory extends PersistentObjectFactory
 {
     protected function defaults(): array|callable
     {
