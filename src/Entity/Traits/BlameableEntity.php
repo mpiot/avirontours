@@ -30,11 +30,13 @@ trait BlameableEntity
     #[Assert\DisableAutoMapping]
     #[Gedmo\Blameable(on: 'create')]
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     protected ?User $createdBy = null;
 
     #[Assert\DisableAutoMapping]
     #[Gedmo\Blameable(on: 'update')]
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     protected ?User $updatedBy = null;
 
     public function setCreatedBy(User $createdBy): static

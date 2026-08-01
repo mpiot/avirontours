@@ -22,6 +22,9 @@ namespace App\Tests\Controller\Admin;
 
 use App\Entity\SeasonCategory;
 use App\Factory\LicenseFactory;
+use App\Factory\LicensePaymentFactory;
+use App\Factory\MedicalCertificateFactory;
+use App\Factory\SeasonCategoryFactory;
 use App\Factory\SeasonFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -224,6 +227,34 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season');
         SeasonFactory::repository()->assert()->notExists($season);
+    }
+
+    public function testDeleteSeasonWithLicenses(): void
+    {
+        $season = SeasonFactory::createOne();
+        $seasonCategory = SeasonCategoryFactory::createOne(['season' => $season]);
+        $medicalCertificate = MedicalCertificateFactory::createOne();
+        $license = LicenseFactory::createOne([
+            'seasonCategory' => $seasonCategory,
+            'medicalCertificate' => $medicalCertificate,
+        ]);
+        $payment = LicensePaymentFactory::createOne(['license' => $license]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
+        $client->request('GET', '/admin/season/'.$season->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects('/admin/season');
+        SeasonFactory::repository()->assert()->notExists($season);
+        SeasonCategoryFactory::repository()->assert()->notExists($seasonCategory);
+        MedicalCertificateFactory::repository()->assert()->notExists($medicalCertificate);
+        LicenseFactory::repository()->assert()->notExists($license);
+        LicensePaymentFactory::repository()->assert()->notExists($payment);
     }
 
     public function testExportSeasonContacts(): void
