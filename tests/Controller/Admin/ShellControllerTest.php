@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\Shell;
+use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellDamageFactory;
 use App\Factory\ShellFactory;
 use App\Tests\AppWebTestCase;
@@ -188,6 +189,28 @@ class ShellControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/admin/shell');
         ShellFactory::assert()->notExists($shell);
         ShellDamageFactory::assert()->notExists($shellDamage);
+    }
+
+    public function testDeleteShellWithLogbookEntries(): void
+    {
+        $shell = ShellFactory::createOne();
+        $logbookEntry = LogbookEntryFactory::createOne([
+            'shell' => $shell,
+            'shellDamages' => [],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_MATERIAL_ADMIN');
+        $client->request('GET', '/admin/shell/'.$shell->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects('/admin/shell');
+        ShellFactory::assert()->notExists($shell);
+        LogbookEntryFactory::assert()->notExists($logbookEntry);
     }
 
     public static function urlProvider(): \Generator

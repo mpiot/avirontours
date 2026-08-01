@@ -21,7 +21,12 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Enum\LegalGuardianRole;
+use App\Factory\LicenseFactory;
+use App\Factory\LicensePaymentFactory;
+use App\Factory\LogbookEntryFactory;
+use App\Factory\MedicalCertificateFactory;
 use App\Factory\PostalCodeFactory;
+use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -294,6 +299,80 @@ class UserControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/user');
         UserFactory::repository()->assert()->notExists($user);
+    }
+
+    public function testDeleteUserWithLicense(): void
+    {
+        $user = UserFactory::createOne();
+        $medicalCertificate = MedicalCertificateFactory::createOne();
+        $license = LicenseFactory::createOne([
+            'user' => $user,
+            'medicalCertificate' => $medicalCertificate,
+        ]);
+        $payment = LicensePaymentFactory::createOne(['license' => $license]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects('/admin/user');
+        UserFactory::repository()->assert()->notExists($user);
+        MedicalCertificateFactory::repository()->assert()->notExists($medicalCertificate);
+        LicenseFactory::repository()->assert()->notExists($license);
+        LicensePaymentFactory::repository()->assert()->notExists($payment);
+    }
+
+    public function testDeleteUserWithTraining(): void
+    {
+        $user = UserFactory::createOne();
+        $training = TrainingFactory::createOne(['user' => $user]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects('/admin/user');
+        UserFactory::repository()->assert()->notExists($user);
+        TrainingFactory::repository()->assert()->notExists($training);
+    }
+
+    public function testDeleteUserWithLogbookEntry(): void
+    {
+        $user = UserFactory::createOne();
+        $otherCrewMember = UserFactory::createOne();
+        $logbookEntry = LogbookEntryFactory::createOne([
+            'crewMembers' => [$user, $otherCrewMember],
+            'shellDamages' => [],
+        ]);
+        $logbookEntryId = $logbookEntry->getId();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_USER_ADMIN');
+        $client->request('GET', '/admin/user/'.$user->getId());
+
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects('/admin/user');
+        UserFactory::repository()->assert()->notExists($user);
+        UserFactory::repository()->assert()->exists($otherCrewMember);
+        LogbookEntryFactory::repository()->assert()->exists($logbookEntry);
+
+        \Zenstruck\Foundry\Persistence\refresh($logbookEntry);
+
+        self::assertCount(1, $logbookEntry->getCrewMembers());
     }
 
     public static function urlProvider(): \Generator

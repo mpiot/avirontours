@@ -71,7 +71,7 @@ class SeasonCategory
     /**
      * @var Collection<int, License>
      */
-    #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: License::class)]
+    #[ORM\OneToMany(mappedBy: 'seasonCategory', targetEntity: License::class, cascade: ['remove'])]
     private Collection $licenses;
 
     #[Gedmo\Slug(fields: ['name'])]

@@ -157,13 +157,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * @var Collection<int, Training>
      */
-    #[ORM\OneToMany(targetEntity: Training::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Training::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $trainings;
 
     /**
      * @var Collection<int, Measure>
      */
-    #[ORM\OneToMany(targetEntity: Measure::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Measure::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $measures;
 
     /**

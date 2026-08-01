@@ -85,7 +85,7 @@ class Shell
     /**
      * @var Collection<int, LogbookEntry>
      */
-    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: LogbookEntry::class)]
+    #[ORM\OneToMany(mappedBy: 'shell', targetEntity: LogbookEntry::class, cascade: ['remove'])]
     private Collection $logbookEntries;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
