@@ -342,6 +342,36 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assert()->notExists($training);
     }
 
+    public function testImportConceptLogbookRequiresConnectedAccount(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/import/concept-logbook');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        self::assertCount(0, self::getContainer()->get('messenger.transport.async')->getSent());
+    }
+
+    public function testImportConceptLogbookDispatchesForConnectedAccount(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'a-refresh-token']);
+        LicenseFactory::new()->annualActive()->withValidLicense()->create(['user' => $user]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/import/concept-logbook');
+
+        $this->assertResponseRedirects('/training');
+        self::assertCount(1, self::getContainer()->get('messenger.transport.async')->getSent());
+
+        $client->followRedirect();
+        $this->assertSelectorTextContains('.toast-body', 'en cours de synchronisation');
+    }
+
     public static function urlProvider(): \Generator
     {
         yield ['GET', '/training'];

@@ -31,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
+#[ORM\UniqueConstraint(fields: ['user', 'concept2Id'])]
 class Training
 {
     public const int NUM_ITEMS = 25;
@@ -85,6 +86,9 @@ class Training
 
     #[ORM\Column(nullable: true)]
     private ?int $maxHeartRate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $concept2Id = null;
 
     public function __construct(User $user)
     {
@@ -289,6 +293,18 @@ class Training
     public function setMaxHeartRate(?int $maxHeartRate): static
     {
         $this->maxHeartRate = $maxHeartRate;
+
+        return $this;
+    }
+
+    public function getConcept2Id(): ?int
+    {
+        return $this->concept2Id;
+    }
+
+    public function setConcept2Id(?int $concept2Id): static
+    {
+        $this->concept2Id = $concept2Id;
 
         return $this;
     }
