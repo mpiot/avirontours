@@ -312,7 +312,8 @@ class Training
     #[Assert\Callback]
     public function validateDuration(ExecutionContextInterface $context): void
     {
-        if ($this->getDuration() < 5 * 60) {
+        // Duration is stored in tenths of a second, so 5 minutes is 5 * 60 * 10 tenths.
+        if (null === $this->getDuration() || $this->getDuration() < 5 * 60 * 10) {
             $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
                 ->atPath('duration')
                 ->addViolation()

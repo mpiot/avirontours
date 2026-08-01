@@ -275,6 +275,33 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assert()->count(0);
     }
 
+    public function testNewTrainingWithTooShortDuration(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/new');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Sauver', [
+            'training[trainedAt]' => '2020-01-15',
+            'training[sport]' => SportType::Rowing->value,
+            'training[duration][hours]' => 0,
+            'training[duration][minutes]' => 2,
+            'training[distance]' => 16.3,
+            'training[feeling]' => 0.75,
+            'training[ratedPerceivedExertion]' => 4,
+            'training[comment]' => 'My little comment...',
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
     public function testEditTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();

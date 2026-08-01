@@ -11,8 +11,8 @@ export default class extends Controller {
 
     _onPreConnect (event) {
         event.detail.options.scales.pace.ticks.callback = function (value) {
-            const minutes = Math.round(value / 60);
-            const seconds = Math.round(value % 60).toString().padEnd(2, '0');
+            const minutes = Math.floor(value / 60);
+            const seconds = Math.round(value % 60).toString().padStart(2, '0');
 
             return `${minutes}:${seconds}`;
         };
@@ -20,8 +20,8 @@ export default class extends Controller {
         event.detail.options.plugins.tooltip.callbacks = {
             label (context) {
                 if ('pace' === context.dataset.yAxisID) {
-                    const minutes = Math.round(context.raw / 60);
-                    const seconds = Math.round(context.raw % 60).toString().padEnd(2, '0');
+                    const minutes = Math.floor(context.raw / 60);
+                    const seconds = Math.round(context.raw % 60).toString().padStart(2, '0');
 
                     return `${minutes}:${seconds}`;
                 }
