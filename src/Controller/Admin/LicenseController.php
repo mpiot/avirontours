@@ -49,6 +49,7 @@ class LicenseController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
+        WorkflowInterface $licenseWorkflow,
     ): Response {
         $license = new License();
         $form = $this->createForm(LicenseType::class, $license, ['season' => $season]);
@@ -58,6 +59,9 @@ class LicenseController extends AbstractController
             $uploadedFile = $form->get('medicalCertificate')->get('file')->getData();
             $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
             $license->getMedicalCertificate()->setUploadedFile($uploadedFile);
+
+            // Apply the workflow's initial marking
+            $licenseWorkflow->getMarking($license);
 
             $entityManager->persist($license);
             $entityManager->flush();

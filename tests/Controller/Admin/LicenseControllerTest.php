@@ -153,6 +153,7 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
+        $this->assertSame(['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1], $license->getMarking());
     }
 
     public function testNewLicenseWithoutData(): void
@@ -362,7 +363,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidatePayment(): void
     {
-        $license = LicenseFactory::createOne(['marking' => []]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
 
         static::ensureKernelShutdown();
@@ -405,7 +406,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidatePaymentAsCheckWithoutCheckInfos(): void
     {
-        $license = LicenseFactory::createOne(['marking' => []]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
 
         static::ensureKernelShutdown();
@@ -438,7 +439,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidatePaymentWithoutData(): void
     {
-        $license = LicenseFactory::createOne(['marking' => []]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
 
         static::ensureKernelShutdown();
@@ -459,7 +460,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidatePaymentWithEmptyData(): void
     {
-        $license = LicenseFactory::createOne(['marking' => []]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
         $seasonCategory = SeasonCategoryFactory::createOne(['season' => $license->getSeasonCategory()->getSeason()]);
 
         static::ensureKernelShutdown();
@@ -485,7 +486,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testValidateMedicalCertificate(): void
     {
-        $license = LicenseFactory::createOne(['marking' => []]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -505,7 +506,7 @@ class LicenseControllerTest extends AppWebTestCase
 
     public function testRejectMedicalCertificate(): void
     {
-        $license = LicenseFactory::createOne(['marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1]]);
+        $license = LicenseFactory::new()->withAwaitingMedicalCertificateAndPayment()->create();
 
         static::ensureKernelShutdown();
         $client = static::createClient();

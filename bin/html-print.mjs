@@ -4,6 +4,10 @@ import { Command } from 'commander';
 import path from 'path';
 import puppeteer from 'puppeteer';
 
+// `--disable-dev-shm-usage` avoids Chromium crashes on hosts/containers with a small /dev/shm.
+const LAUNCH_OPTIONS = { args: ['--no-sandbox', '--disable-dev-shm-usage'], headless: 'shell' };
+const NAVIGATION_TIMEOUT = 30000;
+
 /**
  * @param {string} urlString
  * @returns {boolean}
@@ -61,20 +65,23 @@ program.command('pdf')
     .action(async (source, destination, options) => {
         const normalizedSource = normalizeUrl(source);
 
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'shell' });
-        const page = await browser.newPage();
+        const browser = await puppeteer.launch(LAUNCH_OPTIONS);
 
-        await page.goto(normalizedSource);
-        await page.pdf({
-            displayHeaderFooter: undefined !== options.headerTemplate || undefined !== options.footerTemplate,
-            footerTemplate: options.footerTemplate,
-            headerTemplate: options.headerTemplate,
-            landscape: true,
-            path: destination,
-            printBackground: true,
-        });
+        try {
+            const page = await browser.newPage();
 
-        await browser.close();
+            await page.goto(normalizedSource, { timeout: NAVIGATION_TIMEOUT });
+            await page.pdf({
+                displayHeaderFooter: undefined !== options.headerTemplate || undefined !== options.footerTemplate,
+                footerTemplate: options.footerTemplate,
+                headerTemplate: options.headerTemplate,
+                landscape: true,
+                path: destination,
+                printBackground: true,
+            });
+        } finally {
+            await browser.close();
+        }
     });
 
 program.command('screenshot')
@@ -84,16 +91,19 @@ program.command('screenshot')
     .action(async (source, destination) => {
         const normalizedSource = normalizeUrl(source);
 
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'], headless: 'shell' });
-        const page = await browser.newPage();
+        const browser = await puppeteer.launch(LAUNCH_OPTIONS);
 
-        await page.goto(normalizedSource);
-        await page.setViewport({ height: 1080, width: 1920 });
-        await page.screenshot({
-            path: destination
-        });
+        try {
+            const page = await browser.newPage();
 
-        await browser.close();
+            await page.goto(normalizedSource, { timeout: NAVIGATION_TIMEOUT });
+            await page.setViewport({ height: 1080, width: 1920 });
+            await page.screenshot({
+                path: destination
+            });
+        } finally {
+            await browser.close();
+        }
     });
 
 program.parse();

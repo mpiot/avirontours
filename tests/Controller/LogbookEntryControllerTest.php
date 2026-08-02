@@ -394,7 +394,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     public function testUserListLogbookEntryFormAsAdmin(): void
     {
         LicenseFactory::new()->annualActive()->withValidLicense()->many(1)->create();
-        LicenseFactory::new()->annualActive()->withInvalidLicense()->many(2)->create();
+        LicenseFactory::new()->annualActive()->withAwaitingMedicalCertificateAndPayment()->many(2)->create();
         LicenseFactory::new()->annualInactive()->many(4)->create();
         UserFactory::createMany(8);
 
@@ -410,7 +410,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
     public function testUserListLogbookEntryFormAsUser(): void
     {
         $users = LicenseFactory::new()->annualActive()->withValidLicense()->many(1)->create();
-        LicenseFactory::new()->annualActive()->withInvalidLicense()->many(2)->create();
+        LicenseFactory::new()->annualActive()->withAwaitingMedicalCertificateAndPayment()->many(2)->create();
         LicenseFactory::new()->annualInactive()->many(4)->create();
         UserFactory::createMany(8);
 
