@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/workout-maximum-load')]
-#[IsGranted(new Expression('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")'))]
+#[IsGranted(new Expression('is_granted("VALID_LICENSE") or is_granted("ROLE_ADMIN")'))]
 class WorkoutMaximumLoadController extends AbstractController
 {
     #[Route(path: '', name: 'workout_maximum_load_show', methods: ['GET'])]

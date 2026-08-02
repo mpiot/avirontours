@@ -32,7 +32,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/measure')]
-#[IsGranted(new Expression('(is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_ADMIN")'))]
+#[IsGranted(new Expression('is_granted("VALID_LICENSE") or is_granted("ROLE_ADMIN")'))]
 class MeasureController extends AbstractController
 {
     #[Route(path: '', name: 'measure_index', methods: ['GET'])]

@@ -31,6 +31,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: LogbookEntryRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\Index(fields: ['date'])]
+#[ORM\Index(fields: ['endAt'])]
 class LogbookEntry
 {
     public const NUM_ITEMS = 20;

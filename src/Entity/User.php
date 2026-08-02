@@ -587,17 +587,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    public function hasValidLicense(): bool
-    {
-        foreach ($this->licenses as $license) {
-            if ($license->isValid() && $license->getSeasonCategory()->getSeason()->getActive()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function getPhysiology(): ?Physiology
     {
         return $this->physiology;

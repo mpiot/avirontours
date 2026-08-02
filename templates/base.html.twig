@@ -58,13 +58,13 @@
                         </li>
                     {% endif %}
 
-                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_LOGBOOK_ADMIN') %}
+                    {% if is_granted('VALID_LICENSE') or is_granted('ROLE_LOGBOOK_ADMIN') %}
                         <li class="nav-item">
                             <a class="nav-link link-light" href="{{ path('logbook_entry_index') }}">Cahier de sorties</a>
                         </li>
                     {% endif %}
 
-                    {% if (is_granted('ROLE_USER') and app.user.hasValidLicense()) or is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('VALID_LICENSE') or is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
                             <a class="nav-link link-light d-flex justify-content-between align-items-center" href="{{ path('training_index') }}">Mes entraînements</a>
                         </li>

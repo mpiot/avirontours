@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\UniqueConstraint(fields: ['user', 'concept2Id'])]
+#[ORM\Index(fields: ['trainedAt'])]
 class Training
 {
     public const int NUM_ITEMS = 25;
