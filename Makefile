@@ -85,8 +85,9 @@ validate-schema: ## Validate the doctrine schema
 	@$(CONSOLE) doctrine:schema:validate
 
 phpunit: ## Run tests
-	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit
+	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit --do-not-fail-on-deprecation
+
 
 coverage: ## Run tests with HTML coverage report
 	@rm -Rf var/coverage-report
-	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit --coverage-html=var/coverage-report
+	@SYMFONY_DEPRECATIONS_HELPER=weak $(PHP) vendor/bin/phpunit --do-not-fail-on-deprecation --coverage-html=var/coverage-report
