@@ -76,10 +76,10 @@ final class LicenseFactory extends PersistentObjectFactory
         ]);
     }
 
-    public function withInvalidLicense(): self
+    public function withAwaitingMedicalCertificateAndPayment(): self
     {
         return $this->with([
-            'marking' => [],
+            'marking' => ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
         ]);
     }
 
@@ -97,7 +97,6 @@ final class LicenseFactory extends PersistentObjectFactory
             'seasonCategory' => SeasonCategoryFactory::new(['season' => SeasonFactory::new()]),
             'user' => UserFactory::new(),
             'marking' => self::faker()->randomElement([
-                [],
                 ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
                 ['wait_medical_certificate_validation' => 1, 'payment_validated' => 1],
                 ['medical_certificate_rejected' => 1, 'wait_payment_validation' => 1],

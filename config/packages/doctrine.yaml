@@ -34,7 +34,6 @@ doctrine:
             string_functions:
                 COLLATE: App\Doctrine\ORM\Query\AST\Collate
                 JSON_GET_FIELD_AS_TEXT: App\Doctrine\ORM\Query\AST\JsonGetFieldAsText
-                JSON_TYPEOF: App\Doctrine\ORM\Query\AST\JsonTypeof
             datetime_functions:
                 DATE_PART: App\Doctrine\ORM\Query\AST\DatePart
         controller_resolver:

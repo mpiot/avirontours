@@ -431,7 +431,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
     public function testUserListLogbookEntryForm(): void
     {
         LicenseFactory::new()->annualActive()->withValidLicense()->many(1)->create();
-        LicenseFactory::new()->annualActive()->withInvalidLicense()->many(2)->create();
+        LicenseFactory::new()->annualActive()->withAwaitingMedicalCertificateAndPayment()->many(2)->create();
         LicenseFactory::new()->annualInactive()->many(4)->create();
         UserFactory::createMany(8);
 
