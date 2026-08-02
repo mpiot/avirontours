@@ -62,11 +62,29 @@ class LicenseRepository extends ServiceEntityRepository
         return $query->getOneOrNullResult();
     }
 
+    public function hasValidLicenseForActiveSeason(User $user): bool
+    {
+        $count = (int) $this->createQueryBuilder('license')
+            ->select('COUNT(license.id)')
+            ->innerJoin('license.seasonCategory', 'season_category')
+            ->innerJoin('season_category.season', 'season')
+            ->where('license.user = :user')
+            ->andWhere('season.active = true')
+            ->andWhere("(JSON_GET_FIELD_AS_TEXT(license.marking, 'validated') = '1' OR (JSON_GET_FIELD_AS_TEXT(license.marking, 'medical_certificate_validated') = '1' AND JSON_GET_FIELD_AS_TEXT(license.marking, 'payment_validated') = '1'))")
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        return $count > 0;
+    }
+
     /** @return License[] */
     public function findForPaymentsExport(Season $season): array
     {
         $qb = $this->findBySeasonQueryBuilder($season)
             ->leftJoin('license.payments', 'payments')
+            ->addSelect('payments')
             ->orderBy('user.firstName', 'ASC')
             ->addOrderBy('user.lastName', 'ASC')
             ->andWhere('payments IS NOT NULL')
@@ -250,6 +268,8 @@ class LicenseRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('license')
             ->innerJoin('license.user', 'user')->addSelect('user')
+            ->leftJoin('user.firstLegalGuardian', 'first_legal_guardian')->addSelect('first_legal_guardian')
+            ->leftJoin('user.secondLegalGuardian', 'second_legal_guardian')->addSelect('second_legal_guardian')
             ->innerJoin('license.medicalCertificate', 'medical_certificate')->addSelect('medical_certificate')
             ->innerJoin('license.seasonCategory', 'season_category')->addSelect('season_category')
             ->innerJoin('season_category.season', 'season')

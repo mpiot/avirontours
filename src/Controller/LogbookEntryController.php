@@ -38,7 +38,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/logbook-entry')]
-#[IsGranted(new Expression('is_granted("ROLE_LOGBOOK_USER") or (is_granted("ROLE_USER") and user.hasValidLicense()) or is_granted("ROLE_LOGBOOK_ADMIN")'))]
+#[IsGranted(new Expression('is_granted("ROLE_LOGBOOK_USER") or is_granted("VALID_LICENSE") or is_granted("ROLE_LOGBOOK_ADMIN")'))]
 class LogbookEntryController extends AbstractController
 {
     #[Route(path: '', name: 'logbook_entry_index', methods: ['GET'])]
