@@ -28,10 +28,14 @@ use App\Repository\TrainingRepository;
 use App\Service\Concept2ApiConsumer;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
+use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
+use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -116,6 +120,41 @@ class Concept2ApiConsumerTest extends KernelTestCase
         self::assertSame('old-refresh', $user->getConcept2RefreshToken());
     }
 
+    public function testGetTrainingsAsksToRetryOnRateLimit(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'old-refresh']);
+        $httpClient = new MockHttpClient([
+            new MockResponse('', ['http_code' => 429, 'response_headers' => ['retry-after' => '30']]),
+        ]);
+
+        $exception = null;
+        try {
+            $this->createConsumer($httpClient)->getTrainings($user, null);
+        } catch (RecoverableMessageHandlingException $exception) {
+        }
+
+        self::assertInstanceOf(RecoverableMessageHandlingException::class, $exception);
+        self::assertSame(30000, $exception->getRetryDelay());
+    }
+
+    public function testGetTrainingsDisconnectsAccountWhenRefreshTokenIsRejected(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'revoked-refresh']);
+
+        $oauthClient = $this->createStub(OAuth2Client::class);
+        $oauthClient->method('refreshAccessToken')->willThrowException(new IdentityProviderException('invalid_grant', 400, ''));
+        $clientRegistry = $this->createStub(ClientRegistry::class);
+        $clientRegistry->method('getClient')->willReturn($oauthClient);
+
+        try {
+            $this->buildConsumer($clientRegistry, new MockHttpClient())->getTrainings($user, null);
+            self::fail('Expected an UnrecoverableMessageHandlingException.');
+        } catch (UnrecoverableMessageHandlingException) {
+        }
+
+        self::assertNull($user->getConcept2RefreshToken());
+    }
+
     private function createConsumer(MockHttpClient $httpClient, ?string $newRefreshToken = 'rotated-refresh'): Concept2ApiConsumer
     {
         $options = ['access_token' => 'access-token'];
@@ -129,6 +168,11 @@ class Concept2ApiConsumerTest extends KernelTestCase
         $clientRegistry = $this->createStub(ClientRegistry::class);
         $clientRegistry->method('getClient')->willReturn($oauthClient);
 
+        return $this->buildConsumer($clientRegistry, $httpClient);
+    }
+
+    private function buildConsumer(ClientRegistry $clientRegistry, MockHttpClient $httpClient): Concept2ApiConsumer
+    {
         return new Concept2ApiConsumer(
             $clientRegistry,
             self::getContainer()->get('doctrine'),

@@ -28,14 +28,21 @@ use App\Repository\TrainingRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
+use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class Concept2ApiConsumer
 {
     public const string API_URL = 'https://log.concept2.com/api';
 
     private const int HTTP_TIMEOUT = 15;
+
+    private const int DEFAULT_RETRY_AFTER = 60;
 
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
@@ -250,9 +257,7 @@ class Concept2ApiConsumer
             'timeout' => self::HTTP_TIMEOUT,
         ]);
 
-        if (200 !== $response->getStatusCode()) {
-            throw new \Exception('The Logbook Api do not return successfully response.');
-        }
+        $this->guardResponse($response);
 
         return $response->toArray()['data'];
     }
@@ -276,9 +281,7 @@ class Concept2ApiConsumer
             'timeout' => self::HTTP_TIMEOUT,
         ]);
 
-        if (200 !== $response->getStatusCode()) {
-            throw new \Exception('The Logbook Api do not return successfully response.');
-        }
+        $this->guardResponse($response);
 
         return $response->toArray()['data'];
     }
@@ -289,7 +292,14 @@ class Concept2ApiConsumer
         $client = $this->clientRegistry->getClient('concept2');
 
         // Get an access token from the refreshToken
-        $accessToken = $client->refreshAccessToken($user->getConcept2RefreshToken());
+        try {
+            $accessToken = $client->refreshAccessToken($user->getConcept2RefreshToken());
+        } catch (IdentityProviderException $e) {
+            $user->setConcept2RefreshToken(null);
+            $this->managerRegistry->getManager()->flush();
+
+            throw new UnrecoverableMessageHandlingException('The Concept2 account must be reconnected.', previous: $e);
+        }
 
         // Update the refresh token
         $refreshToken = $accessToken->getRefreshToken();
@@ -299,5 +309,22 @@ class Concept2ApiConsumer
         }
 
         return $accessToken;
+    }
+
+    private function guardResponse(ResponseInterface $response): void
+    {
+        $statusCode = $response->getStatusCode();
+        if (200 === $statusCode) {
+            return;
+        }
+
+        if (Response::HTTP_TOO_MANY_REQUESTS === $statusCode) {
+            $retryAfter = $response->getHeaders(false)['retry-after'][0] ?? null;
+            $delay = is_numeric($retryAfter) ? (int) $retryAfter : self::DEFAULT_RETRY_AFTER;
+
+            throw new RecoverableMessageHandlingException('The Concept2 Logbook rate limit was reached.', retryDelay: $delay * 1000);
+        }
+
+        throw new \Exception('The Logbook Api do not return successfully response.');
     }
 }
