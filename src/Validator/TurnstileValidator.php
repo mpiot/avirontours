@@ -67,7 +67,9 @@ class TurnstileValidator extends ConstraintValidator
         );
         $content = $response->toArray();
 
-        if (false === $content['success']) {
+        // If the key success do not exist, fallback to false (challenge fail)
+        $success = $content['success'] ?? false;
+        if (true !== $success) {
             $this->context->buildViolation($constraint->message)->addViolation();
         }
     }
