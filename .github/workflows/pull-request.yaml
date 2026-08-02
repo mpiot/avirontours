@@ -162,7 +162,7 @@ jobs:
               run: bin/console doctrine:migrations:migrate --no-interaction
 
             - name: Load develop fixtures
-              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate --purge-exclusions acoustic_production_order_line_report --purge-exclusions product_production_order_line_report
+              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate
 
             - name: Switch to the PR branch
               env:
@@ -193,7 +193,7 @@ jobs:
               run: bin/console doctrine:schema:validate
 
             - name: Load fixtures
-              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate --purge-exclusions acoustic_production_order_line_report --purge-exclusions product_production_order_line_report
+              run: bin/console doctrine:fixtures:load --no-interaction --purge-with-truncate
 
     tests-phpunit:
         name: Tests
