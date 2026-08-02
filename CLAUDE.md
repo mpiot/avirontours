@@ -10,22 +10,12 @@ Stack: Symfony full-stack (Twig + Hotwired Stimulus/Turbo via Webpack Encore), P
 
 ## Commands
 
-Everything is orchestrated through the `Makefile` (run `make help` for the full list). PHP is invoked through the Symfony CLI (`symfony php`, `symfony console`), which wires in env vars from the Docker services.
+PHP runs through the Symfony CLI (`symfony php`, `symfony console`), which injects env vars from the Docker services. `make help` lists everything; the targets that matter when changing code:
 
-- `make start` / `make stop` / `make restart` — start/stop Docker services + Symfony proxy + web server
-- `make docker-up` / `make docker-down` — create/tear down Postgres + Mailpit containers
-- `make db-reset` — drop, create, migrate the database
-- `make db-fixtures` — `db-reset` + load Foundry/Doctrine fixtures (also wipes `public/uploads`, `var/uploads`)
-- `make tests` — full pre-PR gate: `lint` + `validate-schema` + `phpunit`
-- `make lint` — composer validate, lint yaml/twig/container, rector dry-run, php-cs-fixer dry-run, phpstan, eslint
-- `make phpunit` — run the PHPUnit suite
-- `make coverage` — PHPUnit with HTML coverage into `var/coverage-report`
-
-Run a **single test**: `symfony php vendor/bin/phpunit --filter TestMethodName` or by path, e.g. `symfony php vendor/bin/phpunit tests/Controller/TrainingControllerTest.php`. (CI uses `bin/phpunit`.)
-
-Frontend (npm): `npm run dev` / `npm run watch` (Encore dev) · `npm run build` (production) · `npm run lint` (ESLint over `assets` + `bin`). Assets must be built before running tests — controllers reference the Encore manifest.
-
-Apply an auto-fixer before committing when lint fails: `symfony php vendor/bin/php-cs-fixer fix` and `symfony php vendor/bin/rector process`.
+- `make tests` — the full pre-PR gate: `lint` + `doctrine:schema:validate` + `phpunit`. `lint` covers composer validate, yaml/twig/container lint, rector dry-run, php-cs-fixer dry-run, phpstan, eslint. (The Makefile runs phpunit with `--do-not-fail-on-deprecation`.)
+- Run a **single test**: `symfony php vendor/bin/phpunit --filter TestMethodName` or by path, e.g. `symfony php vendor/bin/phpunit tests/Controller/TrainingControllerTest.php`. (CI uses `bin/phpunit`.)
+- When lint fails, run the auto-fixers — don't hand-tweak style: `symfony php vendor/bin/php-cs-fixer fix` and `symfony php vendor/bin/rector process`.
+- Frontend: `npm run build` (Encore) must run before the test suite — controllers reference the Encore manifest; `npm run lint` is ESLint over `assets` + `bin`.
 
 ## Non-obvious conventions (CI will fail otherwise)
 
@@ -45,10 +35,13 @@ Standard Symfony layout: `App\` → `src/`, `App\Tests\` → `tests/`. Controlle
 **Role hierarchy** (grant admin sub-areas, not a single ROLE_ADMIN):
 `ROLE_SUPER_ADMIN` → `ROLE_ADMIN` → { `ROLE_LOGBOOK_ADMIN`, `ROLE_MATERIAL_ADMIN`, `ROLE_SPORT_ADMIN`, `ROLE_USER_ADMIN`, `ROLE_SEASON_ADMIN` }; `ROLE_SEASON_ADMIN` → { `ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN`, `ROLE_SEASON_PAYMENTS_ADMIN` }. Admin controllers live in `src/Controller/Admin/` and each guards on its specific role.
 
-Non-admin feature access is commonly gated by an expression like `is_granted("ROLE_USER") and user.hasValidLicense()` — check `User::hasValidLicense()` when reasoning about member-facing pages.
+Non-admin feature access is commonly gated by `is_granted("VALID_LICENSE")` (sometimes OR-ed with `ROLE_ADMIN` in an `Expression`). The `App\Security\Voter\ValidLicenseVoter` backs that attribute, delegating to `LicenseRepository::hasValidLicenseForActiveSeason()` (a single COUNT query, memoised per request) — check there when reasoning about member-facing pages.
 
 ### License validation workflow
 `config/packages/workflow.yaml` defines a **Symfony Workflow** (`license`) over `App\Entity\License` with a dual initial marking (`wait_medical_certificate_validation`, `wait_payment_validation`). Transitions (validate/reject medical certificate, validate payment, validate license) are guarded by the season admin roles above. Audit trail is enabled. Treat license state changes as workflow transitions, not direct property writes.
+
+- **New licenses must be seeded with the initial marking at creation**: call `$licenseWorkflow->getMarking($license)` before persist/flush (the marking doesn't self-populate — see `LicenseController::new`). Licenses are always stored with an explicit marking, never `[]`.
+- `License::$marking` is a PostgreSQL **`json` column, which has no `=` operator** — never compare it directly in SQL. Query license state through the custom `JSON_GET_FIELD_AS_TEXT` DQL function (custom AST functions in `src/Doctrine/ORM/Query/AST/`, registered under `dql.string_functions` in `config/packages/doctrine.yaml`); `LicenseRepository` filters all state that way. For a whole-value comparison in raw SQL (e.g. a migration), cast with `marking::jsonb`.
 
 ### Concept2 ergometer integration
 Trainings can be imported from Concept2 (`log.concept2.com`): OAuth via `src/OAuth/Concept2Provider.php` + `Concept2OauthController`, API calls in `src/Service/Concept2ApiConsumer.php`, and the import runs **asynchronously** through Symfony Messenger — `Concept2ImportMessage` → `Concept2ImportMessageHandler`. Messenger transport is Doctrine (`MESSENGER_TRANSPORT_DSN=doctrine://default`).
@@ -67,5 +60,5 @@ Functional tests extend `App\Tests\AppWebTestCase` (`tests/`), which mixes in Fo
 ## Config notes
 
 - Env: `.env` (committed defaults) + `.env.local` / `.env.test`. Secrets via `config/secrets/`.
-- Local mail goes to **Mailpit** (`compose.override.yaml`); web UI on the mapped 8025 port.
-- Deployment is defined in `deploy.yaml` / `rollback.yaml` / `hosts.yaml` (Symfony/Deployer-style). Release notes/version in `changelog.json` + `APP_VERSION`.
+- Local mail is caught by **Mailpit** (`compose.override.yaml`) instead of being sent.
+- Deployment is **Ansible** — `deploy.yaml` / `rollback.yaml` (playbooks) + `hosts.yaml` (inventory: prod host `rhea.avirontours.fr`, `git_version: develop`). It rsyncs a release, runs migrations, and reloads PHP-FPM + Messenger workers. Release notes/version in `changelog.json` + `APP_VERSION`.
