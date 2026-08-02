@@ -129,7 +129,7 @@ class LogbookEntryController extends AbstractController
             $entityManager->remove($logbookEntry);
             $entityManager->flush();
 
-            $this->addFlash('success', 'La sortie a été modifiée avec succès.');
+            $this->addFlash('success', 'La sortie a été supprimée avec succès.');
         }
 
         return $this->redirectToRoute('logbook_entry_index');

@@ -26,13 +26,14 @@ use App\Factory\LicenseFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
 class TrainingControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -47,7 +48,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         $user = UserFactory::createOne();
@@ -88,6 +89,19 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertCount(6, $crawler->filterXPath('//div[@id="training-list"]//div[starts-with(@id, "training-")]'));
+    }
+
+    #[DataProvider('endAtProvider')]
+    public function testIndexTrainingsAcceptsEndAtQuery(string $endAt): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', "/training?endAt={$endAt}");
+
+        $this->assertResponseIsSuccessful();
     }
 
     public function testShowTraining(): void
@@ -408,5 +422,12 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['GET', '/training/{id}/edit'];
         yield ['POST', '/training/{id}/edit'];
         yield ['POST', '/training/{id}'];
+    }
+
+    public static function endAtProvider(): \Generator
+    {
+        yield 'valid date' => ['2020-01-15'];
+        yield 'out-of-range month and day' => ['9999-99-99'];
+        yield 'impossible day' => ['2020-02-30'];
     }
 }

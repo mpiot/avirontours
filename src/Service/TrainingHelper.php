@@ -45,11 +45,13 @@ readonly class TrainingHelper
         $data = [];
         $trainings = $this->trainingRepository->findForUser($user, $startAt, $endAt);
         foreach ($weeks as $week) {
+            // Get week trainings
             $weekTrainings = array_filter(
                 $trainings,
                 static fn (Training $training): bool => $week->format('W') === $training->getTrainedAt()->format('W'),
             );
 
+            // Group trainings per category of sport
             $categorizedTrainings = [];
             foreach ($weekTrainings as $training) {
                 if (false === \array_key_exists($training->getSport()->value, $categorizedTrainings)) {
@@ -72,13 +74,14 @@ readonly class TrainingHelper
                 fn (array $a, array $b): int => $this->translator->trans($a['sport']->label()) <=> $this->translator->trans($b['sport']->label())
             );
 
-            $duration = array_reduce($weekTrainings, static fn (int $carry, Training $training): int => $carry + $training->getDuration(), 0);
-            $duration = (int) round($duration / 10);
+            // Calculate total duration
+            $duration = array_sum(array_column($categorizedTrainings, 'duration'));
 
             // Define ratio
             foreach ($categorizedTrainings as &$categorizedTraining) {
-                $categorizedTraining['ratio'] = round($categorizedTraining['duration'] / $duration, 2);
+                $categorizedTraining['ratio'] = 0 === $duration ? 0.0 : round($categorizedTraining['duration'] / $duration, 2);
             }
+            unset($categorizedTraining);
 
             $data[] = [
                 'week' => $week,
