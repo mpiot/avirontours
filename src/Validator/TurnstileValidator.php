@@ -47,9 +47,9 @@ class TurnstileValidator extends ConstraintValidator
         }
 
         $request = $this->requestStack->getCurrentRequest();
-        $turnstileResponse = $request->request->get('cf-turnstile-response');
+        $turnstileResponse = $request?->request->get('cf-turnstile-response');
 
-        if (null === $turnstileResponse || '' === $turnstileResponse || 0 === $turnstileResponse) {
+        if (null === $turnstileResponse || '' === $turnstileResponse) {
             $this->context->buildViolation($constraint->noResponseMessage)->addViolation();
 
             return;

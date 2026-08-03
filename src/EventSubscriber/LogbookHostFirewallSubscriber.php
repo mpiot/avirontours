@@ -23,7 +23,7 @@ namespace App\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 
 use function Symfony\Component\String\u;
@@ -36,20 +36,30 @@ class LogbookHostFirewallSubscriber implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
+        if (false === $event->isMainRequest()) {
+            return;
+        }
+
         if ($this->logbookHost !== $event->getRequest()->getHost()) {
             return;
         }
 
-        $logbookPath = $this->router->generate('logbook_entry_index');
-        if (false === u($event->getRequest()->getPathInfo())->startsWith($logbookPath)) {
-            $event->setResponse(new RedirectResponse($this->router->generate('logbook_entry_index', [], UrlGeneratorInterface::ABSOLUTE_PATH)));
+        $route = $event->getRequest()->attributes->get('_route');
+        $pathInfos = $event->getRequest()->getPathInfo();
+        if (
+            false === u($route)->startsWith('logbook_entry_')
+            && [] === u($pathInfos)->match('#^/(_profiler|_wdt|assets|build)/#')
+        ) {
+            $response = new RedirectResponse($this->router->generate('logbook_entry_index'));
+
+            $event->setResponse($response);
         }
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            'kernel.request' => 'onKernelRequest',
+            KernelEvents::REQUEST => ['onKernelRequest', 0],
         ];
     }
 }

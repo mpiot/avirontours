@@ -58,7 +58,7 @@ class License
     private ?User $user = null;
 
     #[ORM\Column(type: Types::JSON)]
-    private array $marking = [];
+    private array $marking = ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1];
 
     #[ORM\Column(type: Types::JSON)]
     private array $transitionContexts = [];

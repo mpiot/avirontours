@@ -35,6 +35,10 @@ class MedicalCertificateController extends AbstractController
     public function download(MedicalCertificate $medicalCertificate, FileUploader $fileUploader): Response
     {
         $uploadedFile = $medicalCertificate->getUploadedFile();
+        if (null === $uploadedFile || false === $fileUploader->exists($uploadedFile)) {
+            throw $this->createNotFoundException();
+        }
+
         $path = $fileUploader->getAbsolutePath($uploadedFile);
 
         $response = $this->file($path, $uploadedFile->getOriginalFilename());

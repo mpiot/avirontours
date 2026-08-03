@@ -20,11 +20,13 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
         logbook:
             host: '%logbook_host%'
-            pattern: ^/logbook-entry
             provider: logbook_users
+
             http_basic: ~
+
         main:
             lazy: true
             provider: app_users
@@ -59,6 +61,7 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
+        - { host: '%logbook_host%', path: ^/, roles: IS_AUTHENTICATED_REMEMBERED }
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }

@@ -22,110 +22,86 @@ namespace App\EventListener;
 
 use App\Entity\LogbookEntry;
 use App\Entity\Shell;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(tags: [
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::prePersist,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::preUpdate,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::postUpdate,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::preRemove,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-])]
-class ShellMileageUpdater
+#[AsDoctrineListener(event: Events::onFlush)]
+readonly class ShellMileageUpdater
 {
-    private ?Shell $oldShell = null;
-
-    private ?Shell $newShell = null;
-
-    private ?float $oldCoveredDistance = null;
-
-    private ?float $newCoveredDistance = null;
-
-    public function prePersist(LogbookEntry $logbookEntry): void
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
-            return;
+        $em = $eventArgs->getObjectManager();
+        $uow = $em->getUnitOfWork();
+        $shellMetadata = $em->getClassMetadata(Shell::class);
+
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            if (!$entity instanceof LogbookEntry) {
+                continue;
+            }
+
+            if (null === $coveredDistance = $entity->getCoveredDistance()) {
+                continue;
+            }
+
+            $shell = $entity->getShell();
+            $shell->addToMileage($coveredDistance);
+            $uow->recomputeSingleEntityChangeSet($shellMetadata, $shell);
         }
 
-        $logbookEntry->getShell()->addToMileage($coveredDistance);
-    }
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if (!$entity instanceof LogbookEntry) {
+                continue;
+            }
 
-    public function preUpdate(LogbookEntry $logbookEntry, PreUpdateEventArgs $args): void
-    {
-        if (false === $args->hasChangedField('coveredDistance') && false === $args->hasChangedField('shell')) {
-            return;
+            $changeSet = $uow->getEntityChangeSet($entity);
+            if (false === \array_key_exists('coveredDistance', $changeSet) && false === \array_key_exists('shell', $changeSet)) {
+                continue;
+            }
+
+            $oldShell = $newShell = $entity->getShell();
+            if (\array_key_exists('shell', $changeSet)) {
+                $oldShell = $changeSet['shell'][0];
+                $newShell = $changeSet['shell'][1];
+            }
+
+            $oldCoveredDistance = $newCoveredDistance = $entity->getCoveredDistance();
+            if (\array_key_exists('coveredDistance', $changeSet)) {
+                $oldCoveredDistance = $changeSet['coveredDistance'][0];
+                $newCoveredDistance = $changeSet['coveredDistance'][1];
+            }
+
+            if (!$oldShell instanceof Shell || !$newShell instanceof Shell) {
+                continue;
+            }
+
+            $oldShell->removeToMileage($oldCoveredDistance ?? 0);
+            $newShell->addToMileage($newCoveredDistance ?? 0);
+
+            $uow->recomputeSingleEntityChangeSet($shellMetadata, $oldShell);
+            $uow->recomputeSingleEntityChangeSet($shellMetadata, $newShell);
         }
 
-        // Set mileages
-        $this->oldCoveredDistance = $logbookEntry->getCoveredDistance();
-        $this->newCoveredDistance = $logbookEntry->getCoveredDistance();
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+            if (!$entity instanceof LogbookEntry) {
+                continue;
+            }
 
-        if ($args->hasChangedField('coveredDistance')) {
-            $this->oldCoveredDistance = $args->getOldValue('coveredDistance');
-            $this->newCoveredDistance = $args->getNewValue('coveredDistance');
+            // A deleted entity is skipped by computeChangeSets(), so its in-memory values may never have
+            // been persisted: give the shell back exactly what it was debited.
+            $originalData = $uow->getOriginalEntityData($entity);
+
+            if (false === \array_key_exists('coveredDistance', $originalData) || null === $originalData['coveredDistance']) {
+                continue;
+            }
+
+            $shell = $originalData['shell'] ?? $entity->getShell();
+            if (!$shell instanceof Shell || $uow->isScheduledForDelete($shell)) {
+                continue;
+            }
+
+            $shell->removeToMileage($originalData['coveredDistance']);
+            $uow->recomputeSingleEntityChangeSet($shellMetadata, $shell);
         }
-
-        // Set shells
-        $this->newShell = $logbookEntry->getShell();
-
-        if ($args->hasChangedField('shell')) {
-            $this->oldShell = $args->getOldValue('shell');
-            $this->newShell = $args->getNewValue('shell');
-        }
-    }
-
-    public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
-    {
-        if (null === $this->oldShell && null === $this->newShell) {
-            return;
-        }
-
-        // Update shells
-        if (null !== $this->oldShell) {
-            $this->oldShell->removeToMileage($this->oldCoveredDistance ?? 0);
-            $this->newShell->addToMileage($this->newCoveredDistance ?? 0);
-        } else {
-            $this->newShell
-                ->removeToMileage($this->oldCoveredDistance ?? 0)
-                ->addToMileage($this->newCoveredDistance ?? 0)
-            ;
-        }
-
-        $args->getObjectManager()->flush();
-    }
-
-    public function preRemove(LogbookEntry $logbookEntry): void
-    {
-        if (null === $coveredDistance = $logbookEntry->getCoveredDistance()) {
-            return;
-        }
-
-        $logbookEntry->getShell()->removeToMileage($coveredDistance);
     }
 }

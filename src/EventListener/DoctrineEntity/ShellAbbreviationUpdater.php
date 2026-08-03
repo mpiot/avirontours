@@ -18,32 +18,18 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\EventListener;
+namespace App\EventListener\DoctrineEntity;
 
 use App\Entity\Shell;
 use App\Service\ShellAbbreviationGenerator;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(tags: [
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::prePersist,
-            'entity' => Shell::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::preUpdate,
-            'entity' => Shell::class,
-            'lazy' => true,
-        ],
-    ],
-])]
-class ShellAbbreviationUpdater
+#[AsEntityListener(event: Events::prePersist, entity: Shell::class)]
+#[AsEntityListener(event: Events::preUpdate, entity: Shell::class)]
+readonly class ShellAbbreviationUpdater
 {
-    public function __construct(private readonly ShellAbbreviationGenerator $shellAbbreviationGenerator)
+    public function __construct(private ShellAbbreviationGenerator $shellAbbreviationGenerator)
     {
     }
 

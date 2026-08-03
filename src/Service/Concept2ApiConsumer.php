@@ -114,7 +114,7 @@ class Concept2ApiConsumer
             ->setTrainedAt(new \DateTime($result['date']))
             ->setDuration($result['time'])
             ->setDistance($result['distance'])
-            ->setFeeling(5)
+            ->setFeeling(0.5)
             ->setStrokeRate($result['stroke_rate'])
             ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
             ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)

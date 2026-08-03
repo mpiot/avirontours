@@ -23,7 +23,9 @@ namespace App\Controller;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('PUBLIC_ACCESS')]
 class StaticController extends AbstractController
 {
     #[Route(path: '/mentions-legales', name: 'legal_notice')]

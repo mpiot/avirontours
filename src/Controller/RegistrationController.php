@@ -38,6 +38,7 @@ use Symfony\Component\Mime\Part\File;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('PUBLIC_ACCESS')]
 class RegistrationController extends AbstractPublicController
 {
     #[Route(path: '/register/{slug}', name: 'app_register')]

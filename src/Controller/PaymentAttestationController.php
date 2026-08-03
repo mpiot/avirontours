@@ -32,6 +32,7 @@ use Symfony\Component\Uid\Uuid;
 use function Symfony\Component\String\u;
 
 #[Route(path: '/payment-attestation')]
+#[IsGranted('PUBLIC_ACCESS')]
 class PaymentAttestationController extends AbstractController
 {
     #[Route(path: '/download/{id}', name: 'payment_attestation_download', methods: ['GET'])]

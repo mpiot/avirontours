@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -40,6 +41,7 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 use function Symfony\Component\String\u;
 
 #[Route('/reset-password')]
+#[IsGranted('PUBLIC_ACCESS')]
 class ResetPasswordController extends AbstractController
 {
     use ResetPasswordControllerTrait;

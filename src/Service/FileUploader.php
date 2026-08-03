@@ -74,6 +74,11 @@ class FileUploader
         return $uploadedFile;
     }
 
+    public function exists(UploadedFile $uploadedFile): bool
+    {
+        return $this->getFilesystem($uploadedFile->getVisibility())->fileExists($uploadedFile->getFilename());
+    }
+
     public function remove(UploadedFile $uploadedFile): void
     {
         $path = $uploadedFile->getFilename();
