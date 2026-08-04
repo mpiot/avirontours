@@ -94,6 +94,12 @@ class RegistrationControllerTest extends AppWebTestCase
         self::getEntityManager()->clear();
 
         $this->assertQueuedEmailCount(1);
+        $attachments = $this->getMailerMessage()->getAttachments();
+        $this->assertEmailAttachmentCount($this->getMailerMessage(), 3);
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale-2025.pdf', $attachments[1]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/cerfa-10008-02.pdf', $attachments[2]->getBody());
+
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
@@ -130,6 +136,10 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->first()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->first()->getMedicalCertificate()->getDate()->format('Y-m-d'));
         $this->assertNotNull($user->getLicenses()->first()->getMedicalCertificate()->getUploadedFile());
+        $this->assertSame(
+            ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
+            $user->getLicenses()->first()->getMarking()
+        );
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
         MedicalCertificateFactory::repository()->assert()->count(1);
@@ -388,6 +398,62 @@ class RegistrationControllerTest extends AppWebTestCase
         MedicalCertificateFactory::repository()->assert()->count(1);
     }
 
+    public function testRegistrationWithAnAccentuatedHomonym(): void
+    {
+        PostalCodeFactory::createOne([
+            'postalCode' => '01000',
+            'city' => 'One City',
+        ]);
+        $season = SeasonFactory::new()->subscriptionEnabled()->seasonCategoriesDisplayed()->create();
+        $seasonCategory = $season->getSeasonCategories()->first();
+        LicenseFactory::createOne([
+            'seasonCategory' => $seasonCategory,
+            'user' => UserFactory::new(['firstName' => 'Léa', 'lastName' => 'Martin']),
+        ]);
+
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', "/register/{$seasonCategory->getSlug()}");
+
+        $this->assertResponseIsSuccessful();
+
+        // Simulate AJAX call
+        $crawler = $client->submitForm("S'inscrire", [
+            'registration[user][postalCode]' => '01000',
+        ]);
+
+        $form = $crawler->selectButton("S'inscrire")->form([
+            'registration[user][gender]' => 'f',
+            'registration[user][firstName]' => 'Lea',
+            'registration[user][lastName]' => 'Martin',
+            'registration[user][email]' => 'lea.martin@avirontours.fr',
+            'registration[user][phoneNumber]' => '0102030405',
+            'registration[user][plainPassword][first]' => 'engage',
+            'registration[user][plainPassword][second]' => 'engage',
+            'registration[user][nationality]' => 'FR',
+            'registration[user][birthday]' => '1990-01-01',
+            'registration[user][laneNumber]' => '100',
+            'registration[user][laneType]' => 'Rue',
+            'registration[user][laneName]' => 'du test',
+            'registration[user][city]' => 'One City',
+            'registration[user][clubEmailAllowed]' => 1,
+            'registration[agreeSwim]' => 1,
+            'registration[agreeRulesAndRegulations]' => 1,
+            'registration[license][medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'registration[license][medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'registration[license][medicalCertificate][date]' => (new \DateTime())->format('Y-m-d'),
+            'registration[license][optionalInsurance]' => 1,
+            'registration[license][federationEmailAllowed]' => 1,
+        ]);
+        $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
+        $crawler = $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Un compte existe déjà avec ce nom et prénom.', $crawler->filter('#registration_user_firstName')->ancestors()->filter('.invalid-feedback')->text());
+        UserFactory::repository()->assert()->count(1);
+        LicenseFactory::repository()->assert()->count(1);
+    }
+
     public function testNonEnabledRegistration(): void
     {
         $season = SeasonFactory::new()->subscriptionDisabled()->seasonCategoriesDisplayed()->create();
@@ -483,7 +549,16 @@ class RegistrationControllerTest extends AppWebTestCase
         $client->submit($form);
 
         $this->assertResponseRedirects('/renew/confirmation');
+
+        self::getEntityManager()->clear();
+
         $this->assertQueuedEmailCount(1);
+        $attachments = $this->getMailerMessage()->getAttachments();
+        $this->assertEmailAttachmentCount($this->getMailerMessage(), 3);
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale-2025.pdf', $attachments[1]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/cerfa-10008-02.pdf', $attachments[2]->getBody());
+
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
         $this->assertSame('0102030405', $user->getPhoneNumber());
@@ -512,6 +587,10 @@ class RegistrationControllerTest extends AppWebTestCase
         $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $user->getLicenses()->last()->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $user->getLicenses()->last()->getMedicalCertificate()->getdate()->format('Y-m-d'));
         $this->assertNotNull($user->getLicenses()->last()->getMedicalCertificate()->getUploadedFile());
+        $this->assertSame(
+            ['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1],
+            $user->getLicenses()->last()->getMarking()
+        );
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(2);
         MedicalCertificateFactory::repository()->assert()->count(2);

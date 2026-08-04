@@ -27,6 +27,7 @@ use App\Factory\LicensePaymentFactory;
 use App\Factory\SeasonCategoryFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
+use App\Service\FileUploader;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -260,6 +261,37 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame(10000, $license->getPayments()->get(2)->getAmount());
         $this->assertNull($license->getPayments()->get(2)->getCheckNumber());
         $this->assertNull($license->getPayments()->get(2)->getCheckDate());
+    }
+
+    public function testEditLicenseDeletesTheReplacedMedicalCertificateFile(): void
+    {
+        $license = LicenseFactory::createOne();
+        $fileUploader = self::getContainer()->get(FileUploader::class);
+        $oldPath = $fileUploader->getAbsolutePath($license->getMedicalCertificate()->getUploadedFile());
+        $seasonId = $license->getSeasonCategory()->getSeason()->getId();
+
+        $this->assertFileExists($oldPath);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
+        $crawler = $client->request('GET', "/admin/season/{$seasonId}/license/{$license->getId()}/edit");
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Modifier')->form([
+            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
+            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][date]' => date('Y-m-d'),
+        ]);
+        $form['license_edit[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
+        $client->submit($form);
+
+        $this->assertResponseRedirects();
+        $newPath = $fileUploader->getAbsolutePath($license->getMedicalCertificate()->getUploadedFile());
+        $this->assertNotSame($oldPath, $newPath);
+        $this->assertFileExists($newPath);
+        $this->assertFileDoesNotExist($oldPath);
     }
 
     public function testEditLicenseAsMedicalCertificateAdmin(): void
@@ -606,6 +638,24 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
         LicenseFactory::repository()->assert()->notExists($license);
+    }
+
+    public function testDeleteLicenseDeletesTheMedicalCertificateFile(): void
+    {
+        $license = LicenseFactory::createOne();
+        $path = self::getContainer()->get(FileUploader::class)->getAbsolutePath($license->getMedicalCertificate()->getUploadedFile());
+        $seasonId = $license->getSeasonCategory()->getSeason()->getId();
+
+        $this->assertFileExists($path);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
+        $client->request('GET', "/admin/season/{$seasonId}/license/{$license->getId()}/edit");
+        $client->submitForm('Supprimer');
+
+        $this->assertResponseRedirects("/admin/season/{$seasonId}");
+        $this->assertFileDoesNotExist($path);
     }
 
     public static function urlProvider(): \Generator

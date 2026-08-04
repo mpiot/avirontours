@@ -189,14 +189,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             return [];
         }
 
-        $firstName = u($args['firstName'])->lower()->toString();
-        $lastName = u($args['lastName'])->lower()->toString();
-
         $query = $this->createQueryBuilder('user')
-            ->where('LOWER(user.firstName) = :firstName')
-            ->andWhere('LOWER(user.lastName) = :lastName')
-            ->setParameter('firstName', $firstName)
-            ->setParameter('lastName', $lastName)
+            ->where('user.username = :username')
+            ->setParameter('username', User::buildUsername($args['firstName'], $args['lastName']))
             ->getQuery()
         ;
 

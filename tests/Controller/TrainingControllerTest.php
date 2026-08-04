@@ -29,8 +29,6 @@ use App\Tests\AppWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
-use function Zenstruck\Foundry\faker;
-
 class TrainingControllerTest extends AppWebTestCase
 {
     #[DataProvider('urlProvider')]
@@ -70,15 +68,16 @@ class TrainingControllerTest extends AppWebTestCase
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
         TrainingFactory::createMany(6, [
-            'trainedAt' => faker()->dateTimeThisMonth(),
+            'trainedAt' => new \DateTime('monday this week'),
             'user' => $user,
         ]);
         TrainingFactory::createMany(6, [
             'trainedAt' => new \DateTime('-2 months'),
             'user' => $user,
         ]);
+
         TrainingFactory::createMany(3, [
-            'trainedAt' => faker()->dateTimeThisMonth(),
+            'trainedAt' => new \DateTime('monday this week'),
         ]);
 
         static::ensureKernelShutdown();

@@ -24,91 +24,82 @@ use App\Entity\LogbookEntry;
 use App\Entity\Training;
 use App\Enum\SportType;
 use App\Util\DurationManipulator;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(tags: [
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::prePersist,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::preUpdate,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-    [
-        'doctrine.orm.entity_listener' => [
-            'event' => Events::postUpdate,
-            'entity' => LogbookEntry::class,
-            'lazy' => true,
-        ],
-    ],
-])]
-class AutomaticTrainingCreator
+#[AsDoctrineListener(event: Events::onFlush)]
+readonly class AutomaticTrainingCreator
 {
-    private array $trainings = [];
-
-    public function prePersist(LogbookEntry $logbookEntry): void
+    public function onFlush(OnFlushEventArgs $eventArgs): void
     {
-        if (null === $logbookEntry->getStartAt() || null === $logbookEntry->getEndAt()) {
+        $em = $eventArgs->getObjectManager();
+        $uow = $em->getUnitOfWork();
+
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            if (!$entity instanceof LogbookEntry) {
+                continue;
+            }
+
+            $this->createTrainings($entity, $em);
+        }
+
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if (!$entity instanceof LogbookEntry) {
+                continue;
+            }
+
+            $changeSet = $uow->getEntityChangeSet($entity);
+            if (false === \array_key_exists('endAt', $changeSet)) {
+                continue;
+            }
+
+            if (null !== $changeSet['endAt'][0] || null === $changeSet['endAt'][1]) {
+                continue;
+            }
+
+            $this->createTrainings($entity, $em);
+        }
+    }
+
+    private function createTrainings(LogbookEntry $logbookEntry, EntityManagerInterface $em): void
+    {
+        $date = $logbookEntry->getDate();
+        $startAt = $logbookEntry->getStartAt();
+        $endAt = $logbookEntry->getEndAt();
+
+        // Is the session finished ?
+        if (null === $date || null === $startAt || null === $endAt) {
             return;
         }
 
-        $this->createTrainings($logbookEntry);
-    }
+        $duration = DurationManipulator::dateIntervalToTenthSeconds($startAt->diff($endAt));
 
-    public function preUpdate(LogbookEntry $logbookEntry, PreUpdateEventArgs $args): void
-    {
-        if (false === $args->hasChangedField('endAt') || null !== $args->getOldValue('endAt') || null === $args->getNewValue('endAt')) {
-            return;
-        }
+        $coveredDistance = $logbookEntry->getCoveredDistance();
+        $distance = null !== $coveredDistance ? (int) round($coveredDistance * 1000) : null;
 
-        $this->createTrainings($logbookEntry);
-    }
-
-    public function postUpdate(LogbookEntry $logbookEntry, LifecycleEventArgs $args): void
-    {
-        if ([] === $this->trainings) {
-            return;
-        }
-
-        foreach ($this->trainings as $training) {
-            $args->getObjectManager()->persist($training);
-        }
-
-        $args->getObjectManager()->flush();
-    }
-
-    private function createTrainings(LogbookEntry $logbookEntry): void
-    {
-        $duration = DurationManipulator::dateIntervalToTenthSeconds($logbookEntry->getStartAt()->diff($logbookEntry->getEndAt()));
+        $uow = $em->getUnitOfWork();
+        $trainingMetadata = $em->getClassMetadata(Training::class);
 
         foreach ($logbookEntry->getCrewMembers() as $user) {
             if (false === $user->getAutomaticTraining()) {
                 continue;
             }
 
-            $date = new \DateTime(\sprintf('%s %s', $logbookEntry->getDate()->format('Y-m-d'), $logbookEntry->getStartAt()->format('H:i:s')));
-            $distance = (int) round($logbookEntry->getCoveredDistance() * 1000);
+            $trainedAt = new \DateTime(\sprintf('%s %s', $date->format('Y-m-d'), $startAt->format('H:i:s')));
 
             $training = new Training($user);
             $training
-                ->setTrainedAt($date)
+                ->setTrainedAt($trainedAt)
+                ->setSport(SportType::Rowing)
                 ->setDuration($duration)
                 ->setDistance($distance)
-                ->setSport(SportType::Rowing)
-                ->setFeeling(1)
+                ->setFeeling(0.5)
             ;
 
-            $this->trainings[] = $training;
+            $em->persist($training);
+            $uow->computeChangeSet($trainingMetadata, $training);
         }
     }
 }

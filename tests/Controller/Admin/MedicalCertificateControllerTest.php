@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller\Admin;
 
 use App\Factory\MedicalCertificateFactory;
+use App\Service\FileUploader;
 use App\Tests\AppWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,6 +79,19 @@ class MedicalCertificateControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/medical-certificate/'.$medicalCertificate->getId().'/download');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testDownloadAMedicalCertificateMissingFromTheStorage(): void
+    {
+        $medicalCertificate = MedicalCertificateFactory::createOne();
+        unlink(self::getContainer()->get(FileUploader::class)->getAbsolutePath($medicalCertificate->getUploadedFile()));
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN');
+        $client->request('GET', "/admin/medical-certificate/{$medicalCertificate->getId()}/download");
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     public static function urlProvider(): \Generator

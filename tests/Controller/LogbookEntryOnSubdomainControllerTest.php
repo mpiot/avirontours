@@ -34,6 +34,35 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 {
+    public function testMemberPagesAreNotReachableFromTheLogbookHost(): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->setServerParameters([
+            'PHP_AUTH_USER' => 'logbook',
+            'PHP_AUTH_PW' => 'engage',
+        ]);
+
+        $client->request('GET', '/', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+        $this->assertResponseRedirects('/logbook-entry');
+
+        $client->request('GET', '/login', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+        $this->assertResponseRedirects('/logbook-entry');
+
+        $client->request('GET', '/profile', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+        $this->assertResponseRedirects('/logbook-entry');
+    }
+
+    #[DataProvider('publicPathProvider')]
+    public function testPublicPagesAreBasicAuthenticatedOnTheLogbookHost(string $url): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', $url, server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     #[DataProvider('urlProvider')]
     public function testAccessUnauthorizedForAnonymousUser(string $method, string $url): void
     {
@@ -547,6 +576,14 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         $this->assertNull($entry->getShellDamages()->first()->getDescription());
         $this->assertSame($categories[1]->getId(), $entry->getShellDamages()->last()->getCategory()->getId());
         $this->assertSame('A little description', $entry->getShellDamages()->last()->getDescription());
+    }
+
+    public static function publicPathProvider(): \Generator
+    {
+        yield ['/login'];
+        yield ['/reset-password'];
+        yield ['/mentions-legales'];
+        yield ['/release-notes'];
     }
 
     public static function urlProvider(): \Generator

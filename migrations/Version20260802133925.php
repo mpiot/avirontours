@@ -26,6 +26,7 @@ final class Version20260802133925 extends AbstractMigration
             UPDATE license
             SET marking = '{"wait_medical_certificate_validation": 1, "wait_payment_validation": 1}'
             WHERE marking::jsonb = '[]'::jsonb
+               OR marking::jsonb = '{}'::jsonb
             SQL);
     }
 

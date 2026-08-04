@@ -24,12 +24,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 class Concept2OauthController extends AbstractController
 {
     #[Route('/oauth/concept-logbook/connect', name: 'oauth_concept2_connect')]
-    public function connect(ClientRegistry $clientRegistry)
+    public function connect(ClientRegistry $clientRegistry): Response
     {
         return $clientRegistry
             ->getClient('concept2')
@@ -38,8 +42,8 @@ class Concept2OauthController extends AbstractController
     }
 
     #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'my.avirontours.fr')]
-    #[Route('/oauth/concept-logbook')]
-    public function connectCheck(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
+    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check_default')]
+    public function connectCheck(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): RedirectResponse
     {
         /** @var OAuth2Client $client */
         $client = $clientRegistry->getClient('concept2');
@@ -58,7 +62,7 @@ class Concept2OauthController extends AbstractController
     }
 
     #[Route('/oauth/concept-logbook/unconnect', name: 'oauth_concept2_unconnect')]
-    public function unconnect(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function unconnect(EntityManagerInterface $entityManager): RedirectResponse
     {
         $this->getUser()->setConcept2RefreshToken(null);
         $entityManager->flush();

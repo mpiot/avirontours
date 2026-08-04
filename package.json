@@ -1,4 +1,9 @@
 {
+    "comment": "bin/html-print.mjs runs at request time from PdfGenerator, so its imports are runtime dependencies, not build-time ones.",
+    "dependencies": {
+        "commander": "^12.1.0",
+        "puppeteer": "^25.1.0"
+    },
     "devDependencies": {
         "@babel/core": "^8.0.0",
         "@babel/preset-env": "^8.0.0",
@@ -17,14 +22,12 @@
         "axios": "^1.4.0",
         "bootstrap": "^5.3.3",
         "chart.js": "^4",
-        "commander": "^12.1.0",
         "core-js": "^3.49.0",
         "eslint": "^9.14.0",
         "file-loader": "^6.2.0",
         "foundation-emails": "^2.4.0",
         "globals": "^15.10.0",
         "path": "^0.12.7",
-        "puppeteer": "^25.1.0",
         "regenerator-runtime": "^0.13.9",
         "sass": "^1.69.0",
         "sass-loader": "^16.0.2",

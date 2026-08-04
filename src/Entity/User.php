@@ -732,10 +732,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\PreUpdate]
     public function defineUsername(): void
     {
+        $this->username = self::buildUsername($this->firstName, $this->lastName);
+    }
+
+    public static function buildUsername(string $firstName, string $lastName): string
+    {
         $slugger = new AsciiSlugger('fr');
-        $firstName = $slugger->slug($this->firstName)->lower();
-        $lastName = $slugger->slug($this->lastName)->lower();
-        $this->username = \sprintf('%s.%s', $firstName, $lastName);
+        $firstName = $slugger->slug($firstName)->lower();
+        $lastName = $slugger->slug($lastName)->lower();
+
+        return "{$firstName}.{$lastName}";
     }
 
     public static function getAvailableCivilities(): array
