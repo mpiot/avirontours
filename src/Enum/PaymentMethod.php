@@ -23,23 +23,25 @@ namespace App\Enum;
 enum PaymentMethod: string
 {
     case BankTransfer = 'bank_transfer';
-    case Check = 'check';
-    case VacationCheck = 'vacation_check';
-    case Online = 'online';
     case Cash = 'cash';
+    case Check = 'check';
+    case Online = 'online';
     case PassSport = 'pass-sport';
-    case Yelp = 'yelp';
+    case VacationCheck = 'vacation_check';
+    case VacationCheckConnect = 'vacation_check_connect';
+    case Yeps = 'yeps';
 
     public function label(): string
     {
         return match ($this) {
-            self::Check => 'Chèque',
-            self::VacationCheck => 'Chèques vacance',
-            self::Online => 'En ligne (HelloAsso)',
-            self::Cash => 'Liquide',
-            self::PassSport => "Pass'Sport",
             self::BankTransfer => 'Virement',
-            self::Yelp => 'Yelp',
+            self::Cash => 'Espèces',
+            self::Check => 'Chèque',
+            self::Online => 'En ligne (HelloAsso)',
+            self::PassSport => "Pass'Sport",
+            self::VacationCheck => 'Chèque vacances / Coupon sport',
+            self::VacationCheckConnect => 'Chèque vacances Connect',
+            self::Yeps => "Yep's",
         };
     }
 

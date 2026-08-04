@@ -74,8 +74,8 @@ class RegistrationController extends AbstractPublicController
                 ->subject('Inscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/registration.html.twig')
                 ->addPart(new DataPart(new File($publicDir.'/files/droit-image.pdf'), 'Droit à l\'image.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale-2025.pdf'), 'Autorisation parentale 2025.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/cerfa-10008-02.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
+                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale.pdf'), 'Autorisation parentale.pdf'))
+                ->addPart(new DataPart(new File($publicDir.'/files/fiche-sanitaire.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
                     'userIdentifier' => $registration->user->getUserIdentifier(),
@@ -136,8 +136,8 @@ class RegistrationController extends AbstractPublicController
                 ->subject('Réinscription à l\'Aviron Tours Métropole')
                 ->htmlTemplate('emails/renew.html.twig')
                 ->addPart(new DataPart(new File($publicDir.'/files/droit-image.pdf'), 'Droit à l\'image.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale-2025.pdf'), 'Autorisation parentale 2025.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/cerfa-10008-02.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
+                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale.pdf'), 'Autorisation parentale.pdf'))
+                ->addPart(new DataPart(new File($publicDir.'/files/fiche-sanitaire.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
                 ])

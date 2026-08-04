@@ -97,18 +97,18 @@
                             {% if form.plainPassword is not defined %}
                                 <li>
                                     <a href="{{ asset('files/qs-sport-majeurs.pdf') }}" target="_blank" rel="noopener">
-                                        <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes majeurs
+                                        <span class="far fa-file-pdf"></span> QS-Sport pour personnes majeurs
                                     </a>
                                 </li>
                             {% endif %}
                             <li>
                                 <a href="{{ asset('files/qs-sport-mineurs.pdf') }}" target="_blank" rel="noopener">
-                                    <span class="far fa-file-pdf"></span> Questionnaire santé pour personnes mineurs
+                                    <span class="far fa-file-pdf"></span> QS-Sport pour personnes mineurs
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ asset('files/attestation-qs-sport.pdf') }}" target="_blank" rel="noopener">
-                                    <span class="far fa-file-pdf"></span> Attestation questionnaire santé
+                                <a href="{{ asset('files/certificat-medical.pdf') }}" target="_blank" rel="noopener">
+                                    <span class="far fa-file-pdf"></span> Certificat médical
                                 </a>
                             </li>
                         </ul>
@@ -134,7 +134,7 @@
                         </div>
 
                         {{ form_row(form.license.optionalInsurance, {
-                            'help': '<a href="'~ asset('files/maif-garanties-assurance-ffa-2025-2026.pdf') ~'" target="_blank" rel="noopener">Télécharger la notice</a>',
+                            'help': '<a href="'~ asset('files/maif-garanties-assurance.pdf') ~'" target="_blank" rel="noopener">Télécharger la notice</a>',
                             'help_html': true,
                         }) }}
                         {{ form_row(form.license.federationEmailAllowed) }}

@@ -51,18 +51,20 @@ class SeasonCsvGeneratorTest extends KernelTestCase
         $userWithMultiplePaymentsLicense = LicenseFactory::createOne(['user' => $userWithMultiplePayments, 'seasonCategory' => $seasonCategory]);
         LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::BankTransfer, 'amount' => 1011]);
         LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::BankTransfer, 'amount' => 1012]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Check, 'amount' => 2021]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Check, 'amount' => 2022]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheck, 'amount' => 3031]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheck, 'amount' => 3032]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Cash, 'amount' => 2021]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Cash, 'amount' => 2022]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Check, 'amount' => 3031]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Check, 'amount' => 3032]);
         LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Online, 'amount' => 4041]);
         LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Online, 'amount' => 4042]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Cash, 'amount' => 5051]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Cash, 'amount' => 5052]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::PassSport, 'amount' => 6061]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::PassSport, 'amount' => 6062]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Yelp, 'amount' => 7071]);
-        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Yelp, 'amount' => 7072]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::PassSport, 'amount' => 5051]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::PassSport, 'amount' => 5052]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheck, 'amount' => 6061]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheck, 'amount' => 6062]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheckConnect, 'amount' => 7071]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::VacationCheckConnect, 'amount' => 7072]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Yeps, 'amount' => 8081]);
+        LicensePaymentFactory::createOne(['license' => $userWithMultiplePaymentsLicense, 'method' => PaymentMethod::Yeps, 'amount' => 8082]);
 
         self::getContainer()->get('doctrine')->getManager()->clear();
 
@@ -71,9 +73,9 @@ class SeasonCsvGeneratorTest extends KernelTestCase
         self::assertSame(
             $csv,
             <<<'EOD'
-Prénom;Nom;Chèque;"Chèque 2";"Chèques vacance";"Chèques vacance 2";"En ligne (HelloAsso)";"En ligne (HelloAsso) 2";Liquide;"Liquide 2";Pass'Sport;"Pass'Sport 2";Virement;"Virement 2";Yelp;"Yelp 2"
-Multi;Rower;20.21;20.22;30.31;30.32;40.41;40.42;50.51;50.52;60.61;60.62;10.11;10.12;70.71;70.72
-Solo;Rower;;;;;;;123.45;;;;;;;
+Prénom;Nom;Chèque;"Chèque 2";"Chèque vacances / Coupon sport";"Chèque vacances / Coupon sport 2";"Chèque vacances Connect";"Chèque vacances Connect 2";"En ligne (HelloAsso)";"En ligne (HelloAsso) 2";Espèces;"Espèces 2";Pass'Sport;"Pass'Sport 2";Virement;"Virement 2";Yep's;"Yep's 2"
+Multi;Rower;30.31;30.32;60.61;60.62;70.71;70.72;40.41;40.42;20.21;20.22;50.51;50.52;10.11;10.12;80.81;80.82
+Solo;Rower;;;;;;;;;123.45;;;;;;;
 
 EOD
         );
