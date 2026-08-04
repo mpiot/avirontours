@@ -36,8 +36,6 @@ class MedicalCertificate
 
     public const LEVEL_COMPETITION = 'competition';
 
-    public const LEVEL_UPGRADE = 'upgrade';
-
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;
 
@@ -125,9 +123,8 @@ class MedicalCertificate
     public static function getAvailableLevels(): array
     {
         return [
-            'Pratique' => self::LEVEL_PRACTICE,
             'Compétition' => self::LEVEL_COMPETITION,
-            'Surclassement' => self::LEVEL_UPGRADE,
+            'Loisir' => self::LEVEL_PRACTICE,
         ];
     }
 

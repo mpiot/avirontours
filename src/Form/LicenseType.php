@@ -90,12 +90,12 @@ class LicenseType extends AbstractType
                 ],
             ])
             ->add('optionalInsurance', CheckboxType::class, [
-                'label' => 'Je souhaites souscrire l\'Option I.A. Sport+ (14,15 €).',
+                'label' => 'Je souhaite souscrire l\'Option I.A. Sport+ (15,57 €).',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])
             ->add('federationEmailAllowed', CheckboxType::class, [
-                'label' => 'Je souhaites recevoir les emails de la Fédération Française d\'Aviron.',
+                'label' => 'Je souhaite recevoir les emails de la Fédération Française d\'Aviron.',
                 'label_attr' => ['class' => 'checkbox-custom'],
                 'required' => false,
             ])

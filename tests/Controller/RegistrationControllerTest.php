@@ -97,8 +97,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $attachments = $this->getMailerMessage()->getAttachments();
         $this->assertEmailAttachmentCount($this->getMailerMessage(), 3);
         $this->assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
-        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale-2025.pdf', $attachments[1]->getBody());
-        $this->assertStringEqualsFile(__DIR__.'/../../public/files/cerfa-10008-02.pdf', $attachments[2]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale.pdf', $attachments[1]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/fiche-sanitaire.pdf', $attachments[2]->getBody());
 
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
@@ -556,8 +556,8 @@ class RegistrationControllerTest extends AppWebTestCase
         $attachments = $this->getMailerMessage()->getAttachments();
         $this->assertEmailAttachmentCount($this->getMailerMessage(), 3);
         $this->assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
-        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale-2025.pdf', $attachments[1]->getBody());
-        $this->assertStringEqualsFile(__DIR__.'/../../public/files/cerfa-10008-02.pdf', $attachments[2]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale.pdf', $attachments[1]->getBody());
+        $this->assertStringEqualsFile(__DIR__.'/../../public/files/fiche-sanitaire.pdf', $attachments[2]->getBody());
 
         $this->assertSame('john.doe@avirontours.fr', $user->getEmail());
         $this->assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
