@@ -20,7 +20,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
-use App\Entity\MedicalCertificate;
+use App\Enum\CertificateLevel;
+use App\Enum\CertificateType;
 use App\Enum\PaymentMethod;
 use App\Factory\LicenseFactory;
 use App\Factory\LicensePaymentFactory;
@@ -137,8 +138,8 @@ class LicenseControllerTest extends AppWebTestCase
             'license[user]' => $user->getId(),
             'license[seasonCategory]' => $season->getSeasonCategories()->first()->getId(),
             'license[logbookEntryLimit]' => 4,
-            'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'license[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license[medicalCertificate][level]' => CertificateLevel::Competition->value,
             'license[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
         $form['license[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
@@ -151,8 +152,8 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertSame($user->getId(), $license->getUser()->getId());
         $this->assertSame($season->getSeasonCategories()->first()->getId(), $license->getSeasonCategory()->getId());
         $this->assertSame(4, $license->getLogbookEntryLimit());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_COMPETITION, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame(CertificateType::Certificate, $license->getMedicalCertificate()->getType());
+        $this->assertSame(CertificateLevel::Competition, $license->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
         $this->assertSame(['wait_medical_certificate_validation' => 1, 'wait_payment_validation' => 1], $license->getMarking());
     }
@@ -198,8 +199,8 @@ class LicenseControllerTest extends AppWebTestCase
         $form = $crawler->selectButton('Sauver')->form([
             'license[user]' => $license->getUser()->getId(),
             'license[seasonCategory]' => $license->getSeasonCategory()->getId(),
-            'license[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license[medicalCertificate][level]' => MedicalCertificate::LEVEL_COMPETITION,
+            'license[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license[medicalCertificate][level]' => CertificateLevel::Competition->value,
             'license[medicalCertificate][date]' => date('Y-m-d'),
         ]);
         $form['license[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
@@ -226,8 +227,8 @@ class LicenseControllerTest extends AppWebTestCase
 
         $form = $crawler->selectButton('Modifier')->form([
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
-            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
             'license_edit[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
         $values = $form->getPhpValues();
@@ -244,8 +245,8 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame(CertificateType::Certificate, $license->getMedicalCertificate()->getType());
+        $this->assertSame(CertificateLevel::Practice, $license->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
         $this->assertNull($license->getPayedAt());
         $this->assertCount(3, $license->getPayments());
@@ -280,8 +281,8 @@ class LicenseControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Modifier')->form([
-            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
             'license_edit[medicalCertificate][date]' => date('Y-m-d'),
         ]);
         $form['license_edit[medicalCertificate][file]']->upload(__DIR__.'/../../../src/DataFixtures/Files/document.pdf');
@@ -308,15 +309,15 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
-            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
             'license_edit[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
 
         $this->assertResponseRedirects();
         $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame(CertificateType::Certificate, $license->getMedicalCertificate()->getType());
+        $this->assertSame(CertificateLevel::Practice, $license->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
         $this->assertNull($license->getPayedAt());
         $this->assertEmpty($license->getPayments());
@@ -381,15 +382,15 @@ class LicenseControllerTest extends AppWebTestCase
 
         $client->submitForm('Modifier', [
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
-            'license_edit[medicalCertificate][type]' => MedicalCertificate::TYPE_CERTIFICATE,
-            'license_edit[medicalCertificate][level]' => MedicalCertificate::LEVEL_PRACTICE,
+            'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
+            'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
             'license_edit[medicalCertificate][date]' => $date = date('Y-m-d'),
         ]);
 
         $this->assertResponseRedirects();
         $this->assertSame($seasonCategory->getId(), $license->getSeasonCategory()->getId());
-        $this->assertSame(MedicalCertificate::TYPE_CERTIFICATE, $license->getMedicalCertificate()->getType());
-        $this->assertSame(MedicalCertificate::LEVEL_PRACTICE, $license->getMedicalCertificate()->getLevel());
+        $this->assertSame(CertificateType::Certificate, $license->getMedicalCertificate()->getType());
+        $this->assertSame(CertificateLevel::Practice, $license->getMedicalCertificate()->getLevel());
         $this->assertSame($date, $license->getMedicalCertificate()->getDate()->format('Y-m-d'));
     }
 

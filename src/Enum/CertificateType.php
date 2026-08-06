@@ -18,25 +18,18 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Form\Model;
+namespace App\Enum;
 
-use App\Entity\License;
-use App\Entity\SeasonCategory;
-use App\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
-
-class Registration
+enum CertificateType: string
 {
-    #[Assert\Valid]
-    public User $user;
+    case Attestation = 'attestation';
+    case Certificate = 'certificate';
 
-    #[Assert\Valid(groups: ['registration'])]
-    public License $license;
-
-    public function __construct(SeasonCategory $seasonCategory, ?User $user = null)
+    public function label(): string
     {
-        $this->user = $user ?? new User();
-        $this->license = new License($seasonCategory);
-        $this->license->setUser($this->user);
+        return match ($this) {
+            self::Attestation => 'Attestation',
+            self::Certificate => 'Certificat',
+        };
     }
 }

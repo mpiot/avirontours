@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\MedicalCertificate;
+use App\Enum\CertificateLevel;
+use App\Enum\CertificateType;
 use Symfony\Component\HttpFoundation\File\File;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
@@ -32,8 +34,8 @@ final class MedicalCertificateFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'type' => self::faker()->randomElement(MedicalCertificate::getAvailableTypes()),
-            'level' => self::faker()->randomElement(MedicalCertificate::getAvailableLevels()),
+            'type' => self::faker()->randomElement(CertificateType::cases()),
+            'level' => self::faker()->randomElement(CertificateLevel::cases()),
             'date' => self::faker()->dateTimeThisYear(),
             'uploadedFile' => UploadedFileFactory::new([
                 'file' => new File(__DIR__.'/../DataFixtures/Files/document.pdf'),

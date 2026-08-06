@@ -21,14 +21,12 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\PostalCode;
-use App\Repository\PostalCodeRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
@@ -37,69 +35,49 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class ImportPostalCodeCommand extends Command
 {
-    private const string DATASET_URL = 'https://www.data.gouv.fr/fr/datasets/r/0f8ae8bd-9c0a-4a62-9be5-4798cbac07ff';
+    private const string DATASET_URL = 'https://www.data.gouv.fr/api/1/datasets/r/34d4364c-22eb-4ac0-b179-7a1845ac033a';
 
     public function __construct(
         private readonly HttpClientInterface $client,
-        private readonly PostalCodeRepository $repository,
-        private readonly ManagerRegistry $managerRegistry,
+        private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $file = $this->downloadResource();
-
-        // Count number of lines
-        $file->seek(\PHP_INT_MAX);
-
-        $nbLines = $file->key();
-        $file->rewind();
+        $response = $this->client->request('GET', self::DATASET_URL);
+        $data = json_decode($response->getContent());
 
         // Init a progress bar
-        $progressBar = new ProgressBar($output, $nbLines);
+        $progressBar = new ProgressBar($output, \count($data));
         $progressBar->start();
 
-        // Skip  the first line
-        $file->fgetcsv();
+        // Remove all
+        $this->entityManager->createQuery('DELETE App\Entity\PostalCode')->execute();
 
-        $entityManager = $this->managerRegistry->getManager();
-
-        // Import postal codes
-        while (false !== $data = $file->fgetcsv(separator: ';')) {
-            if (\array_key_exists(2, $data) && false === $this->repository->exists($data[2], $data[3])) {
-                $postalCode = new PostalCode();
-                $postalCode
-                    ->setPostalCode($data[2])
-                    ->setCity($data[3])
-                ;
-
-                $entityManager->persist($postalCode);
-                $entityManager->flush();
+        $seen = [];
+        foreach ($data as $datum) {
+            $key = "{$datum->codePostal}-{$datum->nomCommune}";
+            if (isset($seen[$key])) {
+                continue;
             }
 
+            $postalCode = new PostalCode();
+            $postalCode
+                ->setPostalCode($datum->codePostal)
+                ->setCity($datum->nomCommune)
+            ;
+
+            $this->entityManager->persist($postalCode);
             $progressBar->advance();
+
+            $seen[$key] = true;
         }
 
+        $this->entityManager->flush();
         $progressBar->finish();
 
         return Command::SUCCESS;
-    }
-
-    private function downloadResource(): \SplFileObject
-    {
-        $filesystem = new Filesystem();
-        $filename = $filesystem->tempnam(sys_get_temp_dir(), 'import-postal-code');
-
-        $response = $this->client->request('GET', self::DATASET_URL);
-        $fileHandler = fopen($filename, 'w');
-        foreach ($this->client->stream($response) as $chunk) {
-            fwrite($fileHandler, $chunk->getContent());
-        }
-
-        fclose($fileHandler);
-
-        return new \SplFileObject($filename, 'r');
     }
 }

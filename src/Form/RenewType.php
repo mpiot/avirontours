@@ -27,12 +27,14 @@ class RenewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->get('user')->remove('plainPassword');
-        $builder->get('user')->get('gender')->setDisabled(true);
-        $builder->get('user')->get('firstName')->setDisabled(true);
-        $builder->get('user')->get('lastName')->setDisabled(true);
-        $builder->get('user')->get('nationality')->setDisabled(true);
-        $builder->get('user')->get('birthday')->setDisabled(true);
+        $builder->get('user')
+            ->remove('plainPassword')
+            ->remove('gender')
+            ->remove('firstName')
+            ->remove('lastName')
+            ->remove('nationality')
+            ->remove('birthday')
+        ;
         $builder->remove('turnstile');
     }
 

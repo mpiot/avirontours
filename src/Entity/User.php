@@ -124,7 +124,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     private ?string $authCode = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $clubEmailAllowed = true;
+    private ?bool $clubEmailAllowed = false;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $licenseNumber = null;
@@ -391,6 +391,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $interval->y;
     }
 
+    public function isMajor(): bool
+    {
+        return $this->getAge() >= 18;
+    }
+
     public function getSubscriptionDate(): ?\DateTime
     {
         return $this->subscriptionDate;
@@ -469,9 +474,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function getFormattedAddress(): string
     {
-        $address = \sprintf('%s, %s %s%s', $this->getLaneNumber(), $this->getLaneType(), $this->getLaneName(), \PHP_EOL);
-
-        return $address.\sprintf('%s %s', $this->getPostalCode(), $this->getCity());
+        return \sprintf(
+            '%s, %s %s, %s %s',
+            $this->getLaneNumber(),
+            $this->getLaneType(),
+            $this->getLaneName(),
+            $this->getPostalCode(),
+            $this->getCity(),
+        );
     }
 
     public function getFirstLegalGuardian(): ?LegalGuardian
@@ -721,7 +731,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
             return;
         }
 
-        if ($this->getAge() < 18 && null === $this->firstLegalGuardian) {
+        if (false === $this->isMajor() && null === $this->firstLegalGuardian) {
             $context->buildViolation('Le membre est mineur, merci de renseigner un représentant légal.')
                 ->addViolation()
             ;

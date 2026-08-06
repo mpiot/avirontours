@@ -1,0 +1,75 @@
+{% set has_second = form.secondLegalGuardian.vars.data is not null %}
+
+<p class="fw-bold mb-1">
+    <span class="fas fa-user-shield me-2" aria-hidden="true"></span>Responsables légaux
+</p>
+
+<p class="form-text mt-0" id="legal-guardians-help">
+    Obligatoire pour les mineurs, ainsi que pour les personnes majeures sous tutelle
+    ou curatelle. Dès qu'un champ est renseigné, tous le deviennent.
+</p>
+
+<button
+    class="btn btn-outline-secondary collapse-toggle w-100 text-start"
+    type="button"
+    data-bs-toggle="collapse"
+    data-bs-target="#legal-guardians"
+    aria-expanded="false"
+    aria-controls="legal-guardians"
+    aria-describedby="legal-guardians-help"
+    {{ stimulus_target('legal-guardians', 'toggle') }}
+>
+    <span class="fas fa-chevron-down me-2" aria-hidden="true"></span>
+    Renseigner un responsable légal
+    <span class="badge rounded-pill text-bg-primary ms-2 d-none" {{ stimulus_target('legal-guardians', 'badge') }}></span>
+</button>
+
+<div id="legal-guardians" class="collapse" {{ stimulus_target('legal-guardians', 'section') }}>
+    <div class="pt-3" data-action="input->legal-guardians#refresh">
+        <div {{ stimulus_target('legal-guardians', 'guardian') }}>
+            <div class="d-flex mb-2">
+                <span class="fw-bold align-self-center">Premier responsable légal</span>
+                <div class="ms-auto">
+                    <button
+                        class="btn btn-outline-danger btn-sm"
+                        type="button"
+                        data-action="legal-guardians#clearFirst"
+                    >
+                        <span class="fas fa-eraser" aria-hidden="true"></span> Vider
+                    </button>
+                </div>
+            </div>
+            {{ include('admin/user/_legal_guardian_form.html.twig', { form: form.firstLegalGuardian }) }}
+        </div>
+
+        <div
+            id="second-legal-guardian"
+            class="{{ html_classes({'d-none': not has_second}) }}"
+            {{ stimulus_target('legal-guardians', 'secondGuardian guardian') }}
+        >
+            <hr>
+            <div class="d-flex mb-2">
+                <span class="fw-bold align-self-center">Second responsable légal</span>
+                <div class="ms-auto">
+                    <button
+                        class="btn btn-outline-danger btn-sm"
+                        type="button"
+                        data-action="legal-guardians#removeSecond"
+                    >
+                        <span class="fas fa-trash" aria-hidden="true"></span> Retirer
+                    </button>
+                </div>
+            </div>
+            {{ include('admin/user/_legal_guardian_form.html.twig', { form: form.secondLegalGuardian }) }}
+        </div>
+
+        <button
+            class="{{ html_classes('btn btn-outline-secondary btn-sm', { 'd-none': has_second }) }}"
+            type="button"
+            data-action="legal-guardians#addSecond"
+            {{ stimulus_target('legal-guardians', 'addButton') }}
+        >
+            <span class="fas fa-plus" aria-hidden="true"></span> Ajouter un second responsable légal
+        </button>
+    </div>
+</div>

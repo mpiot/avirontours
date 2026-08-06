@@ -191,8 +191,8 @@
                                             {{ license.user.fullName }}
                                         {% endif %}
                                     </td>
-                                    <td>{{ license.medicalCertificate.textType }}</td>
-                                    <td>{{ license.medicalCertificate.textLevel }}</td>
+                                    <td>{{ license.medicalCertificate.type.label }}</td>
+                                    <td>{{ license.medicalCertificate.level.label }}</td>
                                     <td>
                                         {% for place in workflow_marked_places(license)  %}
                                             <div>

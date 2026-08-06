@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% set appMenuAutoOpen = false %}
 
-{% block title %}Réinscription à Aviron Tours{% endblock %}
+{% block title %}Ma réinscription{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">Mon profil</a></li>
-    <li class="breadcrumb-item active">Réinscription à Aviron Tours</li>
+    <li class="breadcrumb-item"><a href="{{ path('profile_show') }}">Mon profil</a></li>
+    <li class="breadcrumb-item active">Ma réinscription</li>
 {% endblock %}
 
 {% block body %}

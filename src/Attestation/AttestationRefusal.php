@@ -18,25 +18,12 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Form\Model;
+namespace App\Attestation;
 
-use App\Entity\License;
-use App\Entity\SeasonCategory;
-use App\Entity\User;
-use Symfony\Component\Validator\Constraints as Assert;
-
-class Registration
+enum AttestationRefusal: string
 {
-    #[Assert\Valid]
-    public User $user;
-
-    #[Assert\Valid(groups: ['registration'])]
-    public License $license;
-
-    public function __construct(SeasonCategory $seasonCategory, ?User $user = null)
-    {
-        $this->user = $user ?? new User();
-        $this->license = new License($seasonCategory);
-        $this->license->setUser($this->user);
-    }
+    case CompetitionCertificateExpired = 'competition_certificate_expired';
+    case EnrolmentGap = 'enrolment_gap';
+    case FirstLicense = 'first_license';
+    case MajorityReached = 'majority_reached';
 }

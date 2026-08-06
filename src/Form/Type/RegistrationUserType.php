@@ -44,6 +44,7 @@ class RegistrationUserType extends AbstractType
             'invalid_message' => 'Les mots de passes doivent être identiques.',
             'first_options' => [
                 'label' => 'Mot de passe',
+                'help' => '6 caractères minimum.',
                 'hash_property_path' => 'password',
                 'constraints' => [
                     new NotBlank(),

@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Form\LicenseType;
+use App\Form\MedicalCertificateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -33,6 +34,10 @@ class RegistrationLicenseType extends AbstractType
             ->remove('seasonCategory')
             ->remove('logbookEntryLimit')
             ->remove('payments')
+            ->add('medicalCertificate', MedicalCertificateType::class, [
+                'label' => false,
+                'resolve_attestation' => true,
+            ])
         ;
     }
 

@@ -1,0 +1,39 @@
+{% macro locked(id, label, value) %}
+    <label class="form-label" for="{{ id }}">{{ label }}</label>
+    <input id="{{ id }}" class="form-control bg-body-secondary" type="text" value="{{ value }}" readonly>
+{% endmacro %}
+
+{% import _self as field %}
+
+<div class="card bg-body-tertiary border-0 mb-3">
+    <div class="card-body pb-0">
+        <p class="form-text mt-0">
+            <span class="fas fa-lock me-1" aria-hidden="true"></span>
+            Ces informations ne sont modifiables que par le club.
+        </p>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                {{ field.locked('locked-gender', 'Genre', member.textGender) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ field.locked('locked-first-name', 'Prénom', member.firstName) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ field.locked('locked-last-name', 'Nom', member.lastName) }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md mb-3">
+                {{ field.locked('locked-birthday', 'Date de naissance', "#{member.birthday|format_date('short')} (#{member.age} ans)") }}
+            </div>
+            <div class="col-md mb-3">
+                {{ field.locked('locked-nationality', 'Nationalité', member.nationality ? member.nationality|country_name : '-') }}
+            </div>
+        </div>
+    </div>
+</div>

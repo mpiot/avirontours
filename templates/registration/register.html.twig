@@ -1,40 +1,30 @@
 {% extends 'base.html.twig' %}
 {% set appMenuAutoOpen = false %}
 
-{% block title %}Inscription à Aviron Tours{% endblock %}
+{% block title %}M'inscrire à l'Aviron Tours Métropole{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item active">Inscription à Aviron Tours</li>
+    <li class="breadcrumb-item active">M'inscrire à l'Aviron Tours Métropole</li>
 {% endblock %}
 
 {% block body %}
-    <h1>M'inscrire à l'Aviron Tours Métropole</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-7">
+            <h1>M'inscrire à l'Aviron Tours Métropole</h1>
 
-    <div class="row">
-        <div class="col-lg-4 mb-3">
+            <p>
+                Déjà membre&nbsp;? Vous gérez vos réinscriptions depuis
+                <a href="{{ path('profile_show') }}">votre profil utilisateur</a>.
+            </p>
+
             <div class="card border-0 shadow">
-                <div class="card-body">
-                    <h2 class="text-center">Je suis déjà membre</h2>
-                    <hr>
-                    <p class="lead">
-                        Je suis déjà inscrit au club d'Aviron Tours Métropole, je possède un compte: je gère mes
-                        réinscriptions depuis <span class="fw-bold">mon profil utilisateur</span>.
-                    </p>
-                    <div class="d-grid">
-                        <a class="btn btn-primary" href="{{ path('profile_show') }}">Je vais sur mon profil</a>
-                    </div>
+                <div class="card-header">
+                    {{ include('registration/_season_category_recap.html.twig') }}
                 </div>
-            </div>
-        </div>
-
-        <div class="col-lg-8 mb-3">
-            <div class="card border border-primary shadow">
                 <div class="card-body">
-                    <h2 class="text-center">C'est une première inscription</h2>
-                    <hr>
-
-                    {{ include('registration/_form.html.twig') }}
+                    {{ include('registration/_intro.html.twig', { renew: false }) }}
+                    {{ include('registration/_form.html.twig', { renew: false }) }}
                 </div>
             </div>
         </div>

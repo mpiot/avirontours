@@ -62,7 +62,6 @@ class RegistrationController extends AbstractPublicController
             $uploadedFile = $form->get('license')->get('medicalCertificate')->get('file')->getData();
             $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
             $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
-            $registration->license->setUser($registration->user);
 
             $entityManager->persist($registration->user);
             $entityManager->persist($registration->license);
@@ -92,6 +91,7 @@ class RegistrationController extends AbstractPublicController
 
         return $this->render('registration/register.html.twig', [
             'form' => $form,
+            'season_category' => $seasonCategory,
         ]);
     }
 
@@ -125,7 +125,6 @@ class RegistrationController extends AbstractPublicController
             $uploadedFile = $form->get('license')->get('medicalCertificate')->get('file')->getData();
             $uploadedFile = $fileUploader->upload($uploadedFile, FileUploader::PRIVATE);
             $registration->license->getMedicalCertificate()->setUploadedFile($uploadedFile);
-            $registration->license->setUser($registration->user);
 
             $entityManager->persist($registration->license);
             $entityManager->flush();

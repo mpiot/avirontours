@@ -26,11 +26,11 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col">
-                        {{ form_row(form.medicalCertificate.type) }}
+                        {{ form_row(form.medicalCertificate.type, { label_attr: { class: 'radio-inline' } }) }}
                     </div>
 
                     <div class="col">
-                        {{ form_row(form.medicalCertificate.level) }}
+                        {{ form_row(form.medicalCertificate.level, { label_attr: { class: 'radio-inline' } }) }}
                     </div>
                 </div>
 

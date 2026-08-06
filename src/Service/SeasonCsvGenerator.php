@@ -21,9 +21,10 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\License;
-use App\Entity\MedicalCertificate;
 use App\Entity\Season;
 use App\Entity\SeasonCategory;
+use App\Entity\User;
+use App\Enum\CertificateType;
 use App\Repository\LicenseRepository;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
@@ -203,19 +204,19 @@ class SeasonCsvGenerator
     private function getMedicalCertificateDate(License $license): string
     {
         // If this is a Certificate
-        if (MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType()) {
+        if (CertificateType::Certificate === $license->getMedicalCertificate()->getType()) {
             return $license->getMedicalCertificate()->getDate()->format('d/m/Y');
         }
 
         // Else, this is an attestation: we must return the date of the latest Certificate we have
         /** @var License|false $latestLicenceWithCertificate */
-        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(static fn (License $license): bool => MedicalCertificate::TYPE_CERTIFICATE === $license->getMedicalCertificate()->getType())->last();
+        $latestLicenceWithCertificate = $license->getUser()->getLicenses()->filter(static fn (License $license): bool => CertificateType::Certificate === $license->getMedicalCertificate()->getType())->last();
 
         // If we do not retrieve a licence with a medical certificate
-        // 1. For user over or equal to 18 years old, return a mistake
-        // 2. For user less than 18 yo, it's ok, return nothing
+        // 1. For user over or equal to the majority age, return a mistake
+        // 2. For younger users, it's ok, return nothing
         if (false === $latestLicenceWithCertificate) {
-            return 18 > $license->getUser()->getAge() ? '' : '??????';
+            return false === $license->getUser()->isMajor() ? '' : '??????';
         }
 
         return $latestLicenceWithCertificate->getMedicalCertificate()->getDate()->format('d/m/Y');
@@ -223,13 +224,13 @@ class SeasonCsvGenerator
 
     private function getAttestationValue(License $license): string
     {
-        return MedicalCertificate::TYPE_ATTESTATION === $license->getMedicalCertificate()->getType() ? 'Oui' : 'Non';
+        return CertificateType::Attestation === $license->getMedicalCertificate()->getType() ? 'Oui' : 'Non';
     }
 
     private function getLicenceType(License $license): string
     {
         $seasonCategory = $license->getSeasonCategory()->getLicenseType();
-        $level = MedicalCertificate::LEVEL_PRACTICE === $license->getMedicalCertificate()->getLevel() ? 'practice' : 'competition';
+        $level = $license->getMedicalCertificate()->getLevel()->value;
 
         return match ([$seasonCategory, $level]) {
             [SeasonCategory::LICENSE_TYPE_ANNUAL, 'practice'] => 'AL',

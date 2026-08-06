@@ -1,0 +1,3 @@
+{% macro pdf_link(filename, label) -%}
+    <a href="{{ asset("files/#{filename}") }}" target="_blank" rel="noopener">{{ label }}<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+{%- endmacro %}
