@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\SeasonCategory;
+use App\Entity\User;
 use App\Form\Model\Registration;
 use App\Form\RegistrationType;
 use App\Form\RenewType;
@@ -68,21 +69,20 @@ class RegistrationController extends AbstractPublicController
             $entityManager->flush();
 
             // Send email
-            $email = (new TemplatedEmail())
-                ->to($registration->user->getEmail())
-                ->subject('Inscription à l\'Aviron Tours Métropole')
+            $email = $this->createRegistrationEmail($registration->user, $publicDir)
+                ->subject('Votre inscription à l\'Aviron Tours Métropole : les étapes pour la finaliser')
                 ->htmlTemplate('emails/registration.html.twig')
-                ->addPart(new DataPart(new File($publicDir.'/files/droit-image.pdf'), 'Droit à l\'image.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale.pdf'), 'Autorisation parentale.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/fiche-sanitaire.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
                     'userIdentifier' => $registration->user->getUserIdentifier(),
+                    'isMajor' => $registration->user->isMajor(),
                 ])
             ;
             $mailer->send($email);
 
-            return $this->redirectToRoute('app_register_confirmation');
+            return $this->redirectToRoute('app_register_confirmation', [
+                'majority' => $registration->user->isMajor() ? 'major' : 'minor',
+            ]);
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
@@ -95,10 +95,12 @@ class RegistrationController extends AbstractPublicController
         ]);
     }
 
-    #[Route(path: '/register/confirmation', name: 'app_register_confirmation', priority: 10)]
-    public function registerConfirmation(): Response
+    #[Route(path: '/register/confirmation/{majority<major|minor>}', name: 'app_register_confirmation')]
+    public function registerConfirmation(string $majority): Response
     {
-        return $this->render('registration/register_confirmation.html.twig');
+        return $this->render('registration/register_confirmation.html.twig', [
+            'is_major' => 'major' === $majority,
+        ]);
     }
 
     #[Route(path: '/renew/{slug}', name: 'renew')]
@@ -130,20 +132,19 @@ class RegistrationController extends AbstractPublicController
             $entityManager->flush();
 
             // Send email
-            $email = (new TemplatedEmail())
-                ->to($registration->user->getEmail())
-                ->subject('Réinscription à l\'Aviron Tours Métropole')
+            $email = $this->createRegistrationEmail($registration->user, $publicDir)
+                ->subject('Votre réinscription à l\'Aviron Tours Métropole : les étapes pour la finaliser')
                 ->htmlTemplate('emails/renew.html.twig')
-                ->addPart(new DataPart(new File($publicDir.'/files/droit-image.pdf'), 'Droit à l\'image.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/autorisation-parentale.pdf'), 'Autorisation parentale.pdf'))
-                ->addPart(new DataPart(new File($publicDir.'/files/fiche-sanitaire.pdf'), 'Cerfa - Fiche de liaison sanitaire.pdf'))
                 ->context([
                     'fullName' => $registration->user->getFullName(),
+                    'isMajor' => $registration->user->isMajor(),
                 ])
             ;
             $mailer->send($email);
 
-            return $this->redirectToRoute('app_renew_confirmation');
+            return $this->redirectToRoute('app_renew_confirmation', [
+                'majority' => $registration->user->isMajor() ? 'major' : 'minor',
+            ]);
         }
 
         if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
@@ -156,10 +157,39 @@ class RegistrationController extends AbstractPublicController
         ]);
     }
 
-    #[Route(path: '/renew/confirmation', name: 'app_renew_confirmation', priority: 10)]
+    #[Route(path: '/renew/confirmation/{majority<major|minor>}', name: 'app_renew_confirmation')]
     #[IsGranted('ROLE_USER')]
-    public function renewConfirmation(): Response
+    public function renewConfirmation(string $majority): Response
     {
-        return $this->render('registration/renew_confirmation.html.twig');
+        return $this->render('registration/renew_confirmation.html.twig', [
+            'is_major' => 'major' === $majority,
+        ]);
+    }
+
+    private function createRegistrationEmail(User $user, string $publicDir): TemplatedEmail
+    {
+        $email = (new TemplatedEmail())
+            ->to($user->getEmail())
+            ->addPart(new DataPart(new File("{$publicDir}/files/droit-image.pdf"), 'Droit à l\'image.pdf'))
+        ;
+
+        if ($user->isMajor()) {
+            return $email;
+        }
+
+        $email
+            ->addPart(new DataPart(new File("{$publicDir}/files/autorisation-parentale.pdf"), 'Autorisation parentale.pdf'))
+            ->addPart(new DataPart(new File("{$publicDir}/files/fiche-sanitaire.pdf"), 'Cerfa - Fiche de liaison sanitaire.pdf'))
+        ;
+
+        foreach ([$user->getFirstLegalGuardian(), $user->getSecondLegalGuardian()] as $legalGuardian) {
+            $legalGuardianEmail = $legalGuardian?->getEmail();
+
+            if (null !== $legalGuardianEmail) {
+                $email->addCc($legalGuardianEmail);
+            }
+        }
+
+        return $email;
     }
 }

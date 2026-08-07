@@ -16,16 +16,16 @@
 
         <ul class="mt-0">
             <li>procéder au paiement de votre inscription</li>
-            <li>retourner l'attestation de droit à l'image</li>
+            {% if is_major %}
+                <li>nous retourner l'attestation de droit à l'image, jointe à l'email de confirmation, datée et signée</li>
+            {% else %}
+                <li>nous retourner l'attestation de droit à l'image, l'autorisation parentale et la fiche de liaison sanitaire, jointes à l'email de confirmation, complétées et signées par le représentant légal</li>
+            {% endif %}
         </ul>
 
-        <p class="mb-0">
-            Pour les mineurs&nbsp;:
+        <p>
+            Ces documents sont à renvoyer en réponse à l'email de confirmation, ou à déposer au club.
         </p>
-        <ul class="mt-0">
-            <li>retourner l'autorisation parentale</li>
-            <li>retourner la fiche liaison sanitaire</li>
-        </ul>
 
         <div class="mb-2 text-center">
             <a

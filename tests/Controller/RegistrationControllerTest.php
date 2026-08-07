@@ -85,16 +85,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        self::assertResponseRedirects('/register/confirmation');
+        self::assertResponseRedirects('/register/confirmation/minor');
+
+        $this->assertRegistrationEmail(renew: false, isMajor: false, legalGuardianEmails: ['g.le-blanc@avirontours.fr', 'g.artanis@avirontours.fr']);
 
         self::getEntityManager()->clear();
-
-        self::assertQueuedEmailCount(1);
-        $attachments = $this->getMailerMessage()->getAttachments();
-        self::assertEmailAttachmentCount($this->getMailerMessage(), 3);
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale.pdf', $attachments[1]->getBody());
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/fiche-sanitaire.pdf', $attachments[2]->getBody());
 
         $user = UserFactory::repository()->findOneBy(['email' => 'john.doe@avirontours.fr']);
         self::assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
@@ -250,11 +245,24 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['registration[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        self::assertResponseRedirects('/register/confirmation');
+        self::assertResponseRedirects('/register/confirmation/major');
+
+        $this->assertRegistrationEmail(renew: false, isMajor: true);
 
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(1);
         MedicalCertificateFactory::repository()->assert()->count(1);
+    }
+
+    #[DataProvider('provideConfirmationDocuments')]
+    public function testRegisterConfirmationListsTheDocumentsToReturn(string $majority, string $expectedDocuments, string $unexpectedDocuments): void
+    {
+        $client = static::createClient();
+        $client->request('GET', "/register/confirmation/{$majority}");
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', $expectedDocuments);
+        self::assertSelectorTextNotContains('body', $unexpectedDocuments);
     }
 
     public function testRegistrationIsRefusedForAnAttestationOnAFirstLicense(): void
@@ -410,16 +418,11 @@ class RegistrationControllerTest extends AppWebTestCase
         $form['renew[license][medicalCertificate][file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
         $client->submit($form);
 
-        self::assertResponseRedirects('/renew/confirmation');
+        self::assertResponseRedirects('/renew/confirmation/major');
 
         self::getEntityManager()->clear();
 
-        self::assertQueuedEmailCount(1);
-        $attachments = $this->getMailerMessage()->getAttachments();
-        self::assertEmailAttachmentCount($this->getMailerMessage(), 3);
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale.pdf', $attachments[1]->getBody());
-        self::assertStringEqualsFile(__DIR__.'/../../public/files/fiche-sanitaire.pdf', $attachments[2]->getBody());
+        $this->assertRegistrationEmail(renew: true, isMajor: true);
 
         self::assertSame('john.doe@avirontours.fr', $user->getEmail());
         self::assertSame((new \DateTime())->format('Y-m-d'), $user->getSubscriptionDate()->format('Y-m-d'));
@@ -458,6 +461,18 @@ class RegistrationControllerTest extends AppWebTestCase
         UserFactory::repository()->assert()->count(1);
         LicenseFactory::repository()->assert()->count(2);
         MedicalCertificateFactory::repository()->assert()->count(2);
+    }
+
+    #[DataProvider('provideConfirmationDocuments')]
+    public function testRenewConfirmationListsTheDocumentsToReturn(string $majority, string $expectedDocuments, string $unexpectedDocuments): void
+    {
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_USER');
+        $client->request('GET', "/renew/confirmation/{$majority}");
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('body', $expectedDocuments);
+        self::assertSelectorTextNotContains('body', $unexpectedDocuments);
     }
 
     #[DataProvider('provideRenewAttestationStates')]
@@ -782,6 +797,50 @@ class RegistrationControllerTest extends AppWebTestCase
                 'date' => new \DateTime(\sprintf('%d-12-01', $seasonYear - 1)),
             ]),
         ]);
+    }
+
+    /**
+     * @param list<string> $legalGuardianEmails
+     */
+    private function assertRegistrationEmail(bool $renew, bool $isMajor, array $legalGuardianEmails = []): void
+    {
+        self::assertQueuedEmailCount(1);
+
+        $email = $this->getMailerMessage();
+        $subject = $renew ? 'Votre réinscription' : 'Votre inscription';
+        self::assertEmailHeaderSame($email, 'Subject', "{$subject} à l'Aviron Tours Métropole : les étapes pour la finaliser");
+        self::assertEmailAddressContains($email, 'To', 'john.doe@avirontours.fr');
+        self::assertEmailAddressContains($email, 'Reply-To', 'contact@avirontours.fr');
+        self::assertEmailHtmlBodyContains($email, $renew ? 'vous remercie de votre réinscription' : 'vous souhaite la bienvenue');
+
+        self::assertCount(\count($legalGuardianEmails), $email->getCc());
+        foreach ($legalGuardianEmails as $legalGuardianEmail) {
+            self::assertEmailAddressContains($email, 'Cc', $legalGuardianEmail);
+        }
+
+        $attachments = $email->getAttachments();
+        self::assertStringEqualsFile(__DIR__.'/../../public/files/droit-image.pdf', $attachments[0]->getBody());
+
+        if ($isMajor) {
+            self::assertEmailHtmlBodyContains($email, "nous retourner l'attestation de droit à l'image, jointe à cet email, datée et signée");
+            self::assertEmailAttachmentCount($email, 1);
+
+            return;
+        }
+
+        self::assertEmailHtmlBodyContains($email, 'signées par le représentant légal');
+        self::assertEmailAttachmentCount($email, 3);
+        self::assertStringEqualsFile(__DIR__.'/../../public/files/autorisation-parentale.pdf', $attachments[1]->getBody());
+        self::assertStringEqualsFile(__DIR__.'/../../public/files/fiche-sanitaire.pdf', $attachments[2]->getBody());
+    }
+
+    /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function provideConfirmationDocuments(): iterable
+    {
+        yield 'majeur' => ['major', "nous retourner l'attestation de droit à l'image, jointe à l'email de confirmation, datée et signée", 'représentant légal'];
+        yield 'mineur' => ['minor', "nous retourner l'attestation de droit à l'image, l'autorisation parentale et la fiche de liaison sanitaire, jointes à l'email de confirmation, complétées et signées par le représentant légal", 'datée et signée'];
     }
 
     /**

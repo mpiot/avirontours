@@ -27,6 +27,7 @@
         "erusev/parsedown": "^1.8.0",
         "knplabs/knp-paginator-bundle": "^6.10",
         "knpuniversity/oauth2-client-bundle": "^2.20.2",
+        "league/html-to-markdown": "^5.1",
         "martin-georgiev/postgresql-for-doctrine": "^4.7",
         "oneup/flysystem-bundle": "^4.14.1",
         "phpdocumentor/reflection-docblock": "^6.0.3",
