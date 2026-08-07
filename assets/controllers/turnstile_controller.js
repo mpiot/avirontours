@@ -23,6 +23,8 @@ export default class extends Controller {
         turnstile.ready(() => {
             this.turnstileId = turnstile.render(this.containerTarget, {
                 action: this.actionValue,
+                'error-callback': () => turnstile.reset(this.turnstileId),
+                'expired-callback': () => turnstile.reset(this.turnstileId),
                 sitekey: this.siteKeyValue,
                 theme: this.themeValue
             });

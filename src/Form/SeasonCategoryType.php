@@ -51,9 +51,6 @@ class SeasonCategoryType extends AbstractType
             ])
             ->add('displayed', CheckboxType::class, [
                 'label' => 'Affiché',
-                'label_attr' => [
-                    'class' => 'checkbox-custom',
-                ],
                 'required' => false,
             ])
         ;

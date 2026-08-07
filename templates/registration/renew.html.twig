@@ -1,19 +1,28 @@
 {% extends 'base.html.twig' %}
+{% set appMenuAutoOpen = false %}
 
-{% block title %}Réinscription à Aviron Tours{% endblock %}
+{% block title %}Ma réinscription{% endblock %}
 
 {% block breadcrumb %}
     {{ parent() }}
-    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">Mon profil</a></li>
-    <li class="breadcrumb-item active">Réinscription à Aviron Tours</li>
+    <li class="breadcrumb-item"><a href="{{ path('profile_show') }}">Mon profil</a></li>
+    <li class="breadcrumb-item active">Ma réinscription</li>
 {% endblock %}
 
 {% block body %}
-    <h1>Réinscription pour la saison {{ season_category.season.name }} - {{ season_category.name }}</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-7">
+            <h1>Ma réinscription</h1>
 
-    <div class="card border-0 shadow mt-3">
-        <div class="card-body">
-            {{ include('registration/_form.html.twig') }}
+            <div class="card border-0 shadow">
+                <div class="card-header">
+                    {{ include('registration/_season_category_recap.html.twig') }}
+                </div>
+                <div class="card-body">
+                    {{ include('registration/_intro.html.twig', { renew: true }) }}
+                    {{ include('registration/_form.html.twig', { renew: true }) }}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

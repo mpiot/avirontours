@@ -1,0 +1,21 @@
+{% import 'registration/_macros.html.twig' as registration %}
+
+<div id="registration-intro" class="alert alert-light border mb-4">
+    <p class="mb-2">
+        Avant de commencer, munissez-vous de votre
+        <span class="fw-bold">certificat médical ou attestation QS-Sport</span>. Il doit être
+        <span class="fw-bold">définitif</span>&nbsp;: nous ne le remplaçons pas après
+        {{ renew ? 'réinscription' : 'inscription' }}.
+    </p>
+
+    <p class="form-text mb-0">
+        Formulaires vierges&nbsp;:
+        {{ registration.pdf_link('qs-sport-mineurs.pdf', 'QS-Sport mineurs') }}
+
+        {% if renew %}
+            &middot; {{ registration.pdf_link('qs-sport-majeurs.pdf', 'QS-Sport majeurs') }}
+        {% endif %}
+
+        &middot; {{ registration.pdf_link('certificat-medical.pdf', 'Certificat médical') }}
+    </p>
+</div>

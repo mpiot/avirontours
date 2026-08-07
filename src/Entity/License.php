@@ -22,6 +22,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableEntity;
 use App\Repository\LicenseRepository;
+use App\Validator as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -33,6 +34,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity(fields: ['seasonCategory', 'user'], message: 'Déjà inscrit pour cette saison.')]
+#[AppAssert\Attestation(groups: ['registration'])]
 #[ORM\Entity(repositoryClass: LicenseRepository::class)]
 class License
 {
@@ -40,6 +42,7 @@ class License
     use TimestampableEntity;
 
     public const NUM_ITEMS = 20;
+    public const float OPTIONAL_INSURANCE_PRICE = 15.57;
 
     #[ORM\Id, ORM\Column(type: Types::INTEGER), ORM\GeneratedValue]
     private ?int $id = null;

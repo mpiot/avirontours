@@ -199,25 +199,6 @@ class LicenseRepository extends ServiceEntityRepository
         return $statistics;
     }
 
-    public function countBySeason(Season $season): int
-    {
-        $em = $this->getEntityManager();
-
-        return $em->createQuery(/* @lang DQL */ '
-                SELECT
-                    COUNT(license.id) as number
-                FROM App\Entity\License license
-                INNER JOIN license.seasonCategory season_category
-                INNER JOIN season_category.season season
-                WHERE season = :season
-            ')
-            ->setParameters([
-                'season' => $season,
-            ])
-            ->getSingleScalarResult()
-        ;
-    }
-
     public function findOneForValidation(Season $season): ?License
     {
         $query = $this->createQueryBuilder('license')

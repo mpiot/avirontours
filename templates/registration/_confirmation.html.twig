@@ -1,29 +1,30 @@
 <div class="d-flex justify-content-center align-items-center">
     <div class="border rounded p-5 border-success">
         <div class="text-success text-center">
-            <span class="fas fa-4x fa-check-circle"></span>
+            <span class="fas fa-4x fa-check-circle" aria-hidden="true"></span>
         </div>
 
-        <p class="fs-3 text-center">{{ renew ? 'Réinscription' : 'Inscription' }} à Aviron Tours</p>
+        <h1 class="fs-3 text-center">{{ renew ? 'Réinscription' : 'Inscription' }} à Aviron Tours</h1>
 
         <p>
             Le club Aviron Tours Métropole vous remercie de votre {{ renew ? 'réinscription' : 'inscription' }}.
         </p>
 
-        <p style="margin-bottom: 0;">
-            Pour la finaliser, merci de:
+        <p class="mb-0">
+            Pour la finaliser, merci de&nbsp;:
         </p>
-        <ul style="margin-top: 0; list-style-type: none;">
-            <li><span class="fa-regular fa-square-check"></span> procéder au paiement de votre inscription</li>
-            <li><span class="fa-regular fa-square-check"></span> retourner l'attestation de droit à l'image</li>
+
+        <ul class="mt-0">
+            <li>procéder au paiement de votre inscription</li>
+            <li>retourner l'attestation de droit à l'image</li>
         </ul>
 
-        <p style="margin-bottom: 0;">
-            Pour les mineurs:
+        <p class="mb-0">
+            Pour les mineurs&nbsp;:
         </p>
-        <ul style="margin-top: 0; list-style-type: none;">
-            <li><span class="fa-regular fa-square-check"></span> retourner l'autorisation parentale</li>
-            <li><span class="fa-regular fa-square-check"></span> retourner la fiche liaison sanitaire</li>
+        <ul class="mt-0">
+            <li>retourner l'autorisation parentale</li>
+            <li>retourner la fiche liaison sanitaire</li>
         </ul>
 
         <div class="mb-2 text-center">
@@ -31,7 +32,7 @@
                 class="btn btn-primary btn-lg"
                 href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2026-2027"
             >
-                <span class="fa-solid fa-credit-card"></span>
+                <span class="fa-solid fa-credit-card" aria-hidden="true"></span>
                 Payer par Carte bancaire<br/>
                 <small>(paiement en 1 ou 3x)</small>
             </a>
@@ -43,15 +44,26 @@
             HelloAsso" lors de la dernière étape "Récapitulatif").
         </p>
 
-        <p style="margin-bottom: 0;">
-            Autres moyens de paiements acceptés:
+        <p class="mb-0">
+            Autres moyens de paiements acceptés&nbsp;:
         </p>
 
-        <ul style="margin-top: 0;">
+        <ul class="mt-0">
             <li>Chèque (possibilité de payer en 3 fois)</li>
-            <li>Chèques vacances</li>
-            <li>Coupon sport</li>
+            <li>Chèque vacances / Coupon sport</li>
+            <li>Chèque vacances Connect</li>
             <li>Pass'sport</li>
+            <li>Yep's</li>
         </ul>
+
+        <hr>
+
+        <p class="text-center mb-0">
+            {% if renew %}
+                <a href="{{ path('profile_show') }}">Retour à mon profil</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Me connecter à mon espace membre</a>
+            {% endif %}
+        </p>
     </div>
 </div>

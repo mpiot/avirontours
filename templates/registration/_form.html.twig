@@ -1,185 +1,270 @@
-<div {{ stimulus_controller('dependent-field') }}>
+{% import 'registration/_macros.html.twig' as registration %}
+
+{% set member = form.vars.data.user %}
+{% set majority_date = date('-18 years') %}
+{% set is_minor = member.birthday is not null and member.birthday > majority_date %}
+
+{% set insurance_price = constant('App\\Entity\\License::OPTIONAL_INSURANCE_PRICE') %}
+{% set with_insurance = form.license.optionalInsurance.vars.data %}
+{% set total = season_category.price + (with_insurance ? insurance_price : 0) %}
+
+{% set address_fields = [form.user.laneNumber, form.user.laneType, form.user.laneName, form.user.postalCode, form.user.city] %}
+{% set address_has_errors = address_fields|filter(field => field.vars.errors|length > 0)|length > 0 %}
+
+<div {{ stimulus_controller('dependent-field')|stimulus_controller('legal-guardians', {
+    majorityDate: majority_date|date('Y-m-d'),
+    minor: is_minor,
+}) }}>
     {{ form_start(form) }}
         {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Membre
+        <p class="form-text mt-0 mb-3">Les champs suivis d'un <span class="text-danger">*</span> sont obligatoires.</p>
+
+        <fieldset class="mb-4">
+            <legend class="fs-5"><span class="fas fa-user me-2" aria-hidden="true"></span>1. Le membre</legend>
+
+            {% if renew %}
+                {{ include('registration/_identity_card.html.twig') }}
+            {% else %}
+                {{ form_row(form.user.gender, { label_attr: { class: 'radio-inline' } }) }}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.user.firstName) }}
                     </div>
-                    <div class="card-body">
-                        {{ form_row(form.user.gender) }}
+                    <div class="col-md-6">
+                        {{ form_row(form.user.lastName) }}
+                    </div>
 
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.user.firstName) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.user.lastName) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.user.nationality) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.user.birthday) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.user.email) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.user.phoneNumber) }}
-                            </div>
-                        </div>
-
-                        {% if form.user.plainPassword is defined %}
-                            {{ form_row(form.user.plainPassword) }}
-                        {% endif %}
+                    <div class="col small text-secondary">
+                        Votre identifiant de connexion sera construit à partir du prénom et du nom, sous la forme <span class="fw-bold">prenom.nom</span>
                     </div>
                 </div>
 
-                <div class="card mt-3">
-                    <div class="card-header">
-                        Adresse
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.user.laneNumber) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.user.laneType) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(form.user.laneName) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.user.postalCode, { attr: { 'data-action': 'dependent-field#keyup' } }) }}
-                            </div>
-                            <div id="city-target" class="col" {{ stimulus_target('dependent-field', 'target') }}>
-                                {{ form_row(form.user.city) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Licence
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-info" role="alert">
-                            <span class="fas fa-info-circle"></span>
-                            Document à fournir:
-                            <ul>
-                                {% if form.plainPassword is defined %}
-                                    <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
-                                    <li><u>Majeur</u>: certificat médical de moins d'un an. Les attestation QS sport ne sont valables que lors du renouvellement d'une licence au sein du club.</li>
-                                {% else %}
-                                    <li><u>Mineur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport</li>
-                                    <li><u>Majeur</u>: certificat médical de moins d'un an, ou <span class="fw-bold">attestation</span> QS sport (si le précédent certificat médical date de moins de 3 ans).</li>
-                                {% endif %}
-                            </ul>
-                        </div>
-
-                        <ul>
-                            {% if form.plainPassword is not defined %}
-                                <li>
-                                    <a href="{{ asset('files/qs-sport-majeurs.pdf') }}" target="_blank" rel="noopener">
-                                        <span class="far fa-file-pdf"></span> QS-Sport pour personnes majeurs
-                                    </a>
-                                </li>
-                            {% endif %}
-                            <li>
-                                <a href="{{ asset('files/qs-sport-mineurs.pdf') }}" target="_blank" rel="noopener">
-                                    <span class="far fa-file-pdf"></span> QS-Sport pour personnes mineurs
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ asset('files/certificat-medical.pdf') }}" target="_blank" rel="noopener">
-                                    <span class="far fa-file-pdf"></span> Certificat médical
-                                </a>
-                            </li>
-                        </ul>
-
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.license.medicalCertificate.type) }}
-                            </div>
-
-                            <div class="col">
-                                {{ form_row(form.license.medicalCertificate.level) }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(form.license.medicalCertificate.date) }}
-                            </div>
-
-                            <div class="col">
-                                {{ form_row(form.license.medicalCertificate.file) }}
-                            </div>
-                        </div>
-
-                        {{ form_row(form.license.optionalInsurance, {
-                            'help': '<a href="'~ asset('files/maif-garanties-assurance.pdf') ~'" target="_blank" rel="noopener">Télécharger la notice</a>',
-                            'help_html': true,
+                <div class="row">
+                    <div class="col-md">
+                        {{ form_row(form.user.birthday, {
+                            attr: {
+                                'data-action': 'change->dependent-field#change input->legal-guardians#checkBirthday',
+                                'data-dependent-field-scope-param': 'certificate',
+                            },
                         }) }}
-                        {{ form_row(form.license.federationEmailAllowed) }}
+                    </div>
+                    <div class="col-md">
+                        {{ form_row(form.user.nationality) }}
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endif %}
 
-        <div class="row">
-            <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Responsable légal 1
-                    </div>
-                    <div class="card-body">
-                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.user.firstLegalGuardian } %}
-                    </div>
+            <div class="row">
+                <div class="col-md">
+                    {{ form_row(form.user.email) }}
+                </div>
+                <div class="col-md">
+                    {{ form_row(form.user.phoneNumber) }}
                 </div>
             </div>
 
-            <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        Responsable légal 2
+            {% if form.user.plainPassword is defined %}
+                {{ form_errors(form.user.plainPassword) }}
+                <div class="row">
+                    <div class="col-md">
+                        {{ form_row(form.user.plainPassword.first) }}
                     </div>
-                    <div class="card-body">
-                        {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.user.secondLegalGuardian } %}
+                    <div class="col-md">
+                        {{ form_row(form.user.plainPassword.second) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <hr>
+
+            {{ include('registration/_legal_guardians.html.twig', { form: form.user }) }}
+        </fieldset>
+
+        <fieldset class="mb-4">
+            <legend class="fs-5"><span class="fas fa-location-dot me-2" aria-hidden="true"></span>2. Adresse</legend>
+
+            {% if renew %}
+                <p class="mb-2">{{ member.formattedAddress }}</p>
+
+                <button
+                    class="btn btn-outline-secondary collapse-toggle w-100 text-start"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#address-fields"
+                    aria-expanded="{{ address_has_errors ? 'true' : 'false' }}"
+                    aria-controls="address-fields"
+                >
+                    <span class="fas fa-chevron-down me-2" aria-hidden="true"></span>
+                    Modifier mon adresse
+                </button>
+            {% endif %}
+
+            <div id="address-fields" class="{{ html_classes({ 'collapse pt-3': renew, 'show': address_has_errors }) }}">
+                <div class="row">
+                    <div class="col-4 col-md-3">
+                        {{ form_row(form.user.laneNumber) }}
+                    </div>
+                    <div class="col-8 col-md-4">
+                        {{ form_row(form.user.laneType) }}
+                    </div>
+                    <div class="col-12 col-md-5">
+                        {{ form_row(form.user.laneName) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md">
+                        {{ form_row(form.user.postalCode, {
+                            attr: form.user.postalCode.vars.attr|merge({
+                                'data-action': 'dependent-field#keyup',
+                                'data-dependent-field-scope-param': 'city',
+                            }),
+                        }) }}
+                    </div>
+                    <div
+                        id="city-target"
+                        class="col-md"
+                        data-dependent-field-scope="city"
+                        {{ stimulus_target('dependent-field', 'target') }}
+                    >
+                        {{ form_row(form.user.city) }}
                     </div>
                 </div>
             </div>
-        </div>
+        </fieldset>
 
-        <div class="mt-3">
-            {{ form_row(form.user.clubEmailAllowed) }}
+        <fieldset class="mb-4">
+            <legend class="fs-5"><span class="fas fa-file-medical me-2" aria-hidden="true"></span>3. Certificat médical</legend>
+
+            <div class="row">
+                <div
+                    id="medical-certificate-type"
+                    class="col-md"
+                    data-action="change->dependent-field#change"
+                    data-dependent-field-scope-param="certificate"
+                    data-dependent-field-scope="certificate"
+                    {{ stimulus_target('dependent-field', 'target') }}
+                >
+                    {{ form_row(form.license.medicalCertificate.type, { label_attr: { class: 'radio-inline' } }) }}
+                </div>
+                <div
+                    id="medical-certificate-level"
+                    class="col-md"
+                    data-dependent-field-scope="certificate"
+                    {{ stimulus_target('dependent-field', 'target') }}
+                >
+                    {{ form_row(form.license.medicalCertificate.level, { label_attr: { class: 'radio-inline' } }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md">
+                    {{ form_row(form.license.medicalCertificate.date) }}
+                </div>
+                <div class="col-md">
+                    {{ form_row(form.license.medicalCertificate.file) }}
+                </div>
+            </div>
+
+            {{ form_row(form.agreeMedicalCertificate, {
+                label: "J'atteste que le document joint est valide, faute de quoi #{renew ? 'ma réinscription' : 'mon inscription'} sera supprimée et à refaire.",
+            }) }}
+        </fieldset>
+
+        <fieldset class="mb-4">
+            <legend class="fs-5"><span class="fas fa-file-signature me-2" aria-hidden="true"></span>4. Autorisations et engagements</legend>
+
             {{ form_row(form.agreeSwim) }}
             {{ form_row(form.agreeRulesAndRegulations, {
-                'help': '<a href="'~ asset('files/reglement-interieur.pdf') ~'" target="_blank" rel="noopener">Télécharger le règlement intérieur</a>',
-                'help_html': true,
+                help: registration.pdf_link('reglement-interieur.pdf', 'Télécharger le règlement intérieur'),
+                help_html: true,
             }) }}
+
+            <hr>
+
+            <p class="fw-bold mb-1">
+                <span class="fas fa-envelope me-2" aria-hidden="true"></span>Préférences de communication
+            </p>
+
+            {{ form_row(form.user.clubEmailAllowed) }}
+            {{ form_row(form.license.federationEmailAllowed) }}
+        </fieldset>
+
+        <fieldset class="mb-4">
+            <legend class="fs-5"><span class="fas fa-receipt me-2" aria-hidden="true"></span>5. Récapitulatif</legend>
+
+            <div aria-live="polite">
+                <div
+                    id="price-recap"
+                    class="card"
+                    data-dependent-field-scope="price"
+                    {{ stimulus_target('dependent-field', 'target') }}
+                >
+                    <div class="card-header">Montant de votre {{ renew ? 'réinscription' : 'inscription' }}</div>
+
+                    <div class="card-body pb-0">
+                        {{ form_row(form.license.optionalInsurance, {
+                            attr: {
+                                'data-action': 'change->dependent-field#change',
+                                'data-dependent-field-scope-param': 'price',
+                            },
+                            help: registration.pdf_link('maif-garanties-assurance.pdf', 'Télécharger la notice'),
+                            help_html: true,
+                        }) }}
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Cotisation
+                            <span>{{ season_category.price|format_currency('EUR') }}</span>
+                        </li>
+
+                        <li class="{{ html_classes('list-group-item d-flex justify-content-between', { 'text-muted': with_insurance } )}}">
+                            Option I.A. Sport+
+                            <span>{{ with_insurance ? insurance_price|format_currency('EUR') : 'Non souscrite' }}</span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between fw-bold">
+                            Total
+                            <span>{{ total|format_currency('EUR') }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="form-text">
+                Le paiement se fait après validation de ce formulaire.
+            </p>
+
+            {% if form.turnstile is defined %}
+                {{ form_row(form.turnstile) }}
+            {% endif %}
+        </fieldset>
+
+        <div id="sticky-summary" class="sticky-bottom bg-white border-top d-flex justify-content-end py-2 py-sm-3">
+            <button
+                class="btn btn-lg btn-primary flex-grow-1 flex-sm-grow-0"
+                type="submit"
+                data-turbo-submits-with="Envoi en cours&hellip;"
+            >
+                {% if renew %}
+                    Me réinscrire
+                {% else %}
+                    Valider<span class="d-none d-sm-inline"> mon inscription</span>
+                {% endif %}
+
+                &middot;
+
+                <span
+                    id="sticky-total"
+                    data-dependent-field-scope="price"
+                    {{ stimulus_target('dependent-field', 'target') }}
+                >
+                    {{ total|format_currency('EUR') }}
+                </span>
+            </button>
         </div>
-
-        {% if form.turnstile is defined %}
-            {{ form_row(form.turnstile)}}
-        {% endif %}
-
-        <button class="btn btn-primary mt-3">S'inscrire</button>
     {{ form_end(form) }}
 </div>

@@ -41,19 +41,24 @@ class RegistrationType extends AbstractType
             ->add('license', RegistrationLicenseType::class, [
                 'label' => false,
             ])
+            ->add('agreeMedicalCertificate', CheckboxType::class, [
+                'label' => 'J\'atteste que le document joint est valide, faute de quoi mon inscription sera supprimée et à refaire.',
+                'constraints' => [
+                    new IsTrue(message: 'Vous devez attester que le document joint est valide pour vous inscrire.'),
+                ],
+                'mapped' => false,
+            ])
             ->add('agreeSwim', CheckboxType::class, [
-                'label' => 'J\'atteste savoir nager 25m avec un départ plongé.',
-                'label_attr' => ['class' => 'checkbox-custom'],
+                'label' => 'J\'atteste savoir nager 25m avec un départ plongé',
                 'constraints' => [
                     new IsTrue(message: 'Vous devez savoir nager 25m avec un départ plongé pour vous inscrire.'),
                 ],
                 'mapped' => false,
             ])
             ->add('agreeRulesAndRegulations', CheckboxType::class, [
-                'label' => 'J\'atteste avoir lu le règlement intérieur et je l\'accepte dans son intégralité.',
-                'label_attr' => ['class' => 'checkbox-custom'],
+                'label' => 'J\'atteste avoir lu le règlement intérieur et je l\'accepte dans son intégralité',
                 'constraints' => [
-                    new IsTrue(message: 'Vous devez attester avoir avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.'),
+                    new IsTrue(message: 'Vous devez attester avoir lu le règlement intérieur et l\'accepter dans son intégralité pour vous inscrire.'),
                 ],
                 'mapped' => false,
             ])

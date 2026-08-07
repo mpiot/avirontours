@@ -6,6 +6,18 @@
 @import "~@fortawesome/fontawesome-free/scss/solid";
 
 /**
+ * Turbo.js
+ */
+.turbo-progress-bar {
+    background-color: $blue-300;
+}
+
+[aria-busy="true"] {
+    opacity: .5;
+    transition: opacity .15s ease-in-out;
+}
+
+/**
  * Menus
  */
 body {
@@ -161,6 +173,12 @@ main {
   }
 }
 
+legend.required ~ div .form-check-label.required {
+  &:after {
+    content: none !important;
+  }
+}
+
 /**
  * Lists
  */
@@ -189,15 +207,12 @@ li {
 }
 
 /**
- * Parallax
+ * Collapse toggle chevron
  */
-.parallax {
-    @media only screen and (max-device-width: 991.98px) {
-        background-attachment: scroll;
-    }
+.collapse-toggle .fa-chevron-down {
+    transition: transform .2s ease-in-out;
+}
 
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+.collapse-toggle[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
 }

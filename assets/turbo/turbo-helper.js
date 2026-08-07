@@ -1,34 +1,15 @@
 import * as Turbo from '@hotwired/turbo';
 
 const TurboHelper = class {
+    // Désactiver le bouton pendant l'envoi est déjà le comportement de Turbo
+    // (config.forms.submitter vaut "disabled"), et Bootstrap grise déjà .btn:disabled.
     constructor () {
-        document.addEventListener('turbo:before-cache', () => {
-            TurboHelper.reEnableSubmitButtons();
-        });
-
-        document.addEventListener('turbo:submit-start', (event) => {
-            const submitter = event.detail.formSubmission.submitter;
-            if (undefined === submitter) {
-                return;
-            }
-
-            submitter.toggleAttribute('disabled', true);
-            submitter.classList.add('turbo-submit-disabled');
-        });
-
         document.addEventListener('turbo:before-fetch-request', (event) => {
             TurboHelper.beforeFetchRequest(event);
         });
 
         document.addEventListener('turbo:before-fetch-response', (event) => {
             TurboHelper.beforeFetchResponse(event);
-        });
-    }
-
-    static reEnableSubmitButtons () {
-        document.querySelectorAll('.turbo-submit-disabled').forEach((button) => {
-            button.toggleAttribute('disabled', false);
-            button.classList.remove('turbo-submit-disabled');
         });
     }
 

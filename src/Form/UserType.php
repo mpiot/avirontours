@@ -57,7 +57,6 @@ class UserType extends AbstractType
                 'label' => 'Genre',
                 'choices' => User::getAvailableGenders(),
                 'expanded' => true,
-                'label_attr' => ['class' => 'radio-custom radio-inline'],
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
@@ -80,6 +79,7 @@ class UserType extends AbstractType
                 'label' => 'Nationalité',
                 'preferred_choices' => ['FR'],
                 'placeholder' => '--- Sélectionner un pays ---',
+                'autocomplete' => true,
             ])
             ->add('birthday', BirthdayType::class, [
                 'label' => 'Date de naissance',
@@ -109,11 +109,10 @@ class UserType extends AbstractType
             ])
             ->add('postalCode', TextType::class, [
                 'label' => 'Code postal',
-                'attr' => ['autocomplete' => 'postal-code'],
+                'attr' => ['autocomplete' => 'postal-code', 'inputmode' => 'numeric', 'maxlength' => 5],
             ])
             ->add('clubEmailAllowed', CheckboxType::class, [
-                'label' => 'Je souhaite recevoir les emails du club.',
-                'label_attr' => ['class' => 'checkbox-custom'],
+                'label' => 'Je souhaite recevoir les emails du club',
                 'required' => false,
             ])
         ;
@@ -135,7 +134,6 @@ class UserType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => true,
-                'label_attr' => ['class' => 'checkbox-custom'],
             ]);
         }
 
@@ -164,6 +162,7 @@ class UserType extends AbstractType
             'label' => 'Ville',
             'placeholder' => '--- Sélectionner une ville ---',
             'choices' => array_combine($cities, $cities),
+            'attr' => ['autocomplete' => 'address-level2'],
         ]);
     }
 }
