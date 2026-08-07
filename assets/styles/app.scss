@@ -207,6 +207,27 @@ li {
 }
 
 /**
+ * Registration submit bar
+ *
+ * iOS Safari keeps `position: sticky` anchored where its collapsed toolbar used to be, and paints
+ * page content in the freed strip: `fixed` follows the toolbar.
+ */
+@include media-breakpoint-down(md) {
+  #sticky-summary {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding-right: $card-spacer-x;
+    padding-left: $card-spacer-x;
+  }
+
+  #registration-form {
+    padding-bottom: 4rem;
+  }
+}
+
+/**
  * Collapse toggle chevron
  */
 .collapse-toggle .fa-chevron-down {
