@@ -1,10 +1,12 @@
-{% extends 'base_background.html.twig' %}
+{% extends 'base_auth.html.twig' %}
 
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
 
-{% block body %}
-    <div class="fs-4 mb-3">Réinitialiser mon mot de passe</div>
+{% block heading %}Mot de passe oublié{% endblock %}
 
+{% block subtitle %}Indiquez votre identifiant&nbsp;: nous enverrons un lien de réinitialisation à l'adresse email enregistrée au club.{% endblock %}
+
+{% block body %}
     {% for flash_error in app.flashes('reset_password_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
@@ -13,13 +15,21 @@
         {{ form_errors(requestForm) }}
 
         {{ form_row(requestForm.username, {
-            'help': 'Nom utilisateur: prenom.nom'
+            'help': 'Nom utilisateur&nbsp;: prenom.nom',
+            'help_html': true,
+            'attr': { 'class': 'form-control-lg', 'autofocus': true }
         }) }}
 
-        {{ form_row(requestForm.turnstile)}}
+        <div class="d-flex justify-content-center mb-3">
+            {{ form_row(requestForm.turnstile) }}
+        </div>
 
-        <div class="d-grid gap-2">
-            <button class="btn btn-lg btn-primary">Envoyer un email de récupération</button>
+        <div class="d-grid">
+            <button class="btn btn-lg btn-primary" data-turbo-submits-with="Envoi en cours&hellip;">Envoyer un email de récupération</button>
         </div>
     {{ form_end(requestForm) }}
+
+    <p class="mt-3 mb-0 text-center">
+        <a href="{{ path('app_login') }}">Retour à la connexion</a>
+    </p>
 {% endblock %}

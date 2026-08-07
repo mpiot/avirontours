@@ -1,50 +1,46 @@
-{% extends 'base_background.html.twig' %}
+{% extends 'base_auth.html.twig' %}
 
 {% block title %}Se connecter{% endblock %}
 
+{% block heading %}Connexion{% endblock %}
+
+{% block subtitle %}Accédez à votre espace membre.{% endblock %}
+
 {% block body %}
+    {% if error %}
+        <div class="alert alert-danger d-flex" role="alert">
+            <span class="fas fa-lg fa-exclamation-circle align-self-center" aria-hidden="true"></span>
+            <div class="align-self-center ms-3">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        </div>
+    {% endif %}
+
     <form method="post">
-        {% if error %}
-            <div class="alert alert-danger d-flex">
-                <div class="align-self-center">
-                    <span class="fas fa-2x fa-exclamation-circle"></span>
-                </div>
-                <div class="align-self-center ms-3">
-                    {{ error.messageKey|trans(error.messageData, 'security') }}
-                </div>
-            </div>
-        {% endif %}
-
-        {% if app.user %}
-            <div class="mb-3">
-                Vous êtes connecté en tant que {{ app.user.username }}, <a href="{{ logout_path() }}">Logout</a>
-            </div>
-        {% endif %}
-
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="username" name="_username"  autocomplete="username" placeholder="Utilisateur" value="{{ last_username }}" required autofocus>
-            <label for="username">Utilisateur</label>
-            <p id="username_help" class="form-text mb-0 help-text">Nom utilisateur: prenom.nom</p>
+        <div class="mb-3">
+            <label class="form-label" for="username">Utilisateur</label>
+            <input type="text" class="form-control form-control-lg" id="username" name="_username" autocomplete="username" aria-describedby="username_help" value="{{ last_username }}" required autofocus>
+            <p id="username_help" class="form-text mb-0">Nom utilisateur&nbsp;: prenom.nom</p>
         </div>
 
-        <div class="form-floating">
-            <input type="password" class="form-control" id="password" name="_password"  autocomplete="current-password" placeholder="Mot de passe" required>
-            <label for="password">Mot de passe</label>
+        <div class="mb-3">
+            <label class="form-label" for="password">Mot de passe</label>
+            <input type="password" class="form-control form-control-lg" id="password" name="_password" autocomplete="current-password" required>
         </div>
 
-        <div class="form-check form-switch my-3">
+        <div class="form-check form-switch mb-4">
             <input class="form-check-input" type="checkbox" id="remember_me" name="_remember_me">
             <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
         </div>
 
         <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-        <div class="d-grid gap-2">
-            <button class="btn btn-lg btn-primary" type="submit">Se connecter</button>
+        <div class="d-grid">
+            <button class="btn btn-lg btn-primary" type="submit" data-turbo-submits-with="Connexion en cours&hellip;">Se connecter</button>
         </div>
     </form>
 
-    <p class="mt-3 text-end">
-        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+    <p class="mt-3 mb-0 text-center">
+        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié&nbsp;?</a>
     </p>
 {% endblock %}
