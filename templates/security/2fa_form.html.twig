@@ -1,51 +1,62 @@
-{% extends 'base_background.html.twig' %}
+{% extends 'base_auth.html.twig' %}
 
 {% block title %}Double authentification{% endblock %}
 
-{% block body %}
-    <form class="form" action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
-        {% if authenticationError %}
-            <div class="alert alert-danger d-flex">
-                <div class="align-self-center">
-                    <span class="fas fa-2x fa-exclamation-circle"></span>
-                </div>
-                <div class="align-self-center ms-3">
-                    {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
-                </div>
-            </div>
-        {% endif %}
+{% block heading %}Vérification en deux étapes{% endblock %}
 
-        <div class="form-floating">
+{% block subtitle %}
+    {% set emailParts = app.user.email|split('@') %}
+    Nous venons d'envoyer un code à 6 chiffres à {{ emailParts|first|slice(0, 1) }}&bull;&bull;&bull;@{{ emailParts|last }}.
+{% endblock %}
+
+{% block body %}
+    {% if authenticationError %}
+        <div class="alert alert-danger d-flex" role="alert">
+            <span class="fas fa-lg fa-exclamation-circle align-self-center" aria-hidden="true"></span>
+            <div class="align-self-center ms-3">
+                {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+            </div>
+        </div>
+    {% endif %}
+
+    <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
+        <div class="mb-3">
+            <label class="form-label" for="_auth_code">Code d'authentification</label>
             <input
                 type="text"
                 id="_auth_code"
                 name="{{ authCodeParameterName }}"
-                class="form-control"
-                placeholder="Code d'authentification"
+                class="form-control form-control-lg auth-code"
                 autocomplete="one-time-code"
-                autofocus
                 inputmode="numeric"
                 pattern="[0-9]*"
+                maxlength="6"
+                enterkeyhint="go"
+                aria-describedby="auth_code_help"
+                autofocus
             />
-            <label for="_auth_code">Code d'authentification</label>
+            <p id="auth_code_help" class="form-text mb-0">
+                Le code n'est valable que quelques minutes. Pensez à vérifier vos courriers indésirables.
+            </p>
         </div>
 
         {% if displayTrustedOption %}
-            <div class="custom-control custom-switch mb-3">
-                <input type="checkbox" class="custom-control-input" id="_trusted" name="{{ trustedParameterName }}">
-                <label class="custom-control-label" for="_trusted">{{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label>
+            <div class="form-check form-switch mb-4">
+                <input type="checkbox" class="form-check-input" id="_trusted" name="{{ trustedParameterName }}">
+                <label class="form-check-label" for="_trusted">{{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label>
             </div>
         {% endif %}
+
         {% if isCsrfProtectionEnabled %}
             <input type="hidden" name="{{ csrfParameterName }}" data-controller="csrf-protection" value="{{ csrf_token(csrfTokenId) }}">
         {% endif %}
 
-        <div class="d-grid gap-2 mt-3">
-            <button class="btn btn-lg btn-primary" type="submit">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
+        <div class="d-grid mt-4">
+            <button class="btn btn-lg btn-primary" type="submit" data-turbo-submits-with="Vérification en cours&hellip;">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
         </div>
     </form>
 
-    <p class="mt-3">
-        <a href="{{ logoutPath }}">{{ "cancel"|trans({}, 'SchebTwoFactorBundle') }}</a>
+    <p class="mt-3 mb-0 text-center">
+        <a href="{{ logoutPath }}">Revenir à la connexion</a>
     </p>
 {% endblock %}
