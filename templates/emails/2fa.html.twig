@@ -1,18 +1,18 @@
 {% extends 'emails/base.html.twig' %}
 
-{% block body %}
-    <container>
-        <row>
-            <columns>
-                <p>
-                    Bonjour {{ user.fullName }},<br/>
-                    Voici votre code d'authentification a usage unique:
-                </p>
+{% block preheader %}Votre code de connexion à usage unique.{% endblock %}
 
-                <p>
-                    <span class="text-center" style="font-size: 3rem;">{{ user.emailAuthCode }}</span>
-                </p>
-            </columns>
-        </row>
-    </container>
+{% block heading %}Votre code de connexion{% endblock %}
+
+{% block body %}
+    <p>
+        Bonjour {{ user.fullName }},<br/>
+        Voici votre code d'authentification à usage unique&nbsp;:
+    </p>
+
+    <p class="code text-center">{{ user.emailAuthCode }}</p>
+
+    <p class="small">
+        Si vous n'êtes pas à l'origine de cette connexion, ignorez cet email et changez votre mot de passe.
+    </p>
 {% endblock %}

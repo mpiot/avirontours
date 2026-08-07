@@ -5,3 +5,4 @@ framework:
             sender: '%env(MAILER_SENDER)%'
         headers:
             From: '%env(MAILER_FROM)%'
+            Reply-To: '%env(MAILER_REPLY_TO)%'

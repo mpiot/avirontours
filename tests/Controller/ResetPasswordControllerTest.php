@@ -39,6 +39,7 @@ class ResetPasswordControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/reset-password/check-email');
         self::assertQueuedEmailCount(1);
+        self::assertEmailAddressContains($this->getMailerMessage(), 'Reply-To', 'contact@avirontours.fr');
     }
 
     public function testResetChangesThePassword(): void

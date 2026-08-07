@@ -1,22 +1,128 @@
 @import "~foundation-emails";
 
+$brand: #1a3996;
+$ink: #3c3c3b;
+$muted: #6a6a69;
+$page: #f8f8f8;
+$rule: #e3e6ef;
+
 body {
-    background-color: #f8f8f8;
-    color: #3c3c3b;
+    background-color: $page;
+    color: $ink;
 }
 
-.header {
-    border-top: 2px solid #1a3996;
+body, p, td, th, li {
+    line-height: 155%;
 }
 
-.social a {
-    color: #3c3c3b;
+td, th {
+    hyphens: none;
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
 }
 
-.footer {
-    background-color: #1a3996;
+p {
+    margin-bottom: 16px;
+}
 
-    p, a {
-        color: #ffffff;
-    }
+a, a:visited {
+    color: $brand;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: $brand;
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+h5 {
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.small, small {
+    color: $muted;
+    font-size: 14px;
+}
+
+p.code {
+    color: $brand;
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 6px;
+}
+
+table.container {
+    background: #ffffff;
+}
+
+table.row.masthead {
+    background-color: $brand;
+}
+
+table.row.masthead th.columns {
+    padding: 28px 24px;
+}
+
+table.row.content th.columns {
+    padding: 32px 24px 16px;
+}
+
+table.row.note {
+    border-top: 1px solid $rule;
+}
+
+table.row.note th.columns {
+    padding: 16px 24px 0;
+}
+
+table.row.note p {
+    color: $muted;
+    font-size: 14px;
+}
+
+table.row.social th.columns {
+    padding: 8px 8px 20px;
+}
+
+table.row.footer {
+    background-color: $brand;
+}
+
+table.row.footer th.columns {
+    padding: 20px 24px;
+}
+
+table.row.footer p {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+table.row.footer p, table.row.footer a, table.row.footer a:visited {
+    color: #ffffff;
+}
+
+table.button {
+    margin: 8px 0 24px;
+}
+
+table.button table td {
+    background: $brand;
+    border: 2px solid $brand;
+    border-radius: 6px;
+}
+
+table.button table a {
+    border-radius: 6px;
+    padding: 14px 28px;
+}
+
+th.callout-inner {
+    background: #f4f6fb;
+    border: 1px solid $rule;
+    padding: 16px;
 }

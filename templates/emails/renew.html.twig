@@ -1,4 +1,15 @@
 {% extends 'emails/registration.html.twig' %}
 
+{% block preheader %}Il reste deux étapes pour finaliser votre réinscription.{% endblock %}
+
+{% block heading %}Content de vous revoir&nbsp;!{% endblock %}
+
+{% block greeting %}
+    <p>
+        Bonjour {{ fullName }},<br/>
+        Le club Aviron Tours Métropole vous remercie de votre réinscription.
+    </p>
+{% endblock %}
+
 {% block identifier_info %}
 {% endblock %}

@@ -1,63 +1,63 @@
 {% extends 'emails/base.html.twig' %}
 
+{% block preheader %}Il reste deux étapes pour finaliser votre inscription.{% endblock %}
+
+{% block heading %}Bienvenue au club&nbsp;!{% endblock %}
+
 {% block body %}
-    <container>
-        <row>
-            <columns>
-                <p>
-                    Bonjour {{ fullName }},<br/>
-                    Le club Aviron Tours Métropole vous souhaite la bienvenue et vous remercie de votre inscription.
-                </p>
+    {% block greeting %}
+        <p>
+            Bonjour {{ fullName }},<br/>
+            Le club Aviron Tours Métropole vous souhaite la bienvenue et vous remercie de votre inscription.
+        </p>
+    {% endblock %}
 
-                {% block identifier_info %}
-                    <p>
-                        Vous pouvez vous connecter à votre espace personnel sur <a href="{{ url('homepage') }}">avirontours.fr</a> avec votre mot de passe et votre identifiant: <strong>{{ userIdentifier }}</strong>.
-                    </p>
-                {% endblock %}
+    {% block identifier_info %}
+        <p>
+            Vous pouvez vous connecter à votre espace personnel sur <a href="{{ url('homepage') }}">avirontours.fr</a> avec votre mot de passe et votre identifiant&nbsp;: <strong>{{ userIdentifier }}</strong>.
+        </p>
+    {% endblock %}
 
-                <p style="margin-bottom: 0;">
-                    Pour la finaliser, merci de:
-                </p>
-                <ul style="margin-top: 0;">
-                    <li>procéder au paiement de votre inscription</li>
-                    <li>retourner l'attestation de droit à l'image</li>
-                </ul>
+    <p style="margin-bottom: 0;">
+        Pour la finaliser, merci de&nbsp;:
+    </p>
 
-                <p style="margin-bottom: 0;">
-                    Pour les mineurs:
-                </p>
-                <ul style="margin-top: 0;">
-                    <li>retourner l'autorisation parentale</li>
-                    <li>retourner la fiche liaison sanitaire</li>
-                </ul>
+    <ul style="margin-top: 0;">
+        <li>procéder au paiement de votre inscription</li>
+        {% if isMajor %}
+            <li>nous retourner l'attestation de droit à l'image, jointe à cet email, datée et signée</li>
+        {% else %}
+            <li>nous retourner l'attestation de droit à l'image, l'autorisation parentale et la fiche de liaison sanitaire, jointes à cet email, complétées et signées par le représentant légal</li>
+        {% endif %}
+    </ul>
 
-                <center>
-                    <button
-                        href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2026-2027"
-                    >
-                        Payer par Carte bancaire<br/>
-                        (paiement en 1 ou 3x)
-                    </button>
-                </center>
+    <p>
+        Ces documents sont à renvoyer en réponse à cet email, ou à déposer au club.
+    </p>
 
-                <p class="small">
-                    Nous attirons particulièrement votre attention sur le fait que la plateforme HelloAsso,
-                    propose par défaut une contribution à leur fonctionnement ("Votre contribution au fonctionnement de
-                    HelloAsso" lors de la dernière étape "Récapitulatif").
-                </p>
+    <center>
+        <button href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2026-2027">
+            Payer par carte bancaire
+        </button>
+    </center>
 
-                <p style="margin-bottom: 0;">
-                    Autres moyens de paiements acceptés:
-                </p>
+    <callout>
+        <p style="margin-bottom: 0;">
+            Nous attirons particulièrement votre attention sur le fait que la plateforme HelloAsso propose par défaut
+            une contribution à leur fonctionnement («&nbsp;Votre contribution au fonctionnement de HelloAsso&nbsp;»
+            lors de la dernière étape «&nbsp;Récapitulatif&nbsp;»). Le paiement est possible en 1 ou 3 fois.
+        </p>
+    </callout>
 
-                <ul style="margin-top: 0;">
-                    <li>Chèque (possibilité de payer en 3 fois)</li>
-                    <li>Chèque vacances / Coupon sport</li>
-                    <li>Chèque vacances Connect</li>
-                    <li>Pass'sport</li>
-                    <li>Yep's</li>
-                </ul>
-            </columns>
-        </row>
-    </container>
+    <p style="margin-bottom: 0;">
+        Autres moyens de paiements acceptés&nbsp;:
+    </p>
+
+    <ul style="margin-top: 0;">
+        <li>Chèque (possibilité de payer en 3 fois)</li>
+        <li>Chèque vacances / Coupon sport</li>
+        <li>Chèque vacances Connect</li>
+        <li>Pass'sport</li>
+        <li>Yep's</li>
+    </ul>
 {% endblock %}

@@ -1,84 +1,108 @@
 {% apply inky_to_html|inline_css(encore_entry_css_source('email')) %}
-    <spacer size="24"></spacer>
+    <!DOCTYPE html>
+    <html lang="fr">
+        <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <meta name="color-scheme" content="light dark"/>
+            <meta name="supported-color-schemes" content="light dark"/>
 
-    <container class="header">
-        <spacer size="48"></spacer>
-    </container>
+            <style>
+                :root { color-scheme: light dark; supported-color-schemes: light dark; }
 
-    {% block body %}
-    {% endblock %}
+                @media only screen and (max-width: 596px) {
+                    table.container { width: 100% !important; }
+                    th.columns, td.columns { padding-left: 20px !important; padding-right: 20px !important; }
+                    h1 { font-size: 21px !important; }
+                    table.button, table.button table { width: 100% !important; }
+                    table.button table a { display: block !important; text-align: center !important; padding-left: 0 !important; padding-right: 0 !important; }
+                }
 
-    <container>
-        <spacer size="16"></spacer>
+                @media (prefers-color-scheme: dark) {
+                    body { background-color: #14171c !important; }
 
-        <row>
-            <columns>
-                <small>Cet email a été envoyé automatiquement, merci de ne pas y répondre.<small>
-            </columns>
-        </row>
+                    .card, .card .content, .card .content th, .card .note, .card .note th, .card .social, .card .social th { background-color: #1c2027 !important; }
+                    .card p, .card li, .card strong, .card td, .card th { color: #e6e8ec !important; }
+                    .card h1, .card h2, .card h3, .card h4, .card h5, .card h6, .card .content a { color: #93a8ee !important; }
+                    .card .small, .card small, .card .note p { color: #9aa0ab !important; }
+                    .card .code { color: #93a8ee !important; }
+                    .card .note { border-top-color: #2d323b !important; }
 
-        <row class="social">
-            <columns>
-                <row>
+                    .card .callout-inner { background-color: #262b34 !important; border-color: #343a45 !important; }
+
+                    .card .button td { background-color: #2c4fc4 !important; border-color: #2c4fc4 !important; }
+                    .card .button a { color: #ffffff !important; }
+
+                    .card .masthead, .card .masthead th, .card .footer, .card .footer th { background-color: #16306f !important; }
+                    .card .footer p, .card .footer a { color: #ffffff !important; }
+                }
+            </style>
+        </head>
+
+        <body>
+            <span class="preheader">{% block preheader %}{% endblock %}</span>
+
+            <spacer size="24"></spacer>
+
+            <container class="card">
+                <row class="masthead">
                     <columns>
-                        <img class="text-center" src="{{ absolute_url(asset('build/images/facebook.png')) }}" alt="Logo Facebook" height="24">
+                        <a href="{{ url('homepage') }}">
+                            <img class="float-center" src="{{ absolute_url(asset('build/images/logo_white.png')) }}" alt="Aviron Tours Métropole" width="160" height="72">
+                        </a>
                     </columns>
+                </row>
 
+                <row class="content">
                     <columns>
-                        <p style="padding-top: 0.1rem">
-                            <a href="https://fr-fr.facebook.com/avironTM/">Facebook</a>
+                        {% if block('heading')|trim is not empty %}
+                            <h1>{% block heading %}{% endblock %}</h1>
+                        {% endif %}
+
+                        {% block body %}{% endblock %}
+                    </columns>
+                </row>
+
+                <row class="note">
+                    <columns>
+                        <p class="text-center">
+                            Une question&nbsp;? Répondez simplement à cet email.
                         </p>
                     </columns>
                 </row>
-            </columns>
 
-            <columns>
-                <row>
-                    <columns>
-                        <img class="text-center" src="{{ absolute_url(asset('build/images/instagram.png')) }}" alt="Logo Instagram" height="24">
+                <row class="social">
+                    <columns small="4" large="4">
+                        <a href="https://fr-fr.facebook.com/avironTM/">
+                            <img class="float-center" src="{{ absolute_url(asset('build/images/facebook.png')) }}" alt="Facebook" width="28" height="28">
+                        </a>
                     </columns>
 
+                    <columns small="4" large="4">
+                        <a href="https://www.instagram.com/avirontours/">
+                            <img class="float-center" src="{{ absolute_url(asset('build/images/instagram.png')) }}" alt="Instagram" width="28" height="28">
+                        </a>
+                    </columns>
+
+                    <columns small="4" large="4">
+                        <a href="https://www.youtube.com/channel/UCWfxykhdj-8gWj4SDa6fJoQ">
+                            <img class="float-center" src="{{ absolute_url(asset('build/images/youtube.png')) }}" alt="Youtube" width="28" height="28">
+                        </a>
+                    </columns>
+                </row>
+
+                <row class="footer">
                     <columns>
-                        <p style="padding-top: 0.1rem">
-                            <a href="https://www.instagram.com/avirontours/">Instagram</a>
+                        <p class="text-center">
+                            <strong>Aviron Tours Métropole</strong><br/>
+                            5 avenue de Florence, 37000 Tours<br/>
+                            <a href="tel:+33247443044">02 47 44 30 44</a> — <a href="{{ url('homepage') }}">avirontours.fr</a>
                         </p>
                     </columns>
                 </row>
-            </columns>
+            </container>
 
-            <columns>
-                <row>
-                    <columns>
-                        <img class="text-center" src="{{ absolute_url(asset('build/images/youtube.png')) }}" alt="Logo Youtube" height="24">
-                    </columns>
-
-                    <columns>
-                        <p style="padding-top: 0.1rem;">
-                            <a href="https://www.youtube.com/channel/UCWfxykhdj-8gWj4SDa6fJoQ">Youtube</a>
-                        </p>
-                    </columns>
-                </row>
-            </columns>
-        </row>
-
-        <row class="footer">
-            <columns>
-                <spacer size="24"></spacer>
-
-                <img class="text-center" src="{{ absolute_url(asset('build/images/logo_white.png')) }}" height="70px" alt="Logo">
-            </columns>
-
-            <columns>
-                <spacer size="15"></spacer>
-                <p>
-                    Aviron Tours Métropole<br/>
-                    5 Avenue de Florence<br>
-                    37000 Tours<br/>
-                    02 47 44 30 44
-                </p>
-            </columns>
-        </row>
-    </container>
-
-    <spacer size="16"></spacer>
+            <spacer size="24"></spacer>
+        </body>
+    </html>
 {% endapply %}
