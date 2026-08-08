@@ -1,0 +1,39 @@
+// ↔ templates/components/ListGroup/Item.html.twig — the key/value rows its `label` prop renders.
+// Its `split` rows keep Bootstrap's `space-between` and want nothing from here.
+//
+// A pair reads as a pair only while its halves stay within a glance of each other. `space-between`
+// holds while the row is narrow — that is the podium of the logbook statistics, and the mobile table
+// cards of components/_table.scss — but /profile gives these rows 814 px at 1440 and 1006 px at 1920,
+// where « Nom » and its value sat 697 and 889 px apart with nothing between them to follow. So the key
+// takes a column and the value starts right after it, the way a definition list reads.
+.app-list-pair {
+    display: flex;
+    gap: $spacer;
+}
+
+// `min-width` and not `flex-basis`: « Année de fabrication » is wider than the column, and a basis a
+// non-shrinking item cannot grow past would simply spill into the value. A label that long pushes its
+// own value across instead, which says what happened.
+//
+// Grey, because a key that reads as loud as its value makes the reader decide which is which. Same
+// $gray-600 as the column heads of components/_table.scss and the labels of components/_stats.scss.
+.app-list-key {
+    flex: 0 0 auto;
+    min-width: 12rem;
+    color: $gray-600;
+
+    // A phone column has no room for a fixed key: 12rem of it leaves an email 90 px to wrap in. The
+    // key takes what it needs there and rows stop lining up with each other, which is the cheaper loss.
+    @include media-breakpoint-down(md) {
+        min-width: 0;
+    }
+}
+
+.app-list-value {
+    flex: 1 1 auto;
+    min-width: 0; // or a long value stretches the row instead of wrapping inside it
+
+    // An email is one token as far as line breaking is concerned, so it overflows a narrow column
+    // rather than wrapping in it.
+    overflow-wrap: break-word;
+}

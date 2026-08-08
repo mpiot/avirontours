@@ -1,27 +1,23 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 {% form_theme form 'admin/season/_form_theme.html.twig' %}
 
 {% block title %}Modifier une saison{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</a></li>
-    <li class="breadcrumb-item active">Modifier</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_index') }}">Gestion des saisons</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Modifier une saison{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('season_delete', {'id': season.id})" />
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Modifier une saison</h1>
-
-        <div class="ms-auto align-self-center">
-            {{ include('admin/season/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/season/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
+    <twig:FormCard>
+        {{ include('admin/season/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

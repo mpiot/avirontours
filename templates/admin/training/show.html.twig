@@ -1,19 +1,16 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('admin_training_index') }}">Suivi des entraînements</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('admin_training_list', { user_id: user.id }) }}">{{ user.fullname }}</a></li>
-    <li class="breadcrumb-item active">{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('admin_training_index') }}">Suivi des entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('admin_training_list', { user_id: user.id }) }}">{{ user.fullname }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h3>
-        {{ training.sport.label }}<br>
-        <small>{{ training.trainedAt|format_date('short') }}</small>
-    </h3>
+{% block page_title %}{{ training.sport.label }} <small class="fs-6 text-body-secondary">{{ training.trainedAt|format_date('short') }}</small>{% endblock %}
 
+{% block body %}
     {{ include('training/_show.html.twig') }}
 {% endblock %}

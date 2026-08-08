@@ -1,62 +1,91 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}{{ shell.name }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('shell_index') }}">Gestion du parc</a></li>
-    <li class="breadcrumb-item active">{{ shell.name }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('shell_index') }}">Gestion du parc</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ shell.name }}</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}{{ shell.name }}{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('shell_delete', {'id': shell.id})">
+        <twig:Button variant="secondary" outline href="{{ path('shell_edit', {'id': shell.id}) }}" aria-label="Modifier">
+            <twig:ux:icon name="mdi:pencil" /> <span class="d-none d-sm-inline">Modifier</span>
+        </twig:Button>
+    </twig:DeleteForm>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>{{ shell.name }}</h1>
+    <div class="row g-3">
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>Bateau</twig:Card:Header>
 
-        <div class="ms-auto align-self-center ">
-            {% embed 'admin/shell/_delete_form.html.twig' %}
-                {% block buttons %}
-                    <div class="btn-group-sm">
-                        <a class="btn btn-outline-warning" href="{{ path('shell_edit', {'id': shell.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
-                        </a>
-
-                        {{ parent() }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Nom">{{ shell.name }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Type">{{ shell.abbreviation }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Nombre de rameurs">{{ shell.numberRowers }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Type de nage">{{ shell.textRowingType }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Barré">{{ shell.coxed ? 'Oui' : 'Non' }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Yolette">{{ shell.yolette ? 'Oui' : 'Non' }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Bateau perso">{{ shell.personalBoat ? 'Oui' : 'Non' }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Distance parcourue">{{ shell.mileage }} km</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Actif">
+                        {% if shell.enabled %}
+                            <twig:Badge tone="success">Actif</twig:Badge>
+                        {% else %}
+                            <twig:Badge tone="secondary">Inactif</twig:Badge>
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
         </div>
-    </div>
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <table class="table">
-                <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ shell.id }}</td>
-                </tr>
-                <tr>
-                    <th>Name</th>
-                    <td>{{ shell.name }}</td>
-                </tr>
-                <tr>
-                    <th>NumberRowers</th>
-                    <td>{{ shell.numberRowers }}</td>
-                </tr>
-                <tr>
-                    <th>Coxed</th>
-                    <td>{{ shell.coxed ? 'Yes' : 'No' }}</td>
-                </tr>
-                <tr>
-                    <th>RowingType</th>
-                    <td>{{ shell.rowingType }}</td>
-                </tr>
-                <tr>
-                    <th>Yolette</th>
-                    <td>{{ shell.yolette ? 'Yes' : 'No' }}</td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>Informations cotation</twig:Card:Header>
+
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Année de fabrication" :muted="shell.productionYear is null">
+                        {% if shell.productionYear is not null %}
+                            {{ shell.productionYear }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Catégorie porteur">
+                        {% if shell.weightCategory is not null %}
+                            {{ shell.textWeightCategory }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Prix neuf">
+                        {% if shell.newPrice is not null %}
+                            {{ shell.newPrice|format_currency('EUR') }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Matériaux portants">
+                        {% if shell.riggerMaterial is not null %}
+                            {{ shell.textRiggerMaterial }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Position portants">
+                        {% if shell.riggerPosition is not null %}
+                            {{ shell.textRiggerPosition }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
         </div>
     </div>
 {% endblock %}

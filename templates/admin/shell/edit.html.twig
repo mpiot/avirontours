@@ -1,26 +1,22 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
-{% block title %}Modifier un bâteau{% endblock %}
+{% block title %}Modifier un bateau{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('shell_index') }}">Gestion du parc</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a></li>
-    <li class="breadcrumb-item active">Modifier un bâteau</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('shell_index') }}">Gestion du parc</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier un bateau</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Modifier un bateau{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('shell_delete', {'id': shell.id})" />
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Modifier un bâteau</h1>
-
-        <div class="ms-auto align-self-center">
-            {{ include('admin/shell/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/shell/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
+    <twig:FormCard>
+        {{ include('admin/shell/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

@@ -1,0 +1,81 @@
+/**
+ * ↔ templates/components/Breadcrumb.html.twig
+ *
+ * Ancestors are muted links; the current page is not a link and has to read as the destination.
+ * Bootstrap leaves both at a mid grey, 1.45:1 apart.
+ */
+.breadcrumb {
+    --#{$prefix}breadcrumb-item-active-color: #{$body-color};
+
+    // On the ancestors themselves, so a level with no page of its own — `Mon profil sportif` — is
+    // muted too instead of passing for the current page.
+    //
+    // $secondary and not the $gray-600 this was. The trail is laid straight on the shell's $gray-100,
+    // never on a card, and $gray-600 measures 4.44:1 there — under the 4.5:1 it owes as text, though
+    // it clears it at 4.69:1 on the white _palette.scss weighs its neutrals against. That gap catches
+    // every muted grey the shells paint on their own background; layouts/_error.scss is the other one.
+    //
+    // $gray-700 would clear it at 7.76:1 and cost the decision above: 1.89:1 from the current page,
+    // back to the flat pair Bootstrap ships. $secondary is 5.09:1 on the page and still 2.88:1 from
+    // the destination, which is the separation this file exists for — and it is what the hue was
+    // saturated for, see the status-hue note in _palette.scss.
+    color: $secondary;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+
+        &:hover {
+            color: $primary;
+            text-decoration: underline;
+        }
+    }
+
+    .active {
+        font-weight: $font-weight-medium;
+    }
+}
+
+// The shell's trail, above the page title: the full path from lg, folded to one « ‹ parent »
+// back link below. Opt-in by class.
+.app-breadcrumb {
+    margin-bottom: $spacer * .75;
+
+    // A trail with no reachable ancestor teaches nothing the page title doesn't.
+    &:not(:has(.breadcrumb-item > a)) {
+        display: none;
+    }
+
+    @include media-breakpoint-down(lg) {
+        .breadcrumb-item {
+            display: none;
+
+            // Bootstrap indents every item after the first and puts the ">" divider there; the
+            // hidden siblings still count for its `+` selector, so the one shown item needs both off.
+            padding-left: 0;
+
+            &::before {
+                content: none;
+            }
+        }
+
+        // The last item carrying a link — the current page and page-less levels never do, so this
+        // is the nearest ancestor one can go back to.
+        .breadcrumb-item:has(> a):not(:has(~ .breadcrumb-item > a)) {
+            display: block;
+        }
+
+        a::before {
+            content: "‹\00a0";
+            content: "‹\00a0" / ""; // The alt-text form keeps it out of the accessibility tree.
+        }
+
+        // Folded, this link is the only way back on the page, and an inline box is as tall as its
+        // text — 22 px, under the 24 a target owes (WCAG 2.2, 2.5.8). Padding on an inline box grows
+        // the hit area without laying anything out, so nothing below it moves; the trail's own
+        // margin is what the bottom half reaches into, and it has 12 px to give.
+        a {
+            padding-block: $spacer * .25;
+        }
+    }
+}

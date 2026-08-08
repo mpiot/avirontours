@@ -1,0 +1,216 @@
+{% set route = app.request.attributes.get('_route') %}
+{% set isLicensed = is_granted('VALID_LICENSE') %}
+{% set isMemberOrAdmin = isLicensed or is_granted('ROLE_ADMIN') %}
+{% set isMaterialAdmin = is_granted('ROLE_MATERIAL_ADMIN') %}
+{% set isSportAdmin = is_granted('ROLE_SPORT_ADMIN') %}
+{% set isUserAdmin = is_granted('ROLE_USER_ADMIN') %}
+{% set isSeasonAdmin = is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
+
+{% set items = {
+    dashboard: {
+        granted: is_granted('ROLE_USER'),
+        label: 'Tableau de bord',
+        url: path('homepage'),
+        icon: 'dashboard',
+        description: 'Vos sorties, entraînements et qualités physiques en graphiques.',
+        match: ['homepage'],
+    },
+    logbook: {
+        granted: isLicensed or is_granted('ROLE_LOGBOOK_ADMIN'),
+        label: 'Cahier de sorties',
+        url: path('logbook_entry_index'),
+        icon: 'logbook',
+        description: 'Les sorties des bateaux et leurs statistiques.',
+        match: ['logbook_entry_index', 'logbook_entry_new', 'logbook_entry_finish', 'logbook_entry_edit', 'logbook_entry_statistics'],
+    },
+    trainings: {
+        granted: isMemberOrAdmin,
+        label: 'Mes entraînements',
+        url: path('training_index'),
+        icon: 'trainings',
+        description: "Votre carnet d'entraînement, semaine par semaine.",
+        match: ['training_index', 'training_new', 'training_show', 'training_show_phase', 'training_edit', 'training_import_concept_logbook'],
+    },
+    measures: {
+        granted: isMemberOrAdmin,
+        label: 'Mes mesures',
+        url: path('measure_index'),
+        icon: 'measures',
+        description: 'Poids, fréquence cardiaque et autres mesures.',
+        match: ['measure_index', 'measure_new', 'measure_edit'],
+    },
+    one_rep_max: {
+        granted: isMemberOrAdmin,
+        label: '1RM',
+        url: path('workout_maximum_load_show'),
+        icon: 'one-rep-max',
+        description: 'Vos charges maximales en musculation.',
+        match: ['workout_maximum_load_show'],
+    },
+    profile: {
+        granted: is_granted('ROLE_USER'),
+        label: 'Mon profil',
+        url: path('profile_show'),
+        icon: 'profile',
+        description: 'Coordonnées, mot de passe et informations personnelles.',
+        match: ['profile_show', 'profile_edit', 'profile_edit_password'],
+    },
+    sport_profile: {
+        granted: is_granted('ROLE_USER'),
+        label: 'Mon profil sportif',
+        url: path('sport_profile_physiology'),
+        icon: 'sport-profile',
+        description: 'Physiologie, anatomie et qualités physiques.',
+        match: ['sport_profile_physiology', 'sport_profile_anatomy', 'sport_profile_physical_qualities', 'sport_profile_workout_maximum_load', 'sport_profile_configuration'],
+    },
+    shells: {
+        granted: isMaterialAdmin,
+        label: 'Parc',
+        url: path('shell_index'),
+        icon: 'shells',
+        description: 'Bateaux, cotation et kilométrage.',
+        match: ['shell_index', 'shell_new', 'shell_show', 'shell_edit'],
+    },
+    damages: {
+        granted: isMaterialAdmin,
+        label: 'Avaries',
+        url: path('shell_damage_index'),
+        icon: 'damages',
+        description: 'Déclarations en cours et réparations.',
+        match: ['shell_damage_index', 'shell_damage_new', 'shell_damage_edit'],
+    },
+    damage_categories: {
+        granted: isMaterialAdmin,
+        label: "Catégories d'avaries",
+        url: path('shell_damage_category_index'),
+        icon: 'damage-categories',
+        description: 'Nature des avaries et leur priorité.',
+        match: ['shell_damage_category_index', 'shell_damage_category_new', 'shell_damage_category_edit'],
+    },
+    sports_profiles: {
+        granted: isSportAdmin,
+        label: 'Profils sportifs',
+        url: path('sports_profile_index'),
+        icon: 'sports-profiles',
+        description: 'Physiologie, anatomie et qualités physiques des membres.',
+        match: ['sports_profile_index', 'sports_profile_physiology', 'sports_profile_anatomy', 'sports_profile_physical_qualities', 'sports_profile_workout_maximum_load'],
+    },
+    admin_trainings: {
+        granted: isSportAdmin,
+        label: 'Entraînements',
+        url: path('admin_training_index'),
+        icon: 'admin-trainings',
+        description: 'Volume, distances et ressenti, par membre et par période.',
+        match: ['admin_training_index', 'admin_training_list', 'admin_training_show'],
+    },
+    users: {
+        granted: isUserAdmin,
+        label: 'Utilisateurs',
+        url: path('user_index'),
+        icon: 'users',
+        description: 'Comptes, coordonnées et droits.',
+        match: ['user_index', 'user_new', 'user_show', 'user_edit'],
+    },
+    groups: {
+        granted: isUserAdmin,
+        label: 'Groupes',
+        url: path('group_index'),
+        icon: 'groups',
+        description: 'Regroupements utilisés pour le suivi sportif.',
+        match: ['group_index', 'group_new', 'group_show', 'group_edit'],
+    },
+    seasons: {
+        granted: isSeasonAdmin,
+        label: 'Saisons & licences',
+        url: path('season_index'),
+        icon: 'seasons',
+        description: 'Tarifs, inscriptions, certificats médicaux et paiements.',
+        match: ['season_index', 'season_show', 'season_new', 'season_edit', 'license_new', 'license_edit', 'license_validate_payment', 'license_validate_medical_certificate'],
+    },
+} %}
+
+{% set views = {
+    rail: {
+        shape: 'rail',
+        groups: [
+            {
+                id: 'app-nav-member',
+                heading: 'Mon espace',
+                collapse: false,
+                open: true,
+                items: ['dashboard', 'logbook', 'trainings', 'measures', 'one_rep_max'],
+            },
+            {
+                id: 'app-nav-admin',
+                heading: 'Administration',
+                collapse: true,
+                open: app.request.pathInfo starts with '/admin',
+                items: ['shells', 'damages', 'damage_categories', 'sports_profiles', 'admin_trainings', 'users', 'groups', 'seasons'],
+            },
+        ],
+    },
+    my_space: {
+        shape: 'tiles',
+        groups: [
+            { heading: 'Mon activité', items: ['dashboard', 'logbook', 'trainings', 'measures', 'one_rep_max'] },
+            { heading: 'Mon compte', items: ['profile', 'sport_profile'] },
+        ],
+    },
+    admin: {
+        shape: 'tiles',
+        groups: [
+            { heading: 'Gestion du matériel', items: ['shells', 'damages', 'damage_categories'] },
+            { heading: 'Suivi sportif', items: ['sports_profiles', 'admin_trainings'] },
+            { heading: 'Gestion des membres', items: ['users', 'groups', 'seasons'] },
+        ],
+    },
+} %}
+
+{% if 'rail' == views[view].shape %}
+    <nav class="flex-grow-1" aria-label="Navigation principale">
+        {% for group in views[view].groups %}
+            {% set granted = group.items|map(slug => items[slug])|filter(item => item.granted) %}
+
+            {% if granted|length %}
+                {% if group.collapse %}
+                    <button id="{{ group.id }}-heading" class="app-nav-heading app-nav-toggle app-collapse-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#{{ group.id }}" aria-controls="{{ group.id }}" aria-expanded="{{ group.open ? 'true' : 'false' }}">
+                        {{ group.heading }}
+                        <twig:ux:icon name="mdi:chevron-down" class="app-collapse-chevron" />
+                    </button>
+                {% else %}
+                    <p id="{{ group.id }}-heading" class="app-nav-heading">{{ group.heading }}</p>
+                {% endif %}
+
+                <ul class="list-unstyled mb-0{{ group.collapse ? (' collapse' ~ (group.open ? ' show')) }}" id="{{ group.id }}" aria-labelledby="{{ group.id }}-heading">
+                    {% for item in granted %}
+                        <li>
+                            <twig:NavLink :href="item.url" :active="route in item.match">
+                                <span class="app-nav-icon">{{ include('_app_nav_icon.html.twig', { icon: item.icon }, with_context = false) }}</span>
+                                <span>{{ item.label }}</span>
+                            </twig:NavLink>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </nav>
+{% else %}
+    {% for group in views[view].groups %}
+        {% set granted = group.items|map(slug => items[slug])|filter(item => item.granted) %}
+
+        {% if granted|length %}
+            <h2 class="app-tile-section">{{ group.heading }}</h2>
+
+            <twig:CardGrid class="mb-4">
+                {% for item in granted %}
+                    <twig:Tile
+                        :href="item.url"
+                        :label="item.label"
+                        :description="item.description"
+                        :icon="item.icon"
+                    />
+                {% endfor %}
+            </twig:CardGrid>
+        {% endif %}
+    {% endfor %}
+{% endif %}

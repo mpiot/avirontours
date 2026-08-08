@@ -1,0 +1,40 @@
+{#
+ # The one modal mount, under every layout shell.
+ #
+ # The dialog stays empty and closed until something targets the `modal` frame; the controller's
+ # MutationObserver on the frame is what opens and closes it, so the server only ever speaks in
+ # frame content — a `<turbo-frame id="modal">` response, or a stream updating the `modal` target.
+ # `data-turbo-form-redirect` needs a value: turbo-helper.js reads it as a boolean dataset test,
+ # and a bare attribute is the empty string.
+ #
+ # `aria-labelledby` resolves against whatever the frame holds: Modal:Content renders the title
+ # under `modal-title`, and the skeleton names the wait the same way.
+ #
+ # The skeleton's bars are `LoadingSkeleton`, shared with the lazy frames of the training page. Its
+ # header stays written out here: that `<h2>` is what carries `modal-title`, so it is the dialog's
+ # name while the content is on its way, not decoration — and it is why the bars take no `label`.
+ #}
+<div
+    data-controller="modal"
+    data-action="turbo:before-cache@document->modal#close turbo:before-fetch-request@document->modal#showLoading"
+>
+    <dialog
+        class="app-modal"
+        aria-labelledby="modal-title"
+        data-modal-target="dialog"
+        data-action="close->modal#close click->modal#clickOutside"
+    >
+        <turbo-frame id="modal" data-turbo-form-redirect="true" data-modal-target="frame"></turbo-frame>
+    </dialog>
+
+    <template data-modal-target="skeleton">
+        <div class="app-modal-header">
+            <h2 class="app-modal-title placeholder-glow" id="modal-title">
+                <span class="placeholder col-5" aria-hidden="true"></span>
+                <span class="visually-hidden">Chargement…</span>
+            </h2>
+        </div>
+
+        <twig:LoadingSkeleton :lines="4" class="app-modal-body" />
+    </template>
+</div>

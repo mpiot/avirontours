@@ -1,0 +1,26 @@
+{% extends 'layouts/document.html.twig' %}
+
+{% block layout %}
+    <div class="app-plain">
+        <header class="app-plain-header">
+            <a href="{{ path('logbook_entry_index') }}">
+                <img src="{{ asset('build/images/logo_colored.svg') }}" width="98" height="44" alt="Aviron Tours Métropole">
+            </a>
+        </header>
+
+        <main class="app-content">
+            <twig:Flashes />
+
+            <twig:Breadcrumb class="app-breadcrumb">
+                {{ block(outerBlocks.breadcrumb_items) }}
+            </twig:Breadcrumb>
+
+            <twig:PageHeader>
+                {{ block(outerBlocks.page_title) }}
+                <twig:block name="actions">{{ block(outerBlocks.page_actions) }}</twig:block>
+            </twig:PageHeader>
+
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}

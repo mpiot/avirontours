@@ -1,4 +1,4 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
 {% block title %}Double authentification{% endblock %}
 
@@ -11,28 +11,26 @@
 
 {% block body %}
     {% if authenticationError %}
-        <div class="alert alert-danger d-flex" role="alert">
-            <span class="fas fa-lg fa-exclamation-circle align-self-center" aria-hidden="true"></span>
-            <div class="align-self-center ms-3">
-                {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
-            </div>
-        </div>
+        <twig:Alert tone="danger" icon>
+            {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+        </twig:Alert>
     {% endif %}
 
     <form action="{{ checkPathUrl ? checkPathUrl: path(checkPathRoute) }}" method="post">
         <div class="mb-3">
-            <label class="form-label" for="_auth_code">Code d'authentification</label>
-            <input
-                type="text"
+            <twig:Label for="_auth_code">Code d'authentification</twig:Label>
+            <twig:Input
+                size="lg"
                 id="_auth_code"
-                name="{{ authCodeParameterName }}"
-                class="form-control form-control-lg auth-code"
+                :name="authCodeParameterName"
+                class="auth-code"
                 autocomplete="one-time-code"
                 inputmode="numeric"
                 pattern="[0-9]*"
                 maxlength="6"
                 enterkeyhint="go"
                 aria-describedby="auth_code_help"
+                required
                 autofocus
             />
             <p id="auth_code_help" class="form-text mb-0">
@@ -41,10 +39,12 @@
         </div>
 
         {% if displayTrustedOption %}
-            <div class="form-check form-switch mb-4">
-                <input type="checkbox" class="form-check-input" id="_trusted" name="{{ trustedParameterName }}">
-                <label class="form-check-label" for="_trusted">{{ "trusted"|trans({}, 'SchebTwoFactorBundle') }}</label>
-            </div>
+            <twig:Checkbox
+                id="_trusted"
+                :label="'trusted'|trans({}, 'SchebTwoFactorBundle')"
+                :name="trustedParameterName"
+                class="mb-4"
+            />
         {% endif %}
 
         {% if isCsrfProtectionEnabled %}
@@ -52,7 +52,7 @@
         {% endif %}
 
         <div class="d-grid mt-4">
-            <button class="btn btn-lg btn-primary" type="submit" data-turbo-submits-with="Vérification en cours&hellip;">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</button>
+            <twig:Button variant="primary" size="lg" data-turbo-submits-with="Vérification en cours&hellip;">{{ "login"|trans({}, 'SchebTwoFactorBundle') }}</twig:Button>
         </div>
     </form>
 

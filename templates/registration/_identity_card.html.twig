@@ -1,39 +1,38 @@
-{% macro locked(id, label, value) %}
-    <label class="form-label" for="{{ id }}">{{ label }}</label>
-    <input id="{{ id }}" class="form-control bg-body-secondary" type="text" value="{{ value }}" readonly>
-{% endmacro %}
+{% set birthday_label = "#{member.birthday|format_date('short')} (#{member.age} ans)" %}
 
-{% import _self as field %}
-
-<div class="card bg-body-tertiary border-0 mb-3">
-    <div class="card-body pb-0">
+<twig:Card tone="muted" class="mb-3">
+    <twig:Card:Body>
         <p class="form-text mt-0">
-            <span class="fas fa-lock me-1" aria-hidden="true"></span>
+            <twig:ux:icon name="mdi:lock" class="me-1" />
             Ces informations ne sont modifiables que par le club.
         </p>
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                {{ field.locked('locked-gender', 'Genre', member.textGender) }}
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <twig:LockedField id="locked-gender" label="Genre" :value="member.textGender" />
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                {{ field.locked('locked-first-name', 'Prénom', member.firstName) }}
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <twig:LockedField id="locked-first-name" label="Prénom" :value="member.firstName" />
             </div>
-            <div class="col-md-6 mb-3">
-                {{ field.locked('locked-last-name', 'Nom', member.lastName) }}
+            <div class="col-md-6">
+                <twig:LockedField id="locked-last-name" label="Nom" :value="member.lastName" />
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md mb-3">
-                {{ field.locked('locked-birthday', 'Date de naissance', "#{member.birthday|format_date('short')} (#{member.age} ans)") }}
+        <div class="row g-3">
+            <div class="col-md">
+                <twig:LockedField id="locked-birthday" label="Date de naissance" :value="birthday_label" />
             </div>
-            <div class="col-md mb-3">
-                {{ field.locked('locked-nationality', 'Nationalité', member.nationality ? member.nationality|country_name : '-') }}
+            <div class="col-md">
+                <twig:LockedField
+                    id="locked-nationality"
+                    label="Nationalité"
+                    :value="member.nationality ? member.nationality|country_name : '-'"
+                />
             </div>
         </div>
-    </div>
-</div>
+    </twig:Card:Body>
+</twig:Card>

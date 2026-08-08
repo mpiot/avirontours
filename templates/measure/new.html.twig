@@ -1,19 +1,7 @@
-{% extends 'base.html.twig' %}
+<turbo-frame id="modal">
+    <twig:Modal:Content>
+        <twig:block name="title">Ajouter une mesure</twig:block>
 
-{% block title %}Ajouter une mesure{% endblock %}
-
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('measure_index') }}">Mes mesures</a></li>
-    <li class="breadcrumb-item active">Ajouter une mesure</li>
-{% endblock %}
-
-{% block body %}
-    <h1>Ajouter une mesure</h1>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('measure/_form.html.twig') }}
-        </div>
-    </div>
-{% endblock %}
+        {{ include('measure/_form.html.twig') }}
+    </twig:Modal:Content>
+</turbo-frame>

@@ -1,0 +1,48 @@
+/**
+ * ↔ templates/registration/_form.html.twig — the submit bar.
+ *
+ * Its padding is owned here rather than by `py-2 py-sm-3` at the call site because the clearance below
+ * changes with it, and a spacing utility is `!important` — nothing written in this file could reach past
+ * one. The two figures have to move together, so they live together.
+ */
+.app-registration-summary {
+    padding-top: $spacer * .5;
+    padding-bottom: $spacer * .5;
+
+    @include media-breakpoint-up(sm) {
+        padding-top: $spacer;
+        padding-bottom: $spacer;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    // iOS Safari keeps `position: sticky` anchored where its collapsed toolbar used to be, and paints
+    // page content in the freed strip: `fixed` follows the toolbar. That is what put the bar back within
+    // reach on a phone, and it is the whole of the fix — Safari's toolbar is invisible to CSS, and
+    // `env(safe-area-inset-bottom)` answers for the home indicator instead, which is a different strip
+    // and measures 0 unless the document asks for `viewport-fit=cover`. It doesn't, so no inset here.
+    .app-registration-summary {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding-right: $card-spacer-x;
+        padding-bottom: $spacer * .5;
+        padding-left: $card-spacer-x;
+
+        @include media-breakpoint-up(sm) {
+            padding-bottom: $spacer;
+        }
+    }
+
+    // Clears the bar `fixed` takes out of the flow: its lg button, the padding of the row it sits in, and
+    // the border on top. The row's padding changes at sm, so the clearance has to follow — a flat 4rem
+    // left the last field 17 px under the bar between sm and md.
+    .app-registration-form {
+        padding-bottom: calc(3rem + #{$spacer} + #{$border-width});
+
+        @include media-breakpoint-up(sm) {
+            padding-bottom: calc(3rem + #{$spacer * 2} + #{$border-width});
+        }
+    }
+}

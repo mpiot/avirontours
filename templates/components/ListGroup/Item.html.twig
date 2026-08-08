@@ -1,0 +1,55 @@
+{#
+ # One row.
+ #
+ # `split` pushes the row's two sides apart — something on the left, something on the right.
+ #
+ # `label` is the shorthand for the common case: a key/value row, whose left side is a word. Pass
+ # `split` on its own when the left side is richer than a word — a medal and a name on a podium — since
+ # `label` is plain text and rendering markup through it would mean trusting it.
+ #
+ # The two do not share a layout. `split` throws its sides to opposite edges, which is right for a
+ # podium: the name grows, the figure stays at the end of the row, and the card is narrow. A pair reads
+ # as a pair only while its halves are within a glance of each other, and `space-between` across
+ # /profile's 1006 px at 1920 put « Nom » and its value 889 px apart. So a pair gives its key a column
+ # of its own and starts the value right after it — see components/_list-group.scss.
+ #
+ # `label` is named after `Table:Cell`'s prop on purpose: same idea, same word.
+ #
+ # `emphasis` is the row a list adds up to — the total under its lines. `muted` is a row whose value
+ # is an absence rather than a figure.
+ #
+ # A row is never a link. The kit this follows offers that, at the price of the whole list becoming a
+ # `div` of anchors, and the two lists that hold links here — a member's groups, a group's members —
+ # read perfectly well with the name as the link inside the row. A prop nobody passes is a prop
+ # nobody maintains; add it back the day a row wants to be actionable as a whole.
+ #}
+{% props label = null, split = false, emphasis = false, muted = false %}
+
+{%- set listGroupItem = html_cva(
+    base: 'list-group-item',
+    variants: {
+        split: { true: 'd-flex justify-content-between' },
+        pair: { true: 'app-list-pair' },
+        emphasis: { true: 'fw-bold' },
+        muted: { true: 'text-body-secondary' },
+    },
+) -%}
+
+{%- set classes = listGroupItem.apply({
+    split: split,
+    pair: label is not null,
+    emphasis: emphasis,
+    muted: muted,
+}) -%}
+
+<li{{ attributes.defaults({ class: classes }) }}>
+    {%- if label is not null %}
+        <span class="app-list-key">{{ label }}</span><span class="app-list-value">
+    {% endif -%}
+
+    {%- block content %}{% endblock -%}
+
+    {%- if label is not null %}
+        </span>
+    {% endif -%}
+</li>

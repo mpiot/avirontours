@@ -96,11 +96,11 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'user[postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'user[subscriptionDate]' => '2019-09-01',
             'user[gender]' => 'm',
             'user[firstName]' => 'John',
@@ -167,7 +167,7 @@ class UserControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'user[subscriptionDate]' => '',
             'user[firstName]' => '',
             'user[lastName]' => '',
@@ -224,11 +224,11 @@ class UserControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'user_edit[postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('Modifier')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'user_edit[subscriptionDate]' => '2019-09-01',
             'user_edit[gender]' => 'm',
             'user_edit[firstName]' => 'John',

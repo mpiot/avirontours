@@ -1,0 +1,19 @@
+{#
+ # Cards side by side: one across, then two from md, then three from xl.
+ #
+ # This is the one grid in the app worth naming. Everywhere else the columns are one-off geometry —
+ # 23 of the 35 distinct `col-*` combinations in `templates/` are used exactly once, and a
+ # `<twig:Grid:Col cols="{ base: 12, xl: 9 }">` would only be `col-12 col-xl-9` with more syntax.
+ # What is written here is a decision instead: how many cards fit before the eye loses the row.
+ #
+ # It uses CSS Grid rather than Bootstrap's, so the children are the cells — no `.col` wrapper per
+ # card — and they stretch to the tallest of their row on their own. That is also what makes the
+ # component framework-agnostic in fact and not just in its prop names: nothing about it is
+ # Bootstrap's to take away.
+ #
+ # A column count would be a prop the day a third call site wants a different one. Two sites want
+ # the same, so it is not one yet.
+ #}
+<div{{ attributes.defaults({ class: 'app-card-grid' }) }}>
+    {% block content %}{% endblock %}
+</div>

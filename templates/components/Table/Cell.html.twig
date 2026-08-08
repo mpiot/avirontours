@@ -1,0 +1,25 @@
+{#
+ # A data cell.
+ #
+ # `label` is what the cell shows for itself once the table becomes a stack of cards below md; it
+ # has to repeat its column header word for word. A cell that holds no field of its own — the
+ # actions, an empty state — takes no label and spans the card instead.
+ #
+ # `actions` right-aligns the cell and keeps its buttons on one line while the table is a table.
+ #
+ # `span` is the cell that takes the whole row — an empty state, most often. It says so without
+ # naming a number: `colspan` is clamped to the table's own column count, so 1000 is "all of them"
+ # whatever they are. The thirteen call sites this replaces each carried a hand-counted figure, and
+ # three of them had to track a column that only some roles see
+ # (`colspan="{{ is_granted('ROLE_MATERIAL_ADMIN') ? 8 : 7 }}"`) — a number to keep in step with a
+ # `<thead>` written out several lines above, in a template nobody opens unless the list is empty.
+ #}
+{% props label = null, actions = false, span = false %}
+
+<td
+    {%- if label is not null %} data-label="{{ label }}"{% endif %}
+    {%- if span %} colspan="1000"{% endif %}
+    {{- attributes.defaults(actions ? { class: 'app-table-actions' } : {}) }}
+>
+    {% block content %}{% endblock %}
+</td>

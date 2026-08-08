@@ -1,0 +1,41 @@
+{#
+ # A search box over the list below it.
+ #
+ # `id` names this box apart from any other on the page. `label` is the field's name, and it is the
+ # only one — it writes both the placeholder and the accessible name, so the two cannot come to say
+ # different things. They were two props, always passed the same words.
+ #
+ # The placeholder alone would not do: it goes the moment anything is typed, and what is left has to
+ # still be named. That is what `aria-label` is for. A visible label is not, over a box that sits in
+ # the header of the list it filters and already reads « Rechercher un membre » — it would say it
+ # twice and take a line to do it.
+ #
+ # The leading magnifier is decoration and carries no `aria-describedby`: `ux:icon` renders an
+ # `aria-hidden` svg, so pointing at it would only promise a description that resolves to nothing.
+ # The submit is a real button — the Enter key is not discoverable, and on a phone it is the only
+ # way to run the search.
+ #}
+{% props id, label, name = 'q', size = null %}
+
+{% set current = app.request.query.get(name) ?? '' %}
+
+<form method="get"{{ attributes }}>
+    <twig:InputGroup :size="size">
+        <twig:Input
+            type="search"
+            :id="id"
+            :name="name"
+            :placeholder="label ~ '…'"
+            :value="current"
+            aria-label="{{ label }}"
+        />
+
+        {#
+         # Named for what it does, not for what the field holds: `label` on both left two adjacent
+         # controls answering to « Rechercher un membre », one a search box and one a button.
+         #}
+        <twig:Button variant="primary" :size="size" aria-label="Rechercher">
+            <twig:ux:icon name="mdi:magnify" />
+        </twig:Button>
+    </twig:InputGroup>
+</form>

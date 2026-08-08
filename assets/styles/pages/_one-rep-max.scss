@@ -1,0 +1,9 @@
+// ↔ templates/workout_maximum_load/show.html.twig — the "par côté" line under each load.
+//
+// Nine columns of one figure and its annotation: at 1440 the annotation broke in eight of them
+// ("69,7 par / côté") and not in the ninth, so the same line stood on one row in one column and on two
+// in the next. It is one reading and stays on one line; what put the figures of a row back on a common
+// line is the top alignment `.app-table-scroll` now carries, in components/_table.scss.
+.app-load-per-side {
+    white-space: nowrap;
+}

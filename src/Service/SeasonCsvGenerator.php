@@ -35,46 +35,6 @@ class SeasonCsvGenerator
     {
     }
 
-    public function exportContacts(Season $season): ?string
-    {
-        $licenses = $this->licenseRepository->findForContactExport($season);
-
-        if ([] === $licenses) {
-            return null;
-        }
-
-        $data = [];
-        foreach ($licenses as $license) {
-            $user = $license->getUser();
-
-            $data[] = [
-                'Prénom - Nom' => $license->getUser()->getFullName(),
-                'Email' => $license->getUser()->getEmail(),
-                'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
-            ];
-
-            if (null !== $user->getFirstLegalGuardian()) {
-                $data[] = [
-                    'Prénom - Nom' => $user->getFirstLegalGuardian()->getFullName(),
-                    'Email' => $user->getFirstLegalGuardian()->getEmail(),
-                    'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
-                ];
-            }
-
-            if (null !== $user->getSecondLegalGuardian()) {
-                $data[] = [
-                    'Prénom - Nom' => $user->getSecondLegalGuardian()->getFullName(),
-                    'Email' => $user->getSecondLegalGuardian()->getEmail(),
-                    'Autorise email club' => $license->getUser()->getClubEmailAllowed() ? 'Oui' : 'Non',
-                ];
-            }
-        }
-
-        $serializer = new Serializer([], [new CsvEncoder()]);
-
-        return $serializer->serialize($data, 'csv', [CsvEncoder::DELIMITER_KEY => ';']);
-    }
-
     public function exportPayments(Season $season): ?string
     {
         $licenses = $this->licenseRepository->findForPaymentsExport($season);

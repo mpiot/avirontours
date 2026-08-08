@@ -1,0 +1,19 @@
+{# A form control offering a fixed set of values. The options are the body. #}
+{% props size = null, invalid = false %}
+
+{%- set select = html_cva(
+    base: 'form-select',
+    variants: {
+        size: { sm: 'form-select-sm', lg: 'form-select-lg' },
+        invalid: { true: 'is-invalid' },
+    },
+    default_variant: {
+        size: 'md',
+    },
+) -%}
+
+{%- set classes = select.apply({ size: size, invalid: invalid }|filter(v => v is not null)) -%}
+
+<select{{ attributes.defaults({ class: classes }) }}{% if invalid %} aria-invalid="true"{% endif %}>
+    {% block content %}{% endblock %}
+</select>

@@ -5,18 +5,18 @@
 
         <div class="row">
             <div class="col-xl mb-3">
-                <div class="card">
-                    <div class="card-header">
+                <twig:Card>
+                    <twig:Card:Header>
                         Membre
-                    </div>
-                    <div class="card-body">
+                    </twig:Card:Header>
+                    <twig:Card:Body>
                         {{ form_row(form.gender, { label_attr: { class: 'radio-inline' } }) }}
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md">
                                 {{ form_row(form.firstName) }}
                             </div>
-                            <div class="col">
+                            <div class="col-md">
                                 {{ form_row(form.lastName) }}
                             </div>
                         </div>
@@ -29,81 +29,83 @@
                         {% endif %}
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md">
                                 {{ form_row(form.nationality) }}
                             </div>
-                            <div class="col">
+                            <div class="col-md">
                                 {{ form_row(form.birthday) }}
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
             </div>
 
             <div class="col-xl">
-                <div class="card mb-3">
-                    <div class="card-header">
+                <twig:Card class="mb-3">
+                    <twig:Card:Header>
                         Adresse
-                    </div>
-                    <div class="card-body">
+                    </twig:Card:Header>
+                    <twig:Card:Body>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-4">
                                 {{ form_row(form.laneNumber) }}
                             </div>
-                            <div class="col">
+                            <div class="col-8">
                                 {{ form_row(form.laneType) }}
                             </div>
-                            <div class="col">
+                            <div class="col-12">
                                 {{ form_row(form.laneName) }}
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md">
                                 {{ form_row(form.postalCode, { attr: { 'data-action': 'dependent-field#keyup' } }) }}
                             </div>
-                            <div id="city-target" class="col" {{ stimulus_target('dependent-field', 'target') }}>
+                            <div id="city-target" class="col-md" {{ stimulus_target('dependent-field', 'target') }}>
                                 {{ form_row(form.city) }}
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
 
-                <div class="card mb-3">
-                    <div class="card-header">
+                <twig:Card class="mb-3">
+                    <twig:Card:Header>
                         Autres
-                    </div>
-                    <div class="card-body">
+                    </twig:Card:Header>
+                    <twig:Card:Body>
                         {{ form_row(form.licenseNumber) }}
-                    </div>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
+                <twig:Card>
+                    <twig:Card:Header>
                         Responsable légal 1
-                    </div>
-                    <div class="card-body">
+                    </twig:Card:Header>
+                    <twig:Card:Body>
                         {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.firstLegalGuardian } %}
-                    </div>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
             </div>
 
             <div class="col-lg-6 mb-3">
-                <div class="card">
-                    <div class="card-header">
+                <twig:Card>
+                    <twig:Card:Header>
                         Responsable légal 2
-                    </div>
-                    <div class="card-body">
+                    </twig:Card:Header>
+                    <twig:Card:Body>
                         {% include 'admin/user/_legal_guardian_form.html.twig' with { 'form': form.secondLegalGuardian } %}
-                    </div>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
             </div>
         </div>
 
-        <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
+        {{ form_row(form.clubEmailAllowed) }}
+
+        <twig:Button variant="primary" class="mt-3">{{ button_label|default('Enregistrer') }}</twig:Button>
     {{ form_end(form) }}
 </div>

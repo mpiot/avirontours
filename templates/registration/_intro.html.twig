@@ -1,6 +1,10 @@
 {% import 'registration/_macros.html.twig' as registration %}
 
-<div id="registration-intro" class="alert alert-light border mb-4">
+{% set minors_link = registration.pdf_link('qs-sport-mineurs.pdf', 'QS-Sport mineurs') %}
+{% set adults_link = registration.pdf_link('qs-sport-majeurs.pdf', 'QS-Sport majeurs') %}
+{% set certificate_link = registration.pdf_link('certificat-medical.pdf', 'Certificat médical') %}
+
+<twig:Alert tone="neutral" :live="false" id="registration-intro" class="mb-4">
     <p class="mb-2">
         Avant de commencer, munissez-vous de votre
         <span class="fw-bold">certificat médical ou attestation QS-Sport</span>. Il doit être
@@ -10,12 +14,12 @@
 
     <p class="form-text mb-0">
         Formulaires vierges&nbsp;:
-        {{ registration.pdf_link('qs-sport-mineurs.pdf', 'QS-Sport mineurs') }}
+        {{ minors_link }}
 
         {% if renew %}
-            &middot; {{ registration.pdf_link('qs-sport-majeurs.pdf', 'QS-Sport majeurs') }}
+            &middot; {{ adults_link }}
         {% endif %}
 
-        &middot; {{ registration.pdf_link('certificat-medical.pdf', 'Certificat médical') }}
+        &middot; {{ certificate_link }}
     </p>
-</div>
+</twig:Alert>

@@ -1,0 +1,26 @@
+// ↔ templates/layouts/focus.html.twig, layouts/logbook.html.twig and the error page layout.
+// Shell without navigation; the content column itself comes from layouts/_app.scss.
+.app-plain {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // fallback for iOS < 15.4, which has no dvh
+    min-height: 100dvh;
+    background-color: $gray-100;
+}
+
+// One centred column, so the page header lines up with the content below it.
+.app-focus-body {
+    width: 100%;
+    max-width: $app-measure;
+    margin-inline: auto;
+}
+
+.app-plain-header {
+    display: flex;
+    align-items: center;
+    gap: $spacer;
+    min-height: $app-topbar-height;
+    padding: ($spacer * .5) $spacer;
+    background-color: $white;
+    border-bottom: $border-width solid $border-color;
+}

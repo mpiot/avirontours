@@ -1,85 +1,99 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion des avaries{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion des avaries</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion des avaries</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Gestion des avaries{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="primary" outline size="sm" href="{{ path('shell_damage_new') }}">
+        <twig:ux:icon name="mdi:plus" /> Ajouter une avarie
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion des avaries</h1>
-
-        <a href="{{ path('shell_damage_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter une avarie
-        </a>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Priorité</th>
-                        <th>Bâteau</th>
-                        <th>Catégorie</th>
-                        <th>Description</th>
-                        <th>Crée le</th>
-                        <th>Début réparation</th>
-                        <th>Fin réparation</th>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Priorité</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Bateau</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Catégorie</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Description</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Créé le</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Début réparation</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Fin réparation</twig:Table:HeadCell>
                         {% if is_granted('ROLE_MATERIAL_ADMIN') %}
-                            <th></th>
+                            <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
                         {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for shell_damage in shell_damages %}
-                        <tr>
-                            <td>
+                        <twig:Table:Row>
+                            <twig:Table:Cell label="Priorité">
                                 {% if shell_damage.repairEndAt %}
-                                    <span class="badge bg-success">Terminé</span>
+                                    <twig:Badge tone="success">Terminé</twig:Badge>
                                 {% elseif constant('App\\Entity\\ShellDamageCategory::PRIORITY_HIGH') == shell_damage.category.priority  %}
-                                    <span class="badge bg-danger">Importante</span>
+                                    <twig:Badge tone="danger">Importante</twig:Badge>
                                 {% else %}
-                                    <span class="badge bg-warning">Intermédiaire</span>
+                                    <twig:Badge tone="warning">Intermédiaire</twig:Badge>
                                 {% endif %}
-                            </td>
-                            <td>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Bateau">
                                 {{ shell_damage.shell.fullName }}
                                 {% if shell_damage.logbookEntry %}
-                                    <span {{ stimulus_controller('tooltip') }} title="{{ shell_damage.logbookEntry.fullCrew|join(', ') }} ">
-                                        <span class="fas fa-users"></span>
+                                    <span {{ stimulus_controller('tooltip') }} title="{{ shell_damage.logbookEntry.fullCrew|join(', ') }}">
+                                        <twig:ux:icon name="mdi:account-group" />
+                                        <span class="visually-hidden">Équipage&nbsp;: {{ shell_damage.logbookEntry.fullCrew|join(', ') }}</span>
                                     </span>
                                 {% endif %}
-                            </td>
-                            <td>{{ shell_damage.category.name }}</td>
-                            <td title="{{ shell_damage.description }}">{{ shell_damage.description|u.truncate(30, '...') }}</td>
-                            <td>{{ shell_damage.createdAt|format_date('short') }}</td>
-                            <td>{{ shell_damage.repairStartAt ? shell_damage.repairStartAt|format_date('short') }}</td>
-                            <td>{{ shell_damage.repairEndAt ? shell_damage.repairEndAt|format_date('short') }}</td>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Catégorie">{{ shell_damage.category.name }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Description">
+                                <span class="app-damage-description">{{ shell_damage.description }}</span>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Créé le">{{ shell_damage.createdAt|format_date('short') }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Début réparation">
+                                {% if shell_damage.repairStartAt %}
+                                    {{ shell_damage.repairStartAt|format_date('short') }}
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Fin réparation">
+                                {% if shell_damage.repairEndAt %}
+                                    {{ shell_damage.repairEndAt|format_date('short') }}
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
                             {% if is_granted('ROLE_MATERIAL_ADMIN') %}
-                                <td class="text-end">
-                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                       href="{{ path('shell_damage_edit', {'id': shell_damage.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                    </a>
-                                </td>
+                                <twig:Table:Cell actions>
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('shell_damage_edit', {'id': shell_damage.id}) }}">
+                                        <twig:ux:icon name="mdi:pencil" /> Modifier
+                                    </twig:Button>
+                                </twig:Table:Cell>
                             {% endif %}
-                        </tr>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center">Pas d'avarie</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas d'avarie" /></twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-                {% if shell_damages|length < shell_damages.totalItemCount %}
-                    {{ knp_pagination_render(shell_damages) }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% if shell_damages|length < shell_damages.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="shell_damages" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

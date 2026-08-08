@@ -35,9 +35,13 @@ final class LogbookChart
     ) {
     }
 
-    public function chart(User $user)
+    public function chart(User $user): ?Chart
     {
         $logbookCount = $this->logbookEntryRepository->findStatsByMonth($user);
+        if ([] === $logbookCount) {
+            return null;
+        }
+
         $logbookCount = $this->normalizer->fillMissingMonths(
             $logbookCount,
             new \DateTime('-11 months'),
@@ -54,16 +58,16 @@ final class LogbookChart
                 [
                     'label' => 'Distances',
                     'yAxisID' => 'distances',
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'backgroundColor' => ChartPalette::translucent(ChartPalette::INDIGO),
+                    'borderColor' => ChartPalette::INDIGO,
                     'borderWidth' => 1,
                     'data' => $logbookCount['distances'],
                 ],
                 [
                     'label' => 'Sessions',
                     'yAxisID' => 'sessions',
-                    'backgroundColor' => 'rgb(235,54,54, 0.6)',
-                    'borderColor' => 'rgb(235,54,54, 1)',
+                    'backgroundColor' => ChartPalette::translucent(ChartPalette::TEAL),
+                    'borderColor' => ChartPalette::TEAL,
                     'borderWidth' => 1,
                     'data' => $logbookCount['sessions'],
                 ],
@@ -71,10 +75,15 @@ final class LogbookChart
         ]);
 
         $chart->setOptions([
+            'maintainAspectRatio' => false,
             'scales' => [
                 'distances' => [
                     'type' => 'linear',
                     'position' => 'left',
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Distance (km)',
+                    ],
                     'ticks' => [
                         'beginAtZero' => true,
                         'precision' => 0,
@@ -83,6 +92,13 @@ final class LogbookChart
                 'sessions' => [
                     'type' => 'linear',
                     'position' => 'right',
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Sorties',
+                    ],
+                    'grid' => [
+                        'drawOnChartArea' => false,
+                    ],
                     'ticks' => [
                         'beginAtZero' => true,
                         'precision' => 0,

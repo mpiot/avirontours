@@ -76,7 +76,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'shell_damage[shell]' => $shell->getId(),
             'shell_damage[category]' => $category->getId(),
             'shell_damage[description]' => 'My description',
@@ -106,7 +106,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'shell_damage[shell]' => '',
             'shell_damage[category]' => '',
             'shell_damage[description]' => '',
@@ -136,7 +136,7 @@ class ShellDamageControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'shell_damage[shell]' => $shell->getId(),
             'shell_damage[category]' => $category->getId(),
             'shell_damage[description]' => 'A modified description',

@@ -1,70 +1,77 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Entraînements de {{ user.fullname }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('admin_training_index') }}">Suivi des entraînements</a></li>
-    <li class="breadcrumb-item active">{{ user.fullname }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('admin_training_index') }}">Suivi des entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ user.fullname }}</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Mes entraînements de {{ user.fullname }}</h1>
+{% block page_title %}Mes entraînements de {{ user.fullname }}{% endblock %}
 
+{% block body %}
     {% if trainingsSportsChart is not null %}
-        <div class="card border-0 shadow mb-3">
-            <div class="card-body">
+        <twig:Card elevated class="mb-3">
+            <twig:Card:Body>
                 <div class="row">
-                    <div class="col-6">
-                        <span class="h4">Répartition des sports</span>
-                        {{ render_chart(trainingsSportsChart) }}
+                    <div class="col-12 col-xl-6">
+                        <h2 class="fs-5">Répartition des sports</h2>
+                        <div class="app-chart">
+                            {{ render_chart(trainingsSportsChart, { 'role': 'img', 'aria-label': 'Répartition des sports' }) }}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </twig:Card:Body>
+        </twig:Card>
     {% endif %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Sport</th>
-                        <th>Type d'entraînement</th>
-                        <th>Durée</th>
-                        <th>Distance</th>
-                        <th>Commentaire</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Date</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Sport</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Commentaire</twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for training in trainings %}
-                        <tr>
-                            <td>{{ training.trainedAt|format_date('short') }}</td>
-                            <td>
-                                <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}">{{ training.sport.label }}</a>
-                            </td>
-                            <td>{{ training.textType ?? '-' }}</td>
-                            <td>{{ training.formattedDuration }}</td>
-                            <td>
-                                {{ training.distance ? (training.distance / 1000)|format_number({fraction_digit: 0}) : '-' }} km
-                            </td>
+                        <twig:Table:Row>
+                            <twig:Table:Cell label="Date">{{ training.trainedAt|format_date('short') }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Sport">
+                                <a href="{{ path('admin_training_show', { user_id: user.id, id: training.id }) }}" class="stretched-link">{{ training.sport.label }}</a>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Durée">{{ training.formattedDuration }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Distance">
+                                {% if training.distance %}
+                                    {{ (training.distance / 1000)|format_number({fraction_digit: 0}) }} km
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
 
-                            <td>{{ training.comment|u.truncate(25, '...') }}</td>
-                        </tr>
+                            <twig:Table:Cell label="Commentaire">
+                                <span class="d-none d-md-inline">{{ training.comment|u.truncate(25, '...') }}</span>
+                                <span class="d-md-none">{{ training.comment }}</span>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center">Pas d'entraînements</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas d'entraînement" /></twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-                {% if trainings|length < trainings.totalItemCount %}
-                    {{ knp_pagination_render(trainings) }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% if trainings|length < trainings.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="trainings" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

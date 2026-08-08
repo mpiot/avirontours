@@ -64,7 +64,7 @@ class ShellType extends AbstractType
                 'required' => false,
             ])
             ->add('personalBoat', CheckboxType::class, [
-                'label' => 'Bâteau perso',
+                'label' => 'Bateau perso',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false,
             ])

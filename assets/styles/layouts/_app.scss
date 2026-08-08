@@ -1,0 +1,73 @@
+// ↔ templates/layouts/app.html.twig — the sidebar column beside the content column, under a topbar.
+.app-shell {
+    display: flex;
+    min-height: 100vh; // fallback for iOS < 15.4, which has no dvh
+    min-height: 100dvh;
+}
+
+.app-main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0; // let wide .table-responsive children shrink instead of stretching the column
+    background-color: $gray-100;
+}
+
+// The `<main>` of every layout, not only this one: a navigation-less shell drops the sidebar, not
+// the content column — see layouts/_plain.scss.
+//
+// The bottom padding is a flat figure and carries no `env(safe-area-inset-bottom)`. That inset answers
+// for the home indicator, and only once the document opts into drawing under it with `viewport-fit=cover`
+// — which layouts/document.html.twig does not, so it measures 0 on an iPhone. What actually overlaps the
+// foot of a scrolled page there is Safari's floating toolbar, which no inset reports and no CSS can read;
+// the padding below is what clears it, and 2rem is enough to keep the last line of a page in view.
+.app-content {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding: $spacer $spacer ($spacer * 2);
+
+    @include media-breakpoint-up(lg) {
+        padding: ($spacer * 1.5) ($spacer * 1.5) ($spacer * 3);
+    }
+}
+
+// Out of the way until tabbed to, then a real button clear of the corner.
+//
+// `position` is set here and not left to the mixin, which only applies it while the link is hidden:
+// focused, the link came back into the flow as the first child of `<body>` and pushed the whole shell
+// down by its own height. Above the sticky topbar, which is what it lands on below lg.
+.app-skip-link {
+    @include visually-hidden-focusable;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: $zindex-fixed;
+    margin: $spacer * .5;
+}
+
+.app-topbar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: $zindex-sticky;
+    align-items: center;
+    gap: $spacer * .75;
+    min-height: $app-topbar-height;
+    padding: ($spacer * .25) $spacer;
+    background-color: $white;
+    border-bottom: $border-width solid $border-color;
+}
+
+// The offcanvas trigger, below lg. Its own class rather than `.link-secondary` passed in from the
+// template: the colour of a piece of chrome is the chrome's decision, and this is the only control
+// in the app that wanted it.
+.app-topbar-toggle {
+    color: $secondary;
+
+    &:hover,
+    &:focus {
+        color: shade-color($secondary, 20%);
+    }
+}

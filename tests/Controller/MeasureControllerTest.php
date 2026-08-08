@@ -26,13 +26,21 @@ use App\Factory\LicenseFactory;
 use App\Factory\MeasureFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
 class MeasureControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    // What turbo-helper sends when the modal frame drives the request — new/edit are only ever
+    // reached through it.
+    private const array MODAL_HEADERS = [
+        'HTTP_TURBO_FRAME' => 'modal',
+        'HTTP_TURBO_FRAME_REDIRECT' => '1',
+    ];
+
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{id}')) {
@@ -47,7 +55,7 @@ class MeasureControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForUnlicensedUser(string $method, string $url): void
     {
         $user = UserFactory::createOne();
@@ -93,16 +101,17 @@ class MeasureControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/measure/new');
+        $client->request('GET', '/measure/new', server: self::MODAL_HEADERS);
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'measure[measuredAt]' => '2020-01-15',
             'measure[type]' => MeasureType::RestingHeartRate->value,
             'measure[value]' => 49,
-        ]);
+        ], 'POST', self::MODAL_HEADERS);
 
-        $this->assertResponseRedirects();
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseHeaderSame('Turbo-Location', '/measure');
 
         /** @var Measure $measure */
         $measure = MeasureFactory::repository()->last();
@@ -119,14 +128,14 @@ class MeasureControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/measure/new');
+        $client->request('GET', '/measure/new', server: self::MODAL_HEADERS);
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'measure[measuredAt]' => '',
             'measure[type]' => '',
             'measure[value]' => '',
-        ]);
+        ], 'POST', self::MODAL_HEADERS);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
@@ -150,14 +159,14 @@ class MeasureControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/measure/new');
+        $client->request('GET', '/measure/new', server: self::MODAL_HEADERS);
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'measure[measuredAt]' => '2020-01-15',
             'measure[type]' => MeasureType::RestingHeartRate->value,
             'measure[value]' => 49,
-        ]);
+        ], 'POST', self::MODAL_HEADERS);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
@@ -175,17 +184,18 @@ class MeasureControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/measure/'.$measure->getId().'/edit');
+        $client->request('GET', '/measure/'.$measure->getId().'/edit', server: self::MODAL_HEADERS);
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'measure[measuredAt]' => '2020-01-15',
             'measure[type]' => MeasureType::RestingHeartRate->value,
             'measure[value]' => 49,
-        ]);
+        ], 'POST', self::MODAL_HEADERS);
 
-        $this->assertResponseRedirects();
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseHeaderSame('Turbo-Location', '/measure');
         $this->assertSame('2020-01-15 00:00', $measure->getMeasuredAt()->format('Y-m-d H:i'));
         $this->assertSame(MeasureType::RestingHeartRate, $measure->getType());
         $this->assertSame(49.0, $measure->getValue());

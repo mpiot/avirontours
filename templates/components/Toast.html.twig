@@ -1,0 +1,74 @@
+{#
+ # One flash message, in the stack pinned under the topbar.
+ #
+ # An error stays two and a half times as long as the rest: it is the one a member is likely to have
+ # to act on, and the only one worth re-reading. Both delays are long — 5 s was under the time it
+ # takes to notice a message pinned in a corner, look at it and read it, so a confirmation could go by
+ # unread and an error could go by unfixed.
+ #
+ # The live region is here and not on the stack around it. Either would work — a region only has to
+ # exist before the content lands, which the stack does — but only one of them may: two nested
+ # regions have every toast announced twice. This is the one that matches what a flash is, a message
+ # about something the member just did, and `aria-atomic` then reads the toast rather than the pile.
+ #}
+{% props tone = null %}
+
+{%- set toastBorderColor = html_cva(
+    base: 'toast app-toast',
+    variants: {
+        tone: {
+            success: 'border-success',
+            info: 'border-info',
+            warning: 'border-warning',
+            danger: 'border-danger',
+        },
+    },
+    default_variant: {
+        tone: 'info',
+    },
+) -%}
+
+{%- set iconColor = html_cva(
+    base: 'align-self-center',
+    variants: {
+        tone: {
+            success: 'text-success',
+            info: 'text-info',
+            warning: 'text-warning',
+            danger: 'text-danger',
+        },
+    },
+    default_variant: {
+        tone: 'info',
+    },
+) -%}
+
+{%- set recipe = { tone: tone }|filter(v => v is not null) -%}
+
+<div
+    {{- attributes.defaults({ class: toastBorderColor.apply(recipe) }) }}
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    {{ stimulus_controller('toast', { options: { delay: 'danger' === tone ? 20000 : 8000 } }) }}
+>
+    <div class="toast-body d-flex align-items-center">
+        <div class="{{ iconColor.apply(recipe) }}">
+            {% if 'success' === tone %}
+                <twig:ux:icon name="mdi:check-circle" />
+            {% elseif 'warning' === tone %}
+                <twig:ux:icon name="mdi:alert-circle" />
+            {% elseif 'danger' === tone %}
+                <twig:ux:icon name="mdi:close-circle" />
+            {% else %}
+                <twig:ux:icon name="mdi:information" />
+            {% endif %}
+        </div>
+
+        <div class="ms-3">{% block content %}{% endblock %}</div>
+
+        <div class="ms-auto">
+            <button type="button" class="btn-close" data-action="toast#dismiss" aria-label="Fermer"></button>
+        </div>
+    </div>
+</div>

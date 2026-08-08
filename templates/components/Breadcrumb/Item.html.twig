@@ -1,0 +1,24 @@
+{#
+ # One level of the trail, in one of three states:
+ #
+ #   href given        an ancestor you can go back to
+ #   no href           the current page — not a link, and it says so to assistive technology
+ #   current = false   a level with no page of its own, e.g. "Mon profil sportif" above
+ #                     "Physiologie". Marking it `aria-current="page"` would claim you are on it.
+ #
+ # The tags are split across the conditions rather than the body being captured, because a
+ # component may only define its `content` block once.
+ #}
+{% props href = null, current = true %}
+
+{%- if href is not null -%}
+    <li class="breadcrumb-item"><a href="{{ href }}">
+{%- elseif current -%}
+    <li class="breadcrumb-item active" aria-current="page">
+{%- else -%}
+    <li class="breadcrumb-item">
+{%- endif -%}
+
+{%- block content %}{% endblock -%}
+
+{%- if href is not null %}</a>{% endif %}</li>

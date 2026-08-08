@@ -1,0 +1,21 @@
+{#
+ # The page title, and whatever acts on the page as a whole.
+ #
+ # Two slots: the body is the title, `actions` the control strip. Layouts feed both from page blocks
+ # through `outerBlocks` — `block()` on its own would resolve against this component — and a page
+ # that defines neither falls back to nothing.
+ #
+ # The "is there a title" test lives here rather than at the call site: a layout cannot ask whether
+ # a page defines a block without that block existing somewhere in its own hierarchy, and the point
+ # of moving the header into a component was to stop the layout from carrying it.
+ #
+ # The actions wrapper is rendered even when empty: the header is `justify-content: space-between`,
+ # so an empty second child costs nothing and saves the caller a "do I have actions" prop.
+ #}
+{% if block('content')|trim is not empty %}
+    <div{{ attributes.defaults({ class: 'app-page-header' }) }}>
+        <h1 class="app-page-title">{% block content %}{% endblock %}</h1>
+
+        <div class="d-flex flex-wrap gap-2">{% block actions %}{% endblock %}</div>
+    </div>
+{% endif %}

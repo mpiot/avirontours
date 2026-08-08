@@ -1,0 +1,202 @@
+// ↔ templates/training/index.html.twig — the log, its weeks and its session rows — and the reading
+// column of templates/training/_show.html.twig. Shapes of the training pages, with no second caller.
+//
+// Both blocks are measured for reading rather than left to the full content width: a log row says
+// little — a sport, a day, three figures — and a rowing outing is four figures, so across 1100 px the
+// date lands a screen away from the name it belongs to. That measure is `.app-measure` from
+// components/_form-card.scss, carried in the markup beside the class below: it is the same decision
+// FormCard makes, and stating it once is also what lets components/_page-header.scss find these pages
+// and pull the header's actions in to the same edge. The analysis is in the column with the rest —
+// see the note in `_show`: one page, one right edge.
+
+.app-training-week {
+    & + & {
+        margin-top: $spacer * 1.5;
+        padding-top: $spacer * 1.5;
+        border-top: $border-width solid $border-color;
+    }
+}
+
+.app-training-week-title {
+    margin-bottom: $spacer * .5;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+}
+
+// The span opts out of the eyebrow treatment it sits in: uppercased and letter-spaced,
+// "4 – 10 JANV. 2027" shouted louder than the week number it only qualifies.
+.app-training-week-span {
+    font-size: $font-size-sm;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+// The running week wears the primary rule down its edge — in the card's padding gutter, off the
+// flow, so the marked week's content stays aligned with the other weeks'.
+.app-training-week-current {
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: calc(var(--#{$prefix}card-spacer-x) * -1);
+        width: 3px;
+        border-radius: $border-radius-pill;
+        background-color: $primary;
+    }
+}
+
+.app-training-week-empty {
+    margin: 0;
+    color: $gray-600;
+    font-size: $font-size-sm;
+}
+
+.app-training-summary {
+    margin-bottom: $spacer * .75;
+}
+
+.app-training-summary-total {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 $spacer;
+    margin-bottom: $spacer * .5;
+    font-weight: $font-weight-medium;
+}
+
+.app-training-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: ($spacer * .25) ($spacer * 1.5);
+    margin: ($spacer * .5) 0 0;
+    padding: 0;
+    font-size: $font-size-sm;
+    list-style: none;
+
+    li {
+        display: flex;
+        align-items: baseline;
+        gap: $spacer * .5;
+    }
+}
+
+// The dot carries the same colour as the segment above it, which is what ties the two together.
+.app-training-legend-sport::before {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    margin-right: $spacer * .375;
+    border-radius: $border-radius-sm;
+    background-color: var(--sport-color);
+    content: "";
+}
+
+// Two columns — the sport's mark, then everything said about the session — so the date stays beside
+// the name it belongs to instead of being thrown to the far edge of a full-width row.
+//
+// `relative` is load-bearing: the session name is a `.stretched-link`, and this is what bounds its
+// hit area to the row. Drop it and the link climbs to the nearest positioned ancestor — the week —
+// so clicking the week's title, its bar or its legend opens the last session of that week.
+// `flex-start` and not the default `stretch`: the chip is what names the row, so it belongs beside
+// the name. Stretched it sizes to the whole row and its icon centres in that, which is a half-line
+// down while the metrics fit on one line and a full line down once they wrap — at 390 px the mark of
+// the sport sat beside the figures, under the sport it marks.
+.app-training-session {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    gap: $spacer * .75;
+    padding: $spacer * .75;
+    border-radius: $border-radius;
+
+    &:hover {
+        background-color: $gray-100;
+    }
+
+    // The ring goes round the row, not round the four words that carry the link: `.stretched-link`
+    // moves the hit area and leaves the outline behind on the text, so a keyboard sees a box round
+    // « Aviron » while the target is the whole line. The link's own ring is dropped just below, or
+    // the two would be drawn one inside the other.
+    &:has(a:focus-visible) {
+        outline: $focus-ring-width solid $primary;
+        outline-offset: 2px;
+    }
+
+    a:focus-visible {
+        outline: none;
+    }
+}
+
+.app-training-session-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.app-training-session-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 $spacer;
+    margin-bottom: 0;
+
+    a {
+        color: $body-color;
+        font-weight: $font-weight-medium;
+        text-decoration: none;
+    }
+}
+
+// The session's own figures, and at the far end of the same line the effort it was rated at — under
+// the date, so the two make a right-hand column that reads down the week.
+// Never wraps: the two are laid out with `space-between`, and a chip pushed onto a second row would
+// be alone on it and therefore left-aligned — under the figures instead of under the date. The
+// figures wrap inside their own span instead, which is what they should do.
+//
+// `baseline` is what keeps the promise of the line above once they do. `center` measured the chip
+// against the whole wrapped span, so on the two-line rows a phone produces it came to rest half a
+// line low — beside the second line of figures rather than under the date, i.e. the one thing this
+// column exists for. A baseline is taken from a flex item's first line, so the chip now sits on the
+// figures' first one at every width. It also settles the two type sizes: the chip is
+// $app-font-size-label against figures at .9375rem, and `flex-start` would hang the smaller of the
+// two from a shared top edge.
+.app-training-metrics {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: $spacer * .5;
+    margin: ($spacer * .25) 0 0;
+    color: $gray-700;
+    font-size: $font-size-base * .9375;
+}
+
+// The shape only. The wash that fills it comes from components/_form.scss, off the same loop as the
+// scale's steps, so the two readings of one effort cannot drift apart — which is also why it is named
+// for the effort rather than for this page, like `.app-exertion-scale` and `.app-exertion-step`.
+.app-exertion-chip {
+    display: inline-block;
+    min-width: 1.75rem;
+    padding: 0 ($spacer * .375);
+    border: $border-width solid transparent;
+    border-radius: $border-radius-sm;
+    color: $body-color;
+    font-size: $app-font-size-label;
+    font-weight: $font-weight-semibold;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+// The hole in the column: the same square, unfilled and dashed. The scale gives that step a solid
+// edge because it is a control among controls; here nothing is clickable, and the dashes are what
+// say "empty" rather than "a value that happens to be grey".
+.app-exertion-chip-empty {
+    border-color: $gray-500;
+    border-style: dashed;
+    color: $gray-600;
+}

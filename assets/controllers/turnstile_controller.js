@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+const SCRIPT_SELECTOR = 'script[src^="https://challenges.cloudflare.com/turnstile/"]';
+
 export default class extends Controller {
     static targets = ['container'];
     static values = {
@@ -20,18 +22,34 @@ export default class extends Controller {
     turnstileId;
 
     connect () {
-        turnstile.ready(() => {
-            this.turnstileId = turnstile.render(this.containerTarget, {
-                action: this.actionValue,
-                'error-callback': () => turnstile.reset(this.turnstileId),
-                'expired-callback': () => turnstile.reset(this.turnstileId),
-                sitekey: this.siteKeyValue,
-                theme: this.themeValue
-            });
-        });
+        if (window.turnstile) {
+            this.renderWidget();
+
+            return;
+        }
+
+        // Turbo appends the Cloudflare script without waiting for it, so on a Turbo visit
+        // we connect before it has loaded.
+        document.querySelector(SCRIPT_SELECTOR)?.addEventListener('load', () => {
+            if (this.element.isConnected) {
+                this.renderWidget();
+            }
+        }, { once: true });
     }
 
     disconnect () {
-        turnstile.remove(this.turnstileId);
+        if (undefined !== this.turnstileId) {
+            turnstile.remove(this.turnstileId);
+        }
+    }
+
+    renderWidget () {
+        this.turnstileId = turnstile.render(this.containerTarget, {
+            action: this.actionValue,
+            'error-callback': () => turnstile.reset(this.turnstileId),
+            'expired-callback': () => turnstile.reset(this.turnstileId),
+            sitekey: this.siteKeyValue,
+            theme: this.themeValue
+        });
     }
 }

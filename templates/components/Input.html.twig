@@ -1,0 +1,25 @@
+{#
+ # A form control.
+ #
+ # Everything that identifies the field — `id`, `name`, `value`, `autocomplete`, `pattern` — passes
+ # straight through as attributes; only what changes the control's appearance is a prop.
+ #
+ # `invalid` is the pair of the theme's error styling: it marks the control for assistive technology
+ # as well as painting it, which `is-invalid` alone does not.
+ #}
+{% props type = 'text', size = null, invalid = false %}
+
+{%- set input = html_cva(
+    base: 'form-control',
+    variants: {
+        size: { sm: 'form-control-sm', lg: 'form-control-lg' },
+        invalid: { true: 'is-invalid' },
+    },
+    default_variant: {
+        size: 'md',
+    },
+) -%}
+
+{%- set classes = input.apply({ size: size, invalid: invalid }|filter(v => v is not null)) -%}
+
+<input type="{{ type }}"{{ attributes.defaults({ class: classes }) }}{% if invalid %} aria-invalid="true"{% endif %}>

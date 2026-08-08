@@ -1,0 +1,21 @@
+{#
+ # A boolean field, submitted with the form around it.
+ #
+ # A checkbox and not a switch: a switch says the choice takes effect as it is flipped, and neither
+ # "se souvenir de moi" nor "appareil de confiance" does anything until the form is sent. It is also
+ # what every other boolean in the app already looks like — `bootstrap_5_layout` renders `CheckboxType`
+ # through these same classes — so a hand-written form matches the themed ones.
+ #
+ # `label` is a prop rather than the body because a checkbox is nothing without its label, and the
+ # `for`/`id` pairing is the whole point — leaving it to the call site is leaving it to be forgotten.
+ #
+ # There is no size prop: the box these two pages wanted — big enough not to read as an afterthought
+ # between two 48px fields, big enough to aim at with a thumb — is now what every checkbox in the app
+ # is, from `$form-check-input-width` in `_custom.scss`.
+ #}
+{% props id, label %}
+
+<div class="form-check">
+    <input type="checkbox" class="form-check-input" id="{{ id }}"{{ attributes }}>
+    <label class="form-check-label" for="{{ id }}">{{ label }}</label>
+</div>

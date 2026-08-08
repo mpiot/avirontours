@@ -86,7 +86,14 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    // `charset: false` stops Dart Sass emitting a BOM at the head of its output. On its own that is
+    // harmless, but the extracted stylesheet concatenates several CSS modules, so the BOM lands
+    // mid-file — and a BOM in front of a selector invalidates the rule that follows it. The rule
+    // that follows here is Bootstrap's `:root, [data-bs-theme=light]`, i.e. every theme variable:
+    // dropping it leaves the whole app on the browser's default serif with transparent cards.
+    .enableSassLoader((options) => {
+        options.sassOptions = { charset: false };
+    })
 
     // uncomment if you use TypeScript
     .enableTypeScriptLoader(function (tsConfig) {

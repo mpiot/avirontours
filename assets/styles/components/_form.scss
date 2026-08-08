@@ -1,0 +1,385 @@
+/**
+ * ↔ templates/components/Label.html.twig, Input, Select, Checkbox — and the two form themes,
+ * bootstrap_5_layout and templates/form/_training.html.twig, which render every `form_row()`
+ * through the same classes.
+ */
+.form-label,
+.form-check-label,
+.col-form-label {
+    &.required::after {
+        content: " *";
+        color: $danger;
+    }
+}
+
+// A group's name is a `<legend>`, and bootstrap_5_layout gives it `.col-form-label` — a class built to
+// sit *beside* a control on a horizontal form, so it carries $input-padding-y top and bottom and no
+// bottom margin. Stacked above its group it is 7px too low and its control 6px too low, which is what
+// put « Durée » and « Distance » on two different baselines in the same row of the training form.
+//
+// Corrected here rather than with `pt-0` at each call site: the class appears nowhere in templates/,
+// only from the theme, and the app has no horizontal form for it to be right on. `.form-label`'s
+// $spacer * .5 is the gap every other field has, so the two kinds of row now share one rhythm.
+legend.col-form-label {
+    margin-bottom: $spacer * .5;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+// A required group marks its legend, not each of its options.
+legend.required ~ div .form-check-label.required::after {
+    content: none;
+}
+
+/**
+ * ↔ templates/form/_training.html.twig — the sport picker and the two scales — and the effort's wash
+ * alone in templates/training/index.html.twig, where an effort is read back after it is picked.
+ *
+ * The same shape three times: the radio leaves the flow and the label beside it becomes the
+ * control, so `:checked + label` is what paints the selection. The input keeps its size and
+ * position rather than `display: none`, which would take it off the keyboard.
+ *
+ * The sport and the feeling offer `-option`s; the effort offers `-step`s, since Borg's ten are a
+ * graded ramp and not a set of choices. What the two scales really share is named `.app-scale*`.
+ */
+// `relative` on the containers is load-bearing, not decoration: the inputs below are absolutely
+// positioned, and with nothing to resolve against they land in Bootstrap's `.card`, several
+// hundred pixels up. Focus scrolls to the input, so tabbing into a scale jumped the page to the top
+// of the card while the visible ring stayed on the label.
+.app-sport-picker,
+.app-scale {
+    position: relative;
+}
+
+.app-sport-picker input,
+.app-scale input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+
+    // $primary and not $focus-ring-color: Bootstrap draws that one as a `box-shadow` halo and sizes
+    // its alpha for it, so at .25 it came out lavender — 1.7:1 on white — the moment it was asked to
+    // be a solid outline. It is the only mark saying where the keyboard is, and it owes 3:1.
+    &:focus-visible + label {
+        outline: $focus-ring-width solid $primary;
+        outline-offset: 2px;
+    }
+}
+
+// What the two scales share. The steps shrink rather than wrap on one row — a step wrapped by
+// `flex-wrap` stretches, since the short row shares the same free space between fewer items, and it
+// stops being a step. `wrap` is here only so the legend, at `flex: 0 0 100%`, takes a line of its own;
+// where the effort ramp does have to break onto two rows it switches to a grid instead, below.
+//
+// The two measurements are held as custom properties because the legend needs them too: its anchors
+// are laid out on the steps' own tracks, and tracks only line up if the count and the gap match.
+// `--app-scale-steps` counts the "not recorded" step, since that is a track like any other.
+.app-scale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--app-scale-gap);
+}
+
+.app-scale-legend {
+    flex: 0 0 100%;
+    margin: ($spacer * .25) 0 0;
+    color: $gray-600;
+    font-size: $app-font-size-label;
+}
+
+// The ends of the scale name themselves until a step is picked. `:not([value=""])` keeps the
+// "not recorded" step out of it: picking it says nothing, so the ends keep naming themselves.
+//
+// Laid out on the steps' own tracks rather than spread across the whole scale with `space-between`.
+// That put the low word under the *first* step, which is "not recorded" — « Très très facile » sat
+// under the box that means the member answered nothing, i.e. it named the one step it is not. Track 2
+// is the first real level; track -2 is the last, on one row and after the fold alike.
+//
+// The words are wider than a track and are let out of it: every track between the two is empty, so the
+// overflow has nowhere to collide, and `nowrap` keeps a two-word anchor on one line.
+.app-scale-anchors {
+    display: grid;
+    grid-template-columns: repeat(var(--app-scale-steps), minmax(0, 1fr));
+    column-gap: var(--app-scale-gap);
+    white-space: nowrap;
+
+    > :first-child {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    > :last-child {
+        grid-column: -2;
+        justify-self: end;
+    }
+}
+
+.app-scale:has(input:checked:not([value=""])) .app-scale-anchors {
+    display: none;
+}
+
+// Set in the body colour rather than the legend's grey: it is the one line that just changed.
+.app-scale-word {
+    display: none;
+    color: $body-color;
+    font-weight: $font-weight-medium;
+}
+
+.app-sport-picker {
+    display: grid;
+    gap: $spacer * .5;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+}
+
+// The mark inside is `.app-sport-chip-icon`, from components/_sport-chip.scss: the option had a
+// square of its own that was the chip's shape four values apart, and a sport should look the same
+// where it is picked and where it is then shown.
+.app-sport-option {
+    display: flex;
+    align-items: center;
+    gap: $spacer * .5;
+    padding: ($spacer * .5) ($spacer * .75);
+
+    // $input-border-color and not $border-color: this frame is the control, the way the ring of a
+    // radio is, and it owes the 3:1 the cards and rules around it do not. Same below for a step.
+    border: $border-width solid $input-border-color;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: $font-size-sm;
+
+    // Grey, the way `.app-exertion-step:hover` is, and not the sport's own colour: hovering used to
+    // paint the same border the pick does, one pixel thinner, so with a mouse every option the
+    // pointer crossed looked chosen. The hue is what says "picked" here, and it says only that.
+    &:hover {
+        border-color: $gray-700;
+    }
+
+    input:checked + & {
+        border-color: var(--sport-color);
+        box-shadow: inset 0 0 0 1px var(--sport-color);
+    }
+}
+
+// Six steps on one row — "not recorded" then five faces — like the exertion scale: 4 + 2 on a phone
+// would read as two groups that mean something.
+//
+// Capped, because the options stretch: across the 736 px the form card gives them the six discs sat
+// 124 px apart, 40 px of face and 84 px of nothing, and six things that far apart stop reading as one
+// scale. At 24rem each option is 4rem, so the gap between two faces is about the width of a face. The
+// effort ramp below keeps the full width — eleven steps have the room and want it — and the two
+// starting at the same edge is what still reads as a pair.
+// The count follows `App\Enum\Feeling`'s five cases plus the "not recorded" step, the way the legend
+// loop below follows its backed values.
+.app-feeling-scale {
+    --app-scale-steps: 6;
+    --app-scale-gap: #{$spacer * .5};
+
+    max-width: 24rem;
+}
+
+// No frame around the faces, and the pick said in colour rather than in fill: bordered tiles made
+// boxes compete with the faces they hold, and the face is the whole content here. The label keeps
+// its box model, so the tap target is the one it would have had framed.
+//
+// Its only child in the flow is the icon — the word beside it is `.visually-hidden`, so out of the
+// flow — which is why nothing here sizes or aligns text. `column` is what centres that lone child:
+// with `align-items: center` the cross axis is the horizontal one.
+.app-feeling-option {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: $spacer * .25;
+    border-radius: $border-radius;
+    color: $gray-600;
+    cursor: pointer;
+
+    &:hover {
+        color: $primary;
+    }
+}
+
+// The pick wears a filled disc with a white glyph, the way `.app-sport-chip-icon` says a sport:
+// navy and $gray-600 sit close enough in value that at 28 px the chosen face read as one more grey.
+.app-feeling-option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1.75rem;
+    line-height: 1;
+
+    // Six discs and their gaps outgrow a phone column; the face shrinks before it overlaps.
+    @include media-breakpoint-down(sm) {
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.375rem;
+    }
+}
+
+// Nothing else says these icons are controls, now that they have no frame.
+.app-feeling-option:hover .app-feeling-option-icon {
+    background-color: $gray-100;
+}
+
+// After the hover rule, or hovering the chosen face would wash it back to grey.
+//
+// `:not([value=""])` is load-bearing: a blank form has the "not recorded" step checked, so without it
+// the em dash wore the filled navy disc — the loudest mark in the row, at its left end, next to the
+// unhappy faces. A form nobody had answered yet looked answered, and looked answered *badly*.
+input:checked:not([value=""]) + .app-feeling-option .app-feeling-option-icon {
+    background-color: $primary;
+    color: $white;
+}
+
+// So the "not recorded" step says it was picked the way the effort ramp's does — a thin dark ring and
+// the weight, no fill. Quiet enough to read as "nothing here", visible enough to read as a state, and
+// the same answer to the same question in both scales.
+input:checked[value=""] + .app-feeling-option .app-feeling-option-icon {
+    box-shadow: 0 0 0 1px $gray-900;
+    color: $gray-900;
+    font-weight: $font-weight-semibold;
+}
+
+// A loop because CSS cannot pair a checked input with the word carrying the same number. The five are
+// the backed values of `App\Enum\Feeling`; nothing pins the two together, so this list follows that
+// enum by hand — a case added there needs a value added here or its word never shows.
+@each $value in (0, 25, 50, 75, 100) {
+    .app-feeling-scale input[value="#{$value}"]:checked ~ .app-scale-legend .app-scale-word[data-value="#{$value}"] {
+        display: block;
+    }
+}
+
+// Borg's ten levels plus the "not recorded" step; keyed by hand like the colour loop above.
+.app-exertion-scale {
+    --app-scale-steps: 11;
+    --app-scale-gap: #{$spacer * .25};
+
+    // Eleven steps on one row measured 26 px wide at 390 px, 23 px at 360 px — the commonest Android
+    // width — and 20 px at 320 px, against the 24 × 24 a target owes (WCAG 2.2, 2.5.8). The spacing
+    // exception does carry that from about 344 px up — the circles it asks about are 24 px across and
+    // the centres are 27 px apart at 360 px, so they never meet — and above 375 px the steps clear
+    // 24 px outright. What the exception does not carry is the aim: it is written against activating
+    // the neighbour by accident, and picking one of eleven 23 px boxes is a lottery on a scale whose
+    // whole point is which one. So below `sm` the ramp breaks in two, which puts a step at 45 px on a
+    // 360 px screen and 40 px on a 320 px one.
+    //
+    // `grid` and not `flex-wrap`: five items sharing a full row's free space come out wider than the
+    // six above them, and a ramp whose steps change size stops being a ramp. Equal columns keep the ten
+    // reading as one scale that happens to turn a corner.
+    // Six tracks now, and the count is restated so the legend's anchors fold with the ramp: after the
+    // break the last level sits in the sixth column, which is still the last track.
+    @include media-breakpoint-down(sm) {
+        --app-scale-steps: 6;
+
+        display: grid;
+        grid-template-columns: repeat(var(--app-scale-steps), 1fr);
+
+        // The inputs are absolutely positioned, so they are out of the grid's flow and lay out no
+        // tracks. The legend is not, and would otherwise take a single cell of the last row.
+        .app-scale-legend {
+            grid-column: 1 / -1;
+        }
+
+        // Eleven items in twelve cells leave one empty, and left alone it falls at the end of the
+        // second row: the ramp then stops one step short of the edge the row above reaches, which is
+        // the whole of what made the break read as an accident rather than a fold. Starting the sixth
+        // level in the second column moves the empty cell under the "not recorded" step instead, so
+        // the ten levels come out as an aligned 5 × 2 block — 1 above 6, 5 above 10 — and the one step
+        // that is not a point on Borg's ramp is the one sitting outside it.
+        //
+        // Keyed on the level, like the colours above: a case added to `RatedPerceivedExertion` needs
+        // this number moved with it, or the fold lands somewhere else.
+        .app-exertion-step[data-level="6"] {
+            grid-column: 2;
+        }
+    }
+}
+
+.app-exertion-step {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.5rem;
+    border: $border-width solid $input-border-color;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: $font-size-sm;
+    font-variant-numeric: tabular-nums;
+
+    &:hover {
+        border-color: $gray-700;
+    }
+}
+
+// Two attributes carry the same number here, and they are not interchangeable: `data-value` keys the
+// legend word, which both scales share, and `data-level` keys the effort alone.
+//
+// The wash paints the two places an effort is shown — the step where it is picked, and the log's chip
+// where it is read back — from one loop, so they cannot drift. Both wear the wash and neither the full
+// hue: a chip of 28 × 20 px alone on white shouts where a step of 63 × 40 px stood among ten coloured
+// neighbours. The ink stays $body-color at every level for the same reason.
+@each $level, $color in $app-exertion-colors {
+    .app-exertion-step[data-level="#{$level}"],
+    .app-exertion-chip[data-level="#{$level}"] {
+        border-color: rgba($color, .6);
+        background-color: rgba($color, .35);
+    }
+
+    // The picked step drops the wash for the full hue. Only the fill and the ink follow the level; the
+    // border and the weight every picked step wears are set once, below. No `border-color` here: it
+    // would be the fill's own colour, so it drew nothing, and it outranked the one line that does.
+    .app-exertion-scale input[value="#{$level}"]:checked + .app-exertion-step {
+        background-color: $color;
+        color: color-contrast($color);
+    }
+
+    // Once a choice is made the ten others step back — the paint steps back, the number does not.
+    // `opacity` on the label would have faded both: at .45 the digits came out between 2.0 and 2.7:1
+    // against what showed through, under the 4.5:1 they owe as the whole content of the step. So the
+    // wash is re-poured thinner and $body-color is left where it is.
+    //
+    // Same reasoning as the faces two rules up, which are not faded either — there it was the 3:1 a
+    // control owes, here it is text.
+    .app-exertion-scale:has(input:checked:not([value=""])) input:not(:checked) + .app-exertion-step[data-level="#{$level}"] {
+        border-color: rgba($color, .25);
+        background-color: rgba($color, .12);
+    }
+
+    // And names itself in the legend, as a face does. Riding the colour loop rather than taking one
+    // of its own, which would be a second `@each` over the same map to read only its keys.
+    .app-exertion-scale input[value="#{$level}"]:checked ~ .app-scale-legend .app-scale-word[data-value="#{$level}"] {
+        display: block;
+    }
+}
+
+// The dark line, because the hue alone could not carry the state: the scale is pale at the low end and
+// lightest of all at level 5 (#fffa2d), so "the vivid one" and "the yellow one" looked alike.
+//
+// On the border, and not as the `box-shadow` ring beside it this used to be, now that a step's border
+// is a line worth darkening. The ring was a second line: the one step with no hue to thicken — "not
+// recorded" — wore it *and* its own border, so a blank form opened on a step twice as heavy as any
+// other, while the sensation scale beside it said the same thing in one stroke. The faces keep their
+// ring, having no border of their own for it to double.
+.app-exertion-scale input:checked + .app-exertion-step {
+    border-color: $gray-900;
+    font-weight: $font-weight-semibold;
+}
+
+// The "not recorded" step has no hue for the loop above to thin, so it steps back in the only paint
+// it has. Its em dash stays at $gray-600, 4.69:1 on white.
+//
+// 20% and not the 40% it used to thin $border-color by: a step with no fill is nothing but this line,
+// and it stays pickable, so the step back has to stop at the 3:1 a control owes. 20% of white into
+// $input-border-color is 3.2:1 — still a clear tier below the 4.69:1 of the steps that were not chosen
+// against.
+.app-exertion-scale:has(input:checked:not([value=""])) input:not(:checked) + .app-exertion-step[data-level=""] {
+    border-color: tint-color($input-border-color, 20%);
+    color: $gray-600;
+}

@@ -1,13 +1,13 @@
 {{ form_start(form) }}
     <div class="row">
         {% if form.user is defined %}
-            <div class="col">
+            <div class="col-md">
                 {{ form_row(form.user) }}
             </div>
         {% endif %}
 
         {% if form.seasonCategory is defined %}
-            <div class="col">
+            <div class="col-md">
                 {{ form_row(form.seasonCategory) }}
             </div>
         {% endif %}
@@ -18,45 +18,45 @@
     {% endif %}
 
     {% if form.medicalCertificate is defined %}
-        <div class="card mb-3">
-            <div class="card-header">
+        <twig:Card class="mb-3">
+            <twig:Card:Header>
                 Certificat Médical
-            </div>
+            </twig:Card:Header>
 
-            <div class="card-body">
+            <twig:Card:Body>
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md">
                         {{ form_row(form.medicalCertificate.type, { label_attr: { class: 'radio-inline' } }) }}
                     </div>
 
-                    <div class="col">
+                    <div class="col-md">
                         {{ form_row(form.medicalCertificate.level, { label_attr: { class: 'radio-inline' } }) }}
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md">
                         {{ form_row(form.medicalCertificate.date) }}
                     </div>
 
-                    <div class="col">
+                    <div class="col-md">
                         {{ form_row(form.medicalCertificate.file) }}
                     </div>
                 </div>
-            </div>
-        </div>
+            </twig:Card:Body>
+        </twig:Card>
     {% endif %}
 
     {% if form.payments is defined %}
-        <div class="card mb-3">
-            <div class="card-header">
+        <twig:Card class="mb-3">
+            <twig:Card:Header>
                  Paiements
-            </div>
+            </twig:Card:Header>
 
-            <div class="card-body" {{ stimulus_controller('dependent-field') }}>
+            <twig:Card:Body data-controller="dependent-field">
                 {{ form_row(form.payments) }}
-            </div>
-        </div>
+            </twig:Card:Body>
+        </twig:Card>
     {% endif %}
 
     {% if form.optionalInsurance is defined %}
@@ -67,5 +67,5 @@
         {{ form_row(form.federationEmailAllowed) }}
     {% endif %}
 
-    <button class="btn btn-primary mt-3">{{ button_label|default('Sauver') }}</button>
+    <twig:Button variant="primary" class="mt-3">{{ button_label|default('Enregistrer') }}</twig:Button>
 {{ form_end(form) }}

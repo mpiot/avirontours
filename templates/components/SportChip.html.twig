@@ -1,0 +1,22 @@
+{#
+ # A sport said in one breath: its colour, its icon, its name.
+ #
+ # The colour reaches the stylesheet as `--sport-color` rather than as a `background:` written
+ # inline, so `components/_sport-chip.scss` keeps every declaration and the template carries only
+ # the value — the one thing SCSS cannot know.
+ #
+ # The icon is resolved by `_sport_icon.html.twig`, which is where every `mdi:` name lives. The
+ # component never sees one, so nothing here can hide a name from `ux:icons:lock`.
+ #
+ # `labelled` drops the visible name for a caller that already writes it — the name stays for
+ # assistive technology, since the colour and the pictogram are otherwise the only thing said.
+ #}
+{% props sport, labelled = true %}
+
+<span {{ attributes.defaults({ class: 'app-sport-chip', style: "--sport-color: #{sport.color}" }) }}>
+    <span class="app-sport-chip-icon" aria-hidden="true">
+        {{- include('_sport_icon.html.twig', { sport: sport.value }, with_context = false) -}}
+    </span>
+
+    {% if labelled %}{{ sport.label }}{% else %}<span class="visually-hidden">{{ sport.label }}</span>{% endif %}
+</span>

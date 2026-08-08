@@ -1,1 +1,7 @@
-{% extends is_granted('ROLE_LOGBOOK_USER') ? 'base_logbook_user.html.twig' : 'base.html.twig' %}
+{% extends is_granted('ROLE_LOGBOOK_USER') ? 'layouts/logbook.html.twig' : 'layouts/app.html.twig' %}
+
+{% block breadcrumb_items %}
+    {% if not is_granted('ROLE_LOGBOOK_USER') %}
+        <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    {% endif %}
+{% endblock %}

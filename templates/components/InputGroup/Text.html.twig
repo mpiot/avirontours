@@ -1,0 +1,5 @@
+{#
+ # The attached part. Give it an `id` and point the control's `aria-describedby` at it, or the
+ # icon it holds says nothing to anyone not looking at it.
+ #}
+<span{{ attributes.defaults({ class: 'input-group-text' }) }}>{% block content %}{% endblock %}</span>

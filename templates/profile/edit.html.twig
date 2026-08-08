@@ -2,14 +2,14 @@
 
 {% block title %}Modifier mon profil{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active"><a href="{{ path('profile_show') }}">Mon profil</a></li>
-    <li class="breadcrumb-item active">Modifier mon profil</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('profile_show') }}">Mon profil</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier mon profil</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block main %}
-    <h1>Modifier mon profil</h1>
+{% block page_title %}Modifier mon profil{% endblock %}
 
-    {{ include('profile/_form.html.twig', {'button_label': 'Modifier'}) }}
+{% block main %}
+    {{ include('profile/_form.html.twig') }}
 {% endblock %}

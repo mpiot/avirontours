@@ -50,7 +50,9 @@ class MeasureController extends AbstractController
     {
         $measure = new Measure();
         $measure->setUser($this->getUser());
-        $form = $this->createForm(MeasureType::class, $measure);
+        $form = $this->createForm(MeasureType::class, $measure, [
+            'action' => $this->generateUrl('measure_new'),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -71,7 +73,9 @@ class MeasureController extends AbstractController
     #[IsGranted(new Expression('object.getUser() === user'), 'measure')]
     public function edit(Request $request, EntityManagerInterface $entityManager, Measure $measure): Response
     {
-        $form = $this->createForm(MeasureType::class, $measure);
+        $form = $this->createForm(MeasureType::class, $measure, [
+            'action' => $this->generateUrl('measure_edit', ['id' => $measure->getId()]),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -111,7 +111,7 @@ class ResetPasswordController extends AbstractController
 
             \assert($user instanceof User);
         } catch (ResetPasswordExceptionInterface $resetPasswordException) {
-            $this->addFlash('reset_password_error', \sprintf(
+            $this->addFlash('error', \sprintf(
                 '%s - %s',
                 $translator->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_VALIDATE, [], 'ResetPasswordBundle'),
                 $translator->trans($resetPasswordException->getReason(), [], 'ResetPasswordBundle')

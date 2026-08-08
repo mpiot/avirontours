@@ -47,7 +47,7 @@ class LogbookEntryType extends AbstractType
     {
         $builder
             ->add('shell', EntityType::class, [
-                'label' => 'Bâteau',
+                'label' => 'Bateau',
                 'class' => Shell::class,
                 'query_builder' => static fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
                     ->select('shell')
@@ -58,7 +58,7 @@ class LogbookEntryType extends AbstractType
                     ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
                 'choice_label' => fn (Shell $shell): string => $shell->getFullName().$this->shellSuffixes($shell),
                 'options_as_html' => true,
-                'placeholder' => '--- Sélectionner un bâteau ---',
+                'placeholder' => '--- Sélectionner un bateau ---',
                 'autocomplete' => true,
             ])
             ->add('crewMembers', EntityType::class, [
@@ -147,19 +147,19 @@ class LogbookEntryType extends AbstractType
         $suffix = '';
 
         if (true === $shell->getPersonalBoat()) {
-            $suffix .= '<span class="badge bg-info ms-2">Personnel</span>';
+            $suffix .= self::badge('secondary', 'Personnel');
         }
 
         if (null !== $shell->getWeightCategory()) {
-            $suffix .= '<span class="badge bg-info ms-2">'.$shell->getTextWeightCategory().'</span>';
+            $suffix .= self::badge('secondary', $shell->getTextWeightCategory());
         }
 
         if (false === $shell->getLogbookEntries()->isEmpty()) {
-            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
+            $suffix .= self::badge('danger', 'Sorti');
         }
 
         if (false === $shell->getShellDamages()->filter(static fn (ShellDamage $damage): bool => ShellDamageCategory::PRIORITY_HIGH === $damage->getCategory()->getPriority())->isEmpty()) {
-            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-tools"></span></span>';
+            $suffix .= self::badge('danger', 'Avarie');
         }
 
         return $suffix;
@@ -170,13 +170,18 @@ class LogbookEntryType extends AbstractType
         $suffix = '';
 
         if (false === $user->getLogbookEntries()->isEmpty()) {
-            $suffix .= '<span class="badge bg-danger ms-2"><span class="fas fa-sign-out-alt"></span></span>';
+            $suffix .= self::badge('danger', 'Sorti');
         }
 
         if (false === $user->getLicenses()->isEmpty() && null !== $user->getLicenses()->last()->getLogbookEntryLimit()) {
-            $suffix .= '<span class="badge bg-info ms-2">Découverte</span>';
+            $suffix .= self::badge('info', 'Découverte');
         }
 
         return $suffix;
+    }
+
+    private static function badge(string $tone, string $label): string
+    {
+        return \sprintf('<span class="app-badge app-badge-%s ms-2">%s</span>', $tone, $label);
     }
 }

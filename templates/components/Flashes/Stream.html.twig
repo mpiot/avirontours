@@ -1,0 +1,6 @@
+{# The flash bag as a turbo-stream: new toasts join the stack, whatever is showing stays. #}
+<turbo-stream action="append" target="flashes">
+    <template>
+        <twig:Flashes :container="false" />
+    </template>
+</turbo-stream>

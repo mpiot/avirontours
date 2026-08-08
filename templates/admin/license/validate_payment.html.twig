@@ -1,23 +1,22 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 {% form_theme form 'admin/license/_form_theme.html.twig' %}
-
 
 {% block title %}Valider un paiement{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des saisons</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('season_show', { 'id': license.seasonCategory.season.id }) }}">{{ license.seasonCategory.season.name }}</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('user_show', { 'id': license.user.id }) }}">{{ license.user.fullName }}</a></li>
-    <li class="breadcrumb-item active">Valider un paiement</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_index') }}">Gestion des saisons</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_show', { 'id': license.seasonCategory.season.id }) }}">{{ license.seasonCategory.season.name }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_show', { 'id': license.user.id }) }}">{{ license.user.fullName }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Valider un paiement</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Valider le paiement de {{ license.user.fullName }}</h1>
+{% block page_title %}Valider le paiement de {{ license.user.fullName }}{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
+{% block body %}
+    <twig:Card elevated>
+        <twig:Card:Body>
             {{ include('admin/license/_form.html.twig', {'button_label': 'Valider le paiement'}) }}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

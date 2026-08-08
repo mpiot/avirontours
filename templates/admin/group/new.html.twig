@@ -1,19 +1,17 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Ajouter un groupe{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('group_index') }}">Gestion des groupes</a></li>
-    <li class="breadcrumb-item active">Ajouter un groupe</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('group_index') }}">Gestion des groupes</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ajouter un groupe</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Ajouter un groupe</h1>
+{% block page_title %}Ajouter un groupe{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/group/_form.html.twig') }}
-        </div>
-    </div>
+{% block body %}
+    <twig:FormCard>
+        {{ include('admin/group/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

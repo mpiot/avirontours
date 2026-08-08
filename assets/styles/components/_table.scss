@@ -1,0 +1,227 @@
+// ↔ templates/components/Table.html.twig and its parts.
+.app-table {
+    --#{$prefix}table-hover-bg: #{$gray-100};
+
+    margin-bottom: 0;
+
+    > :not(caption) > * > * {
+        padding: ($spacer * .75) $spacer;
+    }
+
+    > thead > tr > th {
+        color: $gray-600;
+        font-size: $app-font-size-label;
+        font-weight: $font-weight-semibold;
+        letter-spacing: .02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    > tbody > tr:last-child > * {
+        border-bottom-width: 0; // the card edge closes the table
+    }
+
+    // The row headers too, or a name sits on its baseline beside cells that are centred.
+    td,
+    > tbody > tr > th {
+        vertical-align: middle;
+    }
+
+    // Underlining every cell that happens to link somewhere buries the data under the decoration.
+    a {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    // The name link stretches over its card below md only: as a table row the <tr> is not
+    // positioned, so the overlay would climb to the surrounding card and swallow every click.
+    @include media-breakpoint-up(md) {
+        a.stretched-link::after {
+            content: none;
+        }
+    }
+
+    .app-table-actions {
+        text-align: end;
+        white-space: nowrap;
+    }
+
+    // The empty state carries its own padding; the cell only spans the columns.
+    > tbody > tr > td > .app-empty {
+        padding-block: $spacer * 2;
+    }
+
+    // Below md the columns cannot all fit, so the row becomes a card and every cell carries its
+    // own label. `.table-responsive` would otherwise scroll the overflow sideways with nothing to
+    // say so, and the action column — the widest, and pinned by `white-space: nowrap` — is the
+    // first thing off the screen.
+    //
+    // A cell opts in by carrying `data-label`. Cells that hold no field of their own — the actions,
+    // the empty state — have none and span the card instead.
+    //
+    // The whole mode hangs off `:not(.app-table-scroll)` rather than being unset piecemeal below: a
+    // table that opted out of it wants no part of it. See `stack` in templates/components/Table.
+    &:not(.app-table-scroll) {
+        @include media-breakpoint-down(md) {
+            // `display: none` rather than `visually-hidden`: `display: block` on the rows below
+            // takes the table role away, so a merely-invisible head is read as a loose run of column
+            // names ahead of the cards — and then again, cell by cell, through their `data-label`.
+            > thead {
+                display: none;
+            }
+
+            > tbody > tr {
+                display: block;
+                position: relative; // bounds the stretched name link's hit area to its own card
+                padding: ($spacer * .75) $spacer;
+                border-bottom: $border-width solid $border-color;
+
+                &:last-child {
+                    border-bottom-width: 0; // the card edge closes the list
+                }
+            }
+
+            // Here the row *is* the card, so the hover and active tints belong to it. Bootstrap
+            // paints them on each cell instead (an inset shadow), which stops the colour at the
+            // card's padding and leaves the gap above the actions white — a band across the middle
+            // of a highlighted card.
+            > tbody > tr > * {
+                background-color: transparent; // Bootstrap paints every cell `--bs-table-bg`, an opaque white
+                box-shadow: none;
+            }
+
+            > tbody > tr.table-active {
+                background-color: var(--#{$prefix}table-active-bg);
+            }
+
+            &.table-hover > tbody > tr:hover {
+                background-color: var(--#{$prefix}table-hover-bg);
+            }
+
+            > tbody > tr > td {
+                display: block;
+                padding: 0;
+                border-bottom-width: 0;
+            }
+
+            // A row header names the card, so it takes the whole width and carries no label of its own.
+            > tbody > tr > th {
+                display: block;
+                padding: 0 0 ($spacer * .25);
+                border-bottom-width: 0;
+            }
+
+            // `flex-end` plus an auto margin on the label, and not `space-between`: the two say the
+            // same thing while the pair fits on one line, and only this one still holds when it does
+            // not. A value too long to sit beside its label wraps onto a line of its own, where
+            // `space-between` has a single item to place and puts it at the start — so on /admin/user
+            // the short e-mails ended at the right edge and the long ones began at the left, which
+            // reads as two columns rather than one. The auto margin is what pushes the label away
+            // from the value on the first line; the free space is on its right either way.
+            > tbody > tr > td[data-label] {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+                justify-content: flex-end;
+                gap: 0 $spacer;
+                padding: ($spacer * .25) 0;
+
+                &::before {
+                    content: attr(data-label);
+                    flex: 0 0 auto;
+                    margin-right: auto;
+                    color: $gray-600;
+                    font-size: $app-font-size-label;
+                    font-weight: $font-weight-semibold;
+                    letter-spacing: .02em;
+                    text-transform: uppercase;
+                }
+
+                // A pill stays on one line while it sits in a column; in a 358px card a status like
+                // "Attente de validation du certificat" is wider than the card and nothing can
+                // shrink past it, so the whole table falls back to sideways scrolling.
+                .app-badge {
+                    white-space: normal;
+                }
+            }
+
+            .app-table-actions {
+                margin-top: $spacer * .75;
+                text-align: start;
+                white-space: normal;
+            }
+
+            // Everything else clickable rises above the stretched name link's overlay (z-index 1).
+            .app-table-actions,
+            a:not(.stretched-link),
+            [data-controller~="tooltip"] {
+                position: relative;
+                z-index: 2;
+            }
+        }
+    }
+
+    // The opted-out table scrolls sideways instead, so the thing a row stands for has to stay in
+    // view while its figures pass under it. Opaque, or the cells would show through.
+    //
+    // The column's own head is pinned with it, or the first column scrolls out from under its title
+    // and the figures below sit in a column that no longer says what it is.
+    &.app-table-scroll {
+        // Two things at once, on every cell.
+        //
+        // `transparent`, because Bootstrap paints each one `--bs-table-bg`, an opaque white, which would
+        // hide the edge shadows `.app-table-scroller` draws behind the table. The pinned column below is
+        // the one that keeps its fill — it has figures passing under it.
+        //
+        // And half the inline padding of a table of records: ten columns of one figure each is a matrix,
+        // read by scanning across rather than by resting on any one cell. That is also what buys back the
+        // room the un-wrapped annotation needs — at the full padding the 1RM matrix measured 1 230 px
+        // against the 1 121 its column gives it, so the last percentage was cut off on a desktop.
+        > :not(caption) > * > * {
+            padding-inline: $spacer * .5;
+            background-color: transparent;
+        }
+
+        > thead > tr > th:first-child,
+        > tbody > tr > th {
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            background-color: $white;
+        }
+
+        // A matrix of nine percentages carries cells of one and of two lines, and centring them floated
+        // the figures of a row off each other's line — Squat's 30 % sat half a line below its 100 %.
+        td,
+        > tbody > tr > th {
+            vertical-align: top;
+        }
+    }
+}
+
+/**
+ * The wrapper of a table that scrolls sideways, from `stack: false`.
+ *
+ * It is the element that scrolls, so it is the one that can say there is more. The 1RM matrix showed
+ * 100 %–80 % on a phone with nothing to suggest that 70 %–20 % were off to the right — and the pinned
+ * first column, being the one thing that does not move, made it read as a table that simply ends there.
+ *
+ * Four layers: two shadows pinned to the scroller, and two patches of the page's own white pinned to the
+ * content. The `local` patches travel with the table and so cover the shadow on whichever side has
+ * nothing left past it — which is what makes the pair appear and disappear with the scroll position,
+ * with no script and nothing to measure.
+ */
+.app-table-scroller {
+    background-image:
+        linear-gradient(to right, rgba($black, .1), rgba($black, 0)),
+        linear-gradient(to left, rgba($black, .1), rgba($black, 0)),
+        linear-gradient(to right, $white, rgba($white, 0)),
+        linear-gradient(to left, $white, rgba($white, 0));
+    background-position: 0 0, 100% 0, 0 0, 100% 0;
+    background-attachment: scroll, scroll, local, local;
+    background-repeat: no-repeat;
+    background-size: .75rem 100%, .75rem 100%, 1.25rem 100%, 1.25rem 100%;
+}

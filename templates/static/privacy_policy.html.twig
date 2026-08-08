@@ -1,0 +1,455 @@
+{% extends 'static/base.html.twig' %}
+
+{% block title %}Politique de confidentialité{% endblock %}
+
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item>Politique de confidentialité</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Politique de confidentialité{% endblock %}
+
+{% block summary %}
+    <twig:NavLink href="#responsable">Responsable</twig:NavLink>
+    <twig:NavLink href="#donnees">Données traitées</twig:NavLink>
+    <twig:NavLink href="#finalites">Finalités</twig:NavLink>
+    <twig:NavLink href="#sante">Suivi sportif</twig:NavLink>
+    <twig:NavLink href="#destinataires">Destinataires</twig:NavLink>
+    <twig:NavLink href="#transferts">Transferts hors UE</twig:NavLink>
+    <twig:NavLink href="#conservation">Conservation</twig:NavLink>
+    <twig:NavLink href="#droits">Vos droits</twig:NavLink>
+    <twig:NavLink href="#mineurs">Mineurs</twig:NavLink>
+    <twig:NavLink href="#cahier">Cahier des sorties</twig:NavLink>
+    <twig:NavLink href="#cookies">Cookies</twig:NavLink>
+    <twig:NavLink href="#securite">Sécurité</twig:NavLink>
+{% endblock %}
+
+{% block main %}
+    <p class="form-text">Dernière mise à jour&nbsp;: 11 août 2026</p>
+
+    <p>
+        Cette page décrit les données que l’association Aviron Tours Métropole traite dans le cadre de
+        <a href="https://my.avirontours.fr">my.avirontours.fr</a>, pourquoi elle les traite, à qui elles sont
+        transmises et quels droits vous pouvez exercer.
+    </p>
+
+    <section id="responsable" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Responsable du traitement</h2>
+        <p>
+            Association Aviron Tours Métropole, représentée par son président<br>
+            5, avenue de Florence — 37000 Tours<br>
+            Courriel&nbsp;: <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
+        </p>
+
+        <p>
+            L’association n’a pas désigné de délégué à la protection des données&nbsp;: le traitement de données n’est
+            ni son activité principale, ni mis en œuvre à grande échelle. Vos demandes sont traitées par le bureau, à
+            l’adresse ci-dessus.
+        </p>
+    </section>
+
+    <section id="donnees" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Données que nous traitons</h2>
+
+        <twig:Table :hover="false">
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Catégorie</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Données</twig:Table:HeadCell>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Identité et coordonnées</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Nom, prénom, sexe, date de naissance, nationalité, adresse postale, courriel, téléphone</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Licence et paiements</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Saison, catégorie, numéro de licence, état de validation, montants et moyens de paiement</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Aptitude médicale</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Type de justificatif (certificat ou attestation), niveau de pratique, date, document fourni</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Suivi sportif <span class="fw-normal">(facultatif)</span></twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Taille, poids, mesures physiologiques, fréquences cardiaques, entraînements et séances</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Activité</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Sorties en bateau&nbsp;: date, horaires, distance, équipiers</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Représentants légaux</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Nom, prénom, courriel, téléphone</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Données techniques</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Données">Journaux de connexion, cookies</twig:Table:Cell>
+                </twig:Table:Row>
+            </twig:Table:Body>
+        </twig:Table>
+    </section>
+
+    <section id="finalites" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Finalités et bases légales</h2>
+
+        <twig:Table :hover="false">
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Finalité</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Base légale</twig:Table:HeadCell>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Gestion des adhésions, des licences et des paiements</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Exécution du contrat d’adhésion</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Aptitude médicale — membres majeurs</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Exécution du contrat&nbsp;: la licence est conditionnée par le règlement médical de la Fédération Française d’Aviron</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Aptitude médicale — membres mineurs</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Obligation légale (article L. 231-2-3 du code du sport, questionnaire de santé)</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Cahier des sorties</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Intérêt légitime&nbsp;: <span class="fw-bold">savoir qui se trouve sur l’eau et à quelle heure, pour la sécurité des pratiquants</span></twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Suivi sportif&nbsp;: profil, mesures, entraînements</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Votre consentement. Ce suivi est facultatif</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Import des séances depuis Concept2</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Votre consentement, à votre initiative</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Envoi des courriels du club et de la fédération</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Votre consentement, révocable à tout moment depuis votre profil</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Sécurité du site</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Base légale">Intérêt légitime&nbsp;: <span class="fw-bold">protéger le service contre les inscriptions automatisées et les abus</span></twig:Table:Cell>
+                </twig:Table:Row>
+            </twig:Table:Body>
+        </twig:Table>
+    </section>
+
+    <section id="sante" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Suivi sportif et données de santé</h2>
+        <p>
+            Le justificatif d’aptitude que vous fournissez à l’inscription — certificat médical ou attestation
+            QS-Sport — atteste d’une aptitude à la pratique et ne révèle aucune pathologie. Il relève de la gestion de
+            votre licence.
+        </p>
+
+        <p>
+            Le <span class="fw-bold">suivi sportif</span>, en revanche, constitue un traitement de données de santé.
+            Pris isolément, un poids ou une fréquence cardiaque ne dit pas grand-chose&nbsp;; croisés entre eux et
+            suivis dans le temps — poids, fréquence cardiaque de repos, variabilité cardiaque, consommation maximale
+            d’oxygène, fréquences relevées pendant l’effort — ils permettent de tirer des conclusions sur votre état
+            de santé.
+        </p>
+
+        <p>
+            Ce suivi est <span class="fw-bold">entièrement facultatif</span> et repose sur votre consentement, que
+            vous pouvez retirer à tout moment. Vos entraîneurs y ont accès&nbsp;: c’est ce qui leur permet d’adapter
+            votre préparation, et certains de ces éléments peuvent être renseignés par eux.
+        </p>
+
+        <p>
+            Les documents que vous téléversez sont conservés hors de l’espace public du site, sous un nom qui ne
+            permet pas de les relier à vous, et ne sont consultables que par les membres du bureau chargés de la
+            validation des licences.
+        </p>
+    </section>
+
+    <section id="destinataires" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Destinataires</h2>
+        <p>
+            Vos données ne sont ni vendues, ni cédées à des fins commerciales. Elles sont transmises aux organismes
+            ci-dessous, dont le statut détermine à qui vous devez vous adresser pour exercer vos droits.
+        </p>
+
+        <twig:Table :hover="false">
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Organisme</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Statut</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Rôle</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>En savoir plus</twig:Table:HeadCell>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Fédération Française d’Aviron</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Responsable indépendant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Délivrance de votre licence</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">
+                        <a href="https://www.ffaviron.fr/mentions-legales/" target="_blank" rel="noopener">ffaviron.fr<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+                    </twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>HelloAsso</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Responsable indépendant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Paiement en ligne, hors de cette application</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">
+                        <a href="https://info.helloasso.com/politique-de-confidentialite" target="_blank" rel="noopener">helloasso.com<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+                    </twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>MAIF</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Responsable indépendant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Option d’assurance, si vous l’avez souscrite</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">
+                        <a href="https://www.maif.fr/annexes/mentions-legales/donnees-personnelles" target="_blank" rel="noopener">maif.fr<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+                    </twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>OVH</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Sous-traitant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Hébergement, en France</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">—</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Cloudflare</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Sous-traitant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Protection et acheminement du trafic</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">
+                        <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+                    </twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Mailjet</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Statut">Sous-traitant</twig:Table:Cell>
+                    <twig:Table:Cell label="Rôle">Envoi de nos courriels</twig:Table:Cell>
+                    <twig:Table:Cell label="En savoir plus">—</twig:Table:Cell>
+                </twig:Table:Row>
+            </twig:Table:Body>
+        </twig:Table>
+
+        <p>
+            Les <span class="fw-bold">sous-traitants</span> agissent sur nos instructions et pour notre
+            compte&nbsp;: c’est auprès de l’association que vous exercez vos droits, et leur propre politique
+            décrirait leur relation avec leurs clients plutôt que le sort de vos données — d’où l’absence de lien
+            pour OVH et Mailjet. Cloudflare fait exception&nbsp;: c’est le seul dont la politique traite du trafic
+            des visiteurs eux-mêmes.
+        </p>
+
+        <p>
+            Les <span class="fw-bold">responsables indépendants</span> ont leur propre relation avec vous&nbsp;:
+            c’est leur politique qui s’applique aux données qu’ils détiennent, et c’est auprès d’eux que vos droits
+            s’exercent.
+        </p>
+
+        <h3 class="fs-6 mt-3 app-legal-anchor" id="cloudflare">Le rôle de Cloudflare</h3>
+        <p>
+            Le site est servi derrière le proxy inverse de Cloudflare. Vos échanges sont chiffrés sur tout le trajet,
+            en deux tronçons&nbsp;: entre votre navigateur et Cloudflare, puis entre Cloudflare et nos serveurs. Aucun
+            trafic ne circule en clair.
+        </p>
+
+        <p>
+            Cloudflare assure toutefois la terminaison du premier tronçon et traite à ce titre votre adresse IP, les
+            adresses des pages que vous consultez et les en-têtes de vos requêtes. Cela vaut pour l’ensemble des
+            pages. S’y ajoute, sur les seules pages d’inscription et de réinitialisation de mot de passe, un
+            dispositif de vérification anti-robots fourni par le même prestataire. Leur politique est consultable sur
+            <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com<span class="visually-hidden"> (nouvelle fenêtre)</span></a>.
+        </p>
+
+        <h3 class="fs-6 mt-3">Concept2 n’est pas un destinataire</h3>
+        <p>
+            Si vous reliez votre compte Concept2, l’application <span class="fw-bold">récupère</span> vos
+            séances&nbsp;: elle ne lui envoie aucune donnée. L’autorisation demandée est limitée à la lecture.
+            Concept2 est un responsable indépendant, avec lequel vous avez votre propre compte&nbsp;; sa politique est
+            consultable sur
+            <a href="https://www.concept2.com/privacy" target="_blank" rel="noopener">concept2.com<span class="visually-hidden"> (nouvelle fenêtre)</span></a>.
+        </p>
+    </section>
+
+    <section id="transferts" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Transferts hors de l’Union européenne</h2>
+        <p>
+            L’hébergement et les données sont situés en France. Deux exceptions&nbsp;:
+        </p>
+
+        <ul>
+            <li>
+                <span class="fw-bold">Cloudflare</span> (États-Unis) traite les données de connexion de l’ensemble des
+                visiteurs, dans les conditions décrites plus haut. Ce transfert est encadré par les mécanismes prévus
+                par le règlement européen.
+            </li>
+            <li>
+                <span class="fw-bold">Concept2</span> (États-Unis) n’intervient que si vous avez relié votre compte, à
+                votre initiative. Concept2 adhère au cadre de protection des données UE — États-Unis.
+            </li>
+        </ul>
+    </section>
+
+    <section id="conservation" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Durées de conservation</h2>
+        <p>
+            Vos données sont conservées pendant la durée de votre adhésion, puis le temps nécessaire aux obligations
+            comptables du club et aux délais durant lesquels sa responsabilité peut être recherchée.
+        </p>
+
+        <p>
+            Les justificatifs d’aptitude médicale font l’objet d’une conservation plus longue, pour une raison
+            précise&nbsp;: une attestation QS-Sport ne vaut que si elle prolonge, sans interruption, un certificat
+            médical antérieur. Vérifier la validité de votre justificatif d’une saison suppose donc de pouvoir
+            remonter cette chaîne jusqu’au certificat initial, qui peut remonter à plusieurs années. Nous conservons
+            ces pièces aussi longtemps que cette vérification l’exige, et pour pouvoir les produire en cas de litige
+            ou d’accident.
+        </p>
+    </section>
+
+    <section id="droits" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Vos droits</h2>
+        <p>
+            Vous disposez d’un droit d’accès à vos données, de rectification, d’effacement, de limitation du
+            traitement et d’opposition. Vous pouvez retirer à tout moment un consentement que vous avez donné, sans
+            que cela remette en cause ce qui a été fait auparavant. Vous pouvez enfin définir des directives sur le
+            sort de vos données après votre décès.
+        </p>
+
+        <p>
+            Le <span class="fw-bold">droit à la portabilité</span> s’applique aux données que vous nous avez fournies
+            dans le cadre de votre adhésion et de votre suivi sportif. Il ne couvre pas le cahier des sorties, qui
+            repose sur l’intérêt légitime du club.
+        </p>
+
+        <twig:Alert tone="neutral" :live="false" class="mt-3">
+            <p class="fw-bold mb-2">Votre droit d’opposition</p>
+            <p class="mb-0">
+                Deux traitements reposent sur l’intérêt légitime du club&nbsp;: le cahier des sorties et la sécurité
+                du site. Vous pouvez vous y opposer à tout moment, pour des raisons tenant à votre situation
+                particulière, en écrivant à <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>. Nous
+                cesserons alors le traitement, sauf motif impérieux tenant notamment à la sécurité des pratiquants.
+            </p>
+        </twig:Alert>
+
+        <h3 class="fs-6 mt-3">L’effacement pendant votre licence</h3>
+        <p>
+            Tant que votre licence est en cours, nous ne pouvons pas effacer l’intégralité de votre dossier&nbsp;:
+            nous devons pouvoir justifier de votre aptitude et produire les pièces correspondantes si notre
+            responsabilité était mise en cause. Vos demandes d’effacement sont donc honorées sous réserve de ce que la
+            licence et la chaîne de validité imposent de conserver, et pleinement au-delà.
+        </p>
+
+        <h3 class="fs-6 mt-3">Comment les exercer</h3>
+        <p>
+            Écrivez à <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>, ou par courrier à
+            l’association, 5 avenue de Florence, 37000 Tours.
+        </p>
+
+        <p>
+            Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser
+            une réclamation à la CNIL&nbsp;: 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, ou sur
+            <a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr<span class="visually-hidden"> (nouvelle fenêtre)</span></a>.
+        </p>
+    </section>
+
+    <section id="mineurs" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Mineurs et représentants légaux</h2>
+        <p>
+            L’adhésion d’un mineur est souscrite par son représentant légal, qui exerce ses droits pour son compte.
+            Les coordonnées des représentants légaux sont transmises à la fédération avec le dossier de licence.
+        </p>
+
+        <p>
+            Certaines personnes ne nous ont pas communiqué leurs données elles-mêmes. C’est le cas des
+            <span class="fw-bold">représentants légaux</span>, renseignés par l’adhérent au moment de
+            l’inscription&nbsp;: ils reçoivent copie du courriel de confirmation, qui renvoie vers la présente page.
+            C’est aussi le cas des <span class="fw-bold">équipiers non adhérents</span> dont le nom est inscrit sur
+            une sortie&nbsp;: seul leur nom est enregistré, aux fins de sécurité, et les informer individuellement
+            supposerait des efforts disproportionnés au regard de cette donnée.
+        </p>
+    </section>
+
+    <section id="cahier" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Le cahier des sorties</h2>
+        <p>
+            Le cahier des sorties est consultable au club, sur un poste dédié accessible à l’ensemble des membres au
+            moyen d’un accès commun. Les noms des équipiers d’une sortie y sont visibles&nbsp;: c’est la condition
+            pour savoir qui se trouve sur l’eau, et le sens même d’un cahier de sorties.
+        </p>
+    </section>
+
+    <section id="cookies" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Cookies</h2>
+        {#
+         # "Aucune mesure d'audience" cannot be checked from this repository: it rests on Cloudflare Real User
+         # Measurements (RUM) being disabled, which injects its snippet server-side. Grep a public page for
+         # `cloudflareinsights` to check — and from outside the EU, since the setting can exclude EU visitors
+         # alone and a check from France would then prove nothing.
+         #}
+        <p>
+            Le site dépose uniquement des cookies nécessaires à son fonctionnement et à sa sécurité. Aucun cookie
+            publicitaire, aucune mesure d’audience.
+        </p>
+
+        <twig:Table :hover="false">
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Cookie</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Origine</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Finalité</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
+                </twig:Table:Row>
+            </twig:Table:Head>
+            <twig:Table:Body>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Cookie de session</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Origine">Le site</twig:Table:Cell>
+                    <twig:Table:Cell label="Finalité">Maintenir votre connexion et afficher les messages</twig:Table:Cell>
+                    <twig:Table:Cell label="Durée">Fermeture du navigateur</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Se souvenir de moi</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Origine">Le site</twig:Table:Cell>
+                    <twig:Table:Cell label="Finalité">Vous reconnaître d’une visite à l’autre, si vous le demandez</twig:Table:Cell>
+                    <twig:Table:Cell label="Durée">7 jours</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Jeton anti-falsification</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Origine">Le site</twig:Table:Cell>
+                    <twig:Table:Cell label="Finalité">Empêcher qu’un formulaire soit soumis à votre insu</twig:Table:Cell>
+                    <twig:Table:Cell label="Durée">Le temps du formulaire</twig:Table:Cell>
+                </twig:Table:Row>
+                <twig:Table:Row>
+                    <twig:Table:RowHeader>Cookies Cloudflare</twig:Table:RowHeader>
+                    <twig:Table:Cell label="Origine">Cloudflare</twig:Table:Cell>
+                    <twig:Table:Cell label="Finalité">Sécurité et lutte contre les accès automatisés</twig:Table:Cell>
+                    <twig:Table:Cell label="Durée">Fixée par Cloudflare</twig:Table:Cell>
+                </twig:Table:Row>
+            </twig:Table:Body>
+        </twig:Table>
+
+        <p>
+            Ces cookies sont exemptés de consentement&nbsp;: les premiers parce qu’ils sont strictement nécessaires au
+            service que vous demandez, ceux de Cloudflare au titre de la sécurité et de la lutte contre la fraude.
+            Aucun bandeau de consentement n’est donc affiché.
+        </p>
+
+        <p>
+            Vous pouvez configurer votre navigateur pour les refuser. La consultation du site reste possible, mais
+            vous ne pourrez plus vous connecter à votre compte.
+        </p>
+    </section>
+
+    <section id="securite" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Sécurité</h2>
+        <p>
+            Votre mot de passe est stocké sous forme chiffrée et n’est lisible par personne, y compris par nous. La
+            connexion est protégée par une vérification en deux étapes par courriel. Les documents que vous téléversez
+            sont stockés hors de l’espace public du site.
+        </p>
+
+        <p>
+            Pour vous porter assistance, un administrateur peut être amené à consulter l’application en votre nom.
+            Cette action est réservée aux responsables de l’association.
+        </p>
+    </section>
+{% endblock %}

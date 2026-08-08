@@ -27,15 +27,15 @@ class StaticControllerTest extends AppWebTestCase
     public function testLegalNotice(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/mentions-legales');
+        $client->request('GET', '/legal-notice');
 
         $this->assertResponseIsSuccessful();
     }
 
-    public function testReleaseNotes(): void
+    public function testPrivacyPolicy(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/release-notes');
+        $client->request('GET', '/privacy-policy');
 
         $this->assertResponseIsSuccessful();
     }

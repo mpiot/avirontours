@@ -1,52 +1,49 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion des groupes{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion des groupes</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion des groupes</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Gestion des groupes{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="primary" outline size="sm" href="{{ path('group_new') }}">
+        <twig:ux:icon name="mdi:plus" /> Ajouter un groupe
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion des groupes</h1>
-
-        <a href="{{ path('group_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un groupe
-        </a>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                        <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for group in groups %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('group_show', {'id': group.id}) }}">{{ group.name }}</a>
-                            </td>
-                            <td class="text-end">
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('group_edit', {'id': group.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:RowHeader>
+                                <a href="{{ path('group_show', {'id': group.id}) }}" class="stretched-link">{{ group.name }}</a>
+                            </twig:Table:RowHeader>
+                            <twig:Table:Cell actions>
+                                <twig:Button variant="secondary" outline size="sm" href="{{ path('group_edit', {'id': group.id}) }}">
+                                    <twig:ux:icon name="mdi:pencil" /> Modifier
+                                </twig:Button>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="2" class="text-center">Pas de groupe</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas de groupe" /></twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

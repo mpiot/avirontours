@@ -31,7 +31,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('qrCode', [AppRuntime::class, 'generateQrCode']),
-            new TwigFilter('format_seconds', [AppRuntime::class, 'formatSeconds']),
+            new TwigFilter('format_seconds_as_hours_minutes', [AppRuntime::class, 'formatSecondsAsHoursMinutes']),
         ];
     }
 

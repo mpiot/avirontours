@@ -16,36 +16,23 @@
         </div>
     </div>
 
-    <div class="accordion mb-3" id="accordionQuotation">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingQuotation">
-                <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    Informations cotation
-                </button>
-            </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingQuotation" data-bs-parent="#accordionQuotation">
-                <div class="accordion-body">
-                    <div class="row">
-                        <div class="col">
-                            {{ form_row(form.productionYear) }}
-                            {{ form_row(form.weightCategory) }}
-                            {{ form_row(form.newPrice) }}
-                            {{ form_row(form.mileage) }}
+    <twig:Accordion id="shell-quotation" class="mb-3">
+        <twig:Accordion:Item id="quotation-fields" title="Informations cotation">
+            {{ form_row(form.productionYear) }}
+            {{ form_row(form.weightCategory) }}
+            {{ form_row(form.newPrice) }}
+            {{ form_row(form.mileage) }}
 
-                            <div class="row">
-                                <div class="col">
-                                    {{ form_row(form.riggerMaterial) }}
-                                </div>
-                                <div class="col">
-                                    {{ form_row(form.riggerPosition) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md">
+                    {{ form_row(form.riggerMaterial) }}
+                </div>
+                <div class="col-md">
+                    {{ form_row(form.riggerPosition) }}
                 </div>
             </div>
-        </div>
-    </div>
+        </twig:Accordion:Item>
+    </twig:Accordion>
 
-    <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
+    <twig:Button variant="primary">{{ button_label|default('Enregistrer') }}</twig:Button>
 {{ form_end(form) }}

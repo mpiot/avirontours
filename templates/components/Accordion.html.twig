@@ -1,0 +1,11 @@
+{#
+ # Sections that fold away, of which the parts are `Accordion:Item`.
+ #
+ # `id` is what makes the group exclusive: an item that names it as its `parent` closes its siblings
+ # when it opens. An accordion holding a single item does not need it.
+ #}
+{% props id %}
+
+<div{{ attributes.defaults({ class: 'accordion' }) }} id="{{ id }}">
+    {% block content %}{% endblock %}
+</div>

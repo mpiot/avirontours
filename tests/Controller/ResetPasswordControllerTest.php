@@ -70,5 +70,13 @@ class ResetPasswordControllerTest extends AppWebTestCase
         $client->followRedirect();
 
         $this->assertResponseRedirects('/reset-password');
+
+        $crawler = $client->followRedirect();
+
+        $this->assertResponseIsSuccessful();
+        self::assertStringContainsString(
+            "Le lien de réinitialisation du mot de passe n'est pas valide",
+            $crawler->filter('.alert-danger')->text()
+        );
     }
 }

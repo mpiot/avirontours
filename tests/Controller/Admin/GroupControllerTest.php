@@ -88,7 +88,7 @@ class GroupControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/group/new');
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'group[name]' => 'A new group',
             'group[members]' => [$member2->getId(), $member1->getId()],
         ]);
@@ -112,7 +112,7 @@ class GroupControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/group/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'group[name]' => '',
             'group[members]' => [],
         ]);
@@ -136,7 +136,7 @@ class GroupControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'group[name]' => 'A modified group',
         ]);
 

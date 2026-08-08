@@ -1,72 +1,69 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion du parc{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion du parc</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion du parc</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Gestion du parc{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="primary" outline size="sm" href="{{ path('shell_new') }}">
+        <twig:ux:icon name="mdi:plus" /> Ajouter un bateau
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion du parc</h1>
-
-        <a href="{{ path('shell_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un bâteau
-        </a>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Type</th>
-                        <th>Porteur</th>
-                        <th>Kilométrage</th>
-                        <th>Actif</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Type</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Porteur</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Kilométrage</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Actif</twig:Table:HeadCell>
+                        <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for shell in shells %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('shell_show', {'id': shell.id}) }}">{{ shell.name }}</a>
-                            </td>
-                            <td>{{ shell.abbreviation }}</td>
-                            <td>
+                        <twig:Table:Row>
+                            <twig:Table:RowHeader>
+                                <a href="{{ path('shell_show', {'id': shell.id}) }}" class="stretched-link">{{ shell.name }}</a>
+                            </twig:Table:RowHeader>
+                            <twig:Table:Cell label="Type">{{ shell.abbreviation }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Porteur">
                                 {% if shell.weightCategory is not null %}
                                     {{ shell.textWeightCategory }}
                                 {% else %}
-                                    -
+                                    <twig:NoValue />
                                 {% endif %}
-                            </td>
-                            <td>{{ shell.mileage }} km</td>
-                            <td>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Kilométrage">{{ shell.mileage }} km</twig:Table:Cell>
+                            <twig:Table:Cell label="Actif">
                                 {% if shell.enabled %}
-                                    <span class="badge rounded-pill bg-success">Actif</span>
+                                    <twig:Badge tone="success">Actif</twig:Badge>
                                 {% else %}
-                                    <span class="badge rounded-pill bg-danger">Inactif</span>
+                                    <twig:Badge tone="secondary">Inactif</twig:Badge>
                                 {% endif %}
-                            </td>
-                            <td class="text-end">
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('shell_edit', {'id': shell.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
-                        </tr>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell actions>
+                                <twig:Button variant="secondary" outline size="sm" href="{{ path('shell_edit', {'id': shell.id}) }}">
+                                    <twig:ux:icon name="mdi:pencil" /> Modifier
+                                </twig:Button>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center">Pas de bâteau</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas de bateau" /></twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

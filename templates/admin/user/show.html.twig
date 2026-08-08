@@ -1,205 +1,203 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}{{ user.fullName }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des membres</a></li>
-    <li class="breadcrumb-item active">{{ user.fullName }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_index') }}">Gestion des utilisateurs</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ user.fullName }}</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}{{ user.fullName }}{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('user_delete', {'id': user.id})">
+        <twig:Button variant="secondary" outline href="{{ path('user_edit', {'id': user.id}) }}" aria-label="Modifier">
+            <twig:ux:icon name="mdi:pencil" /> <span class="d-none d-sm-inline">Modifier</span>
+        </twig:Button>
+    </twig:DeleteForm>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>{{ user.fullName }}</h1>
-
-        <div class="ms-auto align-self-center ">
-            {% embed 'admin/user/_delete_form.html.twig' %}
-                {% block buttons %}
-                    <div class="btn-group-sm">
-                        <a class="btn btn-outline-warning" href="{{ path('user_edit', {'id': user.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
-                        </a>
-
-                        {{ parent() }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div>Date d'inscription: {{ user.subscriptionDate|format_date('short') }}</div>
-            <div class="mb-3">Nom d'utilisateur: {{ user.username }}</div>
-
-            <div class="row">
-                <div class="col-xl">
-                    <div class="card">
-                        <div class="card-header">
-                            Membre
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                Genre
-                                <span>{{ user.textGender }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Nom
-                                <span>{{ user.fullName }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Date de naissance
-                                <span>{{ user.birthday|format_date('short') }} ({{ user.age }} ans)</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Numéro de licence
-                                <span>{{ user.licenseNumber ?? '-' }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-xl mt-3 mt-xl-0">
-                    <div class="card">
-                        <div class="card-header">
-                            Contact
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                Email
-                                <span>{{ user.email }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Numéro de téléphone
-                                <span>{{ user.phoneNumber }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Adresse
-                                <span>{{ user.formattedAddress }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-xl">
-                    <div class="card">
-                        <div class="card-header">
-                            Responsable légal 1
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                Rôle
-                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.role.label : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Prénom
-                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.firstName : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Nom
-                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.lastName : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Email
-                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.email : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Numéro de téléphone
-                                <span>{{ user.firstLegalGuardian ? user.firstLegalGuardian.phoneNumber : '-' }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-xl mt-3 mt-xl-0">
-                    <div class="card">
-                        <div class="card-header">
-                            Responsable légal 2
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between">
-                                Rôle
-                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.role.label : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Prénom
-                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.firstName : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Nom
-                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.lastName : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Email
-                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.email : '-' }}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                Numéro de téléphone
-                                <span>{{ user.firstLegalGuardian ? user.secondLegalGuardian.phoneNumber : '-' }}</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-3">
-                <div class="card-header">
-                    Licences
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead>
-                        <tr>
-                            <th>Saison</th>
-                            <th>Type</th>
-                            <th>Niveau</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for license in user.licenses %}
-                            <tr>
-                                <td>{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</td>
-                                <td>{{ license.medicalCertificate.type.label }}</td>
-                                <td>{{ license.medicalCertificate.level.label }}</td>
-                                <td>
-                                    {% for place in workflow_marked_places(license)  %}
-                                        <div>
-                                            <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }}">
-                                                {{ workflow_metadata(license, 'title', place) }}
-                                            </span>
-                                        </div>
-                                    {% endfor %}
-                                </td>
-                            </tr>
+    <div class="row g-3">
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>
+                    Membre
+                </twig:Card:Header>
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Date d'inscription">{{ user.subscriptionDate|format_date('short') }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Nom d'utilisateur">{{ user.username }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Genre">{{ user.textGender }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Nom">{{ user.fullName }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Date de naissance">{{ user.birthday|format_date('short') }} ({{ user.age }} ans)</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Numéro de licence" :muted="user.licenseNumber is null">
+                        {% if user.licenseNumber is not null %}
+                            {{ user.licenseNumber }}
                         {% else %}
-                            <tr>
-                                <td colspan="3">Pas de licence</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
+        </div>
 
-            <div class="card mt-3">
-                <div class="card-header">
-                    Groupes
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for group in user.groups %}
-                        <li class="list-group-item">
-                            <a href="{{ path('group_show', { 'id': group.id }) }}">{{ group.name }}</a>
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">
-                            Pas de groupe
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>
+                    Contact
+                </twig:Card:Header>
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Email">{{ user.email }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Numéro de téléphone">{{ user.phoneNumber }}</twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Adresse">{{ user.formattedAddress }}</twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
         </div>
     </div>
+
+    <div class="row g-3 mt-0">
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>
+                    Responsable légal 1
+                </twig:Card:Header>
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Rôle">
+                        {% if user.firstLegalGuardian %}
+                            {{ user.firstLegalGuardian.role.label }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Prénom">
+                        {% if user.firstLegalGuardian %}
+                            {{ user.firstLegalGuardian.firstName }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Nom">
+                        {% if user.firstLegalGuardian %}
+                            {{ user.firstLegalGuardian.lastName }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Email">
+                        {% if user.firstLegalGuardian %}
+                            {{ user.firstLegalGuardian.email }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Numéro de téléphone">
+                        {% if user.firstLegalGuardian %}
+                            {{ user.firstLegalGuardian.phoneNumber }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
+        </div>
+
+        <div class="col-xl">
+            <twig:Card>
+                <twig:Card:Header>
+                    Responsable légal 2
+                </twig:Card:Header>
+                <twig:ListGroup flush>
+                    <twig:ListGroup:Item label="Rôle">
+                        {% if user.secondLegalGuardian %}
+                            {{ user.secondLegalGuardian.role.label }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Prénom">
+                        {% if user.secondLegalGuardian %}
+                            {{ user.secondLegalGuardian.firstName }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Nom">
+                        {% if user.secondLegalGuardian %}
+                            {{ user.secondLegalGuardian.lastName }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Email">
+                        {% if user.secondLegalGuardian %}
+                            {{ user.secondLegalGuardian.email }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                    <twig:ListGroup:Item label="Numéro de téléphone">
+                        {% if user.secondLegalGuardian %}
+                            {{ user.secondLegalGuardian.phoneNumber }}
+                        {% else %}
+                            <twig:NoValue />
+                        {% endif %}
+                    </twig:ListGroup:Item>
+                </twig:ListGroup>
+            </twig:Card>
+        </div>
+    </div>
+
+    <twig:Card class="mt-3">
+        <twig:Card:Header>
+            Licences
+        </twig:Card:Header>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Saison</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Type</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Niveau</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Statut</twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
+                    {% for license in user.licenses %}
+                        <twig:Table:Row>
+                            <twig:Table:Cell label="Saison">{{ license.seasonCategory.season.name }} - {{ license.seasonCategory.name }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Type">{{ license.medicalCertificate.type.label }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Niveau">{{ license.medicalCertificate.level.label }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Statut">
+                                <ul class="app-license-states">
+                                    {% for place in workflow_marked_places(license) %}
+                                        <li class="app-license-state" data-tone="{{ workflow_metadata(license, 'badge', place) }}">
+                                            {{- workflow_metadata(license, 'title', place) -}}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
+                    {% else %}
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas de licence" /></twig:Table:Cell>
+                        </twig:Table:Row>
+                    {% endfor %}
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
+    </twig:Card>
+
+    <twig:Card class="mt-3">
+        <twig:Card:Header>
+            Groupes
+        </twig:Card:Header>
+        <twig:ListGroup flush>
+            {% for group in user.groups %}
+                <twig:ListGroup:Item><a href="{{ path('group_show', { 'id': group.id }) }}">{{ group.name }}</a></twig:ListGroup:Item>
+            {% else %}
+                <twig:ListGroup:Item>Pas de groupe</twig:ListGroup:Item>
+            {% endfor %}
+        </twig:ListGroup>
+    </twig:Card>
 {% endblock %}

@@ -1,0 +1,73 @@
+{#
+ # A message about the page as a whole.
+ #
+ # `tone` names what the message is. `neutral` is the callout that warns of nothing — the "before
+ # you start" block at the head of registration.
+ #
+ # `icon` is a boolean, not a name: which icon to show follows from the tone, and each one is
+ # written out in full below because `ux:icons:lock` collects names by scanning for literals. A name
+ # assembled from a variable never reaches `assets/icons`, and `ignore_not_found: true` makes it
+ # disappear in production without a word. The four are `Toast`'s, tone for tone: the two components
+ # say the same things and a member should not have to learn the vocabulary twice. It is also what
+ # keeps a warning and an error apart by shape and not by hue alone — they shared one glyph here.
+ #
+ # `live` is what makes this an assertive live region. On by default, because the common case is a
+ # message that appeared in response to something the member just did — a rejected login, a failed
+ # reset. Turn it off for a block that is simply part of the page: announcing it on load talks over
+ # everything else.
+ #
+ # The tags are split across the conditions rather than the body being captured, because a
+ # component may only define its `content` block once.
+ #}
+{% props tone = null, icon = false, dismissible = false, live = true %}
+
+{%- set alert = html_cva(
+    base: 'alert',
+    variants: {
+        tone: {
+            primary: 'alert-primary',
+            secondary: 'alert-secondary',
+            success: 'alert-success',
+            info: 'alert-info',
+            warning: 'alert-warning',
+            danger: 'alert-danger',
+            neutral: 'alert-light border',
+        },
+        icon: { true: 'd-flex align-items-center gap-3' },
+        dismissible: { true: 'alert-dismissible' },
+    },
+    default_variant: {
+        tone: 'info',
+    },
+) -%}
+
+{%- set classes = alert.apply({ tone: tone, icon: icon, dismissible: dismissible }|filter(v => v is not null)) -%}
+
+<div
+    {{- attributes.defaults({ class: classes }) }}
+    {%- if live %} role="alert"{% endif -%}
+>
+    {%- if icon -%}
+        {% if 'danger' === tone %}
+            <twig:ux:icon name="mdi:close-circle" width="1.25em" height="1.25em" class="flex-shrink-0" />
+        {% elseif 'warning' === tone %}
+            <twig:ux:icon name="mdi:alert-circle" width="1.25em" height="1.25em" class="flex-shrink-0" />
+        {% elseif 'success' === tone %}
+            <twig:ux:icon name="mdi:check-circle" width="1.25em" height="1.25em" class="flex-shrink-0" />
+        {% else %}
+            <twig:ux:icon name="mdi:information" width="1.25em" height="1.25em" class="flex-shrink-0" />
+        {% endif %}
+
+        <div>
+    {%- endif -%}
+
+    {%- block content %}{% endblock -%}
+
+    {%- if icon %}
+        </div>
+    {% endif -%}
+
+    {%- if dismissible %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    {% endif -%}
+</div>

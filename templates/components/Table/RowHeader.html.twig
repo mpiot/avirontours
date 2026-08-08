@@ -1,0 +1,10 @@
+{#
+ # The cell that names its row, for a table whose rows are not interchangeable records but named
+ # things — an exercise, a category. It is what tells a screen reader which row a figure belongs to
+ # when the column header alone ("90%") says nothing.
+ #
+ # It takes no `label`: below md it becomes the title of the card the row turns into.
+ #}
+<th scope="row"{{ attributes }}>
+    {% block content %}{% endblock %}
+</th>

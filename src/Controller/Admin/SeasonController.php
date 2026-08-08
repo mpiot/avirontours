@@ -118,32 +118,6 @@ class SeasonController extends AbstractController
         return $this->redirectToRoute('season_index');
     }
 
-    #[Route(path: '/{id}/export/contact', name: 'season_export_contact', methods: ['GET'])]
-    #[IsGranted('ROLE_SEASON_ADMIN')]
-    public function exportContact(Season $season, SeasonCsvGenerator $csvGenerator): Response
-    {
-        $csv = $csvGenerator->exportContacts($season);
-        if (null === $csv) {
-            $this->addFlash('notice', 'Aucun contacts à exporter.');
-
-            return $this->redirectToRoute('season_show', ['id' => $season->getId()]);
-        }
-
-        $response = new StreamedResponse(static function () use ($csv): void {
-            $outputStream = fopen('php://output', 'w');
-            fwrite($outputStream, $csv);
-        });
-        $response->headers->set('Content-Type', 'text/csv');
-
-        $disposition = HeaderUtils::makeDisposition(
-            HeaderUtils::DISPOSITION_ATTACHMENT,
-            \sprintf('season_contact_%s.csv', $season->getName())
-        );
-        $response->headers->set('Content-Disposition', $disposition);
-
-        return $response;
-    }
-
     #[Route(path: '/{id}/export/payment', name: 'season_export_payments', methods: ['GET'])]
     #[IsGranted('ROLE_SEASON_PAYMENTS_ADMIN')]
     public function exportPayments(Season $season, SeasonCsvGenerator $csvGenerator): Response

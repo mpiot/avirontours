@@ -1,0 +1,12 @@
+/**
+ * ↔ templates/components/Button.html.twig
+ *
+ * `button-variant` shades a dark background on hover; on the club navy that is imperceptible, so
+ * tint it instead through the Bootstrap 5.3 CSS variable API.
+ */
+.btn-primary {
+    --#{$prefix}btn-hover-bg: #{tint-color($primary, 12%)};
+    --#{$prefix}btn-hover-border-color: #{tint-color($primary, 12%)};
+    --#{$prefix}btn-active-bg: #{tint-color($primary, 20%)};
+    --#{$prefix}btn-active-border-color: #{tint-color($primary, 20%)};
+}

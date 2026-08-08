@@ -1,0 +1,16 @@
+{#
+ # A value that is not there.
+ #
+ # The dash is for the eye alone; `label` is what says *why* it is missing, which a dash cannot. It is
+ # a prop rather than a fixed word because the reason differs — a figure nobody entered, a figure
+ # nothing could be computed from.
+ #
+ # Written as an entity in template text, never as a string through `{{ }}`: the latter is escaped
+ # and prints `&mdash;` in full.
+ #
+ # Attributes land on the dash, the only part anyone can see.
+ #}
+{% props label = 'Non renseigné' %}
+
+<span aria-hidden="true"{{ attributes }}>&mdash;</span>
+<span class="visually-hidden">{{ label }}</span>

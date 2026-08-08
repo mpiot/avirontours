@@ -1,0 +1,92 @@
+{% block sport_choice_widget %}
+    {% set sports = {} %}
+    {% for choice in form.vars.choices %}
+        {% set sports = sports|merge({ (choice.value): choice.data }) %}
+    {% endfor %}
+
+    <div class="app-sport-picker" {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {% set sport = sports[child.vars.value] %}
+
+            {% with child.vars %}
+                <input type="radio" {{ block('widget_attributes') }} value="{{ value }}"{% if checked %} checked="checked"{% endif %}>
+            {% endwith %}
+
+            <label class="app-sport-option" for="{{ child.vars.id }}" style="--sport-color: {{ sport.color }}">
+                <span class="app-sport-chip-icon" aria-hidden="true">
+                    {{- include('_sport_icon.html.twig', { sport: sport.value }, with_context = false) -}}
+                </span>
+                {{ sport.label }}
+            </label>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block feeling_choice_widget %}
+    {% set feelings = form|filter(child => child.vars.value is not empty) %}
+
+    <div class="app-scale app-feeling-scale" {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {% with child.vars %}
+                <input type="radio" {{ block('widget_attributes') }} value="{{ value }}"{% if checked %} checked="checked"{% endif %}>
+            {% endwith %}
+
+            <label class="app-feeling-option" for="{{ child.vars.id }}" title="{{ child.vars.label }}">
+                <span class="app-feeling-option-icon" aria-hidden="true">
+                    {%- if child.vars.value is empty -%}
+                        &mdash;
+                    {%- else -%}
+                        {{- include('_feeling_icon.html.twig', { feeling: child.vars.value }, with_context = false) -}}
+                    {%- endif -%}
+                </span>
+                <span class="visually-hidden">{{ child.vars.label }}</span>
+            </label>
+        {% endfor %}
+
+        <p class="app-scale-legend" aria-hidden="true">
+            <span class="app-scale-anchors">
+                <span>{{ (feelings|first).vars.label }}</span>
+                <span>{{ (feelings|last).vars.label }}</span>
+            </span>
+
+            {% for child in feelings %}
+                <span class="app-scale-word" data-value="{{ child.vars.value }}">{{ child.vars.label }}</span>
+            {% endfor %}
+        </p>
+    </div>
+{% endblock %}
+
+{% block exertion_choice_widget %}
+    {% set levels = form|filter(child => child.vars.value is not empty) %}
+
+    <div class="app-scale app-exertion-scale" {{ block('widget_container_attributes') }}>
+        {% for child in form %}
+            {% with child.vars %}
+                <input type="radio" {{ block('widget_attributes') }} value="{{ value }}"{% if checked %} checked="checked"{% endif %}>
+            {% endwith %}
+
+            <label
+                class="app-exertion-step"
+                for="{{ child.vars.id }}"
+                data-level="{{ child.vars.value }}"
+                title="{{ child.vars.label }}"
+            >
+                <span aria-hidden="true">{{ child.vars.value is empty ? '—' : child.vars.value }}</span>
+                <span class="visually-hidden">{{ child.vars.label }}</span>
+            </label>
+        {% endfor %}
+
+        <p class="app-scale-legend" aria-hidden="true">
+            <span class="app-scale-anchors">
+                <span>{{ (levels|first).vars.label }}</span>
+                <span>{{ (levels|last).vars.label }}</span>
+            </span>
+
+            {% for child in levels %}
+                <span class="app-scale-word" data-value="{{ child.vars.value }}">
+                    {{- child.vars.value }} &middot; {{ child.vars.label -}}
+                </span>
+            {% endfor %}
+        </p>
+    </div>
+{% endblock %}

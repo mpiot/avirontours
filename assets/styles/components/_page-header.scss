@@ -1,0 +1,25 @@
+// ↔ templates/components/PageHeader.html.twig
+.app-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacer * .75;
+    margin-bottom: $spacer * 1.5;
+}
+
+.app-page-title {
+    margin-bottom: 0;
+    font-size: $h4-font-size;
+}
+
+// The actions sit at the header's right edge, so the header has to end where the page's content ends.
+// A body that is a reading column — `.app-measure`, from FormCard and both training pages — left
+// « Modifier / Supprimer » 368 px past the card it acts on at 1440, and 624 px at 1920.
+//
+// `:has()` rather than a class the page passes in: a page that narrows its body cannot then forget to
+// narrow its header. `layouts/focus.html.twig` already gets this for free by wrapping both in
+// `.app-focus-body`, which is why the selector only has to reach the columns that don't.
+.app-content:has(> .app-measure) .app-page-header {
+    max-width: $app-measure;
+}

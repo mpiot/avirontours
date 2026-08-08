@@ -1,0 +1,29 @@
+{#
+ # A data table, with its horizontal-overflow wrapper.
+ #
+ # Below md `.app-table` turns each row into a card and each cell shows its own label — see
+ # `Table:Cell`, which is where that contract lives.
+ #
+ # `stack` turns that off. It is for the one table whose columns are a scale and not a set of
+ # fields — the 1RM matrix, nine percentages of the same load — where a card per exercise puts the
+ # nine on nine separate lines and takes away the comparison that is the whole point of reading it.
+ # Such a table scrolls sideways instead, its row header pinned so the exercise stays in view and the
+ # wrapper carrying the edge shadows that say so — see `.app-table-scroller`.
+ #
+ # `hover` is on the table rather than on the body because that is where Bootstrap reads it from.
+ #}
+{% props hover = true, stack = true %}
+
+{%- set table = html_cva(
+    base: 'table app-table',
+    variants: {
+        hover: { true: 'table-hover' },
+        stack: { false: 'app-table-scroll' },
+    },
+) -%}
+
+<div class="{{ html_classes('table-responsive', { 'app-table-scroller': not stack }) }}">
+    <table{{ attributes.defaults({ class: table.apply({ hover: hover, stack: stack }) }) }}>
+        {% block content %}{% endblock %}
+    </table>
+</div>

@@ -2,85 +2,91 @@
 
 {% block title %}Mon profil{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mon profil</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Mon profil</twig:Breadcrumb:Item>
 {% endblock %}
 
+{% block page_title %}Mon profil{% endblock %}
+
 {% block main %}
-    <h2>Mon profil</h2>
+    <twig:ListGroup flush class="mb-4">
+        <twig:ListGroup:Item label="Nom">{{ app.user.lastName }}</twig:ListGroup:Item>
+        <twig:ListGroup:Item label="Prénom">{{ app.user.firstName }}</twig:ListGroup:Item>
+        <twig:ListGroup:Item label="Email" :muted="app.user.email is null">
+            {% if app.user.email is not null %}
+                {{ app.user.email }}
+            {% else %}
+                <twig:NoValue />
+            {% endif %}
+        </twig:ListGroup:Item>
+        <twig:ListGroup:Item label="Téléphone" :muted="app.user.phoneNumber is null">
+            {% if app.user.phoneNumber is not null %}
+                {{ app.user.phoneNumber }}
+            {% else %}
+                <twig:NoValue />
+            {% endif %}
+        </twig:ListGroup:Item>
+    </twig:ListGroup>
 
-    <ul class="list-group mb-3">
-        <li class="list-group-item">
-            Nom: {{ app.user.lastName }}
-        </li>
-        <li class="list-group-item">
-            Prénom: {{ app.user.firstName }}
-        </li>
-        <li class="list-group-item">
-            Email: {{ app.user.email ?? '-' }}
-        </li>
-        <li class="list-group-item">
-            Téléphone: {{ app.user.phoneNumber ?? '-' }}
-        </li>
-    </ul>
+    <h2 class="fs-5">Mes licences</h2>
 
-    <h2>Mes licences</h2>
     {% if 1 == renew_season.count %}
         {% for season in renew_season %}
-            <h3>Inscriptions pour la saison {{ season.name }}</h3>
+            <h3 class="fs-6 text-body-secondary">Inscriptions pour la saison {{ season.name }}</h3>
 
-            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 mb-3 text-center">
+            <twig:CardGrid class="mb-4">
                 {% for season_category in season.seasonCategories %}
-                    <div class="col">
-                        <div class="card mb-4 rounded-3 shadow-sm">
-                            <div class="card-header py-3">
-                                <h4 class="my-0 fw-normal">{{ season_category.name }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <h1 class="card-title pricing-card-title">{{ season_category.price }} €<small class="text-muted fw-light">/an</small></h1>
-                                {% if season_category.description is not null %}
-                                    <p class="card-text text-start">{{ season_category.description|markdown_to_html }}</p>
-                                {% endif %}
-                                <a class="w-100 btn btn-lg btn-outline-primary" href="{{ path('renew', { 'slug': season_category.slug }) }}">
-                                    S'inscrire
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <twig:Card>
+                        <twig:Card:Body class="d-flex flex-column">
+                            <h4 class="fs-6 mb-1">{{ season_category.name }}</h4>
+
+                            <p class="fs-3 mb-2">
+                                {{ season_category.price|format_currency('EUR') }}<small class="fs-6 text-body-secondary"> / an</small>
+                            </p>
+
+                            {% if season_category.description is not null %}
+                                <div class="small text-body-secondary">{{ season_category.description|markdown_to_html }}</div>
+                            {% endif %}
+
+                            <twig:Button variant="primary" href="{{ path('renew', { 'slug': season_category.slug }) }}" class="mt-auto">
+                                S'inscrire
+                            </twig:Button>
+                        </twig:Card:Body>
+                    </twig:Card>
                 {% endfor %}
-            </div>
+            </twig:CardGrid>
         {% endfor %}
-        <hr>
     {% endif %}
 
     {% for license in user.licenses %}
-        <div class="card mb-3">
-            <div class="card-header d-flex">
-                <div class="align-self-center">
-                    Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})
-                </div>
+        <twig:Card class="mb-3">
+            <twig:Card:Header>
+                <div>Saison {{ license.seasonCategory.season.name }} ({{ license.seasonCategory.name }})</div>
 
-                <div class="ms-auto align-self-center d-flex flex-column">
-                    {% for place in workflow_marked_places(license)  -%}
-                        <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }} {{- not loop.last ? ' mb-1' }}">
+                <ul class="app-license-states">
+                    {% for place in workflow_marked_places(license) %}
+                        <li class="app-license-state" data-tone="{{ workflow_metadata(license, 'badge', place) }}">
                             {{- workflow_metadata(license, 'title', place) -}}
-                        </span>
-                    {%- endfor %}
-                </div>
-            </div>
-            <div class="card-body d-flex">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </twig:Card:Header>
+
+            <twig:Card:Body class="d-flex flex-wrap gap-2">
                 <div class="flex-grow-1">
                     {{ (license.medicalCertificate.type.label ~ ' ' ~ license.medicalCertificate.level.label)|capitalize }} du {{ license.medicalCertificate.date|format_date('short') }}<br>
-                    Option I.A. Sport: {{ license.optionalInsurance ? 'Oui' : 'Non' }}
+                    Option I.A. Sport&nbsp;: {{ license.optionalInsurance ? 'Oui' : 'Non' }}
                 </div>
 
-                <div>
-                    {% if not license.payments.empty %}
-                        <a href="{{ path('payment_attestation_download', { id: license.id }) }}">Attestation de paiement</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+                {% if not license.payments.empty %}
+                    <div>
+                        <a href="{{ path('payment_attestation_download', { id: license.id }) }}" download>Attestation de paiement</a>
+                    </div>
+                {% endif %}
+            </twig:Card:Body>
+        </twig:Card>
+    {% else %}
+        <twig:EmptyState text="Pas de licence" />
     {% endfor %}
 {% endblock %}

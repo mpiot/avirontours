@@ -1,0 +1,9 @@
+{# A direction. Without an `href` there is nothing that way, and the item renders disabled. #}
+{% props href = null %}
+
+<twig:Pagination:Item :disabled="href is null">
+    <twig:Pagination:Link :href="href">
+        <twig:ux:icon name="mdi:chevron-left" />
+        <span class="visually-hidden">Page précédente</span>
+    </twig:Pagination:Link>
+</twig:Pagination:Item>

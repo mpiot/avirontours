@@ -2,14 +2,14 @@
 
 {% block title %}Mes 1RM{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mon profil sportif</li>
-    <li class="breadcrumb-item active">1RM</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item :current="false">Mon profil sportif</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>1RM</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block main %}
-    <h2>Mes 1RM</h2>
+{% block page_title %}Mes 1RM{% endblock %}
 
+{% block main %}
     {{ include('sport_profile/_workout_maximum_load_form.html.twig') }}
 {% endblock %}

@@ -45,10 +45,16 @@ class PaymentAttestationController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        // Without a payment there is nothing to attest: the document would state a nil amount and,
+        // `payedAt` being null, today's date as the day it was settled.
+        if ($license->getPayments()->isEmpty()) {
+            throw $this->createNotFoundException();
+        }
+
         $filesystem = new Filesystem();
         $pdfFilename = $filesystem->tempnam(sys_get_temp_dir(), 'payment_attestation_', '.pdf');
         $pdfGenerator->twigToPdf(
-            'payment_attestation/_pdf.html.twig',
+            'payment_attestation/pdf.html.twig',
             ['license' => $license],
             $pdfFilename
         );
@@ -69,6 +75,11 @@ class PaymentAttestationController extends AbstractController
         $license = null;
         if (Uuid::isValid($uuid)) {
             $license = $licenseRepository->findOneBy(['uuid' => $uuid]);
+        }
+
+        // Same reason as `download()`: an unpaid licence has no attestation, so it has none to verify.
+        if (null !== $license && $license->getPayments()->isEmpty()) {
+            $license = null;
         }
 
         return $this->render('payment_attestation/check.html.twig', [

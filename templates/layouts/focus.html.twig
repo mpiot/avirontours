@@ -1,0 +1,30 @@
+{% extends 'layouts/document.html.twig' %}
+
+{% block layout %}
+    <div class="app-plain">
+        <header class="app-plain-header">
+            <a href="{{ path('homepage') }}">
+                <img src="{{ asset('build/images/logo_colored.svg') }}" width="98" height="44" alt="Aviron Tours Métropole">
+            </a>
+        </header>
+
+        <main class="app-content">
+            <div class="app-focus-body">
+                <twig:Flashes />
+
+                <twig:PageHeader>
+                    {{ block(outerBlocks.page_title) }}
+                    <twig:block name="actions">{{ block(outerBlocks.page_actions) }}</twig:block>
+                </twig:PageHeader>
+
+                {% block body %}{% endblock %}
+
+                <p class="border-top pt-3 mt-4 mb-0 text-center small">
+                    <a class="link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
+                    &middot;
+                    <a class="link-secondary" href="{{ path('privacy_policy') }}">Confidentialité</a>
+                </p>
+            </div>
+        </main>
+    </div>
+{% endblock %}

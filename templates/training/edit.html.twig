@@ -1,26 +1,29 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Modifier une séance{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Mes entraînements</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('training_show', {'id': training.id}) }}">{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}</a></li>
-    <li class="breadcrumb-item active">Modifier</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('training_index', {'endAt': training.trainedAt|date_modify('monday this week')|date('Y-m-d')}) }}#training-{{ training.id }}">Mes entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('training_show', {'id': training.id}) }}">{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Modifier un entraînement{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('training_delete', {'id': training.id})" />
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Modifier un entraînement</h1>
+    <twig:FormCard>
+        {% if not training.trainingPhases.empty %}
+            <twig:Alert tone="info" icon :live="false" class="mb-3">
+                Séance importée&nbsp;: le sport, la date, la durée et la distance viennent de
+                l'ergomètre et ne sont pas modifiables.
+            </twig:Alert>
+        {% endif %}
 
-        <div class="ms-auto align-self-center">
-            {{ include('training/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('training/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
+        {{ include('training/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

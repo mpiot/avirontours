@@ -72,7 +72,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
             'shell_damage_category[name]' => 'A new shell damage',
         ]);
@@ -94,7 +94,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'shell_damage_category[name]' => '',
         ]);
 
@@ -116,7 +116,7 @@ class ShellDamageCategoryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'shell_damage_category[priority]' => ShellDamageCategory::PRIORITY_MEDIUM,
             'shell_damage_category[name]' => 'A modified shell damage category',
         ]);

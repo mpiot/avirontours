@@ -19,6 +19,10 @@ export default class extends Controller {
     connect () {
         this.#toast = new Toast(this.element, this.optionsValue);
 
+        // Nothing replaces the stack anymore — streams only append to it — so a hidden toast
+        // removes its own node.
+        this.element.addEventListener('hidden.bs.toast', () => this.element.remove(), { once: true });
+
         if (false === this.hasInitShowValue || true === this.initShowValue) {
             this.show();
         }
@@ -29,6 +33,6 @@ export default class extends Controller {
     }
 
     dismiss () {
-        this.#toast.dispose();
+        this.#toast.hide();
     }
 }

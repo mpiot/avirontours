@@ -134,7 +134,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'license[user]' => $user->getId(),
             'license[seasonCategory]' => $season->getSeasonCategories()->first()->getId(),
             'license[logbookEntryLimit]' => 4,
@@ -169,7 +169,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'license[medicalCertificate][date]' => '',
         ]);
 
@@ -196,7 +196,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'license[user]' => $license->getUser()->getId(),
             'license[seasonCategory]' => $license->getSeasonCategory()->getId(),
             'license[medicalCertificate][type]' => CertificateType::Certificate->value,
@@ -225,7 +225,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Modifier')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
             'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
             'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
@@ -280,7 +280,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Modifier')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
             'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
             'license_edit[medicalCertificate][date]' => date('Y-m-d'),
@@ -307,7 +307,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
             'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
             'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
@@ -335,7 +335,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Modifier')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
         ]);
         $values = $form->getPhpValues();
@@ -380,7 +380,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'license_edit[seasonCategory]' => $seasonCategory->getId(),
             'license_edit[medicalCertificate][type]' => CertificateType::Certificate->value,
             'license_edit[medicalCertificate][level]' => CertificateLevel::Practice->value,
@@ -568,7 +568,7 @@ class LicenseControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Passer le certificat en attente de validation');
+        $client->submitForm('Remettre en attente');
 
         $this->assertResponseRedirects('http://localhost/admin/season/'.$license->getSeasonCategory()->getSeason()->getId());
         $this->assertSame([

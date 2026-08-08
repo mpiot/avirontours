@@ -1,68 +1,72 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion des profils sportifs{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion des profils sportifs</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion des profils sportifs</twig:Breadcrumb:Item>
 {% endblock %}
 
+{% block page_title %}Gestion des profils sportifs{% endblock %}
+
 {% block body %}
-    <h1>Gestion des profils sportifs</h1>
+    {% set isSearching = app.request.query.get('q') is not empty %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <form method="get">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
-                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-            </form>
+    <twig:Card elevated>
+        <twig:Card:Header>
+            <twig:SearchForm
+                id="sports-profile-search"
+                label="Rechercher un membre"
+            />
+        </twig:Card:Header>
 
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for user in users %}
-                        <tr>
-                            <td>
-                                {{ user.fullName }}
-                            </td>
-                            <td>
-                                <a class="btn btn-sm btn-outline-danger" href="{{ path('sports_profile_physiology', { 'id': user.id }) }}">
-                                    <span class="fas fa-heartbeat"></span> Physiologie
-                                </a>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                    <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
+                {% for user in users %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell label="Nom">
+                            {{ user.fullName }}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell actions>
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('sports_profile_physiology', { 'id': user.id }) }}">
+                                <twig:ux:icon name="mdi:heart-pulse" /> Physiologie
+                            </twig:Button>
 
-                                <a class="btn btn-sm btn-outline-info" href="{{ path('sports_profile_anatomy', { 'id': user.id }) }}">
-                                    <span class="fas fa-child"></span> Anatomie
-                                </a>
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('sports_profile_anatomy', { 'id': user.id }) }}">
+                                <twig:ux:icon name="mdi:human" /> Anatomie
+                            </twig:Button>
 
-                                <a class="btn btn-sm btn-outline-success" href="{{ path('sports_profile_physical_qualities', { 'id': user.id }) }}">
-                                    <span class="fas fa-balance-scale"></span> Qualités physiques
-                                </a>
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('sports_profile_physical_qualities', { 'id': user.id }) }}">
+                                <twig:ux:icon name="mdi:scale-balance" /> Qualités physiques
+                            </twig:Button>
 
-                                <a class="btn btn-sm btn-outline-secondary" href="{{ path('sports_profile_workout_maximum_load', { 'id': user.id }) }}">
-                                    <span class="fas fa-dumbbell"></span> 1RM
-                                </a>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="2" class="text-center">Pas d'utilisateur</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('sports_profile_workout_maximum_load', { 'id': user.id }) }}">
+                                <twig:ux:icon name="mdi:dumbbell" /> 1RM
+                            </twig:Button>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell span>
+                            <twig:EmptyState :text="isSearching ? 'Aucun utilisateur ne correspond à cette recherche' : 'Pas d\'utilisateur'" />
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-                {% if users|length < users.totalItemCount %}
-                    {{ knp_pagination_render(users) }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% if users|length < users.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="users" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

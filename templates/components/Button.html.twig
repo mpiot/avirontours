@@ -1,0 +1,75 @@
+{#
+ # An action, as a link or as a form control.
+ #
+ # `href` decides the element: a destination renders an anchor, its absence a button. Nothing else
+ # changes between the two, which is the point — the call site says what the action is, not which
+ # tag carries it.
+ #
+ # `variant` names the meaning, `outline` its weight, `size` its scale. None of them name a class:
+ # what this renders is an implementation detail, and the API has to survive it changing. The two
+ # weights are compound variants because outlining is not a class of its own — it renames the
+ # variant's.
+ #
+ # `plain` is the button with no button about it: it reads as the text around it and only behaves
+ # like a control. That is the account menu's toggle, whose target is the avatar and the name.
+ #
+ # `variant` and `outline` keep their defaults on the props rather than in `default_variant`:
+ # `default_variant` feeds the plain variant lookup only, never the compound one, so a recipe
+ # missing either of them would match no compound and the button would come out unpainted.
+ #
+ # No icon prop: an icon name has to stay a literal in the markup or `ux:icons:lock` cannot collect
+ # it, so icons go in the body alongside the label.
+ #
+ # `disabled` is a prop and not a class passed in, because the two tags need different things and
+ # only one of them is honoured by the browser. A `<button>` takes the attribute. An anchor cannot:
+ # Bootstrap's `.disabled` only sets `pointer-events: none`, which stops the mouse and nothing else —
+ # the link stays in the tab ring and Enter still follows it. So it also takes `aria-disabled`, to say
+ # so, and `tabindex="-1"`, to mean it.
+ #
+ # The tags are split across the conditions rather than the body being captured, because a
+ # component may only define its `content` block once.
+ #}
+{% props variant = 'primary', outline = false, size = null, href = null, type = 'submit', disabled = false %}
+
+{%- set button = html_cva(
+    base: 'btn',
+    variants: {
+        size: { sm: 'btn-sm', lg: 'btn-lg' },
+        disabled: { true: 'disabled' },
+    },
+    compound_variants: [
+        { outline: [false], variant: ['primary'], class: 'btn-primary' },
+        { outline: [false], variant: ['secondary'], class: 'btn-secondary' },
+        { outline: [false], variant: ['success'], class: 'btn-success' },
+        { outline: [false], variant: ['info'], class: 'btn-info' },
+        { outline: [false], variant: ['warning'], class: 'btn-warning' },
+        { outline: [false], variant: ['danger'], class: 'btn-danger' },
+        { outline: [false], variant: ['link'], class: 'btn-link' },
+        { outline: [false], variant: ['plain'], class: 'btn-link link-body-emphasis text-decoration-none' },
+        { outline: [true], variant: ['primary'], class: 'btn-outline-primary' },
+        { outline: [true], variant: ['secondary'], class: 'btn-outline-secondary' },
+        { outline: [true], variant: ['success'], class: 'btn-outline-success' },
+        { outline: [true], variant: ['info'], class: 'btn-outline-info' },
+        { outline: [true], variant: ['warning'], class: 'btn-outline-warning' },
+        { outline: [true], variant: ['danger'], class: 'btn-outline-danger' },
+    ],
+    default_variant: {
+        size: 'md',
+    },
+) -%}
+
+{%- set classes = button.apply({ variant: variant, outline: outline, size: size, disabled: disabled }|filter(v => v is not null)) -%}
+
+{%- if href is not null -%}
+    <a href="{{ href }}"{{ attributes.defaults({ class: classes }) }}{% if disabled %} aria-disabled="true" tabindex="-1"{% endif %}>
+{%- else -%}
+    <button type="{{ type }}"{{ attributes.defaults({ class: classes }) }}{% if disabled %} disabled{% endif %}>
+{%- endif -%}
+
+    {%- block content %}{% endblock -%}
+
+{%- if href is not null %}
+    </a>
+{% else %}
+    </button>
+{% endif -%}

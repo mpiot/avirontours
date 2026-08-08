@@ -1,0 +1,50 @@
+{% extends 'layouts/document.html.twig' %}
+
+{% block layout %}
+    <twig:Button variant="primary" href="#main" class="app-skip-link">Aller au contenu</twig:Button>
+
+    <div class="app-shell">
+        {# Sidebar is empty for a not logged in user. #}
+        {% if app.user is not null %}
+            <twig:Sidebar />
+        {% endif %}
+
+        <div class="app-main">
+            <header class="app-topbar">
+                {% if app.user is not null %}
+                    <twig:Button variant="link" type="button" data-bs-toggle="offcanvas" data-bs-target="#app-sidebar" aria-controls="app-sidebar" aria-label="Ouvrir la navigation" class="app-topbar-toggle d-lg-none">
+                        <twig:ux:icon name="mdi:menu" width="1.25em" height="1.25em" />
+                    </twig:Button>
+                {% endif %}
+
+                <a class="{{ app.user is not null ? 'd-lg-none' }}" href="{{ path('homepage') }}">
+                    <img src="{{ asset('build/images/logo_colored.svg') }}" width="80" height="36" alt="Aviron Tours Métropole">
+                </a>
+
+                <div class="ms-auto">
+                    <twig:UserMenu />
+                </div>
+            </header>
+
+            {# `tabindex="-1"` is what the skip link above needs: Safari moves the scroll to a fragment
+             # but not the focus, unless the target can take it. #}
+            <main id="main" class="app-content" tabindex="-1">
+                <twig:Flashes />
+
+                <twig:Breadcrumb class="app-breadcrumb">
+                    {{ block(outerBlocks.breadcrumb_items) }}
+                </twig:Breadcrumb>
+
+                <twig:PageHeader>
+                    {{ block(outerBlocks.page_title) }}
+
+                    <twig:block name="actions">
+                        {{ block(outerBlocks.page_actions) }}
+                    </twig:block>
+                </twig:PageHeader>
+
+                {% block body %}{% endblock %}
+            </main>
+        </div>
+    </div>
+{% endblock %}

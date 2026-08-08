@@ -1,0 +1,19 @@
+{#
+ # An entry in the admin directory: an icon, what the section is, and what it is for.
+ #
+ # `icon` is a semantic key resolved by `_app_nav_icon.html.twig`, which is where every icon name in the
+ # app is written out in full. The tile itself never sees an `mdi:` name, so nothing here can hide
+ # one from `ux:icons:lock`.
+ #}
+{% props href, label, description, icon %}
+
+<a href="{{ href }}"{{ attributes.defaults({ class: 'app-tile' }) }}>
+    <span class="app-tile-icon" aria-hidden="true">
+        {{ include('_app_nav_icon.html.twig', { icon: icon }, with_context = false) }}
+    </span>
+
+    <span>
+        <span class="app-tile-label d-block">{{ label }}</span>
+        <span class="text-body-secondary small">{{ description }}</span>
+    </span>
+</a>

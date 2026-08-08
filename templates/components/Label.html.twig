@@ -1,0 +1,4 @@
+{# The name of a control. `for` is not optional: a label that points at nothing labels nothing. #}
+{% props for %}
+
+<label class="form-label" for="{{ for }}"{{ attributes }}>{% block content %}{% endblock %}</label>

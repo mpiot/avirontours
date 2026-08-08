@@ -1,0 +1,24 @@
+{#
+ # One entry. Always a link: nothing in this app opens a menu to run something in place.
+ #
+ # `tone` paints the one entry that is not like the others — leaving an impersonation, which undoes
+ # a state the admin is currently in.
+ #
+ # No `disabled`: the one entry that had it pointed at a route guarded by the very thing that was
+ # missing, so it could only ever answer 403. It leads to where the thing is set up instead — an
+ # entry a menu offers is an entry that goes somewhere.
+ #}
+{% props href, tone = null %}
+
+{%- set dropdownItem = html_cva(
+    base: 'dropdown-item',
+    variants: {
+        tone: { danger: 'text-danger' },
+    },
+) -%}
+
+{%- set classes = dropdownItem.apply({ tone: tone }|filter(v => v is not null)) -%}
+
+<li>
+    <a href="{{ href }}"{{ attributes.defaults({ class: classes }) }}>{% block content %}{% endblock %}</a>
+</li>

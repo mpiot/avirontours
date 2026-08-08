@@ -63,11 +63,11 @@ class ProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         // Simulate AJAX call
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'profile[postalCode]' => '01000',
         ]);
 
-        $form = $crawler->selectButton('Modifier')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'profile[email]' => 'john.doe@avirontours.fr',
             'profile[phoneNumber]' => '0123456777',
             'profile[laneNumber]' => '2',
@@ -118,7 +118,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'profile[email]' => '',
             'profile[phoneNumber]' => '',
             'profile[laneNumber]' => '',
@@ -161,7 +161,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'profile[firstLegalGuardian][role]' => '',
             'profile[firstLegalGuardian][firstName]' => '',
             'profile[firstLegalGuardian][lastName]' => '',
@@ -190,7 +190,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => 'engage',
             'change_password[plainPassword][first]' => 'engage2',
             'change_password[plainPassword][second]' => 'engage2',
@@ -210,7 +210,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => 'IDoNotExist',
             'change_password[plainPassword][first]' => UserFactory::NEW_PASSWORD,
             'change_password[plainPassword][second]' => UserFactory::NEW_PASSWORD,
@@ -231,7 +231,7 @@ class ProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Modifier', [
+        $crawler = $client->submitForm('Enregistrer', [
             'change_password[currentPassword]' => '',
             'change_password[plainPassword][first]' => '',
             'change_password[plainPassword][second]' => '',

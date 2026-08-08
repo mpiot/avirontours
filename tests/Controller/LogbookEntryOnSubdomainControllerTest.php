@@ -125,7 +125,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '09:00',
@@ -164,7 +164,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '09:00',
@@ -196,7 +196,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => '',
             'logbook_entry_start[startAt]' => '',
         ]);
@@ -224,7 +224,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licence->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -256,7 +256,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -284,7 +284,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -315,14 +315,14 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bateau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(1);
@@ -361,14 +361,14 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $damage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bateau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
@@ -390,7 +390,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -413,7 +413,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
         ]);
         $client->request('GET', '/logbook-entry/new', server: ['HTTP_HOST' => 'cahierdesorties.avirontours.wip']);
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[nonUserCrewMembers]' => 'John Doe',
@@ -442,7 +442,7 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [],
             'logbook_entry_start[nonUserCrewMembers]' => 'John Doe, Foo Bar',
@@ -582,8 +582,8 @@ class LogbookEntryOnSubdomainControllerTest extends AppWebTestCase
     {
         yield ['/login'];
         yield ['/reset-password'];
-        yield ['/mentions-legales'];
-        yield ['/release-notes'];
+        yield ['/legal-notice'];
+        yield ['/privacy-policy'];
     }
 
     public static function urlProvider(): \Generator

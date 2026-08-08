@@ -1,0 +1,30 @@
+{% props inline = false, container = true %}
+
+{% set tones = { notice: 'info', error: 'danger' } %}
+
+{% set flashes %}
+    {% for label, messages in app.flashes(['success', 'info', 'notice', 'warning', 'error', 'danger']) %}
+        {% for message in messages %}
+            {% if inline %}
+                <twig:Alert :tone="tones[label] ?? label" dismissible>{{ message|trans }}</twig:Alert>
+            {% else %}
+                <twig:Toast :tone="tones[label] ?? label">{{ message|trans }}</twig:Toast>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endset %}
+
+{#
+ # Without the container, the toasts alone — for a stream appending them into the existing stack.
+ #
+ # The stack itself is not a live region: each toast is its own `role="alert"`, and nesting one live
+ # region in another has every toast announced twice. `aria-atomic` here was worse than redundant —
+ # it made a new toast re-read the ones already on screen.
+ #}
+{% if inline or not container %}
+    {{ flashes }}
+{% else %}
+    <div id="flashes" class="app-toast-stack toast-container">
+        {{ flashes }}
+    </div>
+{% endif %}

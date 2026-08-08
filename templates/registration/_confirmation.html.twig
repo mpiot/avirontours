@@ -1,7 +1,7 @@
-<div class="d-flex justify-content-center align-items-center">
-    <div class="border rounded p-5 border-success">
+<twig:Card elevated>
+    <twig:Card:Body padding="lg">
         <div class="text-success text-center">
-            <span class="fas fa-4x fa-check-circle" aria-hidden="true"></span>
+            <twig:ux:icon name="mdi:check-circle" width="4em" height="4em" />
         </div>
 
         <h1 class="fs-3 text-center">{{ renew ? 'Réinscription' : 'Inscription' }} à Aviron Tours</h1>
@@ -28,14 +28,11 @@
         </p>
 
         <div class="mb-2 text-center">
-            <a
-                class="btn btn-primary btn-lg"
-                href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2026-2027"
-            >
-                <span class="fa-solid fa-credit-card" aria-hidden="true"></span>
+            <twig:Button variant="primary" size="lg" href="https://www.helloasso.com/associations/aviron-tours-metropole/adhesions/saison-2026-2027">
+                <twig:ux:icon name="mdi:credit-card-outline" />
                 Payer par Carte bancaire<br/>
                 <small>(paiement en 1 ou 3x)</small>
-            </a>
+            </twig:Button>
         </div>
 
         <p class="small">
@@ -65,5 +62,5 @@
                 <a href="{{ path('app_login') }}">Me connecter à mon espace membre</a>
             {% endif %}
         </p>
-    </div>
-</div>
+    </twig:Card:Body>
+</twig:Card>

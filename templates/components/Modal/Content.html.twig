@@ -1,0 +1,18 @@
+{#
+ # A modal's content: what a `<turbo-frame id="modal">` response or an `update target="modal"`
+ # stream wraps. `modal-title` is what names the dialog — the mount's aria-labelledby points here.
+ #
+ # The close form needs no handler: method="dialog" is the native close, and the dialog's `close`
+ # event is what empties the frame.
+ #}
+<div class="app-modal-header">
+    <h2 class="app-modal-title" id="modal-title">{% block title %}{% endblock %}</h2>
+
+    <form method="dialog">
+        <button class="btn-close" aria-label="Fermer"></button>
+    </form>
+</div>
+
+<div class="app-modal-body">
+    {% block content %}{% endblock %}
+</div>

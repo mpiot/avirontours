@@ -1,0 +1,35 @@
+{#
+ # A surface.
+ #
+ # A plain card is the default: a rule around a section of a page. `elevated` is the one that adds
+ # something — borderless, set apart by the tuned `$box-shadow` — and it is what a card standing for
+ # a whole page wears. Asking for it rather than opting out of it is the point: what adds style
+ # should be spelled out, and a card nested in another that forgot to say so no longer stacks a
+ # second shadow on the first.
+ #
+ # `tone` names what the card means, the way `Badge`'s does. `muted` is a card the member may read
+ # but not act on — the identity block the club owns; `primary` singles one card out of a series,
+ # the season being validated among the seasons before it. Untoned is the default and paints nothing.
+ #
+ # The parts are their own components (`Card:Header`, `Card:Body`, `Card:Footer`) rather than a
+ # fixed shape, because the call sites differ too much inside: a body with no padding around a
+ # table, two headers, a `list-group-flush` in place of a body.
+ #}
+{% props elevated = false, tone = null %}
+
+{%- set card = html_cva(
+    base: 'card',
+    variants: {
+        elevated: { true: 'border-0 shadow' },
+        tone: {
+            muted: 'bg-body-tertiary border-0',
+            primary: 'border-primary',
+        },
+    },
+) -%}
+
+{%- set classes = card.apply({ elevated: elevated, tone: tone }|filter(v => v is not null)) -%}
+
+<div{{ attributes.defaults({ class: classes }) }}>
+    {% block content %}{% endblock %}
+</div>

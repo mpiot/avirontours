@@ -1,0 +1,11 @@
+{#
+ # A column header. `.app-table` styles these by selector, so no class is carried here — but the
+ # label written inside has to match the `label` of the cells below it, which is what the mobile
+ # card mode shows in place of this row.
+ #
+ # `scope` is the pair of `Table:RowHeader`'s: without it a screen reader has to guess which cells a
+ # header governs, and guesses from the layout the mobile mode takes away.
+ #}
+<th{{ attributes.defaults({ scope: 'col' }) }}>
+    {% block content %}{% endblock %}
+</th>

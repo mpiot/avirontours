@@ -2,14 +2,14 @@
 
 {% block title %}Mes qualités physique{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mon profil sportif</li>
-    <li class="breadcrumb-item active">Qualités physique</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item :current="false">Mon profil sportif</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Qualités physique</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block main %}
-    <h2>Mes qualités physique</h2>
+{% block page_title %}Mes qualités physique{% endblock %}
 
+{% block main %}
     {{ include('sport_profile/_physical_qualities_form.html.twig') }}
 {% endblock %}

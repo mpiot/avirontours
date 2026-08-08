@@ -1,0 +1,15 @@
+{#
+ # An entry in the sidebar or in a section's sub-navigation.
+ #
+ # `active` is passed rather than derived: the caller knows which routes light an item up, and the
+ # sidebar needs an exact list — a prefix would not do, `shell_` also matches `shell_damage_index`.
+ #
+ # It says so twice: `aria-current` for anyone the tint and the inset rule never reach. `page` and not
+ # `true`, because every call site marks the entry whose page is open — the sidebar, and the two
+ # section sub-navigations.
+ #}
+{% props href, active = false %}
+
+<a href="{{ href }}"{{ attributes.defaults({ class: 'app-nav-link' ~ (active ? ' active' : '') }) }}{% if active %} aria-current="page"{% endif %}>
+    {% block content %}{% endblock %}
+</a>

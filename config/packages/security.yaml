@@ -65,8 +65,8 @@ security:
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
-        - { path: ^/mentions-legales$, roles: PUBLIC_ACCESS }
-        - { path: ^/release-notes$, roles: PUBLIC_ACCESS }
+        - { path: ^/legal-notice$, roles: PUBLIC_ACCESS }
+        - { path: ^/privacy-policy$, roles: PUBLIC_ACCESS }
         - { path: ^/payment-attestation, roles: PUBLIC_ACCESS }
         - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
         - { path: ^/admin, roles: [ROLE_LOGBOOK_ADMIN, ROLE_MATERIAL_ADMIN, ROLE_SPORT_ADMIN, ROLE_USER_ADMIN, ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN, ROLE_SEASON_PAYMENTS_ADMIN] }

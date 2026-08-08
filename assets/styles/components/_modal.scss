@@ -1,0 +1,67 @@
+// ↔ templates/components/Modal.html.twig for the mount, Modal/Content.html.twig for what fills it.
+
+// Padding lives on the header and body rather than the dialog, so a click that lands on the
+// element itself can only be the backdrop — that is the whole test in the controller's
+// clickOutside. Narrower than $app-measure on purpose: at the page's own measure it would read
+// as a page.
+.app-modal {
+    width: min(40rem, calc(100vw - #{$spacer * 2}));
+    padding: 0;
+    overflow-y: auto;
+    border: 0;
+    border-radius: $border-radius-lg;
+
+    // The shadow _toast.scss floats with — this surface floats too.
+    box-shadow: 0 .5rem 1.5rem rgba(#000, .16), 0 .125rem .25rem rgba(#000, .08);
+
+    &::backdrop {
+        background-color: rgba($black, .4);
+        backdrop-filter: blur(2px);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        &[open] {
+            animation: app-modal-fade-in .15s ease-out;
+        }
+    }
+}
+
+@keyframes app-modal-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(.5rem);
+    }
+}
+
+// The dialog lives in the top layer, out of z-index's reach; what it must not do is let the page
+// scroll under its backdrop — `showModal()` makes everything behind it inert, but it does not stop
+// the wheel. `:has()` keeps the lock declarative — no class for a close path to forget.
+//
+// This propagates to the viewport and so takes the scrollbar with it, widening the page by 15 px.
+// modal_controller.ts measures that width before it opens the dialog and the padding gives it back,
+// so nothing moves; a page that does not scroll measures 0 and is left alone. Reserving the strip up
+// front instead — `scrollbar-gutter: stable` — is what used to notch the topbar on every short page,
+// and it could not be dressed: the gutter falls outside the root box, where only a flat background
+// colour reaches and no gradient does.
+body:has(.app-modal[open]) {
+    overflow: hidden;
+    padding-right: var(--app-scrollbar-width, 0);
+}
+
+.app-modal-header {
+    display: flex;
+    gap: $spacer;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacer;
+    border-bottom: $border-width solid $border-color;
+}
+
+.app-modal-title {
+    margin-bottom: 0;
+    font-size: $font-size-lg;
+}
+
+.app-modal-body {
+    padding: $spacer;
+}

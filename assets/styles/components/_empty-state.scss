@@ -1,0 +1,10 @@
+// ↔ templates/components/EmptyState.html.twig
+//
+// $secondary rather than $gray-600, because this is the one muted component that does not know what it
+// is standing on: every list drops it inside its card, on white, but the dashboard has no card to put
+// it in and lays it on the shell's $gray-100 — where $gray-600 is 4.44:1. See components/_breadcrumb.scss.
+.app-empty {
+    padding: ($spacer * 3) $spacer;
+    color: $secondary;
+    text-align: center;
+}

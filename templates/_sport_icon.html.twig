@@ -1,0 +1,21 @@
+{% if 'rowing' == sport %}
+    <twig:ux:icon name="mdi:rowing" />
+{% elseif 'ergometer' == sport %}
+    <twig:ux:icon name="concept2" />
+{% elseif 'running' == sport %}
+    <twig:ux:icon name="mdi:run" />
+{% elseif 'swimming' == sport %}
+    <twig:ux:icon name="mdi:swim" />
+{% elseif 'cycling' == sport %}
+    <twig:ux:icon name="mdi:bike" />
+{% elseif 'weight_training' == sport %}
+    <twig:ux:icon name="mdi:weight-lifter" />
+{% elseif 'strengthening' == sport %}
+    <twig:ux:icon name="mdi:human" />
+{% elseif 'general_physical_preparation' == sport %}
+    <twig:ux:icon name="mdi:human-handsup" />
+{% elseif 'yoga' == sport %}
+    <twig:ux:icon name="mdi:yoga" />
+{% else %}
+    <twig:ux:icon name="mdi:heart-pulse" />
+{% endif %}

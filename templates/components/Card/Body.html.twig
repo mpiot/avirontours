@@ -1,0 +1,23 @@
+{#
+ # The card's padded area.
+ #
+ # `padding` is a prop rather than a utility class passed in from the outside: how much room a card
+ # body leaves around its content is the card's own business. `none` is for a body holding nothing
+ # but a table, whose rows then run to the card's edge and space themselves with their own cell
+ # padding; `lg` is for a body that is the whole page. Unset is Bootstrap's own spacing.
+ #
+ # There is no "no bottom padding" value. A body whose last child brings its own bottom margin is
+ # handled once in `components/_card.scss`, not at each call site.
+ #}
+{% props padding = null %}
+
+{%- set cardBody = html_cva(
+    base: 'card-body',
+    variants: {
+        padding: { none: 'p-0', lg: 'p-4' },
+    },
+) -%}
+
+<div{{ attributes.defaults({ class: cardBody.apply({ padding: padding }|filter(v => v is not null)) }) }}>
+    {% block content %}{% endblock %}
+</div>

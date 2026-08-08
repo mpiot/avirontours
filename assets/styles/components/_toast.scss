@@ -1,0 +1,36 @@
+/**
+ * ↔ templates/components/Toast.html.twig for the toast, Flashes.html.twig for the stack it sits in.
+ *
+ * Clear of the topbar, which the stack would otherwise cover — the account menu is the one control
+ * a member reaches for while a flash is up. Not at the bottom either: pages/_registration.scss pins
+ * the submit bar there below md, and /renew renders that form inside this layout.
+ */
+.app-toast-stack {
+    position: fixed;
+    top: $app-topbar-height;
+    inset-inline-end: 0;
+    z-index: $zindex-toast;
+    padding: $spacer;
+}
+
+// Opaque, because Bootstrap's 85 % white reads as washed out on the grey page rather than
+// translucent; with its own shadow, because _custom.scss softened `$box-shadow` for cards that sit
+// flat, and this one floats. The tone paints one edge instead of the four-sided hairline that dated
+// it — `.border-success` and its siblings, from the component's cva, still supply the colour.
+.app-toast {
+    border-width: 0 0 0 .25rem;
+    border-radius: $border-radius-lg;
+    background-color: $white;
+    box-shadow: 0 .5rem 1.5rem rgba(#000, .16), 0 .125rem .25rem rgba(#000, .08);
+    font-size: $font-size-base;
+
+    // Slid in from the edge it is pinned to: `.showing` holds the start state and is dropped a
+    // frame later, which is what the transition then plays.
+    @media (prefers-reduced-motion: no-preference) {
+        transition: transform .2s ease-out;
+
+        &.showing {
+            transform: translateX($spacer);
+        }
+    }
+}

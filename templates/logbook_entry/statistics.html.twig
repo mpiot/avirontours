@@ -1,96 +1,24 @@
 {% extends 'logbook_entry/base.html.twig' %}
 
-{% block breadcrumb %}
+{% block title %}Statistiques du cahier de sorties{% endblock %}
+
+{% block page_title %}Statistiques{% endblock %}
+
+{% block breadcrumb_items %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Cahier de sorties</a></li>
-    <li class="breadcrumb-item active">Statistiques</li>
+    <twig:Breadcrumb:Item href="{{ path('logbook_entry_index') }}">Cahier de sorties</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Statistiques</twig:Breadcrumb:Item>
 {% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-lg mb-3 mb-lg-0">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <span class="h4">Top distances</span>
-                    <ul class="list-group list-group-flush">
-                        {% for top in topDistances %}
-                            <li class="list-group-item d-flex justify-content-between">
-                            <span>
-                                {% if 1 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
-                                {% elseif 2 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
-                                {% elseif 3 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
-                                {% endif %}
-
-                                {{ top.0.fullName }}
-                            </span>
-
-                                <span>{{ top.totalDistance|format_number({fraction_digit: 0}) }} km</span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item">Pas d'entrée</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg mb-3 mb-lg-0">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <span class="h4">Top sorties</span>
-                    <ul class="list-group list-group-flush">
-                        {% for top in topSessions %}
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>
-                                    {% if 1 == loop.index %}
-                                        <span class="fas fa-medal" style="color: #FFD700;"></span>
-                                    {% elseif 2 == loop.index %}
-                                        <span class="fas fa-medal" style="color: #C0C0C0;"></span>
-                                    {% elseif 3 == loop.index %}
-                                        <span class="fas fa-medal" style="color: #CD7F32;"></span>
-                                    {% endif %}
-
-                                    {{ top.0.fullName }}
-                                </span>
-                                <span>{{ top.totalSessions }}</span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item">Pas d'entrée</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg">
-            <div class="card border-0 shadow h-100">
-                <div class="card-body">
-                    <span class="h4">Top bâteaux</span>
-                    <ul class="list-group list-group-flush">
-                        {% for top in topShells %}
-                            <li class="list-group-item d-flex justify-content-between">
-                            <span>
-                                {% if 1 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #FFD700;"></span>
-                                {% elseif 2 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #C0C0C0;"></span>
-                                {% elseif 3 == loop.index %}
-                                    <span class="fas fa-medal" style="color: #CD7F32;"></span>
-                                {% endif %}
-
-                                {{ top.0.name }}
-                            </span>
-                                <span>{{ top.totalSessions }}</span>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item">Pas d'entrée</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    {#
+     # Three abreast only from xl: the sidebar takes 16 rem from lg, which leaves a podium about
+     # 150 px of usable width there — a rank, a full name and a figure on one line do not fit in it.
+     # Same reason profile/base.html.twig puts its side column at xl.
+     #}
+    <twig:CardGrid>
+        {{ include('logbook_entry/_top.html.twig', { title: 'Top distances', rows: topDistances, field: 'totalDistance', unit: ' km' }, with_context = false) }}
+        {{ include('logbook_entry/_top.html.twig', { title: 'Top sorties', rows: topSessions, field: 'totalSessions', unit: '' }, with_context = false) }}
+        {{ include('logbook_entry/_top.html.twig', { title: 'Top bateaux', rows: topShells, field: 'totalSessions', unit: '' }, with_context = false) }}
+    </twig:CardGrid>
 {% endblock %}

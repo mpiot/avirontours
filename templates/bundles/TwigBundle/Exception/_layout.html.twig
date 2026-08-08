@@ -1,0 +1,29 @@
+{% extends 'layouts/document.html.twig' %}
+
+{% block head %}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block javascripts %}{% endblock %}
+
+{% block layout %}
+    <div class="app-plain">
+        <header class="app-plain-header">
+            <a href="{{ path('homepage') }}">
+                <img src="{{ asset('build/images/logo_colored.svg') }}" width="98" height="44" alt="Aviron Tours Métropole">
+            </a>
+        </header>
+
+        <main class="app-content app-error">
+            <p class="app-error-code">Erreur {% block code %}{% endblock %}</p>
+
+            <h1 class="fs-3">{% block heading %}{% endblock %}</h1>
+
+            <p class="text-body-secondary">{% block message %}{% endblock %}</p>
+
+            <twig:Button variant="primary" href="{{ path('homepage') }}">Retour à l'accueil</twig:Button>
+        </main>
+    </div>
+{% endblock %}
+
+{% block modal %}{% endblock %}

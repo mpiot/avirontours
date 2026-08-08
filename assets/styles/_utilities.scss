@@ -1,0 +1,21 @@
+/**
+ * Amber as ink
+ *
+ * `$warning` is bright so badges and progress bars come alive; painted as text on white it is 2.15:1,
+ * so a control that paints the hue as ink gets the darkened token instead.
+ *
+ * `.text-warning` used to be redirected here too, and should not be. Both of its callers are
+ * pictograms — the alert glyph of templates/components/DeleteForm.html.twig, and the one Toast wires
+ * for a warning flash nobody fires yet — and `ux:icon` renders an `aria-hidden` svg beside a message
+ * written out in words, so no contrast ratio attaches to either. What the redirection did instead was
+ * paint the app's only 48 px alert glyph #624004: an amber darkened into a brown, which is the very
+ * thing _palette.scss set out to avoid. Bootstrap's own `.text-warning` is `$warning`, which is what
+ * both callers want. Add the override back the day something paints the hue as actual text.
+ *
+ * What is left has to be emitted after `~bootstrap`, whose utilities API writes the class itself: at
+ * equal specificity the later rule wins.
+ */
+.btn-outline-warning {
+    --#{$prefix}btn-color: var(--#{$prefix}warning-text-emphasis);
+    --#{$prefix}btn-border-color: var(--#{$prefix}warning-text-emphasis);
+}

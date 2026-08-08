@@ -1,20 +1,18 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 {% form_theme form 'admin/season/_form_theme.html.twig' %}
 
 {% block title %}Ajouter une saison{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
-    <li class="breadcrumb-item active">Ajouter une saison</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_index') }}">Gestion des saisons</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ajouter une saison</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Ajouter une saison</h1>
+{% block page_title %}Ajouter une saison{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/season/_form.html.twig') }}
-        </div>
-    </div>
+{% block body %}
+    <twig:FormCard>
+        {{ include('admin/season/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

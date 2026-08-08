@@ -1,0 +1,20 @@
+{#
+ # The target of a pagination item.
+ #
+ # No `href` means there is nowhere to go — the first page has no "previous". That renders a span
+ # rather than a link with a dead target, so it is neither focusable nor announced as a link.
+ #
+ # The tags are split across the conditions rather than the body being captured, because a
+ # component may only define its `content` block once.
+ #}
+{% props href = null, active = false %}
+
+{%- if href is not null -%}
+    <a class="page-link" href="{{ href }}"{% if active %} aria-current="page"{% endif %}>
+{%- else -%}
+    <span class="page-link">
+{%- endif -%}
+
+{%- block content %}{% endblock -%}
+
+{%- if href is not null %}</a>{% else %}</span>{% endif -%}

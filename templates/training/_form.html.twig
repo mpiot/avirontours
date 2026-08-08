@@ -5,41 +5,40 @@
     {{ form_row(form.trainedAt) }}
 
     <div class="row">
-        <div class="col">
+        <div class="col-sm">
             <fieldset class="mb-3">
-                <legend class="col-form-label required pt-0">{{ form.duration.vars.label }}</legend>
-                {{ form_errors(form.duration) }}
-                <div id="{{ form.duration.vars.id }}" class="mt-n1">
-                    <div class="row">
-                        <div class="col">
-                            {{ form_row(form.duration.hours, { attr: { 'inputmode': 'numeric', 'placeholder': 'h' } }) }}
-                        </div>
-                        <div class="col">
-                            {{ form_row(form.duration.minutes, { attr: { 'inputmode': 'numeric', 'placeholder': 'm' } }) }}
-                        </div>
-                    </div>
-                </div>
+                {{ form_label(form.duration) }}
+
+                <twig:InputGroup :invalid="form.duration.vars.errors|length > 0">
+                    {{ form_widget(form.duration.hours, { attr: { inputmode: 'numeric', 'aria-label': 'Heures' } }) }}
+                    <twig:InputGroup:Text>h</twig:InputGroup:Text>
+
+                    {{ form_widget(form.duration.minutes, { attr: { inputmode: 'numeric', 'aria-label': 'Minutes' } }) }}
+                    <twig:InputGroup:Text>min</twig:InputGroup:Text>
+                    {{ form_errors(form.duration) }}
+                </twig:InputGroup>
             </fieldset>
         </div>
 
-        <div class="col">
-            {{ form_row(form.distance, { attr: { 'inputmode': 'decimal' } }) }}
+        <div class="col-sm">
+            <div class="mb-3">
+                {{ form_label(form.distance) }}
+
+                <twig:InputGroup :invalid="form.distance.vars.errors|length > 0">
+                    {{ form_widget(form.distance, { attr: { inputmode: 'decimal' } }) }}
+                    <twig:InputGroup:Text>km</twig:InputGroup:Text>
+                    {{ form_errors(form.distance) }}
+                </twig:InputGroup>
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col">
-            {{ form_row(form.feeling) }}
-        </div>
-
-        <div class="col">
-            {{ form_row(form.ratedPerceivedExertion) }}
-        </div>
-    </div>
+    {{ form_row(form.feeling) }}
+    {{ form_row(form.ratedPerceivedExertion) }}
 
     {{ form_row(form.comment) }}
 
     {{ form_rest(form) }}
 
-    <button class="btn btn-primary">{{ button_label|default('Sauver') }}</button>
+    <twig:Button variant="primary">{{ button_label|default('Enregistrer') }}</twig:Button>
 {{ form_end(form) }}

@@ -1,19 +1,19 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Validation des certificats médicaux de la saison {{ season.name }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</a></li>
-    <li class="breadcrumb-item active">Validation des certificats médicaux de la saison {{ season.name }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_index') }}">Gestion des saisons</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Validation des certificats médicaux de la saison {{ season.name }}</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Validation des certificats médicaux de la saison {{ season.name }}</h1>
+{% block page_title %}Validation des certificats médicaux de la saison {{ season.name }}{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
+{% block body %}
+    <twig:Card elevated>
+        <twig:Card:Body>
             {% if license is not null %}
                 <div class="row">
                     <div class="col-lg-8">
@@ -25,53 +25,51 @@
                     </div>
 
                     <div class="col-lg-4 mt-3 mt-lg-0">
-                        <div class="card">
-                            <div class="card-header">
+                        <twig:Card>
+                            <twig:Card:Header>
                                 Informations membre
-                            </div>
+                            </twig:Card:Header>
 
-                            <div class="card-body">
-                                Nom Prénom : {{ license.user.fullName }}<br>
-                                Date de naissance: {{ license.user.birthday|format_date('short') }} ({{ license.user.age }} ans)
-                            </div>
-                        </div>
+                            <twig:Card:Body>
+                                Nom Prénom&nbsp;: {{ license.user.fullName }}<br>
+                                Date de naissance&nbsp;: {{ license.user.birthday|format_date('short') }} ({{ license.user.age }} ans)
+                            </twig:Card:Body>
+                        </twig:Card>
 
                         {% for previous_licence in previous_licences %}
-                            <div class="card mt-3">
-                                <div class="card-header">
+                            <twig:Card class="mt-3">
+                                <twig:Card:Header>
                                     Saison {{ previous_licence.seasonCategory.season.name }}
-                                </div>
+                                </twig:Card:Header>
 
-                                <div class="card-body">
-                                    Date du certificat: {{ previous_licence.medicalCertificate.date|format_date('short') }}<br>
-                                    Type de certificat : {{ previous_licence.medicalCertificate.type.label }}<br>
-                                    Niveau de certificat: {{ previous_licence.medicalCertificate.level.label }}
-                                </div>
-                            </div>
+                                <twig:Card:Body>
+                                    Date du certificat&nbsp;: {{ previous_licence.medicalCertificate.date|format_date('short') }}<br>
+                                    Type de certificat&nbsp;: {{ previous_licence.medicalCertificate.type.label }}<br>
+                                    Niveau de certificat&nbsp;: {{ previous_licence.medicalCertificate.level.label }}
+                                </twig:Card:Body>
+                            </twig:Card>
                         {% endfor %}
 
-                        <div class="card border-primary mt-3">
-                            <div class="card-header bg-primary text-white d-flex">
+                        <twig:Card tone="primary" class="mt-3">
+                            <twig:Card:Header>
                                 Saison {{ license.seasonCategory.season.name }}
 
-                                <a href="{{ path('license_edit', { 'seasonId': license.seasonCategory.season.id, id: license.id }) }}" class="btn btn-warning btn-sm rounded-pill ms-auto align-self-center">
-                                    <span class="fas fa-pencil-alt"></span>
-                                </a>
-                            </div>
+                                <twig:block name="actions">
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('license_edit', { 'seasonId': license.seasonCategory.season.id, id: license.id }) }}" aria-label="Modifier la licence">
+                                        <twig:ux:icon name="mdi:pencil" />
+                                    </twig:Button>
+                                </twig:block>
+                            </twig:Card:Header>
 
-                            <div class="card-body">
-                                Date du certificat: {{ license.medicalCertificate.date|format_date('short') }}<br>
-                                Type de certificat : {{ license.medicalCertificate.type.label }}<br>
-                                Niveau de certificat: {{ license.medicalCertificate.level.label }}
-                            </div>
-                        </div>
+                            <twig:Card:Body>
+                                Date du certificat&nbsp;: {{ license.medicalCertificate.date|format_date('short') }}<br>
+                                Type de certificat&nbsp;: {{ license.medicalCertificate.type.label }}<br>
+                                Niveau de certificat&nbsp;: {{ license.medicalCertificate.level.label }}
+                            </twig:Card:Body>
+                        </twig:Card>
 
                         <div class="mt-3">
-                            <div
-                                class="btn-group-vertical btn-group-sm w-100"
-                                role="group"
-                                data-turbo-prefetch="false"
-                            >
+                            <div class="d-grid gap-2">
                                 {% if workflow_can(license, 'validate_medical_certificate') %}
                                     <form
                                         method="post"
@@ -79,9 +77,9 @@
                                         class="d-grid"
                                     >
                                         <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
-                                        <button type="submit" class="btn btn-primary">
+                                        <twig:Button variant="primary">
                                             Valider le certificat médical
-                                        </button>
+                                        </twig:Button>
                                     </form>
                                 {% endif %}
 
@@ -92,9 +90,9 @@
                                         class="d-grid"
                                     >
                                         <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
-                                        <button type="submit" class="btn btn-warning">
+                                        <twig:Button variant="warning">
                                             Rejeter le certificat médical
-                                        </button>
+                                        </twig:Button>
                                     </form>
                                 {% endif %}
                             </div>
@@ -102,10 +100,8 @@
                     </div>
                 </div>
             {% else %}
-                <div class="alert alert-info" role="alert">
-                    <span class="fas fa-info-circle"></span> Il n'y a pas de license à valider.
-                </div>
+                <twig:Alert tone="info" icon :live="false">Il n'y a pas de license à valider.</twig:Alert>
             {% endif %}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

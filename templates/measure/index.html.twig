@@ -1,70 +1,60 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Mes mesures{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mes mesures</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Mes mesures</twig:Breadcrumb:Item>
+{% endblock %}
+
+
+{% block page_title %}Mes mesures{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="primary" outline size="sm" href="{{ path('measure_new') }}" data-turbo-frame="modal">
+        <twig:ux:icon name="mdi:plus" /> Ajouter
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Mes mesures</h1>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Date</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Type</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Valeur</twig:Table:HeadCell>
+                        <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
+                    {% for measure in measures %}
+                        <twig:Table:Row>
+                            <twig:Table:Cell label="Date">{{ measure.measuredAt|format_date('short') }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Type">{{ measure.type.label }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Valeur">{{ measure.value }} {{ measure.type.unit }}</twig:Table:Cell>
+                            <twig:Table:Cell actions>
+                                <twig:DeleteForm :action="path('measure_delete', {'id': measure.id})">
+                                    <twig:Button variant="secondary" outline href="{{ path('measure_edit', {'id': measure.id}) }}" aria-label="Modifier" data-turbo-frame="modal">
+                                        <twig:ux:icon name="mdi:pencil" /> <span class="d-none d-sm-inline">Modifier</span>
+                                    </twig:Button>
+                                </twig:DeleteForm>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
+                    {% else %}
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas de mesure" /></twig:Table:Cell>
+                        </twig:Table:Row>
+                    {% endfor %}
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-        <div class="ms-auto align-self-center">
-            <a
-                href="{{ path('measure_new') }}"
-                class="btn btn-sm btn-outline-primary"
-            >
-                <span class="fas fa-plus"></span> Ajouter
-            </a>
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Valeur</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for measure in measures %}
-                            <tr>
-                                <td>{{ measure.measuredAt|format_date('short') }}</td>
-                                <td>{{ measure.type.label }}</td>
-                                <td>{{ measure.value }} {{ measure.type.unit }}</td>
-                                <td>
-                                    {% embed 'measure/_delete_form.html.twig' %}
-                                        {% block buttons %}
-                                            <div class="btn-group-sm">
-                                                <a class="btn btn-outline-warning" href="{{ path('measure_edit', {'id': measure.id}) }}">
-                                                    <span class="fas fa-pencil-alt"></span> Modifier
-                                                </a>
-
-                                                {{ parent() }}
-                                            </div>
-                                        {% endblock %}
-                                    {% endembed %}
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="4" class="text-center">Pas de mesure</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            {% if measures|length < measures.totalItemCount %}
-                {{ knp_pagination_render(measures) }}
-            {% endif %}
-        </div>
-    </div>
+        {% if measures|length < measures.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="measures" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

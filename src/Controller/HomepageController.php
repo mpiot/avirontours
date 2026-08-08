@@ -42,4 +42,10 @@ class HomepageController extends AbstractController
             'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);
     }
+
+    #[Route(path: '/my-space', name: 'my_space')]
+    public function mySpace(): Response
+    {
+        return $this->render('homepage/my_space.html.twig');
+    }
 }

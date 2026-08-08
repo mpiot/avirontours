@@ -1,0 +1,20 @@
+{#
+ # The card's top strip: a title, and often a control that acts on what the card holds.
+ #
+ # `$card-cap-bg` is transparent here, so the strip is set apart by its rule alone.
+ #
+ # The `actions` block is the same shape `PageHeader` carries: the title on one side, the controls
+ # on the other. It is only laid out when something fills it — most headers are a bare title, and
+ # turning those into flex containers would change how their contents sit.
+ #}
+{%- set hasActions = block('actions')|trim is not empty -%}
+
+<div{{ attributes.defaults({ class: html_classes('card-header', {
+    'd-flex flex-wrap gap-2 align-items-center justify-content-between': hasActions,
+}) }) }}>
+    {% block content %}{% endblock %}
+
+    {% if hasActions %}
+        <div class="d-flex flex-wrap gap-2">{% block actions %}{% endblock %}</div>
+    {% endif %}
+</div>

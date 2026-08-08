@@ -1,12 +1,6 @@
-{% extends 'base.html.twig' %}
-{% set appMenuAutoOpen = false %}
+{% extends 'layouts/focus.html.twig' %}
 
 {% block title %}M'inscrire à l'Aviron Tours Métropole{% endblock %}
-
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">M'inscrire à l'Aviron Tours Métropole</li>
-{% endblock %}
 
 {% block body %}
     {% include 'registration/_confirmation.html.twig' with { renew: false } %}

@@ -1,26 +1,22 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Modifier un groupe{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('group_index') }}">Gestion des groupes</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('group_show', {'id': group.id}) }}">{{ group.name }}</a></li>
-    <li class="breadcrumb-item active">Modifier un groupe</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('group_index') }}">Gestion des groupes</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('group_show', {'id': group.id}) }}">{{ group.name }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier un groupe</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Modifier un groupe{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('group_delete', {'id': group.id})" />
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Modifier un groupe</h1>
-
-        <div class="ms-auto align-self-center">
-            {{ include('admin/group/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/group/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
+    <twig:FormCard>
+        {{ include('admin/group/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

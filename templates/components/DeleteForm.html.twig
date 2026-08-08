@@ -1,0 +1,78 @@
+{#
+ # The destructive action, and whatever sits beside it.
+ #
+ # The body is for the neighbours — an "edit" link, most often — which have to live inside the form
+ # so the group reads as one control strip. The delete button itself is always rendered: it is what
+ # this component is for, and a call site that could omit it would be a form with nothing to submit.
+ #
+ # Confirmation goes through the shared modal, with no round-trip: the submit-confirm controller
+ # injects the template below into the `modal` frame, and « Confirmer » points back at this form
+ # through its `form` attribute — a submitter from outside the form is the proof of confirmation.
+ # Without JS (and for BrowserKit) the form submits directly, as it always has.
+ #
+ # Below `sm` only the icon is left: a page title and this strip do not fit across 358 px, and the
+ # header was wrapping onto a second line on every show page. `aria-label` carries the name there —
+ # `ux:icon` renders an `aria-hidden` svg, so a bare icon would leave the button unnamed.
+ #}
+{% props action %}
+
+{% set formId = 'delete' ~ action|replace({'/': '-'}) %}
+
+<form
+    id="{{ formId }}"
+    method="post"
+    action="{{ action }}"
+    data-controller="submit-confirm"
+    data-action="submit->submit-confirm#onSubmit"
+>
+    <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+
+    {#
+     # `btn-group` and not `btn-group-sm` alone: the size class is `.btn-group-sm > .btn`, which does
+     # not ask for the group and so was sizing the buttons from a container that laid nothing out —
+     # the two sat side by side on a stray space of markup. With the group they are the one strip the
+     # component is named for, and the size comes from one place instead of from the group for the
+     # neighbours and from a `size` prop for the button below.
+     #}
+    <div class="btn-group btn-group-sm">
+        {% block content %}{% endblock %}
+
+        <twig:Button variant="danger" outline aria-label="Supprimer">
+            <twig:ux:icon name="mdi:trash-can-outline" /> <span class="d-none d-sm-inline">Supprimer</span>
+        </twig:Button>
+    </div>
+
+    {#
+     # « Annuler » comes first and carries `autofocus`: `showModal()` focuses the first focusable
+     # element otherwise, which would put the keyboard on the destructive button — Enter to submit,
+     # Enter again to delete. The order in the source is the order of the tab ring, so the safe
+     # choice is also the one reached first.
+     #}
+    <template data-submit-confirm-target="content">
+        <div class="app-modal-body text-center">
+            <twig:ux:icon name="mdi:alert-circle" class="text-warning" height="48" width="48" />
+
+            <h2 class="fs-5 fw-semibold mt-2 mb-1" id="modal-title">Confirmation de la suppression</h2>
+            <p>Êtes-vous sûr de vouloir supprimer cet élément&nbsp;?</p>
+
+            {#
+             # A column of two full-width buttons until sm, a centred row after. The two do not fit
+             # side by side across the 342 px the dialog has on a phone, and left to wrap they came
+             # out centred in two different widths, one under the other — which reads as two loose
+             # controls rather than as a choice between two.
+             #
+             # The order stays the source order at every width, so the destructive button is the one
+             # in reach of the thumb. Turning the column over would put the safe choice there, at the
+             # price of a visual order that no longer matches the tab order — and the confirmation
+             # this dialog *is* already stands between the member and the deletion.
+             #}
+            <div class="d-grid d-sm-flex flex-wrap justify-content-center gap-2">
+                <form method="dialog" class="d-grid">
+                    <twig:Button variant="secondary" outline autofocus>Annuler</twig:Button>
+                </form>
+
+                <twig:Button variant="danger" form="{{ formId }}">Confirmer la suppression</twig:Button>
+            </div>
+        </div>
+    </template>
+</form>
