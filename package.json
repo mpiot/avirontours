@@ -9,7 +9,6 @@
         "@babel/preset-env": "^8.0.0",
         "@eslint/eslintrc": "^3.1.0",
         "@eslint/js": "^9.11.1",
-        "@fortawesome/fontawesome-free": "^6.4.0",
         "@hotwired/stimulus": "^3.0.0",
         "@hotwired/turbo": "^8.0.4",
         "@stylistic/eslint-plugin-js": "^2.8.0",
@@ -18,8 +17,8 @@
         "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/assets",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
         "@symfony/webpack-encore": "^7.0.0",
-        "babel-plugin-polyfill-corejs3": "^1.0.0",
         "axios": "^1.4.0",
+        "babel-plugin-polyfill-corejs3": "^1.0.0",
         "bootstrap": "^5.3.3",
         "chart.js": "^4",
         "core-js": "^3.49.0",
@@ -32,6 +31,8 @@
         "sass": "^1.69.0",
         "sass-loader": "^16.0.2",
         "stimulus-use": "^0.52.0",
+        "stylelint": "^17.14.1",
+        "stylelint-config-standard-scss": "^17.0.0",
         "tom-select": "^2.6.2",
         "ts-loader": "^9.5.1",
         "typescript": "^5.6.2",
@@ -47,7 +48,7 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress",
-        "lint": "eslint --flag v10_config_lookup_from_file assets bin"
+        "lint": "eslint --flag v10_config_lookup_from_file assets bin && stylelint \"assets/styles/**/*.scss\""
     },
     "allowScripts": {
         "puppeteer": true

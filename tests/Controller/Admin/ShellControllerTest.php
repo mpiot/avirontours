@@ -85,7 +85,7 @@ class ShellControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'shell[name]' => 'A new shell',
             'shell[numberRowers]' => 2,
             'shell[mileage]' => 1000.0,
@@ -112,7 +112,7 @@ class ShellControllerTest extends AppWebTestCase
         $client->request('GET', '/admin/shell/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'shell[name]' => '',
             'shell[numberRowers]' => '',
             'shell[productionYear]' => '',
@@ -147,7 +147,7 @@ class ShellControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'shell_edit[name]' => 'A modified shell',
             'shell_edit[personalBoat]' => true,
             'shell_edit[enabled]' => false,

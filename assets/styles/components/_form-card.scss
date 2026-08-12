@@ -1,0 +1,9 @@
+// ↔ templates/components/FormCard.html.twig, which carries it on every `new`/`edit` page — and
+// templates/training/index.html.twig and training/_show.html.twig, which reach for it directly.
+//
+// Reading measure for a single column, which would otherwise stretch to the full content area. It is
+// also the word components/_page-header.scss looks for: a page whose body says it is measured gets its
+// header's actions pulled in to the same edge, so the two cannot drift apart.
+.app-measure {
+    max-width: $app-measure;
+}

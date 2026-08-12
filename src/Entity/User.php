@@ -508,6 +508,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
+    /**
+     * @return LegalGuardian[]
+     */
+    public function getLegalGuardians(): array
+    {
+        return array_values(array_filter([$this->firstLegalGuardian, $this->secondLegalGuardian]));
+    }
+
     public function isEmailAuthEnabled(): bool
     {
         foreach ($this->getRoles() as $role) {

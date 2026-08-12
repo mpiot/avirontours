@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\Training;
+use App\Enum\Feeling;
+use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
@@ -37,7 +39,8 @@ final class TrainingFactory extends PersistentObjectFactory
             'duration' => self::faker()->numberBetween(12000, 72000),
             'distance' => self::faker()->numberBetween(8000, 20000),
             'sport' => self::faker()->randomElement(SportType::cases()),
-            'feeling' => self::faker()->randomFloat(1, 0, 1),
+            'feeling' => self::faker()->optional()->randomElement(Feeling::cases()),
+            'ratedPerceivedExertion' => self::faker()->optional()->randomElement(RatedPerceivedExertion::cases()),
             'comment' => self::faker()->optional()->text(),
         ];
     }

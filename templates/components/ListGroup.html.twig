@@ -1,0 +1,22 @@
+{#
+ # A list of related rows.
+ #
+ # `flush` drops the outer border and rounding, for a list that sits flush inside a card — which is
+ # every list in this app, but the default stays Bootstrap's so the component does not surprise.
+ #
+ # Always a `ul`: `ListGroup:Item` is always an `li`. The kit this follows also offers `numbered` and
+ # `horizontal`, and a list of anchors in a `div`. None is used here, and a prop nobody passes is a
+ # prop nobody maintains — add them the day a list needs them.
+ #}
+{% props flush = false %}
+
+{%- set listGroup = html_cva(
+    base: 'list-group',
+    variants: {
+        flush: { true: 'list-group-flush' },
+    },
+) -%}
+
+<ul{{ attributes.defaults({ class: listGroup.apply({ flush: flush }) }) }}>
+    {% block content %}{% endblock %}
+</ul>

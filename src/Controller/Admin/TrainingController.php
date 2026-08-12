@@ -42,7 +42,7 @@ class TrainingController extends AbstractController
     {
         $from = new \DateTime($request->query->get('from') ?? '-1 month');
         $to = new \DateTime($request->query->get('to') ?? 'now');
-        $group = $request->query->has('group') ? $groupRepository->find($request->query->getInt('group')) : null;
+        $group = '' !== $request->query->get('group') ? $groupRepository->find($request->query->getInt('group')) : null;
 
         return $this->render('admin/training/index.html.twig', [
             'users' => $userRepository->findUsersTrainings(

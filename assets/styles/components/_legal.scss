@@ -1,0 +1,30 @@
+// ↔ templates/static/base.html.twig — the summary column and the document it tracks.
+
+// Sticky exactly when the summary is a column, which is the `col-xl-3` of the shell. Below xl it is
+// the horizontal strip of `.app-subnav`, and a strip pinned under the topbar would spend a phone's
+// screen on chrome for a page that is nothing but text.
+//
+// The cap is not decoration: a dozen entries outgrow a short laptop window, and a sticky box taller
+// than its viewport hides its own last entries with no way to reach them.
+.app-legal-summary {
+    @include media-breakpoint-up(xl) {
+        position: sticky;
+        top: $app-topbar-height + $spacer;
+        max-height: calc(100dvh - #{$app-topbar-height + $spacer * 2});
+        overflow-y: auto;
+    }
+}
+
+// Every element the summary points at. The topbar is sticky, so a section reached by its anchor
+// would otherwise come to rest behind it — the reader lands on a heading they cannot see. Anything
+// that scrolls these by script rather than by following the link has to add the same figure itself:
+// a computed `scrollTop` does not read `scroll-margin-top`.
+.app-legal-anchor {
+    scroll-margin-top: $app-topbar-height + $spacer;
+}
+
+// Sections are the summary's targets, so the card ends on one and Bootstrap's own
+// `.card-body > :last-child` reset no longer reaches the paragraph inside it.
+.app-legal-anchor:last-child > :last-child {
+    margin-bottom: 0;
+}

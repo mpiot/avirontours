@@ -1,0 +1,24 @@
+{% extends 'layouts/app.html.twig' %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12 col-xl-3">
+            <twig:Card elevated class="app-legal-summary mb-3">
+                {# Not `Card:Body`: `outerBlocks` reaches the page one component deep, not two. #}
+                <div class="card-body">
+                    <nav class="app-subnav" aria-label="Sommaire">
+                        {{ block(outerBlocks.summary) }}
+                    </nav>
+                </div>
+            </twig:Card>
+        </div>
+
+        <div class="col-12 col-xl-9">
+            <twig:Card elevated>
+                <div class="card-body">
+                    {{ block(outerBlocks.main) }}
+                </div>
+            </twig:Card>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{#
+ # One slot in the pagination strip. `active` marks the page you are on, `disabled` a direction
+ # there is nothing in.
+ #}
+{% props active = false, disabled = false %}
+
+{%- set pageItem = html_cva(
+    base: 'page-item',
+    variants: {
+        active: { true: 'active' },
+        disabled: { true: 'disabled' },
+    },
+) -%}
+
+<li{{ attributes.defaults({ class: pageItem.apply({ active: active, disabled: disabled }) }) }}>{% block content %}{% endblock %}</li>

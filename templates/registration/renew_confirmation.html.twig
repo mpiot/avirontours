@@ -1,13 +1,6 @@
-{% extends 'base.html.twig' %}
-{% set appMenuAutoOpen = false %}
+{% extends 'layouts/focus.html.twig' %}
 
 {% block title %}Ma réinscription{% endblock %}
-
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('profile_show') }}">Mon profil</a></li>
-    <li class="breadcrumb-item active">Ma réinscription</li>
-{% endblock %}
 
 {% block body %}
     {% include 'registration/_confirmation.html.twig' with { renew: true } %}

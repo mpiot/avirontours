@@ -1,268 +1,227 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}{{ season.name }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('season_index') }}">Gestion des saisons</a></li>
-    <li class="breadcrumb-item active">{{ season.name }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('season_index') }}">Gestion des saisons</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ season.name }}</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}{{ season.name }}{% endblock %}
+
+{% block page_actions %}
+    {% if is_granted('ROLE_SEASON_ADMIN') %}
+        <twig:DeleteForm :action="path('season_delete', {'id': season.id})">
+            <twig:Button variant="secondary" outline href="{{ path('season_edit', {'id': season.id}) }}" aria-label="Modifier">
+                <twig:ux:icon name="mdi:pencil" /> <span class="d-none d-sm-inline">Modifier</span>
+            </twig:Button>
+        </twig:DeleteForm>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>{{ season.name }}</h1>
+    {% set isSearching = app.request.query.get('q') is not empty %}
 
-        {% if is_granted('ROLE_SEASON_ADMIN') %}
-            <div class="ms-auto align-self-center ">
-                {% embed 'admin/season/_delete_form.html.twig' %}
-                    {% block buttons %}
-                        <div class="btn-group-sm">
-                            <a class="btn btn-outline-warning" href="{{ path('season_edit', {'id': season.id}) }}">
-                                <span class="fas fa-pencil-alt"></span> Modifier
-                            </a>
+    <twig:Card elevated class="mb-3">
+        <twig:Accordion id="season-sections">
+            <twig:Accordion:Item id="season-categories" title="Catégories" parent="season-sections">
+                <twig:Table>
+                    <twig:Table:Head>
+                        <twig:Table:Row>
+                            <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Prix</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Type de licence</twig:Table:HeadCell>
+                        </twig:Table:Row>
+                    </twig:Table:Head>
+                    <twig:Table:Body>
+                        {% for category in season.seasonCategories %}
+                            <twig:Table:Row>
+                                <twig:Table:Cell label="Nom">{{ category.name }}</twig:Table:Cell>
+                                <twig:Table:Cell label="Prix">{{ category.price|format_currency('EUR') }}</twig:Table:Cell>
+                                <twig:Table:Cell label="Type de licence">{{ category.textLicenseType }}</twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            </twig:Accordion:Item>
 
-                            {{ parent() }}
-                        </div>
-                    {% endblock %}
-                {% endembed %}
-            </div>
-        {% endif %}
-    </div>
+            <twig:Accordion:Item id="season-statistics" title="Statistiques" parent="season-sections">
+                {% set statisticRows = [
+                    { label: 'Attente de paiement et certificat médical', value: statistics.waitAll },
+                    { label: 'Attente de paiement', value: statistics.waitPaymentValidation },
+                    { label: 'Attente de certificat médical', value: statistics.waitMedicalCertificateValidation },
+                    { label: 'Attente de validation fédéral', value: statistics.waitValidation },
+                    { label: 'Certificat médical rejeté', value: statistics.medicalCertificateRejected },
+                    { label: 'Validé', value: statistics.validated },
+                ] %}
 
-    <div class="card border-0 shadow mb-3">
-        <div class="accordion" id="accordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingCategories">
-                    <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategories" aria-expanded="false" aria-controls="collapseCategories">
-                        Catégories
-                    </button>
-                </h2>
-                <div id="collapseCategories" class="accordion-collapse collapse" aria-labelledby="headingCategories" data-bs-parent="#accordion">
-                    <div class="accordion-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Prix</th>
-                                    <th>Type de licence</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for category in season.seasonCategories %}
-                                    <tr>
-                                        <td>{{ category.name }}</td>
-                                        <td>{{ category.price }} €</td>
-                                        <td>{{ category.textLicenseType }}</td>
-                                        <td></td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingStatistics">
-                    <button class="accordion-button collapsed fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStatistics" aria-expanded="false" aria-controls="collapseStatistics">
-                        Statistiques
-                    </button>
-                </h2>
-                <div id="collapseStatistics" class="accordion-collapse collapse" aria-labelledby="headingStatistics" data-bs-parent="#accordion">
-                    <div class="accordion-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Status</th>
-                                    <th>Nombre</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Attente de paiement et certificat médical</td>
-                                    <td>{{ statistics.waitAll }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de paiement</td>
-                                    <td>{{ statistics.waitPaymentValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de certificat médical</td>
-                                    <td>{{ statistics.waitMedicalCertificateValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Attente de validation fédéral</td>
-                                    <td>{{ statistics.waitValidation }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Certificat médical rejeté</td>
-                                    <td>{{ statistics.medicalCertificateRejected }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Validé</td>
-                                    <td>{{ statistics.validated }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Total Licences</td>
-                                    <td>{{ statistics.total }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card border-0 shadow mb-3">
-        <div class="card-body">
-            <div class="card mt-3">
-                <div class="card-header d-flex">
-                    <span class="h5 align-self-center">Licences</span>
-
-                    <a href="{{ path('license_new', { 'seasonId': season.id }) }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-                        <span class="fas fa-plus"></span> Ajouter une licence
-                    </a>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <div class="btn-group btn-group-sm">
-                                {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
-                                    <a class="btn btn-outline-success" href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}">
-                                        <span class="fas fa-file-medical-alt"></span> Valider les certificats
-                                    </a>
-                                {% endif %}
-
-                                {% if is_granted('ROLE_SEASON_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
-                                    <button type="button" class="btn btn-outline-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="fas fa-file-export"></span> Exporter
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        {% if is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
-                                            <li><a class="dropdown-item" href="{{ path('season_export_payments', { 'id': season.id }) }}">Paiements</a></li>
-                                        {% endif %}
-
-                                        {% if is_granted('ROLE_SEASON_ADMIN') %}
-                                            <li><a class="dropdown-item" href="{{ path('season_export_contact', { 'id': season.id }) }}">Contacts</a></li>
-                                            <li><a class="dropdown-item" href="{{ path('season_export_license', { 'id': season.id }) }}">Licences</a></li>
-                                        {% endif %}
-                                    </ul>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6 mt-3 mt-md-0">
-                            <form method="get" class="ms-auto">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
-                                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="table-responsive mt-3">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Type</th>
-                                <th>Level</th>
-                                <th>Status de la licence</th>
-                                {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
-                                    <th>Certificat</th>
-                                {% endif %}
-                                <th>Option I.A.</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for license in licenses %}
-                                <tr>
-                                    <td>
-                                        {% if is_granted('ROLE_USER_ADMIN') %}
-                                            <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
-                                        {% else %}
-                                            {{ license.user.fullName }}
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ license.medicalCertificate.type.label }}</td>
-                                    <td>{{ license.medicalCertificate.level.label }}</td>
-                                    <td>
-                                        {% for place in workflow_marked_places(license)  %}
-                                            <div>
-                                                <span class="badge rounded-pill bg-{{ workflow_metadata(license, 'badge', place) }}">
-                                                    {{ workflow_metadata(license, 'title', place) }}
-                                                </span>
-                                            </div>
-                                        {% endfor %}
-                                    </td>
-                                    {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
-                                        <td>
-                                            <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" data-turbo="false">
-                                                <span class="far fa-file-pdf"></span> Certificat
-                                            </a>
-                                        </td>
-                                    {% endif %}
-                                    <td>{{ license.optionalInsurance ? 'Oui' : 'Non' }}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-end align-items-center">
-                                            <div
-                                                class="btn-group-vertical btn-group-sm me-3"
-                                                role="group"
-                                                data-turbo-prefetch="false"
-                                            >
-                                                {% if workflow_can(license, 'unreject_medical_certificate') %}
-                                                    <form method="post" action="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}" class="d-grid">
-                                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
-                                                        <button type="submit" class="btn btn-danger">
-                                                            Passer le certificat en attente de validation
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-
-                                                {% if workflow_can(license, 'validate_payment') %}
-                                                    <a class="btn btn-primary" href="{{ path('license_validate_payment', { seasonId: season.id, id: license.id }) }}">
-                                                        Valider le paiement
-                                                    </a>
-                                                {% endif %}
-
-                                                {% if workflow_can(license, 'validate_license') %}
-                                                    <form method="post" action="{{ path('license_validate', { seasonId: season.id, id: license.id }) }}" class="d-grid">
-                                                        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
-                                                        <button type="submit" class="btn btn-primary">
-                                                            Valider la licence
-                                                        </button>
-                                                    </form>
-                                                {% endif %}
-                                            </div>
-
-                                            <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                               href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
-                                                <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="7" class="text-center">Pas de licence</td>
-                                </tr>
+                <div class="row">
+                    <div class="col-12 col-md-8 col-xl-6">
+                        <twig:ListGroup flush>
+                            {% for row in statisticRows %}
+                                <twig:ListGroup:Item split class="gap-3 align-items-baseline">
+                                    <span>{{ row.label }}</span>
+                                    <span class="text-nowrap">{{ row.value }}</span>
+                                </twig:ListGroup:Item>
                             {% endfor %}
-                            </tbody>
-                        </table>
 
-                        {% if licenses|length < licenses.totalItemCount %}
-                            {{ knp_pagination_render(licenses) }}
+                            <twig:ListGroup:Item split emphasis class="gap-3 align-items-baseline">
+                                <span>Total licences</span>
+                                <span class="text-nowrap">{{ statistics.total }}</span>
+                            </twig:ListGroup:Item>
+                        </twig:ListGroup>
+                    </div>
+                </div>
+            </twig:Accordion:Item>
+        </twig:Accordion>
+    </twig:Card>
+
+    <twig:Card elevated>
+        <twig:Card:Header>
+            <h2 class="fs-5 mb-0">Licences</h2>
+
+            <twig:block name="actions">
+                <twig:Button variant="primary" outline size="sm" href="{{ path('license_new', { 'seasonId': season.id }) }}">
+                    <twig:ux:icon name="mdi:plus" /> Ajouter une licence
+                </twig:Button>
+            </twig:block>
+        </twig:Card:Header>
+
+        <twig:Card:Header>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions sur les licences">
+                        {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                            <twig:Button variant="success" outline href="{{ path('license_validate_medical_certificate', { 'seasonId': season.id }) }}">
+                                <twig:ux:icon name="mdi:file-check" /> Valider les certificats
+                            </twig:Button>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_SEASON_ADMIN') or is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
+                            <twig:Dropdown:Toggle variant="secondary" outline>
+                                <twig:ux:icon name="mdi:file-export" /> Exporter
+                            </twig:Dropdown:Toggle>
+
+                            <twig:Dropdown:Menu>
+                                {% if is_granted('ROLE_SEASON_PAYMENTS_ADMIN') %}
+                                    <twig:Dropdown:Item :href="path('season_export_payments', { 'id': season.id })" download>Paiements</twig:Dropdown:Item>
+                                {% endif %}
+
+                                {% if is_granted('ROLE_SEASON_ADMIN') %}
+                                    <twig:Dropdown:Item :href="path('season_export_license', { 'id': season.id })" download>Licences</twig:Dropdown:Item>
+                                {% endif %}
+                            </twig:Dropdown:Menu>
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="col-12 col-md-6 mt-3 mt-md-0">
+                    <twig:SearchForm
+                        id="license-search"
+                        label="Rechercher un membre"
+                        size="sm"
+                    />
+                </div>
             </div>
-        </div>
-    </div>
+        </twig:Card:Header>
+
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Type</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Niveau</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Statut de la licence</twig:Table:HeadCell>
+                    {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                        <twig:Table:HeadCell>Certificat</twig:Table:HeadCell>
+                    {% endif %}
+                    <twig:Table:HeadCell>Option I.A.</twig:Table:HeadCell>
+                    <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
+                {% for license in licenses %}
+                    <twig:Table:Row>
+                        <twig:Table:RowHeader>
+                            {% if is_granted('ROLE_USER_ADMIN') %}
+                                <a href="{{ path('user_show', {'id': license.user.id}) }}">{{ license.user.fullName }}</a>
+                            {% else %}
+                                {{ license.user.fullName }}
+                            {% endif %}
+                        </twig:Table:RowHeader>
+                        <twig:Table:Cell label="Type">{{ license.medicalCertificate.type.label }}</twig:Table:Cell>
+                        <twig:Table:Cell label="Niveau">{{ license.medicalCertificate.level.label }}</twig:Table:Cell>
+                        <twig:Table:Cell label="Statut de la licence">
+                            <ul class="app-license-states">
+                                {% for place in workflow_marked_places(license) %}
+                                    <li class="app-license-state" data-tone="{{ workflow_metadata(license, 'badge', place) }}">
+                                        {{- workflow_metadata(license, 'title', place) -}}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </twig:Table:Cell>
+                        {% if is_granted('ROLE_SEASON_MEDICAL_CERTIFICATE_ADMIN') %}
+                            <twig:Table:Cell label="Certificat">
+                                <a href="{{ path('medical_certificate_download', {'id': license.medicalCertificate.id}) }}" download>
+                                    <twig:ux:icon name="mdi:file-pdf-box" /> Certificat
+                                </a>
+                            </twig:Table:Cell>
+                        {% endif %}
+                        <twig:Table:Cell label="Option I.A.">{{ license.optionalInsurance ? 'Oui' : 'Non' }}</twig:Table:Cell>
+                        <twig:Table:Cell actions>
+                            <div class="d-flex justify-content-end">
+                                <div class="d-grid gap-1">
+                                    {% if workflow_can(license, 'unreject_medical_certificate') %}
+                                        <form method="post" action="{{ path('license_medical_certificate_action', { seasonId: season.id, id: license.id, transitionName: 'unreject' }) }}" class="d-grid">
+                                            <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                            <twig:Button variant="danger" outline size="sm">
+                                                Remettre en attente
+                                            </twig:Button>
+                                        </form>
+                                    {% endif %}
+
+                                    {# `size` is spelled out now: it used to come from `btn-group-sm`. #}
+                                    {% if workflow_can(license, 'validate_payment') %}
+                                        <twig:Button variant="primary" size="sm" href="{{ path('license_validate_payment', { seasonId: season.id, id: license.id }) }}">
+                                            Valider le paiement
+                                        </twig:Button>
+                                    {% endif %}
+
+                                    {% if workflow_can(license, 'validate_license') %}
+                                        <form method="post" action="{{ path('license_validate', { seasonId: season.id, id: license.id }) }}" class="d-grid">
+                                            <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+                                            <twig:Button variant="primary" size="sm">
+                                                Valider la licence
+                                            </twig:Button>
+                                        </form>
+                                    {% endif %}
+
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('license_edit', {'seasonId': license.seasonCategory.season.id, 'id': license.id}) }}">
+                                        <twig:ux:icon name="mdi:pencil" /> Modifier
+                                    </twig:Button>
+                                </div>
+                            </div>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% else %}
+                    <twig:Table:Row>
+                        <twig:Table:Cell span>
+                            <twig:EmptyState
+                                :text="isSearching ? 'Aucune licence ne correspond à cette recherche' : 'Pas de licence'"
+                            />
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
+
+        {% if licenses|length < licenses.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="licenses" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

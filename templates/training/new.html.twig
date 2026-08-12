@@ -1,19 +1,17 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Ajouter un entraînement{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Mes entraînements</a></li>
-    <li class="breadcrumb-item active">Ajouter un entraînement</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('training_index') }}">Mes entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ajouter un entraînement</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Ajouter un entraînement</h1>
+{% block page_title %}Ajouter un entraînement{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('training/_form.html.twig') }}
-        </div>
-    </div>
+{% block body %}
+    <twig:FormCard>
+        {{ include('training/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

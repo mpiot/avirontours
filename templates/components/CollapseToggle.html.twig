@@ -1,0 +1,35 @@
+{#
+ # The control that folds a section of a form away.
+ #
+ # `target` is the id of the section, given without its `#`: the three references that have to agree
+ # — `data-bs-target`, `aria-controls`, and the chevron the styles turn over — are all derived from
+ # that one value here, instead of being repeated at the call site.
+ #
+ # `expanded` says whether the section starts open. It is not decoration: a section holding a field
+ # in error has to be open when the page comes back, or the member is told something is wrong and
+ # cannot see what.
+ #
+ # Full width and left-aligned because it labels the section below it rather than acting on its own.
+ #
+ # The label is captured before the button is rendered rather than written inside it: a component's
+ # body is itself a `content` block as soon as it holds anything but blocks, so a `{% block content %}`
+ # written in there would be a second block of that name.
+ #}
+{% props target, expanded = false %}
+
+{% set label %}{% block content %}{% endblock %}{% endset %}
+
+<twig:Button
+    variant="secondary"
+    outline
+    type="button"
+    data-bs-toggle="collapse"
+    :data-bs-target="'#' ~ target"
+    :aria-expanded="expanded ? 'true' : 'false'"
+    :aria-controls="target"
+    class="app-collapse-toggle w-100 text-start"
+    {{ ...attributes }}
+>
+    <twig:ux:icon name="mdi:chevron-down" class="app-collapse-chevron me-2" />
+    {{ label }}
+</twig:Button>

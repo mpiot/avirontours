@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
+use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -34,7 +35,7 @@ class TrainingHelperTest extends KernelTestCase
     use Factories;
     use ResetDatabase;
 
-    public function testSummaryRatioIsZeroForNegligibleDuration(): void
+    public function testSummaryShareIsZeroForNegligibleDuration(): void
     {
         $user = UserFactory::createOne();
         TrainingFactory::createOne([
@@ -46,27 +47,75 @@ class TrainingHelperTest extends KernelTestCase
 
         $sports = $this->currentWeekSports($user);
 
-        self::assertSame(0.0, $sports[0]['ratio']);
+        self::assertSame(0, $sports[0]['share']);
     }
 
-    public function testSummaryRatiosSumToOne(): void
+    public function testSummarySharesSumToOneHundred(): void
     {
         $user = UserFactory::createOne();
         $wednesday = new \DateTime('wednesday this week');
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 15, 'trainedAt' => $wednesday]);
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Running, 'duration' => 25, 'trainedAt' => $wednesday]);
 
-        $ratios = array_column($this->currentWeekSports($user), 'ratio');
+        $shares = array_column($this->currentWeekSports($user), 'share');
 
-        self::assertEqualsWithDelta(1.0, array_sum($ratios), 0.001);
-        self::assertContains(0.4, $ratios);
-        self::assertContains(0.6, $ratios);
+        self::assertSame(100, array_sum($shares));
+        self::assertSame([40, 60], $shares);
+    }
+
+    public function testSummarySharesSumToOneHundredForThreeThirds(): void
+    {
+        $user = UserFactory::createOne();
+        $wednesday = new \DateTime('wednesday this week');
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 100, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Running, 'duration' => 100, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Cycling, 'duration' => 100, 'trainedAt' => $wednesday]);
+
+        $shares = array_column($this->currentWeekSports($user), 'share');
+
+        self::assertSame(100, array_sum($shares));
+        self::assertSame([34, 33, 33], $shares);
+    }
+
+    public function testSummaryLoadOnlyCountsRatedSessions(): void
+    {
+        $user = UserFactory::createOne();
+        $wednesday = new \DateTime('wednesday this week');
+        TrainingFactory::createOne(['user' => $user, 'duration' => 18000, 'ratedPerceivedExertion' => RatedPerceivedExertion::ReallyHard, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'duration' => 9000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'duration' => 9000, 'ratedPerceivedExertion' => null, 'trainedAt' => $wednesday]);
+
+        $summary = $this->currentWeekSummary($user);
+
+        // 6 × 30 min and 4 × 15 min, plus one session nobody rated.
+        self::assertSame(240, $summary['load']);
+        self::assertSame(3, $summary['sessions']);
+    }
+
+    public function testSummaryLoadIsNullWhenNoSessionWasRated(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne([
+            'user' => $user,
+            'ratedPerceivedExertion' => null,
+            'trainedAt' => new \DateTime('wednesday this week'),
+        ]);
+
+        $summary = $this->currentWeekSummary($user);
+
+        self::assertNull($summary['load']);
+        self::assertSame(1, $summary['sessions']);
     }
 
     /**
-     * @return list<array{sport: SportType, sessions: int, duration: int, distance: int, ratio: float}>
+     * @return list<array{sport: SportType, sessions: int, duration: int, distance: int, share: int}>
      */
     private function currentWeekSports(User $user): array
+    {
+        return $this->currentWeekSummary($user)['sports'];
+    }
+
+    private function currentWeekSummary(User $user): array
     {
         $summary = self::getContainer()->get(TrainingHelper::class)->getTrainingsSummary(
             $user,
@@ -76,7 +125,7 @@ class TrainingHelperTest extends KernelTestCase
 
         foreach ($summary as $week) {
             if ([] !== $week['summary']['sports']) {
-                return $week['summary']['sports'];
+                return $week['summary'];
             }
         }
 

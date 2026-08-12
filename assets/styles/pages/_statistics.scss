@@ -1,0 +1,26 @@
+// ↔ templates/logbook_entry/_top.html.twig — the rank in front of a podium row.
+//
+// The number is the rank; the metal only decorates the first three. It used to be the other way
+// round — a medal tinted gold, silver or bronze and nothing else — so fourth place had no rank at
+// all and the first three were told apart by hue alone.
+.app-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: $spacer * .5;
+    border-radius: 50%;
+    background-color: $gray-200;
+    color: $gray-700;
+    font-size: $app-font-size-caption;
+    font-weight: $font-weight-semibold;
+    font-variant-numeric: tabular-nums;
+}
+
+@each $rank, $color in $app-medal-colors {
+    .app-rank[data-rank="#{$rank}"] {
+        background-color: $color;
+        color: $white;
+    }
+}

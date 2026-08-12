@@ -1,0 +1,39 @@
+// ↔ the workflow marking of a licence, wherever it is shown: templates/profile/show.html.twig under
+// the member's own licence cards, templates/admin/season/show.html.twig in the season's table, and
+// templates/admin/user/show.html.twig in the member's own licence table.
+//
+// Not a `Badge`: a licence carries several places at once, and a column of pills reads as a column of
+// shouts. The tone is a dot and the words do the work — which is also what keeps it legible to anyone
+// who cannot separate the tones.
+
+.app-license-states {
+    margin: ($spacer * .25) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+// The tone paints a dot; the words carry the meaning.
+.app-license-state {
+    display: flex;
+    gap: $spacer * .5;
+    align-items: flex-start;
+    color: $gray-700;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
+
+    &::before {
+        content: "";
+        flex: 0 0 auto;
+        width: .5em;
+        height: .5em;
+        margin-top: .5em; // centres the dot on the first line (line-height 1.5)
+        border-radius: 50%;
+        background-color: var(--#{$prefix}secondary);
+    }
+
+    @each $name in (success, warning, danger) {
+        &[data-tone="#{$name}"]::before {
+            background-color: var(--#{$prefix}#{$name});
+        }
+    }
+}

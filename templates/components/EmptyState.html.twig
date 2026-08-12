@@ -1,0 +1,16 @@
+{#
+ # Nothing to show yet.
+ #
+ # `text` is the whole API: every list that can be empty is reached from a page header that already
+ # carries the way to create the thing, so a call to action here would be the same button twice.
+ #
+ # It is an anonymous component, so anything passed that is not `text` lands in `attributes` and is
+ # rendered as an HTML attribute — silently when it has a value, and as a hard 500 when it is null
+ # (`attributes.defaults()` refuses one). That is what a stale `action`/`url` pair did on the user
+ # index: searching for a name that matched nothing answered 500 rather than "aucun utilisateur".
+ #}
+{% props text %}
+
+<div{{ attributes.defaults({ class: 'app-empty' }) }}>
+    <p class="mb-0">{{ text }}</p>
+</div>

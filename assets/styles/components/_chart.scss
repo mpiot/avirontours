@@ -1,0 +1,51 @@
+/**
+ * ↔ templates/homepage/homepage.html.twig and admin/training/list.html.twig — the wrapper a Chart.js
+ * canvas is dropped into.
+ *
+ * Not decoration, and not optional: every chart in `src/Chart/` sets `maintainAspectRatio: false`,
+ * so Chart.js takes its height from the parent and a canvas whose parent has none collapses. This is
+ * that height. It also keeps two charts on the same dashboard row from settling at their own aspect
+ * ratios — the bar chart at 2:1, the pie at 1:1 — and their cards half a screen apart.
+ */
+.app-chart {
+    position: relative;
+    height: 18rem;
+}
+
+/**
+ * ↔ templates/training/phase.html.twig — which phase the panels below stand for. Set like the panel
+ * titles and one step louder, because it governs them: the measures are what is plotted, this is
+ * what they were plotted from.
+ */
+.app-chart-phase-title {
+    margin-bottom: $spacer * .5;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+}
+
+/**
+ * ↔ templates/training/phase.html.twig — one measure of an ergometer session. Shorter than a
+ * dashboard chart because three of them stack: at 18rem the pile would be taller than the screen,
+ * and the point of stacking is to read them together.
+ */
+.app-chart-panel {
+    position: relative;
+    height: 9rem;
+
+    & + & {
+        margin-top: $spacer * .5;
+    }
+
+    canvas {
+        // The title takes its own line; the canvas fills what is left. `!important` because
+        // Chart.js writes the height it computed as an inline style.
+        height: calc(100% - 1.25rem) !important;
+    }
+}
+
+.app-chart-panel-title {
+    margin-bottom: 0;
+    color: $gray-600;
+    font-size: $app-font-size-label;
+    font-weight: $font-weight-medium;
+}

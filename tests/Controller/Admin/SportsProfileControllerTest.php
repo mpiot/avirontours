@@ -73,7 +73,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'physiology[maximumOxygenConsumption]' => 75.3,
             'physiology[lightAerobicHeartRateMin]' => 120,
             'physiology[heavyAerobicHeartRateMin]' => 150,
@@ -105,7 +105,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'anatomy[height]' => 175,
             'anatomy[weight]' => 69.1,
             'anatomy[armSpan]' => 160,
@@ -133,7 +133,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'physical_qualities[proprioception]' => 1,
             'physical_qualities[weightPowerRatio]' => 2,
             'physical_qualities[explosiveStrength]' => 3,
@@ -169,7 +169,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'workout_maximum_load[rowingTirage]' => 1,
             'workout_maximum_load[benchPress]' => 2,
             'workout_maximum_load[squat]' => 3,

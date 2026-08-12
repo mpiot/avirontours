@@ -1,0 +1,25 @@
+{#
+ # One figure of a `Stats`: the value large, its name under it, and an optional unit set beside the
+ # value in a smaller size.
+ #
+ # `unit` is a prop rather than something the caller writes into the body, because the two are set
+ # differently — "01:44.4" reads as the measurement and "/500m" as what it is measured in.
+ #
+ # `secondary` is the extreme that belongs to the figure — the maximum beside the average. It stays
+ # attached rather than becoming a figure of its own: "138 bpm · max 176" says more than two boxes
+ # do, in one box.
+ #
+ # The name comes first in the source because a `dl` group is a `dt` followed by its `dd`, and
+ # because that is the order it should be read in; the stylesheet is what puts the value on top.
+ #}
+{% props label, unit = null, secondary = null %}
+
+<div class="app-stat">
+    <dt class="app-stat-label">{{ label }}</dt>
+
+    <dd class="app-stat-value">
+        {%- block content %}{% endblock -%}
+        {%- if unit is not null %} <span class="app-stat-unit">{{ unit }}</span>{% endif -%}
+        {%- if secondary is not null %} <span class="app-stat-secondary">{{ secondary }}</span>{% endif -%}
+    </dd>
+</div>

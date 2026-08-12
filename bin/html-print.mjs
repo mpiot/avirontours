@@ -71,12 +71,14 @@ program.command('pdf')
             const page = await browser.newPage();
 
             await page.goto(normalizedSource, { timeout: NAVIGATION_TIMEOUT });
+            // The page size is the document's own business: without `preferCSSPageSize`, Puppeteer's
+            // default (US Letter) wins over the `@page { size: ... }` the source declares.
             await page.pdf({
                 displayHeaderFooter: undefined !== options.headerTemplate || undefined !== options.footerTemplate,
                 footerTemplate: options.footerTemplate,
                 headerTemplate: options.headerTemplate,
-                landscape: true,
                 path: destination,
+                preferCSSPageSize: true,
                 printBackground: true,
             });
         } finally {

@@ -1,0 +1,66 @@
+// ↔ templates/components/Sidebar.html.twig — the navigation items themselves are in _nav.scss.
+.app-sidebar {
+    --#{$prefix}offcanvas-width: #{$app-sidebar-width};
+
+    // Above the breakpoint Bootstrap zeroes the body's flex-grow and turns it into a *row* flex
+    // container, so the skin sizes to its content instead of filling the column. Below it, the
+    // body is a plain block: without `display: flex` the footer's `margin-top: auto` has nothing
+    // to push against and the legal link sits right under the nav.
+    .offcanvas-body {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        padding: 0;
+    }
+
+    @include media-breakpoint-up(lg) {
+        // And it leaves `.offcanvas-lg` itself a block, so that flex-grow has nothing to grow in.
+        display: flex;
+        flex: 0 0 $app-sidebar-width;
+        flex-direction: column;
+        align-self: flex-start;
+        position: sticky;
+        top: 0;
+        height: 100vh; // fallback for iOS < 15.4, which has no dvh
+        height: 100dvh;
+    }
+}
+
+.app-sidebar-inner {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding: $spacer;
+    overflow-y: auto;
+
+    // Bootstrap forces `background-color: transparent !important` on .offcanvas-lg and its body.
+    background-color: $white;
+
+    @include media-breakpoint-up(lg) {
+        border-inline-end: $border-width solid $border-color;
+    }
+}
+
+.app-brand {
+    display: flex;
+    align-items: center;
+    padding: ($spacer * .5) ($spacer * .5) ($spacer * 1.5);
+}
+
+// The legal notice: reachable, but never mistaken for navigation.
+.app-sidebar-footer {
+    margin-top: auto;
+    padding: $spacer ($spacer * .5) 0;
+    border-top: $border-width solid $border-color;
+
+    a {
+        color: $gray-600;
+        font-size: $font-size-sm;
+        text-decoration: none;
+
+        &:hover {
+            color: $body-color;
+            text-decoration: underline;
+        }
+    }
+}

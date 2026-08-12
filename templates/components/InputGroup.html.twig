@@ -1,0 +1,27 @@
+{#
+ # A control with something attached to it — an icon, a unit, a submit button.
+ #
+ # `invalid` says the group holds a `form_errors()` block, and it is a prop rather than a class the call
+ # site adds because Bootstrap's `has-validation` is a trap: it does not mark anything invalid, it moves
+ # the corner-rounding maths from "square every child but the last" to "square every child but the last
+ # two", reserving that last slot for the feedback. Set when no feedback is rendered — which is what
+ # `class="has-validation"` written in by hand did — it leaves the real last control rounded on the side
+ # it meets its unit, so `[  0,0 )( km ]` came out notched. A group with one addon showed it, a group
+ # with two showed it on the second only, which is why « h » looked right and « min » did not.
+ #}
+{% props size = null, invalid = false %}
+
+{%- set inputGroup = html_cva(
+    base: 'input-group',
+    variants: {
+        size: { sm: 'input-group-sm', lg: 'input-group-lg' },
+        invalid: { true: 'has-validation' },
+    },
+    default_variant: {
+        size: 'md',
+    },
+) -%}
+
+<div{{ attributes.defaults({ class: inputGroup.apply({ size: size, invalid: invalid }|filter(v => v is not null)) }) }}>
+    {% block content %}{% endblock %}
+</div>

@@ -1,0 +1,53 @@
+{#
+ # The account control at the end of the topbar: a dropdown when signed in, a way in when not.
+ #
+ # The logout link opts out of Turbo: the response is a redirect the session no longer authorises,
+ # and a cached snapshot of the signed-in page would come back on the way out.
+ #
+ # The toggle is named explicitly because neither of its children can name it below sm: the avatar
+ # is decorative, and the name is `d-none` there — which takes it out of the accessibility tree, not
+ # just out of sight, leaving the control anonymous on a phone. The label carries the visible text
+ # so the two agree at the widths where both are present.
+ #}
+{% if app.user is not null %}
+    <twig:Dropdown>
+        <twig:Dropdown:Toggle
+            variant="plain"
+            :caret="false"
+            data-bs-display="static"
+            aria-label="Menu du compte de {{ app.user.fullName }}"
+            class="d-flex align-items-center gap-2"
+        >
+            <span class="app-avatar" aria-hidden="true">{{ app.user.firstName|first|upper }}{{ app.user.lastName|first|upper }}</span>
+            <span class="d-none d-sm-inline">{{ app.user.fullName }}</span>
+        </twig:Dropdown:Toggle>
+
+        <twig:Dropdown:Menu align="end">
+            <twig:Dropdown:Item :href="path('profile_show')">
+                <twig:ux:icon name="mdi:account" class="app-nav-icon" /> Mon profil
+            </twig:Dropdown:Item>
+
+            <twig:Dropdown:Item :href="path('sport_profile_physiology')">
+                <twig:ux:icon name="mdi:run" class="app-nav-icon" /> Mon profil sportif
+            </twig:Dropdown:Item>
+
+            {% if is_granted('IS_IMPERSONATOR') %}
+                <twig:Dropdown:Divider />
+
+                <twig:Dropdown:Item :href="path('user_index', {'_switch_user': '_exit'})" tone="danger">
+                    <twig:ux:icon name="mdi:account-switch" class="app-nav-icon" /> Quitter l'impersonation
+                </twig:Dropdown:Item>
+            {% endif %}
+
+            <twig:Dropdown:Divider />
+
+            <twig:Dropdown:Item :href="logout_path()" data-turbo="false">
+                <twig:ux:icon name="mdi:logout" class="app-nav-icon" /> Se déconnecter
+            </twig:Dropdown:Item>
+        </twig:Dropdown:Menu>
+    </twig:Dropdown>
+{% else %}
+    <twig:Button variant="primary" size="sm" href="{{ path('app_login') }}">
+        <twig:ux:icon name="mdi:login" /> Se connecter
+    </twig:Button>
+{% endif %}

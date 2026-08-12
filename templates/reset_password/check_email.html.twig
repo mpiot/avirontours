@@ -1,4 +1,4 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
 {% block title %}Envoi d'un email de réinitialisation du mot de passe{% endblock %}
 
@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="text-primary text-center mb-4">
-        <span class="fas fa-3x fa-envelope-open-text" aria-hidden="true"></span>
+        <twig:ux:icon name="mdi:email-open" width="3em" height="3em" />
     </div>
 
     <p>
@@ -21,7 +21,7 @@
     <p class="form-text">Rien reçu&nbsp;? Vérifiez vos courriers indésirables.</p>
 
     <div class="d-grid gap-2 mt-4">
-        <a class="btn btn-lg btn-primary" href="{{ path('app_login') }}">Retour à la connexion</a>
-        <a class="btn btn-link" href="{{ path('app_forgot_password_request') }}">Renvoyer un email</a>
+        <twig:Button variant="primary" size="lg" href="{{ path('app_login') }}">Retour à la connexion</twig:Button>
+        <twig:Button variant="link" href="{{ path('app_forgot_password_request') }}">Renvoyer un email</twig:Button>
     </div>
 {% endblock %}

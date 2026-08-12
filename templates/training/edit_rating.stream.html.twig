@@ -1,0 +1,21 @@
+<twig:Flashes:Stream />
+
+<turbo-stream action="update" target="training-load">
+    <template>
+        {{ include('training/_load.html.twig') }}
+    </template>
+</turbo-stream>
+
+<turbo-stream action="update" target="rating">
+    <template>
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.feeling) }}
+            {{ form_row(form.ratedPerceivedExertion) }}
+
+            <div class="d-flex justify-content-end">
+                <twig:Button variant="primary" size="sm">Enregistrer</twig:Button>
+            </div>
+        {{ form_end(form) }}
+    </template>
+</turbo-stream>

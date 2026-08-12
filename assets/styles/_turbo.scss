@@ -1,0 +1,32 @@
+/**
+ * Turbo.js
+ *
+ * No template of its own: Turbo injects the progress bar and sets `aria-busy` at runtime, on every
+ * page. Emitted last so `[aria-busy]` keeps beating the opacity utilities it shares a specificity
+ * with.
+ */
+.turbo-progress-bar {
+    background-color: tint-color($primary, 40%);
+}
+
+/**
+ * What is waiting is dimmed — but only the part of the page that is.
+ *
+ * Turbo marks three things busy: the document on every Drive visit, the frame it is loading, and the
+ * form it is submitting. Naming all three at once meant a plain click dimmed the whole viewport for
+ * however long the response took, ahead of the progress bar, which Turbo holds back 500 ms precisely
+ * so that a fast answer shows nothing at all — so every navigation flashed. It also stacked: a frame
+ * loading inside a busy document came out at .25, which is what put the training page's skeleton on
+ * the edge of visible.
+ *
+ * The two named below are the ones with somewhere to put the state. A whole-page visit has the
+ * progress bar.
+ */
+turbo-frame[aria-busy="true"],
+form[aria-busy="true"] {
+    opacity: .5;
+
+    @media (prefers-reduced-motion: no-preference) {
+        transition: opacity .15s ease-in-out;
+    }
+}

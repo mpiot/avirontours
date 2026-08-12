@@ -1,0 +1,39 @@
+{% extends 'layouts/document.html.twig' %}
+
+{% set covers = [
+    'build/images/cover1.webp',
+    'build/images/cover2.webp',
+    'build/images/cover3.webp',
+    'build/images/cover4.webp',
+] %}
+{% set cover = covers[('now'|date('z')) % covers|length] %}
+
+{% block body_attributes %} class="auth-page" style="--auth-cover: url('{{ preload(asset(cover), { as: 'image' }) }}')"{% endblock %}
+
+{% block layout %}
+    <div class="auth-shell">
+        <div class="auth-brand">
+            <img src="{{ asset('build/images/logo_white.svg') }}" width="160" height="72" alt="Aviron Tours Métropole"/>
+        </div>
+
+        <main class="auth-card">
+            <div class="mb-4">
+                <h1 class="fs-4 mb-1">{% block heading %}{% endblock %}</h1>
+
+                {% if block('subtitle')|trim is not empty %}
+                    <p class="text-secondary mb-0">{% block subtitle %}{% endblock %}</p>
+                {% endif %}
+            </div>
+
+            <twig:Flashes inline />
+
+            {% block body %}{% endblock %}
+
+            <p class="auth-legal border-top pt-3 mb-0 text-center small">
+                <a class="link-secondary" href="{{ path('legal_notice') }}">Mentions légales</a>
+                &middot;
+                <a class="link-secondary" href="{{ path('privacy_policy') }}">Confidentialité</a>
+            </p>
+        </main>
+    </div>
+{% endblock %}

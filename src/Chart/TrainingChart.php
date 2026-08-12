@@ -83,10 +83,13 @@ final readonly class TrainingChart
                         SportType::Strengthening->color(),
                         SportType::Other->color(),
                     ],
+                    'borderColor' => '#fff',
+                    'borderWidth' => 2,
                 ],
             ],
         ]);
         $chart->setOptions([
+            'maintainAspectRatio' => false,
             'plugins' => [
                 'legend' => [
                     'position' => 'right',

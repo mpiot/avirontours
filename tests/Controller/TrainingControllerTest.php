@@ -20,13 +20,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Entity\Training;
+use App\Enum\Feeling;
+use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use App\Factory\LicenseFactory;
 use App\Factory\TrainingFactory;
+use App\Factory\TrainingPhaseFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrainingControllerTest extends AppWebTestCase
@@ -87,7 +90,53 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/training');
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(6, $crawler->filterXPath('//div[@id="training-list"]//div[starts-with(@id, "training-")]'));
+        $this->assertCount(6, $crawler->filter('#training-list .app-training-session'));
+    }
+
+    public function testIndexShowsAPaceOnlyForTheSportsThatHaveOne(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        foreach ([SportType::Rowing, SportType::Yoga] as $sport) {
+            TrainingFactory::createOne([
+                'user' => $user,
+                'sport' => $sport,
+                'trainedAt' => new \DateTime('monday this week'),
+                'duration' => 36000,
+                'distance' => 10000,
+            ]);
+        }
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString("03:00.0\u{A0}/500m", $this->sessionText($crawler, 'Aviron'));
+        $this->assertStringNotContainsString('/500m', $this->sessionText($crawler, 'Yoga'));
+    }
+
+    public function testIndexMarksTheSessionsThatHaveNoEffortRating(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $monday = new \DateTime('monday this week');
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'ratedPerceivedExertion' => RatedPerceivedExertion::VeryHard, 'trainedAt' => $monday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Yoga, 'ratedPerceivedExertion' => null, 'trainedAt' => $monday]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training');
+
+        $this->assertResponseIsSuccessful();
+
+        $rated = $this->sessionText($crawler, 'Aviron');
+
+        $this->assertStringContainsString("Effort perçu\u{A0}:7/10", $rated);
+        $this->assertStringNotContainsString('non renseigné', $rated);
+        $this->assertStringContainsString('Effort perçu non renseigné', $this->sessionText($crawler, 'Yoga'));
     }
 
     #[DataProvider('endAtProvider')]
@@ -103,17 +152,85 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testShowTraining(): void
+    public function testShowTrainingDisplaysEverythingRecorded(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'sport' => SportType::Rowing,
+            'duration' => 36000,
+            'distance' => 10000,
+            'feeling' => Feeling::Good,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::VeryHard,
+            'strokeRate' => 22,
+            'averageHeartRate' => 148,
+            'maxHeartRate' => 176,
+        ]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/'.$training->getId());
+        $crawler = $client->request('GET', '/training/'.$training->getId());
 
         $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('03:00.0 /500m', $crawler->filter('.app-stat-list')->eq(0)->text());
+
+        $intensity = $crawler->filter('.app-stat-list')->eq(1)->text();
+        $this->assertStringContainsString('22 c/min', $intensity);
+        $this->assertStringContainsString('148 bpm', $intensity);
+        $this->assertStringContainsString('max 176', $intensity);
+
+        $rating = $crawler->filter('#rating')->text();
+        $this->assertStringContainsString('Bien', $rating);
+        $this->assertStringContainsString('7', $rating);
+        $this->assertStringContainsString('Très dur', $rating);
+        $this->assertCount(0, $crawler->filter('#rating form'));
+        $this->assertStringContainsString('Charge 420', $crawler->filter('.app-training-detail')->text());
+    }
+
+    public function testShowTrainingAsksForTheRatingWhenSomethingIsMissing(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $complete = TrainingFactory::createOne(['user' => $user, 'feeling' => Feeling::Good, 'ratedPerceivedExertion' => RatedPerceivedExertion::Hard]);
+        $noEffort = TrainingFactory::createOne(['user' => $user, 'feeling' => Feeling::Good, 'ratedPerceivedExertion' => null]);
+        $noFeeling = TrainingFactory::createOne(['user' => $user, 'feeling' => null, 'ratedPerceivedExertion' => RatedPerceivedExertion::Hard]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training/'.$noEffort->getId());
+
+        $this->assertCount(1, $crawler->filter('#rating turbo-frame[src$="/edit/rating"]'));
+
+        $crawler = $client->request('GET', '/training/'.$noFeeling->getId());
+
+        $this->assertCount(1, $crawler->filter('#rating turbo-frame[src$="/edit/rating"]'));
+
+        $crawler = $client->request('GET', '/training/'.$complete->getId());
+
+        $this->assertCount(0, $crawler->filter('#rating turbo-frame'));
+    }
+
+    public function testShowTrainingGivesWattsToTheErgometerOnly(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $ergometer = TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Ergometer, 'duration' => 36000, 'distance' => 10000]);
+        $rowing = TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 36000, 'distance' => 10000]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training/'.$ergometer->getId());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringContainsString('Puissance', $crawler->filter('.app-training-detail')->text());
+
+        $crawler = $client->request('GET', '/training/'.$rowing->getId());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertStringNotContainsString('Puissance', $crawler->filter('.app-training-detail')->text());
     }
 
     public function testShowOtherUserTraining(): void
@@ -129,6 +246,190 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    public function testRateTraining(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'duration' => 36000,
+            'feeling' => null,
+            'ratedPerceivedExertion' => null,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit/rating');
+        $client->submit($crawler->selectButton('Enregistrer')->form([
+            'training_edit_rating[feeling]' => Feeling::Good->value,
+            'training_edit_rating[ratedPerceivedExertion]' => RatedPerceivedExertion::ExtremelyHard->value,
+        ]));
+
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('Content-Type', 'text/vnd.turbo-stream.html; charset=UTF-8');
+
+        $stream = $client->getCrawler();
+
+        $this->assertCount(1, $stream->filter('turbo-stream[action="append"][target="flashes"]'));
+        $this->assertStringContainsString('480', $stream->filter('turbo-stream[target="training-load"]')->text());
+        $this->assertStringContainsString('Bien', $stream->filter('turbo-stream[target="rating"]')->text());
+        $this->assertCount(0, $stream->filter('turbo-stream[target="rating"] form'));
+
+        TrainingFactory::repository()->assert()->exists([
+            'id' => $training->getId(),
+            'feeling' => Feeling::Good,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::ExtremelyHard,
+        ]);
+    }
+
+    public function testRateTrainingWithHalfAnAnswer(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'feeling' => null,
+            'ratedPerceivedExertion' => null,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit/rating');
+        $client->submit($crawler->selectButton('Enregistrer')->form([
+            'training_edit_rating[feeling]' => Feeling::Good->value,
+        ]));
+
+        $this->assertResponseIsSuccessful();
+
+        $stream = $client->getCrawler();
+
+        $this->assertCount(1, $stream->filter('turbo-stream[action="append"][target="flashes"]'));
+        $this->assertCount(1, $stream->filter('turbo-stream[target="training-load"]'));
+        $this->assertCount(1, $stream->filter('turbo-stream[target="rating"] form'));
+
+        TrainingFactory::repository()->assert()->exists([
+            'id' => $training->getId(),
+            'feeling' => Feeling::Good,
+            'ratedPerceivedExertion' => null,
+        ]);
+    }
+
+    public function testRateOtherUserTraining(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('POST', '/training/'.$training->getId().'/edit/rating');
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testShowTrainingPhase(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user]);
+        $phases = TrainingPhaseFactory::createSequence([
+            ['training' => $training],
+            ['training' => $training],
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}/phase/{$phases[1]->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(2, $crawler->filter('turbo-frame#training-phases tbody tr'));
+        $this->assertCount(1, $crawler->filter('tbody tr.table-active'));
+        $this->assertCount(2, $crawler->filter('canvas[data-controller~="ergometer-chart"]'));
+    }
+
+    public function testShowTrainingPhaseOfASinglePhaseTraining(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user]);
+        $phase = TrainingPhaseFactory::createOne([
+            'training' => $training,
+            'heartRates' => array_fill(0, 12, 140),
+            'times' => range(1, 12),
+            'paces' => array_fill(0, 12, 1500),
+            'strokeRates' => array_fill(0, 12, 20),
+            'distances' => range(1, 12),
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}/phase/{$phase->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(3, $crawler->filter('canvas[data-controller~="ergometer-chart"]'));
+        $this->assertStringContainsString('Fréquence cardiaque', $crawler->filter('turbo-frame#training-phases')->text());
+        $this->assertCount(0, $crawler->filter('turbo-frame#training-phases table'));
+    }
+
+    public function testShowTrainingPhaseWithoutSeriesHasNoChart(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user]);
+        $phase = TrainingPhaseFactory::new()->withoutSeries()->create(['training' => $training]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}/phase/{$phase->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(0, $crawler->filter('canvas'));
+        $this->assertStringContainsString('Pas de données', $crawler->filter('turbo-frame#training-phases')->text());
+    }
+
+    public function testShowTrainingPhaseOfAnotherTraining(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user]);
+        $phase = TrainingPhaseFactory::createOne(['training' => TrainingFactory::createOne(['user' => $user])]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', "/training/{$training->getId()}/phase/{$phase->getId()}");
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    public function testShowOtherUserTrainingPhase(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $phase = TrainingPhaseFactory::createOne();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', "/training/{$phase->getTraining()->getId()}/phase/{$phase->getId()}");
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testNewTrainingOffersEveryChoiceAsRadios(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/new');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(0, $crawler->filter('form select'));
+        $this->assertCount(\count(SportType::cases()), $crawler->filter('#training_sport input[type="radio"]'));
+        $this->assertCount(\count(Feeling::cases()) + 1, $crawler->filter('#training_feeling input[type="radio"]'));
+        $this->assertCount(\count(RatedPerceivedExertion::cases()) + 1, $crawler->filter('#training_ratedPerceivedExertion input[type="radio"]'));
+    }
+
     public function testNewTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
@@ -139,20 +440,19 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
         $this->assertResponseRedirects();
 
-        /** @var Training $training */
         $training = TrainingFactory::repository()->last();
 
         $this->assertSame('2020-01-15 00:00', $training->getTrainedAt()->format('Y-m-d H:i'));
@@ -160,8 +460,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16300, $training->getDistance());
-        $this->assertSame(0.75, $training->getFeeling());
-        $this->assertSame(4, $training->getRatedPerceivedExertion());
+        $this->assertSame(Feeling::Good, $training->getFeeling());
+        $this->assertSame(RatedPerceivedExertion::SomewhatHard, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -175,20 +475,19 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => '',
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
         $this->assertResponseRedirects();
 
-        /** @var Training $training */
         $training = TrainingFactory::repository()->last();
 
         $this->assertSame('2020-01-15 00:00', $training->getTrainedAt()->format('Y-m-d H:i'));
@@ -196,8 +495,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertNull($training->getDistance());
-        $this->assertSame(0.75, $training->getFeeling());
-        $this->assertSame(4, $training->getRatedPerceivedExertion());
+        $this->assertSame(Feeling::Good, $training->getFeeling());
+        $this->assertSame(RatedPerceivedExertion::SomewhatHard, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -211,14 +510,14 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 0,
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -239,14 +538,14 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 501,
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -267,24 +566,21 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        // Sport is a radio group: leaving it unanswered means not submitting it.
+        $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '',
-            'training[sport]' => '',
             'training[duration][hours]' => '',
             'training[duration][minutes]' => '',
             'training[distance]' => '',
-            'training[feeling]' => '',
-            'training[ratedPerceivedExertion]' => 0,
             'training[comment]' => '',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_feeling')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration_hours')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
-        $this->assertCount(4, $crawler->filter('.invalid-feedback'));
+        $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
@@ -298,19 +594,19 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 0,
             'training[duration][minutes]' => 2,
             'training[distance]' => 16.3,
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration_hours')->closest('fieldset')->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
@@ -327,14 +623,14 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
             'training[duration][hours]' => 1,
             'training[duration][minutes]' => 30,
             'training[distance]' => 16.3,
-            'training[feeling]' => 0.75,
-            'training[ratedPerceivedExertion]' => 4,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
@@ -344,8 +640,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(54000, $training->getDuration());
         $this->assertSame('01:30', $training->getFormattedDuration());
         $this->assertSame(16300, $training->getDistance());
-        $this->assertSame(0.75, $training->getFeeling());
-        $this->assertSame(4, $training->getRatedPerceivedExertion());
+        $this->assertSame(Feeling::Good, $training->getFeeling());
+        $this->assertSame(RatedPerceivedExertion::SomewhatHard, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
     }
 
@@ -392,7 +688,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/import/concept-logbook');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-        self::assertCount(0, self::getContainer()->get('messenger.transport.async')->getSent());
+        $this->assertCount(0, self::getContainer()->get('messenger.transport.async')->getSent());
     }
 
     public function testImportConceptLogbookDispatchesForConnectedAccount(): void
@@ -406,10 +702,22 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/import/concept-logbook');
 
         $this->assertResponseRedirects('/training');
-        self::assertCount(1, self::getContainer()->get('messenger.transport.async')->getSent());
+        $this->assertCount(1, self::getContainer()->get('messenger.transport.async')->getSent());
 
         $client->followRedirect();
         $this->assertSelectorTextContains('.toast-body', 'en cours de synchronisation');
+    }
+
+    private function sessionText(Crawler $crawler, string $sportLabel): string
+    {
+        $sessions = $crawler->filter('#training-list .app-training-session')->each(static fn (Crawler $session): string => $session->text());
+        $session = current(array_filter($sessions, static fn (string $text): bool => str_contains($text, $sportLabel)));
+
+        if (false === $session) {
+            self::fail("No \"{$sportLabel}\" session on the index.");
+        }
+
+        return $session;
     }
 
     public static function urlProvider(): \Generator

@@ -1,0 +1,13 @@
+{% extends 'layouts/app.html.twig' %}
+
+{% block title %}Mon espace{% endblock %}
+
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item>Mon espace</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Mon espace{% endblock %}
+
+{% block body %}
+    {{ include('_menu.html.twig', { view: 'my_space' }, with_context = false) }}
+{% endblock %}

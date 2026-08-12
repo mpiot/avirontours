@@ -1,71 +1,73 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion des utilisateurs{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion des utilisateurs</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion des utilisateurs</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Gestion des utilisateurs{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="primary" outline size="sm" href="{{ path('user_new') }}">
+        <twig:ux:icon name="mdi:plus" /> Ajouter un utilisateur
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion des utilisateurs</h1>
+    {% set isSearching = app.request.query.get('q') is not empty %}
 
-        <a href="{{ path('user_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter un utilisateur
-        </a>
-    </div>
+    <twig:Card elevated>
+        <twig:Card:Header>
+            <twig:SearchForm
+                id="user-search"
+                label="Rechercher un membre"
+            />
+        </twig:Card:Header>
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <form method="get">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><span class="fa fa-search"></span></span>
-                    <input type="search" class="form-control" id="q" name="q" placeholder="Rechercher..." value="{{ app.request.query.get('q') }}" aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-            </form>
-
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Email</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Email</twig:Table:HeadCell>
+                        <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for user in users %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullName }}</a>
-                            </td>
-                            <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                            <td class="text-end">
+                        <twig:Table:Row>
+                            <twig:Table:RowHeader>
+                                <a href="{{ path('user_show', {'id': user.id}) }}" class="stretched-link">{{ user.fullName }}</a>
+                            </twig:Table:RowHeader>
+                            <twig:Table:Cell label="Email"><a href="mailto:{{ user.email }}">{{ user.email }}</a></twig:Table:Cell>
+                            <twig:Table:Cell actions>
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                    <a class="btn btn-outline-info btn-sm rounded-pill"
-                                       href="{{ path('homepage', {'_switch_user': user.username}) }}">
-                                        <span class="fas fa-people-arrows"></span> <span class="d-none d-lg-inline">Impersonate</span>
-                                    </a>
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('homepage', {'_switch_user': user.username}) }}">
+                                        <twig:ux:icon name="mdi:account-switch" /> Prendre l'identité
+                                    </twig:Button>
                                 {% endif %}
-                                <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                   href="{{ path('user_edit', {'id': user.id}) }}">
-                                    <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                </a>
-                            </td>
-                        </tr>
+                                <twig:Button variant="secondary" outline size="sm" href="{{ path('user_edit', {'id': user.id}) }}">
+                                    <twig:ux:icon name="mdi:pencil" /> Modifier
+                                </twig:Button>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Pas d'utilisateur</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span>
+                                <twig:EmptyState :text="isSearching ? 'Aucun utilisateur ne correspond à cette recherche' : 'Pas d\'utilisateur'"/>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-                {% if users|length < users.totalItemCount %}
-                    {{ knp_pagination_render(users) }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% if users|length < users.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="users" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

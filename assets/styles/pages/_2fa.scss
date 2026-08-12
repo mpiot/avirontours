@@ -1,0 +1,7 @@
+// ↔ templates/security/2fa_form.html.twig — the six-digit code, spaced out to be read back aloud.
+.auth-code {
+    font-size: $h3-font-size;
+    letter-spacing: .5rem;
+    text-align: center;
+    text-indent: .5rem;
+}

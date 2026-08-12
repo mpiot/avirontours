@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -28,21 +27,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('PUBLIC_ACCESS')]
 class StaticController extends AbstractController
 {
-    #[Route(path: '/mentions-legales', name: 'legal_notice')]
+    #[Route(path: '/legal-notice', name: 'legal_notice')]
     public function legalNotice(): Response
     {
         return $this->render('static/legal_notice.html.twig');
     }
 
-    #[Route(path: '/release-notes', name: 'release_notes')]
-    public function releaseNotes(string $projectDir): Response
+    #[Route(path: '/privacy-policy', name: 'privacy_policy')]
+    public function privacyPolicy(): Response
     {
-        $finder = new Finder();
-        $finder->in($projectDir)->files()->depth('== 0')->name('changelog.json');
-        $releases = json_decode(array_values(iterator_to_array($finder))[0]->getContents(), true);
-
-        return $this->render('static/release_notes.html.twig', [
-            'releases' => $releases,
-        ]);
+        return $this->render('static/privacy_policy.html.twig');
     }
 }

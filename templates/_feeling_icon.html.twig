@@ -1,0 +1,11 @@
+{% if 0 == feeling %}
+    <twig:ux:icon name="mdi:smiley-dead-outline" />
+{% elseif 25 == feeling %}
+    <twig:ux:icon name="mdi:smiley-sad-outline" />
+{% elseif 50 == feeling %}
+    <twig:ux:icon name="mdi:smiley-neutral-outline" />
+{% elseif 75 == feeling %}
+    <twig:ux:icon name="mdi:smiley-happy-outline" />
+{% elseif 100 == feeling %}
+    <twig:ux:icon name="mdi:smiley-excited-outline" />
+{% endif %}

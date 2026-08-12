@@ -1,34 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
-{% block title %}{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}{% endblock %}
+{% set sessionName = "#{training.sport.label} · #{training.trainedAt|format_date('short')}" %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('training_index') }}">Mes entraînements</a></li>
-    <li class="breadcrumb-item active">{{ training.trainedAt|format_date('short') }} - {{ training.sport.label }}</li>
+{% block title %}{{ sessionName }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('training_index', {'endAt': training.trainedAt|date_modify('monday this week')|date('Y-m-d')}) }}#training-{{ training.id }}">Mes entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>{{ sessionName }}</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}{{ training.sport.label }} <small class="fs-6 text-body-secondary">{{ training.trainedAt|format_date('short') }}</small>{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('training_delete', {'id': training.id})">
+        <twig:Button variant="secondary" outline href="{{ path('training_edit', {'id': training.id}) }}" aria-label="Modifier">
+            <twig:ux:icon name="mdi:pencil" /> <span class="d-none d-sm-inline">Modifier</span>
+        </twig:Button>
+    </twig:DeleteForm>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h3>
-            {{ training.sport.label }}<br>
-            <small>{{ training.trainedAt|format_date('short') }}</small>
-        </h3>
-
-        <div class="ms-auto align-self-center ">
-            {% embed 'training/_delete_form.html.twig' %}
-                {% block buttons %}
-                    <div class="btn-group-sm">
-                        <a class="btn btn-outline-warning" href="{{ path('training_edit', {'id': training.id}) }}">
-                            <span class="fas fa-pencil-alt"></span> Modifier
-                        </a>
-
-                        {{ parent() }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
-
     {{ include('training/_show.html.twig') }}
 {% endblock %}

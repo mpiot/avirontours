@@ -1,0 +1,9 @@
+{#
+ # `active` marks the row the page is currently showing elsewhere — not a hover, not a selection the
+ # member made. `defaults({})` rather than an empty class: a bare `<tr>` should stay bare.
+ #}
+{% props active = false %}
+
+<tr{{ attributes.defaults(active ? { class: 'table-active' } : {}) }}>
+    {% block content %}{% endblock %}
+</tr>

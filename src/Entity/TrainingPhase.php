@@ -92,7 +92,7 @@ class TrainingPhase
 
     public function getFormattedDuration(): string
     {
-        return DurationManipulator::formatTenthSeconds($this->duration);
+        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->duration);
     }
 
     public function setDuration(int $duration): self
@@ -150,7 +150,7 @@ class TrainingPhase
 
     public function getFormattedPace(): string
     {
-        return DurationManipulator::formatTenthSeconds($this->getPace());
+        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->getPace());
     }
 
     public function getAverageWatt(): ?int

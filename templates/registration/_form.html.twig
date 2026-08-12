@@ -11,7 +11,7 @@
 {% set address_fields = [form.user.laneNumber, form.user.laneType, form.user.laneName, form.user.postalCode, form.user.city] %}
 {% set address_has_errors = address_fields|filter(field => field.vars.errors|length > 0)|length > 0 %}
 
-<div id="registration-form" {{ stimulus_controller('dependent-field')|stimulus_controller('legal-guardians', {
+<div class="app-registration-form" {{ stimulus_controller('dependent-field')|stimulus_controller('legal-guardians', {
     majorityDate: majority_date|date('Y-m-d'),
     minor: is_minor,
 }) }}>
@@ -21,7 +21,7 @@
         <p class="form-text mt-0 mb-3">Les champs suivis d'un <span class="text-danger">*</span> sont obligatoires.</p>
 
         <fieldset class="mb-4">
-            <legend class="fs-5"><span class="fas fa-user me-2" aria-hidden="true"></span>1. Le membre</legend>
+            <legend class="fs-5"><twig:ux:icon name="mdi:account" class="me-2" />1. Le membre</legend>
 
             {% if renew %}
                 {{ include('registration/_identity_card.html.twig') }}
@@ -83,22 +83,14 @@
         </fieldset>
 
         <fieldset class="mb-4">
-            <legend class="fs-5"><span class="fas fa-location-dot me-2" aria-hidden="true"></span>2. Adresse</legend>
+            <legend class="fs-5"><twig:ux:icon name="mdi:map-marker" class="me-2" />2. Adresse</legend>
 
             {% if renew %}
                 <p class="mb-2">{{ member.formattedAddress }}</p>
 
-                <button
-                    class="btn btn-outline-secondary collapse-toggle w-100 text-start"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#address-fields"
-                    aria-expanded="{{ address_has_errors ? 'true' : 'false' }}"
-                    aria-controls="address-fields"
-                >
-                    <span class="fas fa-chevron-down me-2" aria-hidden="true"></span>
+                <twig:CollapseToggle target="address-fields" :expanded="address_has_errors">
                     Modifier mon adresse
-                </button>
+                </twig:CollapseToggle>
             {% endif %}
 
             <div id="address-fields" class="{{ html_classes({ 'collapse pt-3': renew, 'show': address_has_errors }) }}">
@@ -136,7 +128,7 @@
         </fieldset>
 
         <fieldset class="mb-4">
-            <legend class="fs-5"><span class="fas fa-file-medical me-2" aria-hidden="true"></span>3. Certificat médical</legend>
+            <legend class="fs-5"><twig:ux:icon name="mdi:file-document" class="me-2" />3. Certificat médical</legend>
 
             <div class="row">
                 <div
@@ -174,7 +166,7 @@
         </fieldset>
 
         <fieldset class="mb-4">
-            <legend class="fs-5"><span class="fas fa-file-signature me-2" aria-hidden="true"></span>4. Autorisations et engagements</legend>
+            <legend class="fs-5"><twig:ux:icon name="mdi:file-sign" class="me-2" />4. Autorisations et engagements</legend>
 
             {{ form_row(form.agreeSwim) }}
             {{ form_row(form.agreeRulesAndRegulations, {
@@ -185,7 +177,7 @@
             <hr>
 
             <p class="fw-bold mb-1">
-                <span class="fas fa-envelope me-2" aria-hidden="true"></span>Préférences de communication
+                <twig:ux:icon name="mdi:email" class="me-2" />Préférences de communication
             </p>
 
             {{ form_row(form.user.clubEmailAllowed) }}
@@ -193,45 +185,39 @@
         </fieldset>
 
         <fieldset class="mb-4">
-            <legend class="fs-5"><span class="fas fa-receipt me-2" aria-hidden="true"></span>5. Récapitulatif</legend>
+            <legend class="fs-5"><twig:ux:icon name="mdi:receipt-text" class="me-2" />5. Récapitulatif</legend>
+
+            {% set insurance_notice = registration.pdf_link('maif-garanties-assurance.pdf', 'Télécharger la notice') %}
 
             <div aria-live="polite">
-                <div
+                <twig:Card
                     id="price-recap"
-                    class="card"
                     data-dependent-field-scope="price"
-                    {{ stimulus_target('dependent-field', 'target') }}
+                    data-dependent-field-target="target"
                 >
-                    <div class="card-header">Montant de votre {{ renew ? 'réinscription' : 'inscription' }}</div>
+                    <twig:Card:Header>Montant de votre {{ renew ? 'réinscription' : 'inscription' }}</twig:Card:Header>
 
-                    <div class="card-body pb-0">
+                    <twig:Card:Body>
                         {{ form_row(form.license.optionalInsurance, {
                             attr: {
                                 'data-action': 'change->dependent-field#change',
                                 'data-dependent-field-scope-param': 'price',
                             },
-                            help: registration.pdf_link('maif-garanties-assurance.pdf', 'Télécharger la notice'),
+                            help: insurance_notice,
                             help_html: true,
                         }) }}
-                    </div>
+                    </twig:Card:Body>
 
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            Cotisation
-                            <span>{{ season_category.price|format_currency('EUR') }}</span>
-                        </li>
+                    <twig:ListGroup flush>
+                        <twig:ListGroup:Item label="Cotisation">{{ season_category.price|format_currency('EUR') }}</twig:ListGroup:Item>
 
-                        <li class="{{ html_classes('list-group-item d-flex justify-content-between', { 'text-muted': with_insurance } )}}">
-                            Option I.A. Sport+
-                            <span>{{ with_insurance ? insurance_price|format_currency('EUR') : 'Non souscrite' }}</span>
-                        </li>
+                        <twig:ListGroup:Item label="Option I.A. Sport+" :muted="not with_insurance">
+                            {{- with_insurance ? insurance_price|format_currency('EUR') : 'Non souscrite' -}}
+                        </twig:ListGroup:Item>
 
-                        <li class="list-group-item d-flex justify-content-between fw-bold">
-                            Total
-                            <span>{{ total|format_currency('EUR') }}</span>
-                        </li>
-                    </ul>
-                </div>
+                        <twig:ListGroup:Item label="Total" emphasis>{{ total|format_currency('EUR') }}</twig:ListGroup:Item>
+                    </twig:ListGroup>
+                </twig:Card>
             </div>
 
             <p class="form-text">
@@ -243,12 +229,8 @@
             {% endif %}
         </fieldset>
 
-        <div id="sticky-summary" class="sticky-bottom bg-white border-top d-flex justify-content-end py-2 py-sm-3">
-            <button
-                class="btn btn-lg btn-primary flex-grow-1 flex-sm-grow-0"
-                type="submit"
-                data-turbo-submits-with="Envoi en cours&hellip;"
-            >
+        <div class="app-registration-summary sticky-bottom bg-white border-top d-flex justify-content-end">
+            <twig:Button variant="primary" size="lg" data-turbo-submits-with="Envoi en cours&hellip;" class="flex-grow-1 flex-sm-grow-0">
                 {% if renew %}
                     Me réinscrire
                 {% else %}
@@ -264,7 +246,7 @@
                 >
                     {{ total|format_currency('EUR') }}
                 </span>
-            </button>
+            </twig:Button>
         </div>
     {{ form_end(form) }}
 </div>

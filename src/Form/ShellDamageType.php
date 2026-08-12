@@ -37,12 +37,12 @@ class ShellDamageType extends AbstractType
     {
         $builder
             ->add('shell', EntityType::class, [
-                'label' => 'Bâteau',
+                'label' => 'Bateau',
                 'class' => Shell::class,
                 'choice_label' => 'fullName',
                 'query_builder' => static fn (EntityRepository $er): \Doctrine\ORM\QueryBuilder => $er->createQueryBuilder('shell')
                     ->orderBy('COLLATE(shell.name, fr_natural)', 'ASC'),
-                'placeholder' => '--- Sélectionner un bâteau ---',
+                'placeholder' => '--- Sélectionner un bateau ---',
             ])
             ->add('category', EntityType::class, [
                 'label' => 'Catégorie',

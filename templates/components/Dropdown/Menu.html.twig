@@ -1,0 +1,21 @@
+{#
+ # The menu itself. Its parts are `Dropdown:Item` and `Dropdown:Divider`.
+ #
+ # The shadow is the component's, not the call site's: a menu floats over the page and every one of
+ # them should say so. Bootstrap leaves them flat.
+ #}
+{% props align = null %}
+
+{%- set dropdownMenu = html_cva(
+    base: 'dropdown-menu shadow-sm',
+    variants: {
+        align: { end: 'dropdown-menu-end' },
+    },
+    default_variant: {
+        align: 'start',
+    },
+) -%}
+
+<ul{{ attributes.defaults({ class: dropdownMenu.apply({ align: align }|filter(v => v is not null)) }) }}>
+    {% block content %}{% endblock %}
+</ul>

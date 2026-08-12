@@ -1,0 +1,200 @@
+
+{%- set legal_guardians = license.user.legalGuardians|map(guardian => guardian.fullName) -%}
+{%- set verification_url = url('payment_attestation_check', { uuid: license.uuid }) -%}
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Attestation de paiement</title>
+
+        <style>
+            /*
+             * Greys tuned for paper.
+             */
+            @page {
+                size: A4;
+                margin: 18mm 18mm 14mm;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 265mm;
+                margin: 0;
+                color: #212529;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+
+            .attestation-head {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+            }
+
+            .attestation-head img {
+                width: 44mm;
+            }
+
+            .attestation-issuer {
+                color: #495057;
+                font-size: 9pt;
+                font-style: normal;
+                line-height: 1.45;
+                text-align: right;
+            }
+
+            .attestation-issuer strong {
+                display: block;
+                color: #212529;
+                font-size: 10.5pt;
+            }
+
+            .attestation-title {
+                margin: 18mm 0 12mm;
+                font-size: 17pt;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            .attestation-facts {
+                width: 100%;
+                margin-bottom: 12mm;
+                border-collapse: collapse;
+            }
+
+            .attestation-facts th {
+                width: 46mm;
+                padding: 3mm 0;
+                color: #495057;
+                font-weight: 500;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            .attestation-facts td {
+                padding: 3mm 0;
+            }
+
+            .attestation-facts tr + tr :is(th, td) {
+                border-top: .2mm solid #adb5bd;
+            }
+
+            .attestation-amount {
+                font-size: 13pt;
+                font-weight: 600;
+            }
+
+            .attestation-statement p {
+                margin: 0 0 4mm;
+            }
+
+            .attestation-signature {
+                margin-top: 10mm;
+                text-align: right;
+            }
+
+            .attestation-signature img {
+                width: 40mm;
+                margin-top: 2mm;
+            }
+
+            .attestation-verify {
+                display: flex;
+                gap: 5mm;
+                align-items: center;
+                margin-top: auto;
+                padding-top: 5mm;
+                border-top: .2mm solid #adb5bd;
+                color: #495057;
+                font-size: 8.5pt;
+            }
+
+            .attestation-verify img {
+                width: 22mm;
+                height: 22mm;
+            }
+
+            .attestation-verify strong {
+                display: block;
+                color: #212529;
+                font-size: 9.5pt;
+            }
+
+            .attestation-verify span {
+                word-break: break-all;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header class="attestation-head">
+            <img src="{{ asset('build/images/logo_colored.svg') }}" alt="Aviron Tours Métropole">
+
+            <address class="attestation-issuer">
+                <strong>Aviron Tours Métropole</strong>
+                5 avenue de Florence<br>
+                37000 Tours<br>
+                02 47 44 30 44<br>
+                contact@avirontours.fr
+            </address>
+        </header>
+
+        <h1 class="attestation-title">Attestation de paiement</h1>
+
+        <table class="attestation-facts">
+            <tr>
+                <th>Membre</th>
+                <td>{{ license.user.fullName }}</td>
+            </tr>
+            {% if legal_guardians is not empty %}
+                <tr>
+                    <th>{{ legal_guardians|length > 1 ? 'Représentants légaux' : 'Représentant légal' }}</th>
+                    <td>{{ legal_guardians|join(' et ') }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th>Saison</th>
+                <td>{{ license.seasonCategory.season.extendedName }}</td>
+            </tr>
+            <tr>
+                <th>Date du paiement</th>
+                <td>{{ license.payedAt|format_date('long') }}</td>
+            </tr>
+            <tr>
+                <th>Montant réglé</th>
+                <td class="attestation-amount">{{ (license.paymentsAmount / 100)|format_currency('EUR') }}</td>
+            </tr>
+        </table>
+
+        <div class="attestation-statement">
+            <p>
+                Le club Aviron Tours Métropole atteste du paiement de la cotisation annuelle du membre
+                {{ license.user.fullName }} pour la saison {{ license.seasonCategory.season.extendedName }}
+                {%- if legal_guardians is not empty %}, réglée par {{ legal_guardians|join(' et ') }}{% endif %}.
+            </p>
+
+            <p>Cette attestation a été établie pour servir et valoir ce que de droit.</p>
+        </div>
+
+        <div class="attestation-signature">
+            Fait à Tours, le {{ 'now'|format_date('long') }}<br>
+            <img src="data:image/webp;base64,{{ treasurer_stamp }}" alt="Le trésorier">
+        </div>
+
+        <footer class="attestation-verify">
+            <img src="{{ verification_url|qrCode(250, 250) }}" alt="">
+
+            <div>
+                <strong>Vérifier l'authenticité de cette attestation</strong>
+                Scannez ce code ou rendez-vous sur<br>
+                <span>{{ verification_url|replace({'https://': '', 'http://': ''}) }}</span>
+            </div>
+        </footer>
+    </body>
+</html>

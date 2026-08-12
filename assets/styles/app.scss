@@ -1,240 +1,73 @@
+// `@import` throughout, and it stays: Bootstrap 5 is not usable through `@use` — its partials expect
+// to be in one global scope, and every file below reads its variables, functions and mixins from
+// there. Dart Sass 3.0 removes the rule and warns about it on every build; there is no migration to
+// make until Bootstrap ships a module-based version, so the warnings are expected output rather than
+// something to chase.
+//
+// Configuration — before Bootstrap, because these are its variables.
 @import "custom";
-@import '~bootstrap';
-@import "background";
-@import "auth";
-@import "~@fortawesome/fontawesome-free/css/all.css";
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~bootstrap";
 
-/**
- * Turbo.js
- */
-.turbo-progress-bar {
-    background-color: $blue-300;
-}
+// The app's own measurements, once Bootstrap's are in scope.
+@import "tokens";
 
-[aria-busy="true"] {
-    opacity: .5;
-    transition: opacity .15s ease-in-out;
-}
+// Overrides of Bootstrap utility classes — after the utilities they restate, or they would lose.
+@import "utilities";
 
-/**
- * Menus
- */
-body {
-  overflow-x: hidden;
-}
+// Everything below is emitted after Bootstrap's utilities and therefore outranks them at equal
+// specificity. That is what lets `.card-body > :last-child` beat a child's `mb-3`; it is also why
+// a rule written here can quietly defeat a utility class used in a template.
+//
+// Each file below names the template it belongs to on its first line, and holds nothing else:
+// a file whose template is gone is dead, and that is a grep rather than a judgement call.
 
-main {
-  transition: transform 0.25s ease-in-out;
-  width: 100%;
-  margin-top: 76px;
-}
+// One file per layout frame: `document`, `app` and `auth` match templates/layouts/, `plain` covers
+// the navigation-less pair (focus, logbook), `error`'s template sits where Symfony imposes it. Only
+// the frame — a layout that reaches for a class of its own that a page also uses has stopped being a
+// frame.
+@import "layouts/document";
+@import "layouts/app";
+@import "layouts/auth";
+@import "layouts/error";
+@import "layouts/plain";
 
-#nav-app-menu-toggle {
-  color: $gray-500;
+// One file per Twig component, same name in kebab-case. A component with no CSS of its own has no
+// file here — Alert, Accordion and the rest live entirely on Bootstrap's classes.
+//
+// `chart` is the exception: it answers to no component, only to the shape three pages drop a
+// Chart.js canvas into. It sits here rather than in pages/ because more than one page wants it.
+@import "components/badge";
+@import "components/breadcrumb";
+@import "components/button";
+@import "components/card";
+@import "components/card-grid";
+@import "components/chart";
+@import "components/collapse";
+@import "components/empty-state";
+@import "components/form";
+@import "components/form-card";
+@import "components/legal";
+@import "components/license-state";
+@import "components/list-group";
+@import "components/modal";
+@import "components/nav";
+@import "components/page-header";
+@import "components/progress";
+@import "components/sidebar";
+@import "components/sport-chip";
+@import "components/stats";
+@import "components/table";
+@import "components/tile";
+@import "components/toast";
+@import "components/user-menu";
 
-    &:focus {
-      outline:none !important;
-    }
+// One page needed an exception. Anything landing here that a second page would want belongs above.
+@import "pages/2fa";
+@import "pages/one-rep-max";
+@import "pages/registration";
+@import "pages/shell-damage";
+@import "pages/statistics";
+@import "pages/training";
 
-    &::after {
-      @extend %fa-icon;
-      @extend .fas;
-
-      content: fa-content($fa-var-bars);
-    }
-
-    &:hover {
-      color: $white;
-
-      &::after {
-        @extend %fa-icon;
-        @extend .fas;
-
-        content: fa-content($fa-var-hamburger);
-      }
-    }
-}
-
-#nav-app-menu {
-  transition: transform 0.25s ease-in-out;
-  left: -20rem;
-  width: 20rem;
-  position: fixed;
-  z-index: 2;
-  margin-top: 76px;
-  height: calc(100% - 76px);
-}
-
-.nav-app-menu-show {
-  #nav-app-menu-toggle {
-    color: $white;
-
-    &::after {
-      @extend %fa-icon;
-      @extend .fas;
-
-      content: fa-content($fa-var-times);
-    }
-  }
-
-  #nav-app-menu {
-    transform: translateX(20rem);
-  }
-
-  main {
-    transform: translateX(20rem);
-
-    @include media-breakpoint-up(xl) {
-      width: calc(100% - 20rem) !important;
-    }
-  }
-}
-
-#nav-account-menu-toggle {
-  color: $gray-400;
-
-  &:focus {
-    outline:none !important;
-  }
-
-  &::after {
-    @extend %fa-icon;
-    @extend .fas;
-
-    content: fa-content($fa-var-user-circle);
-  }
-
-  &:hover {
-    color: $white;
-  }
-}
-
-#nav-account-menu {
-  transition: transform 0.25s ease-in-out;
-  right: -20rem;
-  width: 20rem;
-  position: fixed;
-  z-index: 2;
-  margin-top: 76px;
-  height: calc(100% - 76px);
-}
-
-.nav-account-menu-show {
-  #nav-account-menu-toggle {
-    color: $white;
-
-    &::after {
-      @extend %fa-icon;
-      @extend .fas;
-
-      content: fa-content($fa-var-times);
-    }
-  }
-
-  #nav-account-menu {
-    transform: translateX(-20rem);
-  }
-}
-
-.anchor {
-  display: block;
-  position: relative;
-  top: -80px;
-  visibility: hidden;
-}
-
-/**
- * Carousel
- */
-.carousel-item {
-  height: 30rem;
-
-  > img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 30rem;
-    object-fit: cover;
-  }
-}
-
-/**
- * Form
- */
-.form-label,
-.form-check-label,
-.col-form-label {
-  &.required {
-    &:after {
-      content: " *";
-      color: $red;
-    }
-  }
-}
-
-legend.required ~ div .form-check-label.required {
-  &:after {
-    content: none !important;
-  }
-}
-
-/**
- * Lists
- */
-li {
-  &.list-group-item {
-    &:hover {
-      background-color: $light;
-    }
-  }
-}
-
-/**
- * App list
- */
-.app-list {
-  a {
-    text-decoration: none;
-    color: $dark;
-
-    .card {
-      &:hover {
-        border-color: $primary;
-      }
-    }
-  }
-}
-
-/**
- * Registration submit bar
- *
- * iOS Safari keeps `position: sticky` anchored where its collapsed toolbar used to be, and paints
- * page content in the freed strip: `fixed` follows the toolbar.
- */
-@include media-breakpoint-down(md) {
-  #sticky-summary {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    padding-right: $card-spacer-x;
-    padding-left: $card-spacer-x;
-  }
-
-  #registration-form {
-    padding-bottom: 4rem;
-  }
-}
-
-/**
- * Collapse toggle chevron
- */
-.collapse-toggle .fa-chevron-down {
-    transition: transform .2s ease-in-out;
-}
-
-.collapse-toggle[aria-expanded="true"] .fa-chevron-down {
-    transform: rotate(180deg);
-}
+// Last, and outside the three folders: it answers to no template at all.
+@import "turbo";

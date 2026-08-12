@@ -155,7 +155,11 @@ class LicenseController extends AbstractController
     ): Response {
         $license = $repository->findOneForValidation($season);
         if (null !== $license) {
-            $previousLicenses = $repository->findUserLicences($license->getUser(), (int) (new \DateTime('-3 years'))->format('Y'), $season->getName() - 1);
+            $previousLicenses = $repository->findUserLicences(
+                $license->getUser(),
+                $season->getName() - 2,
+                $season->getName() - 1
+            );
         }
 
         return $this->render('admin/license/chain_validation.html.twig', [

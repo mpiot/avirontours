@@ -1,0 +1,16 @@
+// ↔ templates/admin/shell_damage/index.html.twig — the description column.
+//
+// A damage is written in free text and runs long, so as a column it has to be cut. Cut in CSS and
+// not in Twig: the truncated copy used to be one of a `d-none`/`d-md-none` pair, which meant the
+// full text was `display: none` at the widths where the short one showed — out of the accessibility
+// tree, so a screen reader and a keyboard got the first 30 characters and the `title` answered to
+// the mouse alone. The whole string is in the DOM now; only the eye is served a short version.
+.app-damage-description {
+    @include media-breakpoint-up(md) {
+        display: block;
+        max-width: 18rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}

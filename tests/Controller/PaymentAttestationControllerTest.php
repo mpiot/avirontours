@@ -20,9 +20,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\LegalGuardian;
+use App\Enum\LegalGuardianRole;
 use App\Factory\LicenseFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
 class PaymentAttestationControllerTest extends AppWebTestCase
@@ -30,7 +33,7 @@ class PaymentAttestationControllerTest extends AppWebTestCase
     public function testDownloadPaymentAttestation(): void
     {
         $user = UserFactory::createOne();
-        $license = LicenseFactory::createOne([
+        $license = LicenseFactory::new()->withPayments()->create([
             'user' => $user,
         ]);
 
@@ -43,6 +46,21 @@ class PaymentAttestationControllerTest extends AppWebTestCase
         $this->assertResponseHeaderSame('content-type', 'application/pdf');
     }
 
+    public function testDownloadPaymentAttestationOfAnUnpaidLicense(): void
+    {
+        $user = UserFactory::createOne();
+        $license = LicenseFactory::createOne([
+            'user' => $user,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/payment-attestation/download/'.$license->getId());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
     public function testCheckPaymentAttestation(): void
     {
         $license = LicenseFactory::new()->withPayments()->create();
@@ -52,9 +70,38 @@ class PaymentAttestationControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/payment-attestation/check/'.$license->getUuid());
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Attestation de paiement Nom - Prénom: ', $crawler->filter('div.border-success')->text());
-        $this->assertStringContainsString('Montant: ', $crawler->filter('div.border-success')->text());
-        $this->assertStringContainsString('Saison: ', $crawler->filter('div.border-success')->text());
+        $this->assertSelectorTextContains('h1', 'Attestation de paiement');
+        $this->assertSelectorTextContains('.card-header', 'Attestation authentique');
+        $this->assertCount(4, $crawler->filterXPath('//ul/li'));
+        $this->assertStringContainsString($license->getUser()->getFullName(), $crawler->filterXPath('//ul/li[1]')->text());
+        $this->assertStringContainsString($license->getSeasonCategory()->getSeason()->getExtendedName(), $crawler->filterXPath('//ul/li[2]')->text());
+        $this->assertStringContainsString($license->getPayedAt()->format('Y'), $crawler->filterXPath('//ul/li[3]')->text());
+        $this->assertStringContainsString('Montant réglé', $crawler->filterXPath('//ul/li[4]')->text());
+    }
+
+    public function testCheckPaymentAttestationOfAMinor(): void
+    {
+        $license = LicenseFactory::new()->withPayments()->create([
+            'user' => UserFactory::new()->minor()->create([
+                'firstLegalGuardian' => self::createLegalGuardian(LegalGuardianRole::Mother, 'Marie', 'Martin'),
+                'secondLegalGuardian' => self::createLegalGuardian(LegalGuardianRole::Father, 'Paul', 'Martin'),
+            ]),
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/payment-attestation/check/'.$license->getUuid());
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h1', 'Attestation de paiement');
+        $this->assertSelectorTextContains('.card-header', 'Attestation authentique');
+        $this->assertCount(5, $crawler->filterXPath('//ul/li'));
+        $this->assertStringContainsString($license->getUser()->getFullName(), $crawler->filterXPath('//ul/li[1]')->text());
+        $this->assertStringContainsString('Représentants légaux', $crawler->filterXPath('//ul/li[2]')->text());
+        $this->assertStringContainsString('Marie Martin et Paul Martin', $crawler->filterXPath('//ul/li[2]')->text());
+        $this->assertStringContainsString($license->getSeasonCategory()->getSeason()->getExtendedName(), $crawler->filterXPath('//ul/li[3]')->text());
+        $this->assertStringContainsString($license->getPayedAt()->format('Y'), $crawler->filterXPath('//ul/li[4]')->text());
+        $this->assertStringContainsString('Montant réglé', $crawler->filterXPath('//ul/li[5]')->text());
     }
 
     public function testCheckInvalidPaymentAttestation(): void
@@ -63,9 +110,33 @@ class PaymentAttestationControllerTest extends AppWebTestCase
 
         static::ensureKernelShutdown();
         $client = static::createClient();
-        $crawler = $client->request('GET', '/payment-attestation/check/'.$uuid->toRfc4122());
+        $client->request('GET', '/payment-attestation/check/'.$uuid->toRfc4122());
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Attestation de paiement Nous n\'avons trouvé aucune licence.', $crawler->filter('div.border-danger')->text());
+        $this->assertSelectorTextContains('h1', 'Attestation de paiement');
+        $this->assertSelectorTextContains('.card-header', 'Attestation introuvable');
+    }
+
+    public function testCheckPaymentAttestationOfAnUnpaidLicense(): void
+    {
+        $license = LicenseFactory::createOne();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', '/payment-attestation/check/'.$license->getUuid());
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.card-header', 'Attestation introuvable');
+    }
+
+    private static function createLegalGuardian(LegalGuardianRole $role, string $firstName, string $lastName): LegalGuardian
+    {
+        return (new LegalGuardian())
+            ->setRole($role)
+            ->setFirstName($firstName)
+            ->setLastName($lastName)
+            ->setEmail(mb_strtolower("{$firstName}.{$lastName}@avirontours.fr"))
+            ->setPhoneNumber('0600000000')
+        ;
     }
 }

@@ -1,0 +1,5 @@
+{% if training.trainingLoad is not null %}
+    {{ training.trainingLoad }}
+{% else %}
+    <twig:NoValue label="non calculée, effort perçu non renseigné" />
+{% endif %}

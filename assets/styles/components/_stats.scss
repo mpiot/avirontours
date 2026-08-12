@@ -1,0 +1,67 @@
+// ↔ templates/components/Stats.html.twig and Stats/Item.html.twig
+// Figures wrap rather than scroll: there are at most seven of them and they are the page's content,
+// not a strip beside it.
+.app-stat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacer ($spacer * 2.5);
+    margin-bottom: 0;
+}
+
+// `column-reverse` sets the value above its name while the source keeps the `dt`/`dd` order a
+// definition list requires — and the order the pair should be read in.
+.app-stat {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+// On a phone the figures stop wrapping and become a list: three of them across 358 px pair up
+// arbitrarily — duration with distance, then pace with power — and pairs that mean nothing read as
+// if they meant something. The value keeps its size; the hierarchy is in the type, not the place.
+@include media-breakpoint-down(sm) {
+    .app-stat-list {
+        display: block;
+    }
+
+    .app-stat {
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: $spacer;
+
+        & + & {
+            margin-top: $spacer * .5;
+        }
+    }
+}
+
+.app-stat-value {
+    margin: 0; // `dd` carries a browser indent that has no place here
+    font-size: $h4-font-size;
+    font-weight: $font-weight-semibold;
+    line-height: 1.2;
+}
+
+.app-stat-unit {
+    color: $gray-600;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-normal;
+}
+
+// The extreme that belongs to the figure, set apart from it but on the same line.
+.app-stat-secondary {
+    margin-left: $spacer * .25;
+    padding: 0 ($spacer * .375);
+    border-radius: $border-radius-sm;
+    background-color: $gray-100;
+    color: $gray-700;
+    font-size: $app-font-size-caption;
+    font-weight: $font-weight-normal;
+    vertical-align: middle;
+}
+
+.app-stat-label {
+    color: $gray-600;
+    font-size: $app-font-size-label;
+    font-weight: $font-weight-normal;
+}

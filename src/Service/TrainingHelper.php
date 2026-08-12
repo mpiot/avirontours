@@ -23,6 +23,7 @@ namespace App\Service;
 use App\Entity\Training;
 use App\Entity\User;
 use App\Repository\TrainingRepository;
+use App\Util\MathHelper;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class TrainingHelper
@@ -60,7 +61,7 @@ readonly class TrainingHelper
                         'sessions' => 0,
                         'duration' => 0,
                         'distance' => 0,
-                        'ratio' => 0,
+                        'share' => 0,
                     ];
                 }
 
@@ -77,11 +78,26 @@ readonly class TrainingHelper
             // Calculate total duration
             $duration = array_sum(array_column($categorizedTrainings, 'duration'));
 
-            // Define ratio
-            foreach ($categorizedTrainings as &$categorizedTraining) {
-                $categorizedTraining['ratio'] = 0 === $duration ? 0.0 : round($categorizedTraining['duration'] / $duration, 2);
+            // Calculate shares (with sum always equals to 100)
+            $shares = MathHelper::shares(array_column($categorizedTrainings, 'duration'));
+            foreach ($shares as $key => $share) {
+                $categorizedTrainings[$key]['share'] = $share;
             }
-            unset($categorizedTraining);
+
+            // Foster's load only exists where the member rated the session
+            $load = null;
+            $ratedTrainings = array_filter(
+                $weekTrainings,
+                static fn (Training $training): bool => null !== $training->getTrainingLoad(),
+            );
+            if ([] !== $ratedTrainings) {
+                $load = array_sum(
+                    array_map(
+                        static fn (Training $training): int => $training->getTrainingLoad(),
+                        $ratedTrainings,
+                    )
+                );
+            }
 
             $data[] = [
                 'week' => $week,
@@ -90,6 +106,7 @@ readonly class TrainingHelper
                     'sessions' => \count($weekTrainings),
                     'duration' => $duration,
                     'sports' => $categorizedTrainings,
+                    'load' => $load,
                 ],
             ];
         }

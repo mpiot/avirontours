@@ -1,0 +1,36 @@
+{#
+ # The control the menu hangs off.
+ #
+ # `caret` is the little triangle Bootstrap draws from the toggle class. It is on by default because
+ # a control that opens a menu should say so; the account menu turns it off, its avatar and name
+ # being enough of a target.
+ #
+ # `split` is the toggle that carries no label — the right half of a split button, where the caret is
+ # the whole content. It is a prop and not a class from the call site because `.dropdown-toggle-split`
+ # only makes sense alongside `.dropdown-toggle`, which this component owns: passing it in would
+ # overwrite the class rather than join it, and the caret would go with it. What it does is zero the
+ # left margin `.dropdown-toggle::after` carries to clear a label that is not there — without it the
+ # triangle sits off-centre in its own button.
+ #
+ # Everything else is a `Button` prop, forwarded — a toggle is a button that happens to open
+ # something.
+ #
+ # The label is captured before the button is rendered rather than written inside it. A body made of
+ # nothing but blocks is passed straight through to the inner component, so `{% block content %}`
+ # written in there would be handed to `Button` as its own `content` — and then resolve to itself,
+ # which renders nothing at all.
+ #}
+{% props variant = 'secondary', outline = false, size = null, caret = true, split = false %}
+
+{% set label %}{% block content %}{% endblock %}{% endset %}
+
+<twig:Button
+    type="button"
+    :variant="variant"
+    :outline="outline"
+    :size="size"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    :class="html_classes({ 'dropdown-toggle': caret, 'dropdown-toggle-split': split })"
+    {{ ...attributes }}
+>{{ label }}</twig:Button>

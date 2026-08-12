@@ -1,153 +1,127 @@
-{% extends 'base.html.twig' %}
+{% extends 'static/base.html.twig' %}
 
 {% block title %}Mentions légales{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mentions légales</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item>Mentions légales</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Mentions légales</h1>
+{% block page_title %}Mentions légales{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <p>
-                Le site <a href="https://my.avirontours.fr">my.avirontours.fr</a> propose des fonctionnalités pour la vie du club Aviron Tours Métropole, à savoir de
-                façon non exhaustive: les inscriptions, le suivi du matériel (bâteaux, réparations), la gestion des membres, des
-                sorties...
-            </p>
+{% block summary %}
+    <twig:NavLink href="#editeur">Éditeur</twig:NavLink>
+    <twig:NavLink href="#hebergeur">Hébergeur</twig:NavLink>
+    <twig:NavLink href="#propriete">Propriété intellectuelle</twig:NavLink>
+    <twig:NavLink href="#code-source">Code source</twig:NavLink>
+    <twig:NavLink href="#liens">Liens hypertextes</twig:NavLink>
+    <twig:NavLink href="#responsabilite">Responsabilité</twig:NavLink>
+    <twig:NavLink href="#donnees">Données personnelles</twig:NavLink>
+{% endblock %}
 
-            <h2>Informations éditoriales</h2>
+{% block main %}
+    <p class="form-text">Dernière mise à jour&nbsp;: 11 août 2026</p>
 
-            <h3>Éditeur</h3>
-            <p>
-                Association Aviron Tours Métropole<br>
-                5, avenue de Florence<br>
-                37000 Tours<br>
-                Tél : 02 47 44 30 44
-            </p>
+    <p>
+        Le site <a href="https://my.avirontours.fr">my.avirontours.fr</a> propose des fonctionnalités pour la vie du
+        club Aviron Tours Métropole&nbsp;: les inscriptions et réinscriptions, la gestion des membres et des licences,
+        le suivi du matériel (bateaux, réparations), le cahier des sorties et le suivi des entraînements.
+    </p>
 
-            <h3>Contact</h3>
-            <p>
-                Il est possible de prendre contact avec l'association via l'adresse: contact@avirontours.fr
-            </p>
+    <section id="editeur" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Éditeur</h2>
+        <p>
+            Association Aviron Tours Métropole, association déclarée régie par la loi du 1<sup>er</sup> juillet 1901<br>
+            Numéro RNA&nbsp;: W372014049<br>
+            5, avenue de Florence — 37000 Tours<br>
+            Téléphone&nbsp;: <a href="tel:+33247443044">02 47 44 30 44</a><br>
+            Courriel&nbsp;: <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a>
+        </p>
 
-            <h2>Protection et traitement de données à caractère personnel</h2>
-            <h3>Respect des lois en vigueur</h3>
-            <p>
-                Le site <a href="https://my.avirontours.fr">my.avirontours.fr</a> respecte la vie privée de l’internaute et se conforme strictement aux lois en vigueur sur
-                la protection de la vie privée et des libertés individuelles. Aucune information personnelle n’est collectée à votre
-                insu. Aucune information personnelle n’est cédée à des tiers. Les courriels, les adresses électroniques ou
-                autres informations nominatives dont ce site est destinataire ne font l’objet d’aucune exploitation et ne sont
-                conservés que pour la durée nécessaire à leur traitement.
-            </p>
+        <h3 class="fs-6 mt-3">Directeur de la publication</h3>
+        <p>
+            Raphaël Simar, président de l’association.
+        </p>
 
-            <h3>Droit des internautes : droit d’accès et de rectification</h3>
-            <p>
-                L'association s’engage à ce que la collecte et le traitement de vos données, effectués à partir du site soient
-                conformes au règlement général sur la protection des données (RGPD) et à la loi Informatique et Libertés.
-            </p>
+        <h3 class="fs-6 mt-3">Conception et maintenance</h3>
+        <p>
+            L’application est développée et maintenue bénévolement par Mathieu Piot, et mise à disposition de
+            l’association. Il intervient à ce titre sous l’autorité de l’association, qui reste responsable des
+            traitements de données décrits dans la
+            <a href="{{ path('privacy_policy') }}">politique de confidentialité</a>.
+        </p>
+    </section>
 
-            <p>
-                vous pouvez contacter l'association par courriel contact@avirontours.fr
-                ou par courrier à l’adresse suivante :
-            </p>
+    <section id="hebergeur" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Hébergeur</h2>
+        <p>
+            <span class="fw-bold">OVH SAS</span>, société par actions simplifiée au capital de 50 000 000 €<br>
+            RCS Lille Métropole 424 761 419 00045<br>
+            2, rue Kellermann — 59100 Roubaix — France<br>
+            Téléphone&nbsp;: <a href="tel:1007">1007</a><br>
+            <a href="https://www.ovhcloud.com" target="_blank" rel="noopener">ovhcloud.com<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+        </p>
 
-            <p>
-                Association Aviron Tours Métropole<br>
-                5, avenue de Florence<br>
-                37000 Tours
-            </p>
+        <p>
+            Les données sont hébergées en France. Le site est servi derrière le proxy inverse de Cloudflare, dont le
+            rôle est décrit dans la
+            <a href="{{ path('privacy_policy') }}#cloudflare">politique de confidentialité</a>.
+        </p>
+    </section>
 
-            <h2>Cookies</h2>
-            <p>
-                Lors de la consultation de notre site <a href="https://my.avirontours.fr">my.avirontours.fr</a>, des cookies sont déposés sur votre ordinateur, votre
-                mobile ou votre tablette.
-            </p>
+    <section id="propriete" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Propriété intellectuelle</h2>
+        <p>
+            Les contenus présents sur ce site, ainsi que le logotype de l’association, sont protégés. Leur reproduction
+            n’est autorisée qu’avec l’accord préalable de l’association.
+        </p>
 
-            <p>
-                Les seuls cookies utilisés par le site sont ceux destinés au fonctionnement du site et ne collectent pas de
-                données personnelles.
-            </p>
+        <p>
+            Si, dans le cadre d’une communication officielle, vous avez besoin d’utiliser le logotype de l’association
+            pour un support interne ou externe (brochure, publication, site, etc.), adressez votre demande à
+            <a href="mailto:contact@avirontours.fr">contact@avirontours.fr</a> ou par courrier à l’adresse de
+            l’association.
+        </p>
+    </section>
 
-            <ul>
-                <li>
-                    <strong>Définition d’un cookie</strong><br>
-                    Un cookie est un fichier texte déposé sur votre ordinateur lors de la visite d’un site ou de la consultation
-                    d’une publicité. Il a pour but de collecter des informations relatives à votre navigation et de vous adresser
-                    des services adaptés à votre terminal (ordinateur, mobile ou tablette). Les cookies sont gérés par votre
-                    navigateur internet.
-                </li>
-                <li>
-                    <strong>Paramétrer votre navigateur internet</strong><br>
-                    Vous pouvez à tout moment choisir de désactiver ces cookies. Votre navigateur peut également être paramétré
-                    pour vous signaler les cookies qui sont déposés dans votre ordinateur et vous demander de les accepter ou pas.
-                    Vous pouvez accepter ou refuser les cookies au cas par cas ou bien les refuser systématiquement.
-                    En cas de refus de depôt de cookie, vous ne pourrez pas consulter le site <a href="https://my.avirontours.fr">my.avirontours.fr</a>.
-                    Afin de gérer les cookies au plus près de vos attentes nous vous invitons à paramétrer votre navigateur en
-                    tenant compte de la finalité des cookies.
-                </li>
-            </ul>
+    <section id="code-source" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Code source</h2>
+        <p>
+            Cette application est un logiciel libre, publié sous licence
+            <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener">Apache 2.0<span class="visually-hidden"> (nouvelle fenêtre)</span></a>
+            (Copyright 2020 Mathieu Piot). Son code est consultable par quiconque sur
+            <a href="https://github.com/mpiot/avirontours" target="_blank" rel="noopener">github.com/mpiot/avirontours<span class="visually-hidden"> (nouvelle fenêtre)</span></a>.
+        </p>
 
+        <p>
+            La licence porte sur le code, et sur lui seul&nbsp;: les contenus du site et le logotype de l’association
+            n’en font pas partie et restent soumis à la section précédente.
+        </p>
+    </section>
 
-            <h2>Prestataire d’hébergement</h2>
-            <p>
-                <span class="fw-bold">OVH</span><br>
-                Siège Social<br>
-                2 rue Kellermann<br>
-                59100 Roubaix<br>
-                ovh.com
-            </p>
+    <section id="liens" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Liens hypertextes</h2>
+        <p>
+            La mise en place de liens vers les pages de ce site est libre et ne requiert pas d’autorisation préalable,
+            sous réserve de ne pas utiliser le logotype de l’association et de ne pas présenter le lien d’une manière
+            laissant croire à un rapport qui n’existe pas.
+        </p>
+    </section>
 
-            <h2>Droits d’auteur et droits de reproduction</h2>
-            <h3>Demande d’autorisation de reproduction du logo</h3>
-            <p>
-                Si, dans le cadre d’une communication officielle, vous avez besoin d’utiliser le logotype de l'association pour
-                tous supports internes et externes (brochures, publications, sites, etc.), merci d’envoyer votre demande à
-                l’adresse suivante :
-            </p>
-            <p>
-                Association Aviron Tours Métropole<br>
-                5, avenue de Florence<br>
-                37000 Tours
-            </p>
+    <section id="responsabilite" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Responsabilité</h2>
+        <p>
+            Ce site peut proposer des liens vers d’autres sites, notamment ceux de la fédération, d’organismes publics
+            ou de partenaires. Ces pages ne font pas partie du site&nbsp;: l’association ne maîtrise pas leur contenu
+            et ne peut être tenue pour responsable de ce qui y figure.
+        </p>
+    </section>
 
-            <h3>Création de liens vers le site</h3>
-            Le site <a href="https://my.avirontours.fr">my.avirontours.fr</a> autorise, sans autorisation préalable, la mise en place de liens hypertextes pointant
-            vers ses pages, sous réserve de :
-            <ul>
-                <li>
-                    ne pas utiliser la technique du lien profond, c’est-à-dire que les pages du site <a href="https://my.avirontours.fr">my.avirontours.fr</a> ne
-                    doivent pas être imbriquées à l’intérieur des pages d’un autre site, mais visibles par l’ouverture d’une
-                    fenêtre indépendante.
-                </li>
-                <li>
-                    mentionner la source qui pointera grâce à un lien hypertexte directement sur le contenu visé.
-                </li>
-                <li>
-                    ne pas utiliser le logotype de l'association sans autorisation
-                </li>
-            </ul>
-
-            <p>
-                Les sites qui font le choix de pointer vers <a href="https://my.avirontours.fr">my.avirontours.fr</a> engagent leur responsabilité dès lors qu’ils
-                porteraient atteinte à l’image du site public.
-            </p>
-
-            <h2>Responsabilité face aux liens vers d’autres sites</h2>
-            <p>
-                Le site <a href="https://my.avirontours.fr">my.avirontours.fr</a> peut proposer des liens vers d'autres sites: essentiellement des sites officiels
-                (fédération, organismes publics, etc.) mais aussi vers des sites, français ou étrangers, d’associations,
-                ou d’entreprises partenaires.
-            </p>
-            <p>
-                Chaque fois, il est systématiquement précisé vers quel site nous vous proposons d’aller. Ces pages, dont les
-                adresses sont régulièrement vérifiées, ne font pas partie du site <a href="https://my.avirontours.fr">my.avirontours.fr</a> : elles n’engagent pas la
-                responsabilité de la rédaction du site qui ne peut être tenue pour responsable des contenus vers lesquels ces
-                liens pointent. Ils ne visent qu’à permettre à l’internaute d’accéder plus facilement à d’autres ressources
-                documentaires sur le sujet consulté.
-            </p>
-        </div>
-    </div>
+    <section id="donnees" class="app-legal-anchor">
+        <h2 class="fs-5 mt-4">Données personnelles</h2>
+        <p>
+            L’usage du site suppose le traitement de données vous concernant. Les catégories de données, les finalités
+            poursuivies, les destinataires, les durées de conservation et les droits dont vous disposez sont détaillés
+            dans la <a href="{{ path('privacy_policy') }}">politique de confidentialité</a>.
+        </p>
+    </section>
 {% endblock %}

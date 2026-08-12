@@ -84,22 +84,22 @@ class Concept2ApiConsumer
 
         $phaseKey = 0;
         $maxTime = 0;
-        $formatedStrokes = [];
+        $formattedStrokes = [];
         foreach ($strokes as $stroke) {
             if ($maxTime > $stroke['t']) {
                 ++$phaseKey;
             }
 
-            $formatedStrokes[$phaseKey]['t'][] = $stroke['t'];
-            $formatedStrokes[$phaseKey]['d'][] = $stroke['d'];
-            $formatedStrokes[$phaseKey]['p'][] = min($stroke['p'], 2400);
-            $formatedStrokes[$phaseKey]['spm'][] = min($stroke['spm'], 70);
-            $formatedStrokes[$phaseKey]['hr'][] = min($stroke['hr'], 300);
+            $formattedStrokes[$phaseKey]['t'][] = $stroke['t'];
+            $formattedStrokes[$phaseKey]['d'][] = $stroke['d'];
+            $formattedStrokes[$phaseKey]['p'][] = min($stroke['p'], 2400);
+            $formattedStrokes[$phaseKey]['spm'][] = min($stroke['spm'], 70);
+            $formattedStrokes[$phaseKey]['hr'][] = min($stroke['hr'], 300);
 
             $maxTime = $stroke['t'];
         }
 
-        return $formatedStrokes;
+        return $formattedStrokes;
     }
 
     private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
@@ -114,7 +114,6 @@ class Concept2ApiConsumer
             ->setTrainedAt(new \DateTime($result['date']))
             ->setDuration($result['time'])
             ->setDistance($result['distance'])
-            ->setFeeling(0.5)
             ->setStrokeRate($result['stroke_rate'])
             ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
             ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
@@ -133,7 +132,7 @@ class Concept2ApiConsumer
             false === \array_key_exists('intervals', $result['workout'])
             || 1 === \count($result['workout']['intervals'])
         ) {
-            $trainingPhase = $this->createTrainingPhaseFromFormatedStrokes(
+            $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
                 $result,
                 $strokeData[0] ?? null
             );
@@ -146,7 +145,7 @@ class Concept2ApiConsumer
         // Else, create many phases, and split the strokeData in the number of phases
         // Check the number of intervals match the number of stroke data
         foreach ($result['workout']['intervals'] as $key => $intervalData) {
-            $trainingPhase = $this->createTrainingPhaseFromFormatedStrokes(
+            $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
                 $intervalData,
                 $strokeData[$key] ?? null
             );
@@ -157,7 +156,7 @@ class Concept2ApiConsumer
         return $training;
     }
 
-    private function createTrainingPhaseFromFormatedStrokes(
+    private function createTrainingPhaseFromFormattedStrokes(
         array $intervalData,
         ?array $strokeData,
     ): TrainingPhase {

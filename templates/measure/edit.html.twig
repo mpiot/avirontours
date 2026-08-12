@@ -1,26 +1,7 @@
-{% extends 'base.html.twig' %}
+<turbo-frame id="modal">
+    <twig:Modal:Content>
+        <twig:block name="title">Modifier une mesure</twig:block>
 
-{% block title %}Modifier une mesure{% endblock %}
-
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('measure_index') }}">Mes mesures</a></li>
-    <li class="breadcrumb-item">{{ measure.measuredAt|format_date('short') }} - {{ measure.type.label }}</a></li>
-    <li class="breadcrumb-item active">Modifier</li>
-{% endblock %}
-
-{% block body %}
-    <div class="d-flex">
-        <h1>Modifier une mesure</h1>
-
-        <div class="ms-auto align-self-center">
-            {{ include('measure/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('measure/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
-{% endblock %}
+        {{ include('measure/_form.html.twig') }}
+    </twig:Modal:Content>
+</turbo-frame>

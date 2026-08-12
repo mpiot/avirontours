@@ -1,32 +1,27 @@
-{% extends 'base.html.twig' %}
-{% set appMenuAutoOpen = false %}
+{% extends 'layouts/focus.html.twig' %}
 
 {% block title %}M'inscrire à l'Aviron Tours Métropole{% endblock %}
 
-{% block breadcrumb %}
+{% block javascripts %}
     {{ parent() }}
-    <li class="breadcrumb-item active">M'inscrire à l'Aviron Tours Métropole</li>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 {% endblock %}
 
+{% block page_title %}M'inscrire à l'Aviron Tours Métropole{% endblock %}
+
 {% block body %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-9 col-xl-7">
-            <h1>M'inscrire à l'Aviron Tours Métropole</h1>
+    <p>
+        Déjà membre&nbsp;? Vous gérez vos réinscriptions depuis
+        <a href="{{ path('profile_show') }}">votre profil utilisateur</a>.
+    </p>
 
-            <p>
-                Déjà membre&nbsp;? Vous gérez vos réinscriptions depuis
-                <a href="{{ path('profile_show') }}">votre profil utilisateur</a>.
-            </p>
-
-            <div class="card border-0 shadow">
-                <div class="card-header">
-                    {{ include('registration/_season_category_recap.html.twig') }}
-                </div>
-                <div class="card-body">
-                    {{ include('registration/_intro.html.twig', { renew: false }) }}
-                    {{ include('registration/_form.html.twig', { renew: false }) }}
-                </div>
-            </div>
-        </div>
-    </div>
+    <twig:Card elevated>
+        <twig:Card:Header>
+            {{ include('registration/_season_category_recap.html.twig') }}
+        </twig:Card:Header>
+        <twig:Card:Body>
+            {{ include('registration/_intro.html.twig', { renew: false }) }}
+            {{ include('registration/_form.html.twig', { renew: false }) }}
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

@@ -1,8 +1,9 @@
 import * as Turbo from '@hotwired/turbo';
 
+const STALE_OVERLAYS = '.offcanvas.show, .offcanvas-lg.show, .dropdown-menu.show';
+const STALE_TRIGGERS = '[data-bs-toggle="dropdown"][aria-expanded="true"], [data-bs-toggle="offcanvas"][aria-expanded="true"]';
+
 const TurboHelper = class {
-    // Désactiver le bouton pendant l'envoi est déjà le comportement de Turbo
-    // (config.forms.submitter vaut "disabled"), et Bootstrap grise déjà .btn:disabled.
     constructor () {
         document.addEventListener('turbo:before-fetch-request', (event) => {
             TurboHelper.beforeFetchRequest(event);
@@ -11,6 +12,27 @@ const TurboHelper = class {
         document.addEventListener('turbo:before-fetch-response', (event) => {
             TurboHelper.beforeFetchResponse(event);
         });
+
+        document.addEventListener('turbo:before-cache', () => {
+            TurboHelper.beforeCache();
+        });
+    }
+
+    static beforeCache () {
+        document.querySelectorAll('.offcanvas-backdrop').forEach((element) => {
+            element.remove();
+        });
+
+        document.querySelectorAll(STALE_OVERLAYS).forEach((element) => {
+            element.classList.remove('show');
+        });
+
+        document.querySelectorAll(STALE_TRIGGERS).forEach((element) => {
+            element.setAttribute('aria-expanded', 'false');
+        });
+
+        document.body.style.removeProperty('overflow');
+        document.body.style.removeProperty('padding-right');
     }
 
     static beforeFetchRequest (event) {

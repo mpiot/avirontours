@@ -1,21 +1,19 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}1RM de {{ user.fullname }}{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</a></li>
-    <li class="breadcrumb-item active">1RM de {{ user.fullName }}</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('sports_profile_index') }}">Gestion des profils sportifs</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>1RM de {{ user.fullName }}</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <div class="d-flex">
-        <h1>1RM de {{ user.fullname }}</h1>
-    </div>
+{% block page_title %}1RM de {{ user.fullname }}{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
+{% block body %}
+    <twig:Card elevated>
+        <twig:Card:Body>
             {{ include('sport_profile/_workout_maximum_load_form.html.twig') }}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

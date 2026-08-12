@@ -1,0 +1,11 @@
+{% set route = app.request.attributes.get('_route') %}
+
+<twig:NavLink :href="path('profile_show')" :active="'profile_show' == route">
+    <twig:ux:icon name="mdi:account" class="app-nav-icon" /> Mon profil
+</twig:NavLink>
+<twig:NavLink :href="path('profile_edit')" :active="'profile_edit' == route">
+    <twig:ux:icon name="mdi:pencil" class="app-nav-icon" /> Modifier mon profil
+</twig:NavLink>
+<twig:NavLink :href="path('profile_edit_password')" :active="'profile_edit_password' == route">
+    <twig:ux:icon name="mdi:key" class="app-nav-icon" /> Modifier mon mot de passe
+</twig:NavLink>

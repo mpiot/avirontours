@@ -145,7 +145,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Sauver')->form([
+        $form = $crawler->selectButton('Enregistrer')->form([
             'season[name]' => 2030,
             'season[active]' => 1,
             'season[subscriptionEnabled]' => 1,
@@ -181,7 +181,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'season[name]' => '',
         ]);
 
@@ -204,7 +204,7 @@ class SeasonControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'season[name]' => 2030,
         ]);
 
@@ -257,22 +257,6 @@ class SeasonControllerTest extends AppWebTestCase
         LicensePaymentFactory::repository()->assert()->notExists($payment);
     }
 
-    public function testExportSeasonContacts(): void
-    {
-        $season = SeasonFactory::createOne();
-        LicenseFactory::new()->withValidLicense()->create([
-            'seasonCategory' => $season->getSeasonCategories()->first(),
-        ]);
-
-        static::ensureKernelShutdown();
-        $client = static::createClient();
-        $this->createAndLogin($client, 'ROLE_SEASON_ADMIN');
-        $client->request('GET', '/admin/season/'.$season->getId().'/export/contact');
-
-        $this->assertResponseIsSuccessful();
-        $this->assertResponseHeaderSame('content-type', 'text/csv; charset=UTF-8');
-    }
-
     public function testExportSeasonPayments(): void
     {
         $season = SeasonFactory::createOne();
@@ -323,7 +307,6 @@ class SeasonControllerTest extends AppWebTestCase
         yield ['POST', '/admin/season/new'];
         yield ['GET', '/admin/season/{id}/edit'];
         yield ['POST', '/admin/season/{id}/edit'];
-        yield ['GET', '/admin/season/{id}/export/contact'];
         yield ['GET', '/admin/season/{id}/export/license'];
     }
 }

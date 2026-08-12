@@ -1,72 +1,71 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Gestion des saisons{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Gestion des saisons</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Gestion des saisons</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Gestion des saisons{% endblock %}
+
+{% block page_actions %}
+    {% if is_granted('ROLE_SEASON_ADMIN') %}
+        <twig:Button variant="primary" outline size="sm" href="{{ path('season_new') }}">
+            <twig:ux:icon name="mdi:plus" /> Ajouter une saison
+        </twig:Button>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion des saisons</h1>
-
-        {% if is_granted('ROLE_SEASON_ADMIN') %}
-            <a href="{{ path('season_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-                <span class="fas fa-plus"></span> Ajouter une saison
-            </a>
-        {% endif %}
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Active</th>
-                        <th>Inscriptions</th>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Nom</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Active</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Inscriptions</twig:Table:HeadCell>
                         {% if is_granted('ROLE_SEASON_ADMIN') %}
-                            <th></th>
+                            <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
                         {% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for season in seasons %}
-                        <tr>
-                            <td><a href="{{ path('season_show', { 'id': season.id }) }}">{{ season.name }}</a></td>
-                            <td>
+                        <twig:Table:Row>
+                            <twig:Table:RowHeader>
+                                <a href="{{ path('season_show', { 'id': season.id }) }}" class="stretched-link">{{ season.name }}</a>
+                            </twig:Table:RowHeader>
+                            <twig:Table:Cell label="Active">
                                 {% if season.active %}
-                                    <span class="badge rounded-pill bg-success">Active</span>
+                                    <twig:Badge tone="success">Active</twig:Badge>
                                 {% else %}
-                                    <span class="badge rounded-pill bg-danger">Inactive</span>
+                                    <twig:Badge tone="secondary">Inactive</twig:Badge>
                                 {% endif %}
-                            </td>
-                            <td>
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Inscriptions">
                                 {% if season.subscriptionEnabled %}
-                                    <span class="badge rounded-pill bg-success">Ouvertes</span>
+                                    <twig:Badge tone="success">Ouvertes</twig:Badge>
                                 {% else %}
-                                    <span class="badge rounded-pill bg-danger">Fermées</span>
+                                    <twig:Badge tone="secondary">Fermées</twig:Badge>
                                 {% endif %}
-                            </td>
+                            </twig:Table:Cell>
                             {% if is_granted('ROLE_SEASON_ADMIN') %}
-                                <td class="text-end">
-                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                       href="{{ path('season_edit', {'id': season.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                    </a>
-                                </td>
+                                <twig:Table:Cell actions>
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('season_edit', {'id': season.id}) }}">
+                                        <twig:ux:icon name="mdi:pencil" /> Modifier
+                                    </twig:Button>
+                                </twig:Table:Cell>
                             {% endif %}
-                        </tr>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="{{ is_granted('ROLE_SEASON_ADMIN') ? '4' : '3' }}" class="text-center">Pas  de catégorie</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span><twig:EmptyState text="Pas de saison" /></twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

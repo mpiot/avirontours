@@ -2,18 +2,18 @@
 
 {% block title %}Finir une sortie{% endblock %}
 
-{% block breadcrumb %}
+{% block breadcrumb_items %}
     {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('logbook_entry_index') }}">Cahier de sorties</a></li>
-    <li class="breadcrumb-item text-muted">{{ logbook_entry.date|format_date('short')}} - {{ logbook_entry.startAt|format_datetime('none', 'short')}} - {{ logbook_entry.shell.fullName }}</li>
-    <li class="breadcrumb-item active">Finir une sortie</li>
+    <twig:Breadcrumb:Item href="{{ path('logbook_entry_index') }}">Cahier de sorties</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item :current="false">{{ logbook_entry.date|format_date('short')}} - {{ logbook_entry.startAt|format_datetime('none', 'short')}} - {{ logbook_entry.shell.fullName }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Finir une sortie</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Finir une sortie</h1>
+{% block page_title %}Finir une sortie{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
+{% block body %}
+    <twig:Card elevated>
+        <twig:Card:Body>
             {{ form_start(form) }}
                 {{ form_errors(form) }}
 
@@ -23,8 +23,8 @@
 
                 {{ form_row(form.shellDamages) }}
 
-                <button class="btn btn-primary">Terminer la sortie</button>
+                <twig:Button variant="primary">Terminer la sortie</twig:Button>
             {{ form_end(form) }}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

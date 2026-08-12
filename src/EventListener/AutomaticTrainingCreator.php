@@ -95,7 +95,6 @@ readonly class AutomaticTrainingCreator
                 ->setSport(SportType::Rowing)
                 ->setDuration($duration)
                 ->setDistance($distance)
-                ->setFeeling(0.5)
             ;
 
             $em->persist($training);

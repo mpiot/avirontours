@@ -98,7 +98,8 @@ class Concept2ApiConsumerTest extends KernelTestCase
         self::assertSame(22, $trainings[0]->getStrokeRate());
         self::assertSame(145, $trainings[0]->getAverageHeartRate());
         self::assertSame(168, $trainings[0]->getMaxHeartRate());
-        self::assertSame(0.5, $trainings[0]->getFeeling());
+        self::assertNull($trainings[0]->getFeeling());
+        self::assertNull($trainings[0]->getRatedPerceivedExertion());
     }
 
     public function testStoresRotatedRefreshToken(): void

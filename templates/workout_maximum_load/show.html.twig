@@ -1,232 +1,90 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}1RM{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">1RM</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>1RM</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}1RM{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="secondary" outline size="sm" href="{{ path('sport_profile_workout_maximum_load') }}">
+        <twig:ux:icon name="mdi:pencil" /> Modifier
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>1RM</h1>
+    {% set load = app.user.workoutMaximumLoad %}
 
-        <div class="ms-auto align-self-center ">
-            <div class="btn-group-sm">
-                <a class="btn btn-outline-warning" href="{{ path('sport_profile_workout_maximum_load') }}">
-                    <span class="fas fa-pencil-alt"></span> Modifier
-                </a>
-            </div>
-        </div>
-    </div>
+    {% set columns = [
+        { label: '100%', factor: 1 },
+        { label: '90%', factor: 0.9 },
+        { label: '80%', factor: 0.8 },
+        { label: '70%', factor: 0.7 },
+        { label: '60%', factor: 0.6 },
+        { label: '50%', factor: 0.5 },
+        { label: '45%', factor: 0.45 },
+        { label: '40%', factor: 0.4 },
+        { label: '30%', factor: 0.3 },
+    ] %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {% if app.user.workoutMaximumLoad is not null %}
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Exercice</th>
-                            <th scope="col">100%</th>
-                            <th scope="col">90%</th>
-                            <th scope="col">80%</th>
-                            <th scope="col">70%</th>
-                            <th scope="col">60%</th>
-                            <th scope="col">50%</th>
-                            <th scope="col">45%</th>
-                            <th scope="col">40%</th>
-                            <th scope="col">30%</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <th scope="row">
-                                Tirade rowing<br>
-                                <span class="font-weight-normal">Barre de 10Kg</span>
-                            </th>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.9 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.9 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.8 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.8 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.7 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.7 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.6 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.6 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.5 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.5 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.45 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.45 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.4 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.4 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.rowingTirage * 0.3 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.rowingTirage * 0.3 - 10) / 2 }}</small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                Développé couché<br>
-                                <span class="font-weight-normal">Barre de 10Kg</span>
-                            </th>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.9 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.9 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.8 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.8 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.7 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.7 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.6 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.6 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.5 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.5 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.45 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.45 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.4 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.4 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.benchPress * 0.3 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.benchPress * 0.3 - 10) / 2 }}</small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                Squat<br>
-                                <span class="font-weight-normal">Barre de 20Kg</span>
-                            </th>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.9 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.9 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.8 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.8 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.7 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.7 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.6 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.6 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.5 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.5 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.45 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.45 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.4 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.4 - 20) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.squat * 0.3 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.squat * 0.3 - 20) / 2 }}</small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Presse</th>
-                            <td>{{ app.user.workoutMaximumLoad.legPress }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.9 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.8 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.7 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.6 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.5 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.45 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.4 }}</td>
-                            <td>{{ app.user.workoutMaximumLoad.legPress * 0.3 }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">
-                                Epaulé<br>
-                                <span class="font-weight-normal">Barre de 10Kg</span>
-                            </th>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.9 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.9 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.8 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.8 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.7 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.7 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.6 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.6 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.5 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.5 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.45 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.45 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.4 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.4 - 10) / 2 }}</small>
-                            </td>
-                            <td>
-                                {{ app.user.workoutMaximumLoad.clean * 0.3 }}<br>
-                                <small>{{ (app.user.workoutMaximumLoad.clean * 0.3 - 10) / 2 }}</small></small>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            {% if load is not null %}
+                {% set exercises = [
+                    { name: 'Tirade rowing', max: load.rowingTirage, bar: 10 },
+                    { name: 'Développé couché', max: load.benchPress, bar: 10 },
+                    { name: 'Squat', max: load.squat, bar: 20 },
+                    { name: 'Presse', max: load.legPress, bar: null },
+                    { name: 'Epaulé', max: load.clean, bar: 10 },
+                ] %}
+
+                <twig:Table :stack="false" :hover="false">
+                    <twig:Table:Head>
+                        <twig:Table:Row>
+                            <twig:Table:HeadCell>Exercice</twig:Table:HeadCell>
+
+                            {% for column in columns %}
+                                <twig:Table:HeadCell>{{ column.label }}</twig:Table:HeadCell>
+                            {% endfor %}
+                        </twig:Table:Row>
+                    </twig:Table:Head>
+
+                    <twig:Table:Body>
+                        {% for exercise in exercises %}
+                            <twig:Table:Row>
+                                <twig:Table:RowHeader>
+                                    {{ exercise.name }}
+
+                                    {% if exercise.bar is not null %}
+                                        <br><span class="fw-normal">Barre de {{ exercise.bar }}&nbsp;kg</span>
+                                    {% endif %}
+                                </twig:Table:RowHeader>
+
+                                {% for column in columns %}
+                                    {% set total = exercise.max * column.factor %}
+                                    {% set perSide = exercise.bar is not null ? (total - exercise.bar) / 2 : null %}
+
+                                    <twig:Table:Cell :label="column.label">
+                                        <span>
+                                            {{ total|format_number({max_fraction_digit: 1}) }}
+
+                                            {# Below the bar's own weight there is nothing left to load. #}
+                                            {% if perSide is not null and perSide > 0 %}
+                                                <br><small class="app-load-per-side text-body-secondary">{{ perSide|format_number({max_fraction_digit: 1}) }} par côté</small>
+                                            {% endif %}
+                                        </span>
+                                    </twig:Table:Cell>
+                                {% endfor %}
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
             {% else %}
-                <h5>Pas de données.</h5>
-                <p><a href="{{ path('sport_profile_workout_maximum_load') }}">Saisir mes infos</a></p>
+                <twig:EmptyState text="Pas de données" />
             {% endif %}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

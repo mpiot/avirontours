@@ -20,58 +20,83 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+use App\Chart\ChartPalette;
+use App\Util\DurationManipulator;
+
 enum SportType: string
 {
-    case Other = 'other';
+    // Declaration order is what the sport picker of templates/form/_training.html.twig renders.
     case Rowing = 'rowing';
-    case Running = 'running';
     case Ergometer = 'ergometer';
-    case WeightTraining = 'weight_training';
-    case Swimming = 'swimming';
-    case GeneralPhysicalPreparation = 'general_physical_preparation';
-    case Strengthening = 'strengthening';
     case Cycling = 'cycling';
+    case WeightTraining = 'weight_training';
+    case Strengthening = 'strengthening';
+    case GeneralPhysicalPreparation = 'general_physical_preparation';
+    case Running = 'running';
+    case Swimming = 'swimming';
     case Yoga = 'yoga';
+    case Other = 'other';
 
     public function label(): string
     {
         return match ($this) {
-            self::Other => 'Autre',
             self::Rowing => 'Aviron',
             self::Running => 'Course à pied',
             self::Ergometer => 'Ergomètre',
+            self::Strengthening => 'Gainage / Renfo.',
             self::WeightTraining => 'Musculation',
             self::Swimming => 'Natation',
             self::GeneralPhysicalPreparation => 'PPG',
-            self::Strengthening => 'Gainage / Renfo.',
             self::Cycling => 'Vélo',
             self::Yoga => 'Yoga',
+            self::Other => 'Autre',
         };
     }
 
     public function color(): string
     {
         return match ($this) {
-            self::Other, self::Running, self::Swimming, self::GeneralPhysicalPreparation, self::Cycling , self::Yoga => 'rgb(194, 202, 202)',
-            self::Rowing => 'rgb(70, 199, 238)',
-            self::Ergometer => 'rgb(249, 191, 28)',
-            self::WeightTraining => 'rgb(176, 42, 55)',
-            self::Strengthening => 'rgb(210, 103, 240)',
+            self::Rowing => ChartPalette::INDIGO,
+            self::Running => ChartPalette::ORANGE,
+            self::Ergometer => ChartPalette::TEAL,
+            self::Strengthening => ChartPalette::AMBER,
+            self::WeightTraining => ChartPalette::ROSE,
+            self::Swimming => ChartPalette::SKY,
+            self::GeneralPhysicalPreparation => ChartPalette::FUCHSIA,
+            self::Cycling => ChartPalette::LIME,
+            self::Yoga => ChartPalette::GREEN,
+            self::Other => ChartPalette::SLATE,
         };
     }
 
-    public function icon(): string
+    public function speedUnit(): ?string
     {
         return match ($this) {
-            self::Other, self::GeneralPhysicalPreparation => 'mdi:human-handsup',
-            self::Rowing => 'mdi:rowing',
-            self::Running => 'mdi:run',
-            self::Ergometer => 'concept2',
-            self::WeightTraining => 'mdi:weight-lifter',
-            self::Swimming => 'mdi:swim',
-            self::Strengthening => 'mdi:human',
-            self::Cycling => 'mdi:bike',
-            self::Yoga => 'mdi:yoga',
+            self::Rowing, self::Ergometer => '/500m',
+            self::Swimming => '/100m',
+            self::Running => '/km',
+            self::Cycling => 'km/h',
+            self::Strengthening, self::WeightTraining, self::GeneralPhysicalPreparation, self::Yoga, self::Other => null,
         };
+    }
+
+    public function formatSpeed(?int $duration, ?int $distance): ?string
+    {
+        if (null === $duration || null === $distance || 0 === $distance) {
+            return null;
+        }
+
+        return match ($this) {
+            self::Rowing, self::Ergometer => DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds((int) round(500 * $duration / $distance)),
+            self::Swimming => DurationManipulator::formatSecondsAsMinutesSeconds((int) round(10 * $duration / $distance)),
+            self::Running => DurationManipulator::formatSecondsAsMinutesSeconds((int) round(100 * $duration / $distance)),
+            self::Cycling => number_format($distance * 36 / $duration, 1, ',', ' '),
+            self::Strengthening, self::WeightTraining, self::GeneralPhysicalPreparation, self::Yoga, self::Other => null,
+        };
+    }
+
+    public function tracksWatts(): bool
+    {
+        return self::Ergometer === $this;
     }
 }

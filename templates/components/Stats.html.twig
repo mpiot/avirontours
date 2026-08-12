@@ -1,0 +1,13 @@
+{#
+ # A set of figures, each with its name under it.
+ #
+ # A definition list rather than a grid of divs: every item is a term and its value, which is what
+ # `dl` is for, and it is what lets a screen reader read "Distance, 18 km" instead of two loose
+ # strings. `Stats:Item` writes the `dt`/`dd` pair.
+ #
+ # It lays out what it is given and counts nothing: an item that has no value is not rendered by its
+ # caller, so a session with no heart rate simply has one figure fewer.
+ #}
+<dl {{ attributes.defaults({ class: 'app-stat-list' }) }}>
+    {% block content %}{% endblock %}
+</dl>

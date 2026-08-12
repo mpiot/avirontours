@@ -68,4 +68,18 @@ class HomepageControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
     }
+
+    public function testMySpace(): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', '/my-space');
+
+        $this->assertResponseRedirects('/login');
+
+        $this->createAndLogin($client, 'ROLE_USER');
+        $client->request('GET', '/my-space');
+
+        $this->assertResponseIsSuccessful();
+    }
 }

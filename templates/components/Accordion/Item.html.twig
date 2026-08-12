@@ -1,0 +1,34 @@
+{#
+ # One section.
+ #
+ # `id` is the only identifier the call site gives: the header's own id is derived from it here, and
+ # the three references between the two halves — `data-bs-target`, `aria-controls`,
+ # `aria-labelledby` — are wired from the same value. Written by hand they drift, which is how one
+ # of these ended up with a header called `headingQuotation` pointing at a panel called
+ # `collapseOne`.
+ #
+ # `parent` closes the sibling sections when this one opens; give it the enclosing `Accordion`'s id.
+ #}
+{% props id, title, open = false, parent = null %}
+
+<div class="accordion-item">
+    <h2 class="accordion-header" id="{{ id }}-header">
+        <button
+            class="{{ html_classes('accordion-button fs-5', { collapsed: not open }) }}"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#{{ id }}"
+            aria-expanded="{{ open ? 'true' : 'false' }}"
+            aria-controls="{{ id }}"
+        >{{ title }}</button>
+    </h2>
+
+    <div
+        id="{{ id }}"
+        class="{{ html_classes('accordion-collapse collapse', { show: open }) }}"
+        aria-labelledby="{{ id }}-header"
+        {%- if parent is not null %} data-bs-parent="#{{ parent }}"{% endif %}
+    >
+        <div class="accordion-body">{% block content %}{% endblock %}</div>
+    </div>
+</div>

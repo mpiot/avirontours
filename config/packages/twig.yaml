@@ -3,8 +3,8 @@ twig:
     form_themes:
         - 'bootstrap_5_layout.html.twig'
         - 'form/_turnstile.html.twig'
+        - 'form/_training.html.twig'
     globals:
-        app_version: '%app_version%'
         treasurer_stamp:  '%treasurer_stamp%'
 
 when@test:

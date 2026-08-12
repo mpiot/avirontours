@@ -1,0 +1,14 @@
+// ↔ templates/components/UserMenu.html.twig — the initials standing in for a photo the app never has.
+.app-avatar {
+    display: inline-flex;
+    flex: 0 0 2rem;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: rgba($primary, .1);
+    color: $primary;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+}

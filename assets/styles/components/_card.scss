@@ -1,0 +1,13 @@
+/**
+ * ↔ templates/components/Card.html.twig
+ *
+ * A body's last child brings its own bottom margin — a `form_row()` is a `div.mb-3`, a paragraph
+ * has one too — and it lands on top of the body's own padding. Zeroing it here is what removes the
+ * `pb-0` that used to be passed in from the call site.
+ *
+ * `!important` because the margin it has to reach past is a Bootstrap spacing utility, and those
+ * are `!important` themselves. Specificity alone loses to `.mb-3`; nothing else gets there.
+ */
+.card-body > :last-child {
+    margin-bottom: 0 !important;
+}

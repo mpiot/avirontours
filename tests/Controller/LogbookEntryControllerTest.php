@@ -79,6 +79,38 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testStatisticsLogbookEntries(): void
+    {
+        $licence = LicenseFactory::new()->annualActive()->withValidLicense()->create();
+        $shell = ShellFactory::createOne(['numberRowers' => 1, 'coxed' => false]);
+        LogbookEntryFactory::createOne([
+            'crewMembers' => [$licence->getUser()],
+            'shell' => $shell,
+            'date' => new \DateTime('yesterday'),
+            'startAt' => new \DateTime('yesterday 08:00'),
+            'endAt' => new \DateTime('yesterday 10:00'),
+            'coveredDistance' => 12,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($licence->getUser());
+        $crawler = $client->request('GET', '/logbook-entry/statistics');
+
+        $this->assertResponseIsSuccessful();
+
+        $cards = $crawler->filterXPath('//div[contains(concat(" ", normalize-space(@class), " "), " card ")]');
+        $fullName = $licence->getUser()->getFullName();
+
+        $this->assertCount(3, $cards);
+        $this->assertStringContainsString('Top distances', $cards->eq(0)->text());
+        $this->assertSame("1 {$fullName} 12 km", $cards->eq(0)->filter('.list-group-item')->text());
+        $this->assertStringContainsString('Top sorties', $cards->eq(1)->text());
+        $this->assertSame("1 {$fullName} 1", $cards->eq(1)->filter('.list-group-item')->text());
+        $this->assertStringContainsString('Top bateaux', $cards->eq(2)->text());
+        $this->assertSame("1 {$shell->getFullName()} 1", $cards->eq(2)->filter('.list-group-item')->text());
+    }
+
     public function testNewLogbookEntry(): void
     {
         $shell = ShellFactory::createOne(['numberRowers' => 2, 'coxed' => false]);
@@ -91,7 +123,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '09:00',
@@ -127,7 +159,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '09:00',
@@ -156,7 +188,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => '',
             'logbook_entry_start[startAt]' => '',
         ]);
@@ -181,7 +213,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licence->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -210,7 +242,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -235,7 +267,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$licences[0]->getUser()->getId(), $licences[1]->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -263,14 +295,14 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bateau est déjà sorti.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(1);
@@ -303,14 +335,14 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Sauver', [
+        $crawler = $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $damage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Ce bâteau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Ce bateau est endommagé.', $crawler->filter('#logbook_entry_start_shell')->ancestors()->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         LogbookEntryFactory::repository()->assert()->count(0);
@@ -329,7 +361,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shellDamage->getShell()->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[startAt]' => '9:00',
@@ -349,7 +381,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
         $client->loginUser($license->getUser());
         $client->request('GET', '/logbook-entry/new');
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry_start[nonUserCrewMembers]' => 'John Doe',
@@ -376,7 +408,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Sauver', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry_start[shell]' => $shell->getId(),
             'logbook_entry_start[crewMembers]' => [],
             'logbook_entry_start[nonUserCrewMembers]' => 'John Doe, Foo Bar',
@@ -437,7 +469,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry[shell]' => $shell->getId(),
             'logbook_entry[crewMembers]' => [$users[0]->getId(), $users[1]->getId()],
             'logbook_entry[startAt]' => '15:00',
@@ -476,7 +508,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry[crewMembers]' => [$license->getUser()->getId()],
             'logbook_entry[nonUserCrewMembers]' => '',
         ]);
@@ -501,7 +533,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry[shell]' => $entries[1]->getShell()->getId(),
         ]);
 
@@ -524,7 +556,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry[shell]' => $shellDamage->getShell()->getId(),
         ]);
 
@@ -549,7 +581,7 @@ class LogbookEntryControllerTest extends AppWebTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $client->submitForm('Modifier', [
+        $client->submitForm('Enregistrer', [
             'logbook_entry[shell]' => $shell->getId(),
             'logbook_entry[crewMembers]' => [$entry->getCrewMembers()->get(0)->getId(), $entry->getCrewMembers()->get(1)->getId()],
             'logbook_entry[startAt]' => '15:00',

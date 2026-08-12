@@ -1,0 +1,19 @@
+{#
+ # The trail.
+ #
+ # Pages contribute their levels through a `breadcrumb_items` block, which the layout hands over with
+ # `block(outerBlocks.breadcrumb_items)` — `block()` on its own resolves against this component, not
+ # against the page. A page that defines no such block falls back to nothing.
+ #
+ # Presentation is the layout's call: the shell renders the trail above the page title — full from
+ # lg, folded by CSS to a single « ‹ parent » back link below, hidden entirely when no ancestor is
+ # reachable.
+ #}
+{# A top-level page has nothing above it, so it contributes no levels and gets no trail at all. #}
+{% if block('content')|trim is not empty %}
+    <nav{{ attributes.defaults({'aria-label': "Fil d'Ariane"}) }}>
+        <ol class="breadcrumb mb-0">
+            {% block content %}{% endblock %}
+        </ol>
+    </nav>
+{% endif %}

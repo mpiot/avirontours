@@ -1,0 +1,39 @@
+{#
+ # The pagination strip, assembled from a KnpPaginator result.
+ #
+ # The primitives beside this file can be composed by hand where the pages come from somewhere else;
+ # here they come from the paginator, so this reads the data off it and does the assembling. That
+ # keeps `pageParameterName`, sort and filter parameters — everything already in the query — in the
+ # links, which is what `knp_pagination_query` is for.
+ #
+ # `pagesInRange` is a sliding window, so first and last are kept as their own controls: at page 40
+ # of 80 neither boundary is in the window and there would otherwise be no way back to either end.
+ #}
+{% props pagination %}
+
+{% set data = pagination.paginationData %}
+
+{% if data.pageCount > 1 %}
+    {% set route = pagination.route %}
+    {% set query = pagination.query %}
+    {% set options = pagination.paginatorOptions %}
+
+    <nav{{ attributes }} aria-label="Pagination">
+        <ul class="pagination pagination-sm justify-content-center mb-0">
+            <twig:Pagination:First :href="data.current != data.first ? path(route, knp_pagination_query(query, data.first, options)) : null" />
+            <twig:Pagination:Previous :href="data.previous is defined ? path(route, knp_pagination_query(query, data.previous, options)) : null" />
+
+            {% for page in data.pagesInRange %}
+                <twig:Pagination:Item :active="page == data.current">
+                    <twig:Pagination:Link
+                        :href="path(route, knp_pagination_query(query, page, options))"
+                        :active="page == data.current"
+                    >{{ page }}</twig:Pagination:Link>
+                </twig:Pagination:Item>
+            {% endfor %}
+
+            <twig:Pagination:Next :href="data.next is defined ? path(route, knp_pagination_query(query, data.next, options)) : null" />
+            <twig:Pagination:Last :href="data.current != data.last ? path(route, knp_pagination_query(query, data.last, options)) : null" />
+        </ul>
+    </nav>
+{% endif %}

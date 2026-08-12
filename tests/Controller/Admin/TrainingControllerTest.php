@@ -20,17 +20,19 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\Admin;
 
+use App\Enum\Feeling;
 use App\Factory\GroupFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 use function Zenstruck\Foundry\faker;
 
 class TrainingControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -40,7 +42,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForRegularUser(string $method, string $url): void
     {
         if (mb_strpos($url, '{user-id}')) {
@@ -73,6 +75,26 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testIndexAveragesOnlyTheSessionsThatWereRated(): void
+    {
+        $ratedUser = UserFactory::createOne(['firstname' => 'A']);
+        TrainingFactory::createOne(['user' => $ratedUser, 'feeling' => Feeling::VeryGood, 'trainedAt' => new \DateTime('yesterday')]);
+        TrainingFactory::createOne(['user' => $ratedUser, 'feeling' => null, 'trainedAt' => new \DateTime('yesterday')]);
+
+        $unratedUser = UserFactory::createOne(['firstname' => 'B']);
+        TrainingFactory::createOne(['user' => $unratedUser, 'feeling' => null, 'trainedAt' => new \DateTime('yesterday')]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
+        $crawler = $client->request('GET', '/admin/training');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(2, $crawler->filterXPath('//td[@data-label="Sensation"]'));
+        $this->assertStringContainsString("100\u{a0}%", $crawler->filterXPath('//td[@data-label="Sensation"][1]')->text());
+        $this->assertStringContainsString('Aucune séance notée', $crawler->filterXPath('//td[@data-label="Sensation"][2]')->text());
+    }
+
     public function testFilterIndexTrainings(): void
     {
         $user = UserFactory::createOne();
@@ -102,7 +124,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/admin/training/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(6, $crawler->filter('table > tbody > tr'));
+        $this->assertCount(6, $crawler->filter('.app-table > tbody > tr'));
     }
 
     public function testShowTraining(): void
@@ -116,6 +138,22 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testShowTrainingDoesNotOfferTheRatingForm(): void
+    {
+        $user = UserFactory::createOne();
+        $training = TrainingFactory::createOne(['user' => $user, 'feeling' => null, 'ratedPerceivedExertion' => null]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_SPORT_ADMIN');
+        $crawler = $client->request('GET', \sprintf('/admin/training/%s/%s', $user->getId(), $training->getId()));
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Non renseignée', $crawler->filterXPath('//div[@id="rating"]')->text());
+        $this->assertCount(0, $crawler->filterXPath('//div[@id="rating"]/turbo-frame'));
+        $this->assertCount(0, $crawler->filterXPath('//div[@id="rating"]/form'));
     }
 
     public static function urlProvider(): \Generator

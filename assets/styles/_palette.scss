@@ -1,0 +1,43 @@
+// The app's colour decisions, as raw literals.
+//
+// Two builds consume this: the Bootstrap one through _custom.scss, and the Foundation-for-Emails
+// one through email.scss. Neither framework's variables are in scope here, and neither build can
+// see the other's — this file is the only thing keeping the site and the emails in step.
+//
+// There is a third surface neither build reaches: templates/payment_attestation/pdf.html.twig, a
+// standalone document Puppeteer prints. It keeps `$primary` for the logo and is otherwise monochrome
+// — it is a document the club issues, and it has to hold up photocopied.
+//
+// Its greys are its own on purpose, and must not be brought back into step with these. A screen
+// carries a tone at any lightness; paper carries it as halftone dots, and under about 20% ink a
+// hairline breaks up or drops out. `$neutral-rule` is 12% and did exactly that, so the PDF rules at
+// 30% instead; `$neutral-muted` is 55%, thin under 9pt type, so its secondary ink is 69%. Those are
+// print decisions, and no variable here should try to serve both media.
+
+// Club navy, taken from logo_colored.svg. HSL(238, 71%, 30%): the dark-mode overrides in
+// templates/emails/base.html.twig are hand-derived from that hue and have to follow it.
+$primary: #161983;
+
+// Status hues, saturated rather than deepened: darkening a hue to reach contrast is what turns an
+// amber into a brown. All but `$warning` double their chroma while staying above 4.5:1 on white,
+// which is what `.btn-outline-*`, `.text-*` and `.link-*` need — they paint the hue as ink.
+$secondary: #5a6b8c;
+$success: #00874a;
+$info: #0e7ab8;
+$danger: #dc2626;
+
+// `$warning` is the exception: nothing paints it as ink (only `.btn-warning`, whose text colour
+// Bootstrap picks with `color-contrast()`, a progress bar, and the soft `.app-badge-warning`), so it
+// is free to be a bright amber. _utilities.scss redirects the one control that would paint it as ink,
+// because on white it is 2.15:1.
+$warning: #f59e0b;
+
+// Neutrals. Bootstrap builds these itself; they are spelled out for the email build, which cannot
+// see Bootstrap — check them against the named variables on an upgrade.
+$neutral-page: #f8f9fa; // $gray-100
+$neutral-rule: #dee2e6; // $gray-300
+$neutral-muted: #6c757d; // $gray-600
+$neutral-ink: #212529; // $body-color
+
+// Very light wash of the navy, for a callout sitting on white.
+$neutral-wash: #f4f4fb;

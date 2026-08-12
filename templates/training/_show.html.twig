@@ -1,36 +1,107 @@
- <div class="card border-0 shadow">
-    <div class="card-body">
-        <div class="d-flex align-items-center fs-2">
-            <div class="mx-3">
-                <span class="far fa-clock text-info"></span> {{ training.formattedDuration }}
-            </div>
-            <div class="mx-3">
-                <span class="fas fa-ruler text-info"></span> {{ training.distance ? training.distance|format_number : '-' }} m
-            </div>
-            <div class="mx-3">
-                <span class="fas fa-spa text-info"></span>
-                <div class="progress">
-                    <div class="progress-bar {{ training.feeling < 0.4 ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ training.feeling * 100 }}%" aria-valuenow="{{ training.feeling * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="app-measure app-training-detail">
+    <twig:Card elevated>
+        <twig:Card:Header>
+            <h2 class="fs-5 mb-0">Séance</h2>
+        </twig:Card:Header>
 
-{% if training.comment is not null %}
-    <div class="card border-0 shadow mt-3">
-        <div class="card-body">
-            <span class="h4">Commentaire</span>
-            <blockquote class="blockquote">
+        <twig:Card:Body>
+            <twig:Stats>
+                <twig:Stats:Item label="Durée">{{ training.formattedDuration }}</twig:Stats:Item>
+
+                {% if training.distance is not null %}
+                    <twig:Stats:Item label="Distance" unit="km">
+                        {{- (training.distance / 1000)|format_number({fraction_digit: 1}) -}}
+                    </twig:Stats:Item>
+                {% endif %}
+
+                {% if training.formattedSpeed is not null %}
+                    <twig:Stats:Item label="Allure" :unit="training.sport.speedUnit">
+                        {{- training.formattedSpeed -}}
+                    </twig:Stats:Item>
+                {% endif %}
+
+            </twig:Stats>
+        </twig:Card:Body>
+    </twig:Card>
+
+    {% if training.averageWatt is not null or training.strokeRate is not null or training.averageHeartRate is not null %}
+        <twig:Card elevated class="mt-3">
+            <twig:Card:Header>
+                <h2 class="fs-5 mb-0">Intensité</h2>
+            </twig:Card:Header>
+
+            <twig:Card:Body>
+                <twig:Stats>
+                    {% if training.averageWatt is not null %}
+                        <twig:Stats:Item label="Puissance" unit="W">{{ training.averageWatt }}</twig:Stats:Item>
+                    {% endif %}
+
+                    {% if training.strokeRate is not null %}
+                        <twig:Stats:Item label="Cadence" unit="c/min">{{ training.strokeRate }}</twig:Stats:Item>
+                    {% endif %}
+
+                    {% if training.averageHeartRate is not null %}
+                        <twig:Stats:Item
+                            label="Fréquence cardiaque"
+                            unit="bpm"
+                            :secondary="training.maxHeartRate ? 'max ' ~ training.maxHeartRate : null"
+                        >
+                            {{- training.averageHeartRate -}}
+                        </twig:Stats:Item>
+                    {% endif %}
+                </twig:Stats>
+            </twig:Card:Body>
+        </twig:Card>
+    {% endif %}
+
+    <twig:Card elevated class="mt-3">
+        <twig:Card:Header>
+            <h2 class="fs-5 mb-0">Ressenti</h2>
+
+            <twig:block name="actions">
+                <span class="text-body-secondary small">
+                    Charge
+                    <span id="training-load" class="fw-semibold text-body">
+                        {{- include('training/_load.html.twig') -}}
+                    </span>
+                </span>
+            </twig:block>
+        </twig:Card:Header>
+
+        <twig:Card:Body id="rating">
+            {% if (training.feeling is null or training.ratedPerceivedExertion is null) and training.user === app.user %}
+                <turbo-frame id="training-rating" src="{{ path('training_edit_rating', { id: training.id }) }}">
+                    <twig:LoadingSkeleton :lines="2" label="Chargement…" />
+                </turbo-frame>
+            {% else %}
+                {{ include('training/_rating.html.twig') }}
+            {% endif %}
+        </twig:Card:Body>
+    </twig:Card>
+
+    {% if training.comment is not null %}
+        <twig:Card elevated class="mt-3">
+            <twig:Card:Header>
+                <h2 class="fs-5 mb-0">Commentaire</h2>
+            </twig:Card:Header>
+
+            <twig:Card:Body>
                 <p class="mb-0">{{ training.comment|nl2br }}</p>
-            </blockquote>
-        </div>
-    </div>
-{% endif %}
+            </twig:Card:Body>
+        </twig:Card>
+    {% endif %}
 
-{% if not training.trainingPhases.empty %}
-     <div class="card border-0 shadow mt-3">
-         <turbo-frame id="training-phases" src="{{ path('training_show_phase', { training_id: training.id, id:training.trainingPhases.first.id }) }}">
-         </turbo-frame>
-     </div>
-{% endif %}
+    {% if not training.trainingPhases.empty %}
+        <twig:Card elevated class="mt-3">
+            <twig:Card:Header>
+                <h2 class="fs-5 mb-0">Analyse</h2>
+            </twig:Card:Header>
+
+            <twig:Card:Body>
+                <turbo-frame id="training-phases" loading="lazy" src="{{ path('training_show_phase', { training_id: training.id, id: training.trainingPhases.first.id }) }}">
+                    <twig:LoadingSkeleton :lines="4" label="Chargement…" />
+                </turbo-frame>
+            </twig:Card:Body>
+        </twig:Card>
+    {% endif %}
+</div>

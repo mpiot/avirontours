@@ -1,0 +1,10 @@
+{#
+ # A menu hanging off a control.
+ #
+ # This wrapper is only what positions the menu. It is not always needed: a toggle already sitting
+ # in a `.btn-group` gets its positioning from there, so those call sites use `Dropdown:Toggle` and
+ # `Dropdown:Menu` on their own.
+ #}
+<div{{ attributes.defaults({ class: 'dropdown' }) }}>
+    {% block content %}{% endblock %}
+</div>

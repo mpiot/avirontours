@@ -1,0 +1,35 @@
+{#
+ # A filled bar, from 0 to 100.
+ #
+ # `label` is not optional. The bar carries no text, so without an accessible name a screen reader
+ # announces a percentage of nothing; and where the tone is the only thing separating a poor value
+ # from a good one, colour would be the sole channel of information (WCAG 1.4.1). The name and
+ # `aria-valuenow` together are what make the reading available without seeing it.
+ #
+ # `role` and the three `aria-value*` sit on `.progress` rather than on `.progress-bar` — the bar is
+ # the fill, the track is the control. That is where Bootstrap 5.3 moved them.
+ #}
+{% props value, label, tone = null %}
+
+{%- set progressBar = html_cva(
+    base: 'progress-bar',
+    variants: {
+        tone: {
+            success: 'bg-success',
+            info: 'bg-info',
+            warning: 'bg-warning',
+            danger: 'bg-danger',
+        },
+    },
+) -%}
+
+<div
+    {{- attributes.defaults({ class: 'progress' }) }}
+    role="progressbar"
+    aria-label="{{ label }}"
+    aria-valuenow="{{ value }}"
+    aria-valuemin="0"
+    aria-valuemax="100"
+>
+    <div class="{{ progressBar.apply({ tone: tone }|filter(v => v is not null)) }}" style="width: {{ value }}%"></div>
+</div>

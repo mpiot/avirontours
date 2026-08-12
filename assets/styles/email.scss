@@ -1,10 +1,18 @@
+// `~foundation-emails` resolves to the package's `main`, dist/foundation-emails.css — already
+// compiled, so its own component colours (a sky blue, a mint, a coral) cannot be overridden from
+// here. They only surface through variants no template uses: `.button.primary`, `.callout.alert`
+// and the like. Reaching them would mean importing `~foundation-emails/scss/foundation-emails`
+// and rebuilding the framework from source.
 @import "~foundation-emails";
 
-$brand: #1a3996;
-$ink: #3c3c3b;
-$muted: #6a6a69;
-$page: #f8f8f8;
-$rule: #e3e6ef;
+// Same decisions as the site: the palette is the one file both builds read.
+@import "palette";
+
+$brand: $primary;
+$ink: $neutral-ink;
+$muted: $neutral-muted;
+$page: $neutral-page;
+$rule: $neutral-rule;
 
 body {
     background-color: $page;
@@ -35,13 +43,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    font-size: 24px;
     margin-bottom: 16px;
+    font-size: 24px;
 }
 
 h5 {
-    font-size: 17px;
     margin-bottom: 8px;
+    font-size: 17px;
 }
 
 .small, small {
@@ -57,7 +65,7 @@ p.code {
 }
 
 table.container {
-    background: #ffffff;
+    background: #fff;
 }
 
 table.row.masthead {
@@ -77,16 +85,12 @@ table.row.note {
 }
 
 table.row.note th.columns {
-    padding: 16px 24px 0;
+    padding: 16px 24px 20px;
 }
 
 table.row.note p {
     color: $muted;
     font-size: 14px;
-}
-
-table.row.social th.columns {
-    padding: 8px 8px 20px;
 }
 
 table.row.footer {
@@ -98,12 +102,12 @@ table.row.footer th.columns {
 }
 
 table.row.footer p {
-    font-size: 14px;
     margin-bottom: 0;
+    font-size: 14px;
 }
 
 table.row.footer p, table.row.footer a, table.row.footer a:visited {
-    color: #ffffff;
+    color: #fff;
 }
 
 table.button {
@@ -111,9 +115,9 @@ table.button {
 }
 
 table.button table td {
-    background: $brand;
     border: 2px solid $brand;
     border-radius: 6px;
+    background: $brand;
 }
 
 table.button table a {
@@ -122,7 +126,7 @@ table.button table a {
 }
 
 th.callout-inner {
-    background: #f4f6fb;
-    border: 1px solid $rule;
     padding: 16px;
+    border: 1px solid $rule;
+    background: $neutral-wash;
 }

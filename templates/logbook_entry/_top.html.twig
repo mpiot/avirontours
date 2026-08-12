@@ -1,0 +1,23 @@
+{# No `h-100`: it is a grid cell of CardGrid, and those stretch to their row on their own. #}
+<twig:Card elevated>
+    <twig:Card:Body>
+        <h2 class="fs-5">{{ title }}</h2>
+
+        <twig:ListGroup flush>
+            {% for row in rows %}
+                {% set rank = loop.index %}
+
+                <twig:ListGroup:Item split>
+                    <span>
+                        <span class="app-rank" data-rank="{{ rank }}">{{ rank }}</span>
+                        {{ row.0.fullName }}
+                    </span>
+
+                    <span>{{ attribute(row, field)|format_number({fraction_digit: 0}) }}{{ unit }}</span>
+                </twig:ListGroup:Item>
+            {% else %}
+                <twig:ListGroup:Item muted>Pas d'entrée</twig:ListGroup:Item>
+            {% endfor %}
+        </twig:ListGroup>
+    </twig:Card:Body>
+</twig:Card>

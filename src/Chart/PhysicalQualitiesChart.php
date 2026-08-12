@@ -44,8 +44,8 @@ final readonly class PhysicalQualitiesChart
             'datasets' => [
                 [
                     'label' => '',
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'backgroundColor' => ChartPalette::translucent(ChartPalette::INDIGO, 0.35),
+                    'borderColor' => ChartPalette::INDIGO,
                     'data' => [
                         $physicalQualities->getProprioception(),
                         $physicalQualities->getWeightPowerRatio(),
@@ -62,11 +62,14 @@ final readonly class PhysicalQualitiesChart
         ]);
 
         $chart->setOptions([
-            'legend' => [
-                'display' => false,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'legend' => [
+                    'display' => false,
+                ],
             ],
-            'scale' => [
-                'ticks' => [
+            'scales' => [
+                'r' => [
                     'suggestedMin' => 0,
                     'suggestedMax' => 20,
                 ],

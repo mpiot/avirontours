@@ -57,7 +57,8 @@ class AutomaticTrainingCreatorTest extends AppWebTestCase
         $this->assertSame(SportType::Rowing, $training->getSport());
         $this->assertSame(36000, $training->getDuration());
         $this->assertSame(10000, $training->getDistance());
-        $this->assertSame(0.5, $training->getFeeling());
+        $this->assertNull($training->getFeeling());
+        $this->assertNull($training->getRatedPerceivedExertion());
     }
 
     public function testNoTrainingIsCreatedForAMemberWhoOptedOut(): void

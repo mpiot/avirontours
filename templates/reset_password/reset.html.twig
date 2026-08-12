@@ -1,4 +1,4 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
 
@@ -19,7 +19,7 @@
         }) }}
 
         <div class="d-grid mt-4">
-            <button class="btn btn-lg btn-primary" data-turbo-submits-with="Enregistrement&hellip;">Réinitialiser le mot de passe</button>
+            <twig:Button variant="primary" size="lg" data-turbo-submits-with="Enregistrement&hellip;">Réinitialiser le mot de passe</twig:Button>
         </div>
     {{ form_end(resetForm) }}
 {% endblock %}

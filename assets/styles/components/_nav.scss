@@ -1,0 +1,102 @@
+// ↔ templates/components/NavLink.html.twig and templates/_app_nav.html.twig — one family rather than
+// one file per call site: `.app-nav-link.active` reaches into `.app-nav-icon`, and splitting the two
+// would put a rule and the selector it depends on in different files.
+.app-nav-heading {
+    margin: $spacer 0 ($spacer * .25);
+    padding: 0 ($spacer * .5);
+    color: $gray-600;
+    font-size: $app-font-size-caption;
+    font-weight: $font-weight-semibold;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.app-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: 0;
+    background: none;
+    text-align: start;
+
+    .app-collapse-chevron {
+        font-size: $font-size-base * .625;
+    }
+}
+
+.app-nav-link {
+    display: flex;
+    align-items: center;
+    gap: $spacer * .75;
+    padding: ($spacer * .5);
+    border-radius: $border-radius;
+    color: $gray-700;
+    text-decoration: none;
+
+    &:hover {
+        background-color: $gray-100;
+        color: $body-color;
+    }
+
+    // See components/_tile.scss: Bootstrap rings its own controls only, so a link the app turned into
+    // a nav item draws its own.
+    &:focus-visible {
+        outline: $focus-ring-width solid $primary;
+        outline-offset: 2px;
+    }
+
+    &.active {
+        background-color: rgba($primary, .08);
+        box-shadow: inset .1875rem 0 0 $primary;
+        color: $primary;
+        font-weight: $font-weight-medium;
+
+        .app-nav-icon {
+            color: inherit;
+        }
+    }
+}
+
+.app-nav-icon {
+    flex: 0 0 1.25rem;
+    color: $gray-500;
+    text-align: center;
+}
+
+// Section sub-navigation: horizontal exactly when its card is full width, which the `col-xl-3` of
+// profile/base.html.twig and sport_profile/base.html.twig puts at xl — the sidebar's fixed 16rem
+// leaves too little for a side column any earlier. Move one and the other follows.
+.app-subnav {
+    display: flex;
+    flex-direction: column;
+    gap: $spacer * .25;
+
+    @include media-breakpoint-down(xl) {
+        flex-direction: row;
+        overflow-x: auto;
+
+        // The strip has to say that it scrolls — the last item is otherwise cut with nothing to
+        // explain it. A `mask-image` fade cannot say it: a mask is painted on the border box and does
+        // not move with the scrolled content, so it sat there at either end — over the last tab once
+        // you had reached it, and over the focus ring the Tab key brings under it.
+        //
+        // These four layers uncover each other instead. The two white ones are `local`, so they ride
+        // the content and park over an end exactly when that end is reached; the two shadows behind
+        // them are `scroll`, so they stay. A strip short enough not to overflow parks both at once and
+        // shows nothing, which is the answer the mask never had either.
+        background:
+            linear-gradient(to right, $white 40%, rgba($white, 0)) 0 0 / 1.5rem 100% no-repeat local,
+            linear-gradient(to left, $white 40%, rgba($white, 0)) 100% 0 / 1.5rem 100% no-repeat local,
+            radial-gradient(farthest-side at 0 50%, rgba($black, .14), rgba($black, 0)) 0 0 / .6rem 100% no-repeat,
+            radial-gradient(farthest-side at 100% 50%, rgba($black, .14), rgba($black, 0)) 100% 0 / .6rem 100% no-repeat;
+
+        .app-nav-link {
+            white-space: nowrap;
+        }
+    }
+}

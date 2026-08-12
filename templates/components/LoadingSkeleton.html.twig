@@ -1,0 +1,26 @@
+{#
+ # The grey bars a lazy `<turbo-frame>` or the modal shows until its content lands.
+ #
+ # `label` sits outside the bars rather than among them: the container is `aria-hidden`, so anything
+ # written inside it is hidden too. It is optional because the modal already announces the wait in
+ # its title — passing one there would say "Chargement…" twice.
+ #
+ # `aria-hidden` is on the container and not on each bar: one attribute instead of N.
+ #
+ # The widths cycle, so any `lines` renders. `lines` has to be at least 1 — Twig's `..` counts
+ # backwards when the upper bound is the lower one, and `0` would draw two bars rather than none.
+ # No guard: the three call sites pass 2 or 4.
+ #}
+{% props lines = 3, label = null %}
+
+{% set widths = [12, 9, 11, 7] %}
+
+{% if label is not null %}
+    <span class="visually-hidden">{{ label }}</span>
+{% endif %}
+
+<div{{ attributes.defaults({ class: 'placeholder-glow' }) }} aria-hidden="true">
+    {% for i in 0..(lines - 1) %}
+        <span class="placeholder col-{{ widths[i % widths|length] }}"></span>
+    {% endfor %}
+</div>

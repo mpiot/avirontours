@@ -21,10 +21,19 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\UX\Turbo\TurboBundle;
 
 /**
  * @method User getUser()
  */
 abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
+    public function renderStream(string $view, array $parameters = [], ?Response $response = null): Response
+    {
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+
+        return $this->render($view, $parameters, $response);
+    }
 }

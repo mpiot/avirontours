@@ -2,31 +2,31 @@
 
 {% block title %}Configuration{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item active">Mon profil sportif</li>
-    <li class="breadcrumb-item active">Configuration</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item :current="false">Mon profil sportif</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Configuration</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block main %}
-    <h2>Configuration</h2>
+{% block page_title %}Configuration{% endblock %}
 
-    <h5>Paramétres liés aux entraînements</h5>
+{% block main %}
+    <h2 class="fs-5">Paramètres liés aux entraînements</h2>
     {{ form_start(form) }}
         {{ form_widget(form) }}
 
-        <button class="btn btn-primary mt-2">Sauver</button>
+        <twig:Button variant="primary" class="mt-2">Enregistrer</twig:Button>
     {{ form_end(form) }}
 
-    <h5 class="mt-5">Services connectés</h5>
+    <h2 class="fs-5 mt-5">Services connectés</h2>
     <div class="row">
         <div class="col-8">
-            <h6>Compte Concept2</h6>
+            <h3 class="fs-6">Compte Concept2</h3>
             <p>
                 Lier mon compte Log Concept2 (<a href="https://log.concept2.com/">https://log.concept2.com/</a>) pour
                 importer automatiquement mes séances d'ergomètre via l'application ErgData.<br>
                 {% if app.user.concept2RefreshToken is null %}
-                    <span class="text-muted">Aucun compte connecté</span>
+                    <span class="text-body-secondary">Aucun compte connecté</span>
                 {% else %}
                     <span class="text-success">Compte connecté</span>
                 {% endif %}
@@ -34,13 +34,13 @@
         </div>
         <div class="col-4 text-center">
             {% if app.user.concept2RefreshToken is null %}
-                <a href="{{ path('oauth_concept2_connect') }}" class="btn btn-sm btn-primary">
+                <twig:Button variant="primary" size="sm" href="{{ path('oauth_concept2_connect') }}">
                     Se connecter
-                </a>
+                </twig:Button>
             {% else %}
-                <a href="{{ path('oauth_concept2_unconnect') }}" class="btn btn-sm btn-outline-secondary">
+                <twig:Button variant="secondary" outline size="sm" href="{{ path('oauth_concept2_unconnect') }}">
                     Se déconnecter
-                </a>
+                </twig:Button>
             {% endif %}
         </div>
     </div>

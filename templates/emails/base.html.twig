@@ -21,19 +21,19 @@
                 @media (prefers-color-scheme: dark) {
                     body { background-color: #14171c !important; }
 
-                    .card, .card .content, .card .content th, .card .note, .card .note th, .card .social, .card .social th { background-color: #1c2027 !important; }
+                    .card, .card .content, .card .content th, .card .note, .card .note th { background-color: #1c2027 !important; }
                     .card p, .card li, .card strong, .card td, .card th { color: #e6e8ec !important; }
-                    .card h1, .card h2, .card h3, .card h4, .card h5, .card h6, .card .content a { color: #93a8ee !important; }
+                    .card h1, .card h2, .card h3, .card h4, .card h5, .card h6, .card .content a { color: #9295ed !important; }
                     .card .small, .card small, .card .note p { color: #9aa0ab !important; }
-                    .card .code { color: #93a8ee !important; }
+                    .card .code { color: #9295ed !important; }
                     .card .note { border-top-color: #2d323b !important; }
 
                     .card .callout-inner { background-color: #262b34 !important; border-color: #343a45 !important; }
 
-                    .card .button td { background-color: #2c4fc4 !important; border-color: #2c4fc4 !important; }
+                    .card .button td { background-color: #2c31c3 !important; border-color: #2c31c3 !important; }
                     .card .button a { color: #ffffff !important; }
 
-                    .card .masthead, .card .masthead th, .card .footer, .card .footer th { background-color: #16306f !important; }
+                    .card .masthead, .card .masthead th, .card .footer, .card .footer th { background-color: #16196f !important; }
                     .card .footer p, .card .footer a { color: #ffffff !important; }
                 }
             </style>
@@ -71,32 +71,13 @@
                     </columns>
                 </row>
 
-                <row class="social">
-                    <columns small="4" large="4">
-                        <a href="https://fr-fr.facebook.com/avironTM/">
-                            <img class="float-center" src="{{ absolute_url(asset('build/images/facebook.png')) }}" alt="Facebook" width="28" height="28">
-                        </a>
-                    </columns>
-
-                    <columns small="4" large="4">
-                        <a href="https://www.instagram.com/avirontours/">
-                            <img class="float-center" src="{{ absolute_url(asset('build/images/instagram.png')) }}" alt="Instagram" width="28" height="28">
-                        </a>
-                    </columns>
-
-                    <columns small="4" large="4">
-                        <a href="https://www.youtube.com/channel/UCWfxykhdj-8gWj4SDa6fJoQ">
-                            <img class="float-center" src="{{ absolute_url(asset('build/images/youtube.png')) }}" alt="Youtube" width="28" height="28">
-                        </a>
-                    </columns>
-                </row>
-
                 <row class="footer">
                     <columns>
                         <p class="text-center">
                             <strong>Aviron Tours Métropole</strong><br/>
                             5 avenue de Florence, 37000 Tours<br/>
-                            <a href="tel:+33247443044">02 47 44 30 44</a> — <a href="{{ url('homepage') }}">avirontours.fr</a>
+                            <a href="tel:+33247443044">02 47 44 30 44</a> — <a href="{{ url('homepage') }}">avirontours.fr</a><br/>
+                            <a href="{{ url('privacy_policy') }}">Politique de confidentialité</a>
                         </p>
                     </columns>
                 </row>

@@ -1,0 +1,48 @@
+// The app's own decisions, in one place.
+//
+// Bootstrap's variables are already in scope here — this file is imported after it — but these are
+// the app's own, and several files need the same number: `$app-topbar-height` sizes the topbar and
+// clears the toast stack of it, `$app-measure` caps a form card, the focus layout's column and both
+// training pages, `$app-exertion-colors` paints the effort scale in the form and its chip in the log.
+
+$app-sidebar-width: 16rem;
+$app-topbar-height: 3.5rem;
+$app-measure: 48rem;
+
+// The two type sizes below $font-size-sm, so the same annotation is the same size everywhere:
+// `label` (13px) sets column heads, stat labels and scale legends; `caption` (12px) the badges
+// and eyebrow headings.
+$app-font-size-label: $font-size-base * .8125;
+$app-font-size-caption: $font-size-base * .75;
+
+// Podium metals, for the logbook's three top lists. Here rather than in _palette.scss for the same
+// reason as the scale below: no e-mail carries a podium, and gold answers to a metal rather than to a
+// tone.
+//
+// Deep enough to carry white ink: the rank sits inside the disc, at $app-font-size-caption and
+// semibold, which is text and owes 4.5:1. Gold is the one that had to move — #a67c00 was 3.82:1, and
+// the darkening stays on its own hue and saturation so it still reads as the metal.
+$app-medal-colors: (
+    1: #926d00, // 4.76:1
+    2: #6b7280, // 4.83:1
+    3: #9c5221, // 5.77:1
+);
+
+// Borg CR10, the club's own hues: cool where the effort is easy, red where it is maximal. Here and
+// not in _palette.scss, which holds the theme colours the e-mail build reads too: no e-mail carries
+// an effort scale, and these ten answer to a domain rather than to a tone.
+//
+// The keys are the backed values of `App\Enum\RatedPerceivedExertion`; nothing links the two, so a
+// case added there needs a hue added here or its step renders unpainted.
+$app-exertion-colors: (
+    1: #56e9e9,
+    2: #56e9aa,
+    3: #56e964,
+    4: #7ed321,
+    5: #fffa2d,
+    6: #ffc82d,
+    7: #ff962d,
+    8: #ff642d,
+    9: #d23232,
+    10: #d20032,
+);

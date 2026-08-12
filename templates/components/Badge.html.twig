@@ -1,0 +1,34 @@
+{#
+ # A status pill: the hue as a soft wash rather than a solid fill.
+ #
+ # `tone` names the meaning, not the paint — the solid theme colours shout next to the navy chrome,
+ # and `bg-warning` puts white on amber. The listed tones are those Bootstrap gives an emphasis
+ # variant; anything else falls back to the base class alone, which is legible but colourless.
+ #
+ # The default lives in `default_variant`, not in the prop: the cva block is then the whole story of
+ # what this component looks like. it only fires when the recipe leaves the key out,
+ # which is why the recipe is filtered — a key present but null would both skip the default and have
+ # PHP deprecate the array offset.
+ #}
+{% props tone = null %}
+
+{%- set badge = html_cva(
+    base: 'app-badge',
+    variants: {
+        tone: {
+            primary: 'app-badge-primary',
+            secondary: 'app-badge-secondary',
+            success: 'app-badge-success',
+            info: 'app-badge-info',
+            warning: 'app-badge-warning',
+            danger: 'app-badge-danger',
+        },
+    },
+    default_variant: {
+        tone: 'secondary',
+    },
+) -%}
+
+<span{{ attributes.defaults({ class: badge.apply({ tone: tone }|filter(v => v is not null)) }) }}>
+    {% block content %}{% endblock %}
+</span>

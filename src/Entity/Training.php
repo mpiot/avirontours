@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\Feeling;
+use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
@@ -61,14 +63,11 @@ class Training
     #[ORM\Column(type: Types::STRING, length: 255, enumType: SportType::class)]
     private ?SportType $sport = null;
 
-    #[Assert\NotNull]
-    #[Assert\GreaterThanOrEqual(0)]
-    #[Assert\LessThanOrEqual(1)]
-    #[ORM\Column(type: Types::FLOAT)]
-    private ?float $feeling = null;
+    #[ORM\Column(nullable: true, enumType: Feeling::class)]
+    private ?Feeling $feeling = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $ratedPerceivedExertion = null;
+    #[ORM\Column(nullable: true, enumType: RatedPerceivedExertion::class)]
+    private ?RatedPerceivedExertion $ratedPerceivedExertion = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
@@ -139,12 +138,12 @@ class Training
         }
 
         if ($displayTenth) {
-            return DurationManipulator::formatTenthSeconds($this->duration);
+            return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->duration);
         }
 
         $seconds = (int) round($this->duration / 10);
 
-        return DurationManipulator::formatSeconds($seconds);
+        return DurationManipulator::formatSecondsAsHoursMinutes($seconds);
     }
 
     public function setDuration(?int $duration): self
@@ -181,12 +180,17 @@ class Training
             return null;
         }
 
-        return DurationManipulator::formatTenthSeconds($this->getPace());
+        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->getPace());
+    }
+
+    public function getFormattedSpeed(): ?string
+    {
+        return $this->sport?->formatSpeed($this->duration, $this->distance);
     }
 
     public function getAverageWatt(): ?int
     {
-        if (null === $this->getPace()) {
+        if (null === $this->sport || false === $this->sport->tracksWatts() || null === $this->getPace()) {
             return null;
         }
 
@@ -208,24 +212,33 @@ class Training
         return $this;
     }
 
-    public function getFeeling(): ?float
+    public function getFeeling(): ?Feeling
     {
         return $this->feeling;
     }
 
-    public function setFeeling(?float $feeling): self
+    public function setFeeling(?Feeling $feeling): self
     {
         $this->feeling = $feeling;
 
         return $this;
     }
 
-    public function getRatedPerceivedExertion(): ?int
+    public function getRatedPerceivedExertion(): ?RatedPerceivedExertion
     {
         return $this->ratedPerceivedExertion;
     }
 
-    public function setRatedPerceivedExertion(?int $ratedPerceivedExertion): static
+    public function getTrainingLoad(): ?int
+    {
+        if (null === $this->ratedPerceivedExertion || null === $this->duration) {
+            return null;
+        }
+
+        return (int) round($this->ratedPerceivedExertion->value * $this->duration / 600);
+    }
+
+    public function setRatedPerceivedExertion(?RatedPerceivedExertion $ratedPerceivedExertion): static
     {
         $this->ratedPerceivedExertion = $ratedPerceivedExertion;
 

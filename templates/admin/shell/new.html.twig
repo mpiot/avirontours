@@ -1,19 +1,17 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
-{% block title %}Ajouter un bâteau{% endblock %}
+{% block title %}Ajouter un bateau{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('shell_index') }}">Gestion du parc</a></li>
-    <li class="breadcrumb-item active">Ajouter un bâteau</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('shell_index') }}">Gestion du parc</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ajouter un bateau</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Ajouter un bâteau</h1>
+{% block page_title %}Ajouter un bateau{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/shell/_form.html.twig') }}
-        </div>
-    </div>
+{% block body %}
+    <twig:FormCard>
+        {{ include('admin/shell/_form.html.twig') }}
+    </twig:FormCard>
 {% endblock %}

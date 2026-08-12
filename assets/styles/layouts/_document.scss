@@ -1,0 +1,17 @@
+// ↔ templates/layouts/document.html.twig — the HTML root, and the only thing every frame shares.
+
+// Nothing reserves the scrollbar's width here: components/_modal.scss pads it back at the moment it
+// takes the scrollbar away, which is the only moment it goes missing. A `scrollbar-gutter: stable`
+// stood here instead and had to go — it held the strip open on every page, including the ones short
+// enough never to scroll, where it notched the white topbar down its whole height. It could not be
+// dressed either: the strip falls outside the root box, and Chrome paints it with the propagated
+// background *colour* alone — gradients are clipped, and `scrollbar-color` and
+// `::-webkit-scrollbar-track` have no scrollbar to style there.
+//
+// The canvas still takes that colour from the body, and this is what answers for it: the overscroll
+// rubber band, and the strip the modal pads out — dimmed there by `::backdrop`, which reaches it
+// because the padding falls inside the viewport.
+body:has(> .app-shell),
+body:has(> .app-plain) {
+    background-color: $gray-100;
+}

@@ -1,0 +1,27 @@
+{#
+ # The primary navigation column: a fixed rail from lg, an offcanvas drawer below it.
+ #
+ # `offcanvas-lg` is what makes it both, and `#app-sidebar` is the id the topbar's toggle points at
+ # — the two have to be edited together.
+ #}
+<aside id="app-sidebar" class="app-sidebar offcanvas-lg offcanvas-start" tabindex="-1" aria-labelledby="app-sidebar-label">
+    <div class="offcanvas-header">
+        <span class="visually-hidden" id="app-sidebar-label">Navigation</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="offcanvas" data-bs-target="#app-sidebar" aria-label="Fermer"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <div class="app-sidebar-inner">
+            <a class="app-brand" href="{{ path('homepage') }}">
+                <img src="{{ asset('build/images/logo_colored.svg') }}" width="140" height="63" alt="Aviron Tours Métropole">
+            </a>
+
+            {{ include('_menu.html.twig', { view: 'rail' }, with_context = false) }}
+
+            <ul class="app-sidebar-footer list-unstyled mb-0">
+                <li><a href="{{ path('legal_notice') }}">Mentions légales</a></li>
+                <li><a href="{{ path('privacy_policy') }}">Confidentialité</a></li>
+            </ul>
+        </div>
+    </div>
+</aside>

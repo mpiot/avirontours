@@ -1,19 +1,20 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Ajouter un utilisateur{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
-    <li class="breadcrumb-item active">Ajouter un utilisateur</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_index') }}">Gestion des utilisateurs</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ajouter un utilisateur</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <h1>Ajouter un utilisateur</h1>
+{% block page_title %}Ajouter un utilisateur{% endblock %}
 
-    <div class="card border-0 shadow">
-        <div class="card-body">
+{% block body %}
+    {# Not a FormCard: this form is a grid of cards, not a reading column. #}
+    <twig:Card elevated>
+        <twig:Card:Body>
             {{ include('admin/user/_form.html.twig') }}
-        </div>
-    </div>
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

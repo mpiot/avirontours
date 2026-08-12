@@ -1,0 +1,74 @@
+{% set activePhaseNumber = training.trainingPhases.indexOf(active_phase) + 1 %}
+
+<turbo-frame id="training-phases">
+    {% if training.trainingPhases|length > 1 %}
+        <h3 class="app-chart-phase-title">Phase {{ activePhaseNumber }}</h3>
+    {% endif %}
+
+    {% for panel in charts %}
+        <div class="app-chart-panel">
+            <p class="app-chart-panel-title">{{ panel.title }}</p>
+
+            {{ render_chart(panel.chart, {
+                'data-controller': 'ergometer-chart',
+                'data-ergometer-chart-unit-value': panel.unit,
+                'role': 'img',
+                'aria-label': "#{panel.title} au fil de la phase #{activePhaseNumber}",
+            }) }}
+        </div>
+    {% else %}
+        <twig:EmptyState text="Pas de données" />
+    {% endfor %}
+
+    {% if training.trainingPhases|length > 1 %}
+        <twig:Table class="mt-3">
+            <twig:Table:Head>
+                <twig:Table:Row>
+                    <twig:Table:HeadCell>Phase</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Allure</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Puissance</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>
+                        <twig:ux:icon name="mdi:heart" />
+                        <span class="visually-hidden">Fréquence cardiaque</span>
+                    </twig:Table:HeadCell>
+                    <twig:Table:HeadCell>Cadence</twig:Table:HeadCell>
+                    <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                </twig:Table:Row>
+            </twig:Table:Head>
+
+            <twig:Table:Body>
+                {% for trainingPhase in training.trainingPhases %}
+                    {% set phaseNumber = loop.index %}
+
+                    <twig:Table:Row :active="active_phase == trainingPhase">
+                        <twig:Table:Cell label="Phase">{{ phaseNumber }}</twig:Table:Cell>
+                        <twig:Table:Cell label="Durée">{{ trainingPhase.formattedDuration }}</twig:Table:Cell>
+                        <twig:Table:Cell label="Distance">{{ trainingPhase.distance }} m</twig:Table:Cell>
+                        <twig:Table:Cell label="Allure">{{ trainingPhase.formattedPace }} /500m</twig:Table:Cell>
+                        <twig:Table:Cell label="Puissance">{{ trainingPhase.averageWatt }} W</twig:Table:Cell>
+                        <twig:Table:Cell label="Fréquence cardiaque">
+                            {% if trainingPhase.endingHeartRate is not null %}
+                                {{ trainingPhase.endingHeartRate }}
+                            {% else %}
+                                <twig:NoValue />
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell label="Cadence">{{ trainingPhase.strokeRate }}</twig:Table:Cell>
+                        <twig:Table:Cell actions>
+                            <a
+                                href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}"
+                                class="link-body-emphasis"
+                                aria-label="Voir la phase {{ phaseNumber }}"
+                                {%- if active_phase == trainingPhase %} aria-current="true"{% endif %}
+                            >
+                                <twig:ux:icon name="mdi:chart-line" />
+                            </a>
+                        </twig:Table:Cell>
+                    </twig:Table:Row>
+                {% endfor %}
+            </twig:Table:Body>
+        </twig:Table>
+    {% endif %}
+</turbo-frame>

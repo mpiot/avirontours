@@ -1,0 +1,10 @@
+{#
+ # A field the member can read but not change — identity data the club owns.
+ #
+ # A component rather than a macro: an imported macro is not visible inside a component's body, so
+ # the moment the surrounding card became `<twig:Card:Body>` the alias went out of scope.
+ #}
+{% props id, label, value %}
+
+<label class="form-label" for="{{ id }}">{{ label }}</label>
+<input id="{{ id }}" class="form-control bg-body-secondary" type="text" value="{{ value }}" readonly>

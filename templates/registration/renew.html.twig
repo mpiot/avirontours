@@ -1,28 +1,22 @@
-{% extends 'base.html.twig' %}
-{% set appMenuAutoOpen = false %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Ma réinscription{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('profile_show') }}">Mon profil</a></li>
-    <li class="breadcrumb-item active">Ma réinscription</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('profile_show') }}">Mon profil</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Ma réinscription</twig:Breadcrumb:Item>
 {% endblock %}
 
-{% block body %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-9 col-xl-7">
-            <h1>Ma réinscription</h1>
+{% block page_title %}Ma réinscription{% endblock %}
 
-            <div class="card border-0 shadow">
-                <div class="card-header">
-                    {{ include('registration/_season_category_recap.html.twig') }}
-                </div>
-                <div class="card-body">
-                    {{ include('registration/_intro.html.twig', { renew: true }) }}
-                    {{ include('registration/_form.html.twig', { renew: true }) }}
-                </div>
-            </div>
-        </div>
-    </div>
+{% block body %}
+    <twig:Card elevated>
+        <twig:Card:Header>
+            {{ include('registration/_season_category_recap.html.twig') }}
+        </twig:Card:Header>
+        <twig:Card:Body>
+            {{ include('registration/_intro.html.twig', { renew: true }) }}
+            {{ include('registration/_form.html.twig', { renew: true }) }}
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

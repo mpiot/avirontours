@@ -1,0 +1,20 @@
+<twig:Stats>
+    <twig:Stats:Item label="Sensation">
+        {%- if training.feeling is not null -%}
+            {{ training.feeling.label }}
+        {%- else -%}
+            <twig:NoValue label="Non renseignée" class="text-body-tertiary" />
+        {%- endif -%}
+    </twig:Stats:Item>
+
+    <twig:Stats:Item
+        label="Effort perçu"
+        :secondary="training.ratedPerceivedExertion ? training.ratedPerceivedExertion.label : null"
+    >
+        {%- if training.ratedPerceivedExertion is not null -%}
+            {{ training.ratedPerceivedExertion.value }}
+        {%- else -%}
+            <twig:NoValue class="text-body-tertiary" />
+        {%- endif -%}
+    </twig:Stats:Item>
+</twig:Stats>

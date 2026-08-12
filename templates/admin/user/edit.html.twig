@@ -1,26 +1,25 @@
-{% extends 'admin/base.html.twig' %}
+{% extends 'layouts/app.html.twig' %}
 
 {% block title %}Modifier un utilisateur{% endblock %}
 
-{% block breadcrumb %}
-    {{ parent() }}
-    <li class="breadcrumb-item"><a href="{{ path('user_index') }}">Gestion des utilisateurs</a></li>
-    <li class="breadcrumb-item"><a href="{{ path('user_show', { 'id': user.id }) }}">{{ user.fullName }}</a></li>
-    <li class="breadcrumb-item active">Modifier un utilisateur</li>
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('admin_home') }}">Administration</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_index') }}">Gestion des utilisateurs</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('user_show', { 'id': user.id }) }}">{{ user.fullName }}</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Modifier un utilisateur</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Modifier un utilisateur{% endblock %}
+
+{% block page_actions %}
+    <twig:DeleteForm :action="path('user_delete', {'id': user.id})" />
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Modifier un utilisateur</h1>
-
-        <div class="ms-auto align-self-center">
-            {{ include('admin/user/_delete_form.html.twig') }}
-        </div>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            {{ include('admin/user/_form.html.twig', {'button_label': 'Modifier'}) }}
-        </div>
-    </div>
+    {# Not a FormCard: this form is a grid of cards, not a reading column. #}
+    <twig:Card elevated>
+        <twig:Card:Body>
+            {{ include('admin/user/_form.html.twig') }}
+        </twig:Card:Body>
+    </twig:Card>
 {% endblock %}

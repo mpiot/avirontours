@@ -1,0 +1,38 @@
+{#
+ # A form on a page of its own: one column, capped at a reading measure so the fields do not stretch
+ # across the whole content area.
+ #
+ # This is the one page shape the app repeats — the twenty `new`/`edit` templates, byte for byte —
+ # so it is named once here. It absorbs `app-measure`, which was the most repeated class left in the
+ # templates.
+ #
+ # A component rather than a layout template, for two reasons. The twenty pages extend three
+ # different bases — `admin/base` (14), `base` (4), `logbook_entry/base` (2) — and Twig has a single
+ # inheritance, so a layout would have to exist once per base. The logbook one is not even fixed at
+ # compile time: it picks its shell from `is_granted('ROLE_LOGBOOK_USER')`. And sitting inside the
+ # page's own `body` block, this is one level from its slot and never meets the `outerBlocks` ceiling
+ # that keeps `profile/base` and `sport_profile/base` on a hand-written `card-body`.
+ #
+ # `profile/edit` is deliberately not a call site: `profile/base` already puts its `main` block in a
+ # card, so a second one would nest.
+ #
+ # Neither are `admin/user/new` and `admin/user/edit`, for the opposite reason: they are not one
+ # column but a grid of cards — member, address, two legal guardians — and the measure below is what
+ # decides how much room that grid has. Capped at 48rem each half came out at 336px, where a `col-md-4`
+ # inside it is 112px: « Type de voie » wrapped onto two lines above a select too narrow to show a
+ # word of its own placeholder. Nothing is wrong with the measure; a two-column form is simply not the
+ # shape it measures. They take a plain `Card` at the content width instead.
+ #
+ # The body is captured first: a component body made of nothing but blocks is handed straight to the
+ # inner component, so a `{% block content %}` written inside `<twig:Card:Body>` would become *its*
+ # content block and then resolve to itself.
+ #}
+{% set body %}
+    {% block content %}{% endblock %}
+{% endset %}
+
+<twig:Card elevated class="app-measure" {{ ...attributes }}>
+    <twig:Card:Body>
+        {{ body }}
+    </twig:Card:Body>
+</twig:Card>

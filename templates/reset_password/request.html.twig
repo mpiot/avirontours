@@ -1,16 +1,17 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
 {% block title %}Réinitialiser votre mot de passe{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
+{% endblock %}
 
 {% block heading %}Mot de passe oublié{% endblock %}
 
 {% block subtitle %}Indiquez votre identifiant&nbsp;: nous enverrons un lien de réinitialisation à l'adresse email enregistrée au club.{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
-
     {{ form_start(requestForm) }}
         {{ form_errors(requestForm) }}
 
@@ -25,7 +26,7 @@
         </div>
 
         <div class="d-grid">
-            <button class="btn btn-lg btn-primary" data-turbo-submits-with="Envoi en cours&hellip;">Envoyer un email de récupération</button>
+            <twig:Button variant="primary" size="lg" data-turbo-submits-with="Envoi en cours&hellip;">Envoyer un email de récupération</twig:Button>
         </div>
     {{ form_end(requestForm) }}
 

@@ -20,9 +20,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Chart\TrainingPhaseChart;
+use App\Chart\TrainingPhaseCharts;
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
+use App\Form\TrainingEditRatingType;
 use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
 use App\Service\TrainingHelper;
@@ -75,7 +76,9 @@ class TrainingController extends AbstractController
 
             $this->addFlash('success', 'Votre entraînement a été créé avec succès.');
 
-            return $this->redirectToRoute('training_index');
+            return $this->redirectToRoute('training_show', [
+                'id' => $training->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('training/new.html.twig', [
@@ -108,16 +111,16 @@ class TrainingController extends AbstractController
     public function showPhase(
         #[MapEntity(mapping: ['training_id' => 'id'])] Training $training,
         TrainingPhase $trainingPhase,
-        TrainingPhaseChart $trainingPhaseChart,
+        TrainingPhaseCharts $trainingPhaseCharts,
     ): Response {
         if ($training !== $trainingPhase->getTraining()) {
             throw $this->createNotFoundException();
         }
 
-        return $this->render('training/_phase.html.twig', [
+        return $this->render('training/phase.html.twig', [
             'training' => $training,
             'active_phase' => $trainingPhase,
-            'chart' => $trainingPhaseChart->chart($trainingPhase),
+            'charts' => $trainingPhaseCharts->charts($trainingPhase),
         ]);
     }
 
@@ -133,12 +136,46 @@ class TrainingController extends AbstractController
 
             $this->addFlash('success', 'Votre entraînement a été modifié avec succès.');
 
-            return $this->redirectToRoute('training_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('training_show', [
+                'id' => $training->getId(),
+            ], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('training/edit.html.twig', [
-            'form' => $form,
             'training' => $training,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route(path: '/{id}/edit/rating', name: 'training_edit_rating', methods: ['GET', 'POST'])]
+    #[IsGranted(new Expression('object.getUser() === user'), 'training')]
+    public function editRating(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        Training $training,
+    ): Response {
+        $form = $this->createForm(TrainingEditRatingType::class, $training, [
+            'action' => $this->generateUrl('training_edit_rating', ['id' => $training->getId()]),
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre ressenti a été enregistré.');
+
+            // Return the display (no form) if all the rating is filled
+            if (null !== $training->getFeeling() && null !== $training->getRatedPerceivedExertion()) {
+                return $this->renderStream('training/rating.stream.html.twig', [
+                    'training' => $training,
+                    'form' => $form,
+                ]);
+            }
+        }
+
+        return $this->renderStream('training/edit_rating.stream.html.twig', [
+            'training' => $training,
+            'form' => $form,
         ]);
     }
 

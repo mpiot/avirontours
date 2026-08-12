@@ -1,100 +1,103 @@
 {% extends 'logbook_entry/base.html.twig' %}
 
-{% block title %}Gestion des sorties{% endblock %}
+{% block title %}Cahier de sorties{% endblock %}
 
-{% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{{ path('homepage') }}"><span class="fas fa-home"></span> Accueil</a></li>
-    <li class="breadcrumb-item active">Cahier de sorties</li>
+{% block breadcrumb_items %}
+    {{ parent() }}
+    <twig:Breadcrumb:Item>Cahier de sorties</twig:Breadcrumb:Item>
+{% endblock %}
+
+
+{% block page_title %}Cahier de sorties{% endblock %}
+
+{% block page_actions %}
+    <twig:Button variant="secondary" outline size="sm" href="{{ path('logbook_entry_statistics') }}">
+        <twig:ux:icon name="mdi:chart-bar" /> Voir les statistiques
+    </twig:Button>
+
+    <twig:Button variant="primary" outline size="sm" href="{{ path('logbook_entry_new') }}">
+        <twig:ux:icon name="mdi:plus" /> Ajouter une sortie
+    </twig:Button>
 {% endblock %}
 
 {% block body %}
-    <div class="d-flex">
-        <h1>Gestion des sorties</h1>
-
-        <a href="{{ path('logbook_entry_new') }}" class="btn btn-outline-primary btn-sm ms-auto align-self-center">
-            <span class="fas fa-plus"></span> Ajouter une sortie
-        </a>
-    </div>
-
-    <div class="mb-3">
-        <a href="{{ path('logbook_entry_statistics') }}" class="btn btn-sm btn-outline-secondary rounded-pill">
-            <span class="far fa-chart-bar"></span> Voir les statistiques
-        </a>
-    </div>
-
-    <div class="card border-0 shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Bâteau</th>
-                        <th>Equipage</th>
-                        <th>Date</th>
-                        <th>Départ</th>
-                        <th>Retour</th>
-                        <th>Distance</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
+    <twig:Card elevated>
+        <twig:Card:Body padding="none">
+            <twig:Table>
+                <twig:Table:Head>
+                    <twig:Table:Row>
+                        <twig:Table:HeadCell>Bateau</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Équipage</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Date</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Départ</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Retour</twig:Table:HeadCell>
+                        <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
+                        <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
+                    </twig:Table:Row>
+                </twig:Table:Head>
+                <twig:Table:Body>
                     {% for logbook_entry in logbook_entries %}
-                        <tr>
-                            <td>{{ logbook_entry.shell.fullName }}</td>
-                            <td>
-                                {% if logbook_entry.nonUserCrewMembers is empty %}
-                                    {{ logbook_entry.crewMembers|join(', ', ' et ') }}
-                                {% elseif logbook_entry.crewMembers is empty %}
-                                    {%- for member in logbook_entry.nonUserCrewMembers -%}
-                                        {% if not loop.first and logbook_entry.crewMembers is empty %}
-                                            {%- if loop.last %} et {% else %}, {% endif -%}
-                                        {% endif %}
-                                        <span class="fw-bold" title="Non utilisateur">{{- member -}}</span>
-                                    {%- endfor -%}
-                                {% else %}
-                                    {{- logbook_entry.crewMembers|join(', ') -}}
+                        <twig:Table:Row>
+                            <twig:Table:Cell label="Bateau">{{ logbook_entry.shell.fullName }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Équipage">
+                                {%- set crew = logbook_entry.crewMembers|map(member => { name: member, known: true })
+                                    |merge(logbook_entry.nonUserCrewMembers|map(member => { name: member, known: false }))
+                                -%}
 
-                                    {%- for member in logbook_entry.nonUserCrewMembers -%}
-                                        {%- if loop.last %} et {% else %}, {% endif -%}
-                                        <span class="fw-bold" title="Non utilisateur">{{- member -}}</span>
-                                    {%- endfor -%}
+                                {%- for member in crew -%}
+                                    {%- if not loop.first %}{{ loop.last ? ' et ' : ', ' }}{% endif -%}
+
+                                    {%- if member.known -%}
+                                        {{ member.name }}
+                                    {%- else -%}
+                                        <span class="fw-bold">{{ member.name }}<span class="visually-hidden"> (non membre)</span></span>
+                                    {%- endif -%}
+                                {%- endfor -%}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Date">{{ logbook_entry.date|format_date('short') }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Départ">{{ logbook_entry.startAt|format_datetime('none', 'short') }}</twig:Table:Cell>
+                            <twig:Table:Cell label="Retour">
+                                {% if logbook_entry.endAt %}
+                                    {{ logbook_entry.endAt|format_datetime('none', 'short') }}
+                                {% else %}
+                                    <twig:NoValue />
                                 {% endif %}
-                            </td>
-                            <td>{{ logbook_entry.date|format_date('short') }}</td>
-                            <td>{{ logbook_entry.startAt|format_datetime('none', 'short') }}</td>
-                            <td>{{ logbook_entry.endAt ? logbook_entry.endAt|format_datetime('none', 'short') }}</td>
-                            <td>
-                                {% if logbook_entry.coveredDistance %}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell label="Distance">
+                                {%- if logbook_entry.coveredDistance %}
                                     {{ logbook_entry.coveredDistance }} km
-                                {% endif %}
-                            </td>
-                            <td class="text-end">
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif -%}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell actions>
                                 {% if logbook_entry.endAt is null %}
-                                    <a class="btn btn-success btn-sm rounded-pill"
-                                       href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
-                                        <span class="fas fa-flag-checkered"></span> <span class="d-none d-lg-inline">Finir la sortie</span>
-                                    </a>
+                                    <twig:Button variant="primary" size="sm" href="{{ path('logbook_entry_finish', { 'id': logbook_entry.id }) }}">
+                                        <twig:ux:icon name="mdi:flag-checkered" /> Finir la sortie
+                                    </twig:Button>
                                 {% endif %}
                                 {% if is_granted('ROLE_LOGBOOK_ADMIN') %}
-                                    <a class="btn btn-outline-warning btn-sm rounded-pill"
-                                       href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
-                                        <span class="fas fa-pencil-alt"></span> <span class="d-none d-lg-inline">Modifier</span>
-                                    </a>
+                                    <twig:Button variant="secondary" outline size="sm" href="{{ path('logbook_entry_edit', {'id': logbook_entry.id}) }}">
+                                        <twig:ux:icon name="mdi:pencil" /> Modifier
+                                    </twig:Button>
                                 {% endif %}
-                            </td>
-                        </tr>
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center">Pas de sortie</td>
-                        </tr>
+                        <twig:Table:Row>
+                            <twig:Table:Cell span>
+                                <twig:EmptyState text="Pas de sortie" />
+                            </twig:Table:Cell>
+                        </twig:Table:Row>
                     {% endfor %}
-                    </tbody>
-                </table>
+                </twig:Table:Body>
+            </twig:Table>
+        </twig:Card:Body>
 
-                {% if logbook_entries|length < logbook_entries.totalItemCount %}
-                    {{ knp_pagination_render(logbook_entries) }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+        {% if logbook_entries|length < logbook_entries.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="logbook_entries" />
+            </twig:Card:Footer>
+        {% endif %}
+    </twig:Card>
 {% endblock %}

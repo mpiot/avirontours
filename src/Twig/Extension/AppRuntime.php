@@ -40,9 +40,9 @@ class AppRuntime implements RuntimeExtensionInterface, ServiceSubscriberInterfac
         return BarcodeGenerator::qrCode($text, $width, $height);
     }
 
-    public function formatSeconds(int $seconds): string
+    public function formatSecondsAsHoursMinutes(int $seconds): string
     {
-        return DurationManipulator::formatSeconds($seconds);
+        return DurationManipulator::formatSecondsAsHoursMinutes($seconds);
     }
 
     public function getEncoreEntryCssSource(string $entryName): string

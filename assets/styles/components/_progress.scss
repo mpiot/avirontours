@@ -1,0 +1,15 @@
+// ↔ templates/components/Progress/Stacked.html.twig and Progress/Segment.html.twig — the weekly
+// sport split of templates/training/index.html.twig.
+//
+// `MathHelper::shares()` floors each share and hands the remainder back to the largest values, so a
+// sport small enough rounds to 0 and its band disappears — while the legend under the bar goes on
+// naming it, with its own colour beside it. A segment is only ever rendered for a sport that has a
+// session in the week, so a 0 there is a rounding artefact and never "nothing": it is a band worth
+// drawing. Two pixels is the least that reads as a colour.
+//
+// Held here rather than in `shares()`, which is right as it stands: the share *is* zero once
+// rounded, and what is wrong is only that zero cannot be seen. The overflow this adds is 2 px per
+// rounded-away sport against the bar's full width, and `.progress-stacked` hides it.
+.progress-stacked > .progress {
+    min-width: 2px;
+}

@@ -1,4 +1,4 @@
-{% extends 'base_auth.html.twig' %}
+{% extends 'layouts/auth.html.twig' %}
 
 {% block title %}Se connecter{% endblock %}
 
@@ -8,35 +8,38 @@
 
 {% block body %}
     {% if error %}
-        <div class="alert alert-danger d-flex" role="alert">
-            <span class="fas fa-lg fa-exclamation-circle align-self-center" aria-hidden="true"></span>
-            <div class="align-self-center ms-3">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        </div>
+        <twig:Alert tone="danger" icon>
+            {{ error.messageKey|trans(error.messageData, 'security') }}
+        </twig:Alert>
     {% endif %}
 
     <form method="post">
         <div class="mb-3">
-            <label class="form-label" for="username">Utilisateur</label>
-            <input type="text" class="form-control form-control-lg" id="username" name="_username" autocomplete="username" aria-describedby="username_help" value="{{ last_username }}" required autofocus>
+            <twig:Label for="username">Utilisateur</twig:Label>
+            <twig:Input
+                size="lg"
+                id="username"
+                name="_username"
+                autocomplete="username"
+                aria-describedby="username_help"
+                :value="last_username ?? ''"
+                required
+                autofocus
+            />
             <p id="username_help" class="form-text mb-0">Nom utilisateur&nbsp;: prenom.nom</p>
         </div>
 
         <div class="mb-3">
-            <label class="form-label" for="password">Mot de passe</label>
-            <input type="password" class="form-control form-control-lg" id="password" name="_password" autocomplete="current-password" required>
+            <twig:Label for="password">Mot de passe</twig:Label>
+            <twig:Input type="password" size="lg" id="password" name="_password" autocomplete="current-password" required />
         </div>
 
-        <div class="form-check form-switch mb-4">
-            <input class="form-check-input" type="checkbox" id="remember_me" name="_remember_me">
-            <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
-        </div>
+        <twig:Checkbox id="remember_me" label="Se souvenir de moi" name="_remember_me" class="mb-4" />
 
         <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-        <div class="d-grid">
-            <button class="btn btn-lg btn-primary" type="submit" data-turbo-submits-with="Connexion en cours&hellip;">Se connecter</button>
+        <div class="d-grid mt-4">
+            <twig:Button variant="primary" size="lg" data-turbo-submits-with="Connexion en cours&hellip;">Se connecter</twig:Button>
         </div>
     </form>
 

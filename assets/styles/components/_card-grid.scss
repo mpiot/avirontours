@@ -1,0 +1,19 @@
+/**
+ * ↔ templates/components/CardGrid.html.twig
+ *
+ * Deliberately not Bootstrap's grid: the children are the cells, so a card needs no `.col` wrapper
+ * and no `h-100` — a grid item stretches to its row on its own.
+ */
+.app-card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacer;
+
+    @include media-breakpoint-up(md) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include media-breakpoint-up(xl) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
