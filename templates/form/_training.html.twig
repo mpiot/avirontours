@@ -1,3 +1,35 @@
+{% block duration_widget %}
+    {%- set attr = attr|merge({
+        placeholder: '90',
+        autocomplete: 'off',
+    }) -%}
+
+    {%- if disabled -%}
+        {%- set widget %}{{ block('integer_widget') }}{% endset -%}
+
+        <twig:InputGroup>
+            {{- widget -}}
+            <twig:InputGroup:Text>min</twig:InputGroup:Text>
+        </twig:InputGroup>
+    {%- else -%}
+        {%- set attr = attr|merge({
+            'aria-describedby': "#{id}_reading",
+            'data-duration-target': 'input',
+            'data-action': 'duration#render',
+        }) -%}
+        {%- set widget %}{{ block('integer_widget') }}{% endset -%}
+
+        <div {{ stimulus_controller('duration') }}>
+            <twig:InputGroup>
+                {{- widget -}}
+                <twig:InputGroup:Text>min</twig:InputGroup:Text>
+            </twig:InputGroup>
+
+            <p class="form-text app-duration-reading" id="{{ id }}_reading" data-duration-target="reading" aria-live="polite"></p>
+        </div>
+    {%- endif -%}
+{% endblock %}
+
 {% block sport_choice_widget %}
     {% set sports = {} %}
     {% for choice in form.vars.choices %}

@@ -6,18 +6,7 @@
 
     <div class="row">
         <div class="col-sm">
-            <fieldset class="mb-3">
-                {{ form_label(form.duration) }}
-
-                <twig:InputGroup :invalid="form.duration.vars.errors|length > 0">
-                    {{ form_widget(form.duration.hours, { attr: { inputmode: 'numeric', 'aria-label': 'Heures' } }) }}
-                    <twig:InputGroup:Text>h</twig:InputGroup:Text>
-
-                    {{ form_widget(form.duration.minutes, { attr: { inputmode: 'numeric', 'aria-label': 'Minutes' } }) }}
-                    <twig:InputGroup:Text>min</twig:InputGroup:Text>
-                    {{ form_errors(form.duration) }}
-                </twig:InputGroup>
-            </fieldset>
+            {{ form_row(form.duration) }}
         </div>
 
         <div class="col-sm">

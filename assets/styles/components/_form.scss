@@ -132,6 +132,12 @@ legend.required ~ div .form-check-label.required::after {
     grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
 }
 
+// Empty until the duration reads as something, so it holds its line: without this the whole form
+// below jumps up as soon as the field is cleared, and back down at the next digit.
+.app-duration-reading {
+    min-height: 1lh;
+}
+
 // The mark inside is `.app-sport-chip-icon`, from components/_sport-chip.scss: the option had a
 // square of its own that was the chip's shape four values apart, and a sport should look the same
 // where it is picked and where it is then shown.
