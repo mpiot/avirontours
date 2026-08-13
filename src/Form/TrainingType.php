@@ -24,11 +24,12 @@ use App\Entity\Training;
 use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
+use App\Form\DataTransformer\DurationToTenthSecondsTransformer;
 use App\Form\DataTransformer\KilometersToMetersTransformer;
-use App\Form\Type\DurationType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,8 +52,10 @@ class TrainingType extends AbstractType
                 'label' => 'Date de la séance',
                 'widget' => 'single_text',
             ])
-            ->add('duration', DurationType::class, [
+            ->add('duration', IntegerType::class, [
                 'label' => 'Durée',
+                'block_prefix' => 'duration',
+                'invalid_message' => 'Indiquez une durée en minutes, par exemple 90.',
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
@@ -87,6 +90,7 @@ class TrainingType extends AbstractType
             ])
         ;
 
+        $builder->get('duration')->addModelTransformer(new DurationToTenthSecondsTransformer());
         $builder->get('distance')->addModelTransformer(new KilometersToMetersTransformer());
 
         $data = $builder->getData();

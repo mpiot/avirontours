@@ -24,24 +24,6 @@ use function Symfony\Component\String\u;
 
 class DurationManipulator
 {
-    public static function tenthSecondsToDateInterval(?int $tenthSeconds): ?\DateInterval
-    {
-        if (null === $tenthSeconds) {
-            return null;
-        }
-
-        $splitDuration = self::splitDuration($tenthSeconds);
-        $string = \sprintf(
-            '%s hours %s minutes %s seconds %s microseconds',
-            $splitDuration['hours'],
-            $splitDuration['minutes'],
-            $splitDuration['seconds'],
-            $splitDuration['tenthSeconds'] * 10000
-        );
-
-        return \DateInterval::createFromDateString($string);
-    }
-
     public static function dateIntervalToTenthSeconds(?\DateInterval $dateInterval): ?int
     {
         if (null === $dateInterval) {

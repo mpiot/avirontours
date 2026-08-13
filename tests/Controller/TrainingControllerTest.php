@@ -443,8 +443,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 1,
-            'training[duration][minutes]' => 30,
+            'training[duration]' => '90',
             'training[distance]' => 16.3,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -478,8 +477,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 1,
-            'training[duration][minutes]' => 30,
+            'training[duration]' => '90',
             'training[distance]' => '',
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -513,8 +511,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 1,
-            'training[duration][minutes]' => 30,
+            'training[duration]' => '90',
             'training[distance]' => 0,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -541,8 +538,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 1,
-            'training[duration][minutes]' => 30,
+            'training[duration]' => '90',
             'training[distance]' => 501,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -569,8 +565,7 @@ class TrainingControllerTest extends AppWebTestCase
         // Sport is a radio group: leaving it unanswered means not submitting it.
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '',
-            'training[duration][hours]' => '',
-            'training[duration][minutes]' => '',
+            'training[duration]' => '',
             'training[distance]' => '',
             'training[comment]' => '',
         ]);
@@ -578,7 +573,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration_hours')->closest('fieldset')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
@@ -597,8 +592,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 0,
-            'training[duration][minutes]' => 2,
+            'training[duration]' => '2',
             'training[distance]' => 16.3,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -606,9 +600,55 @@ class TrainingControllerTest extends AppWebTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration_hours')->closest('fieldset')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertCount(1, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testNewTrainingWithAnUnreadableDuration(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/new');
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Enregistrer', [
+            'training[trainedAt]' => '2020-01-15',
+            'training[sport]' => SportType::Rowing->value,
+            'training[duration]' => 'une heure et demie',
+            'training[distance]' => 16.3,
+            'training[feeling]' => Feeling::Good->value,
+            'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
+            'training[comment]' => 'My little comment...',
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Indiquez une durée en minutes, par exemple 90.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testNewTrainingReadsABareNumberAsMinutes(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/new');
+        $this->assertResponseIsSuccessful();
+
+        $client->submitForm('Enregistrer', [
+            'training[trainedAt]' => '2020-01-15',
+            'training[sport]' => SportType::Rowing->value,
+            'training[duration]' => '90',
+            'training[distance]' => 16.3,
+        ]);
+
+        $this->assertResponseRedirects();
+        $this->assertSame('01:30', TrainingFactory::repository()->last()->getFormattedDuration());
     }
 
     public function testEditTraining(): void
@@ -626,8 +666,7 @@ class TrainingControllerTest extends AppWebTestCase
         $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
-            'training[duration][hours]' => 1,
-            'training[duration][minutes]' => 30,
+            'training[duration]' => '90',
             'training[distance]' => 16.3,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
@@ -643,6 +682,23 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(Feeling::Good, $training->getFeeling());
         $this->assertSame(RatedPerceivedExertion::SomewhatHard, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
+    }
+
+    public function testEditImportedTrainingLocksWhatTheErgometerMeasured(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user, 'duration' => 54000]);
+        TrainingPhaseFactory::createOne(['training' => $training]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString("viennent de l'ergomètre et ne sont pas modifiables", $crawler->filter('.alert')->text());
+        $this->assertSame('90', $crawler->filter('#training_duration')->attr('value'));
+        $this->assertNotNull($crawler->filter('#training_duration')->attr('disabled'));
     }
 
     public function testEditOtherUserTraining(): void
