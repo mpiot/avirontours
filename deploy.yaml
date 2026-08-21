@@ -4,7 +4,7 @@
 
   vars:
     deploy_from: "/tmp/symfony_build"
-    deploy_to: "/mnt/data/my.avirontours.fr"
+    deploy_to: "/mnt/data/www/my.avirontours.fr"
     keep_releases: 3
     shared_paths:
       - public/uploads
