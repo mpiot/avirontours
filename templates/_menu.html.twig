@@ -16,7 +16,7 @@
         match: ['homepage'],
     },
     logbook: {
-        granted: isLicensed or is_granted('ROLE_LOGBOOK_ADMIN'),
+        granted: isMemberOrAdmin or is_granted('ROLE_LOGBOOK_ADMIN'),
         label: 'Cahier de sorties',
         url: path('logbook_entry_index'),
         icon: 'logbook',
@@ -24,7 +24,7 @@
         match: ['logbook_entry_index', 'logbook_entry_new', 'logbook_entry_finish', 'logbook_entry_edit', 'logbook_entry_statistics'],
     },
     trainings: {
-        granted: isMemberOrAdmin,
+        granted: isLicensed or isSportAdmin,
         label: 'Mes entraînements',
         url: path('training_index'),
         icon: 'trainings',
