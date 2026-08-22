@@ -68,9 +68,15 @@ readonly class AutomaticTrainingCreator
         $date = $logbookEntry->getDate();
         $startAt = $logbookEntry->getStartAt();
         $endAt = $logbookEntry->getEndAt();
+        $distance = $logbookEntry->getCoveredDistance();
 
         // Is the session finished ?
-        if (null === $date || null === $startAt || null === $endAt) {
+        if (null === $date || null === $startAt || null === $endAt || null === $distance) {
+            return;
+        }
+
+        // Is a session of 0 km ?
+        if (0.0 === $distance) {
             return;
         }
 
