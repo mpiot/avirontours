@@ -113,4 +113,55 @@ readonly class TrainingHelper
 
         return $data;
     }
+
+    public function getDashboardKpis(User $user): array
+    {
+        $today = new \DateTimeImmutable('today');
+        $acuteFrom = $today->modify('-6 days');
+        $chronicFrom = $today->modify('-27 days');
+        $trainings = $this->trainingRepository->findForUser($user, $chronicFrom, $today->setTime(23, 59, 59));
+
+        $acuteTrainings = array_filter(
+            $trainings,
+            static fn (Training $training): bool => $training->getTrainedAt() >= $acuteFrom,
+        );
+
+        $volumes = ['sessions' => \count($acuteTrainings), 'duration' => 0, 'distance' => 0];
+        foreach ($acuteTrainings as $training) {
+            $volumes['duration'] += (int) round($training->getDuration() / 10);
+            $volumes['distance'] += $training->getDistance() ?? 0;
+        }
+
+        $acuteLoads = [];
+        $chronicLoads = [];
+        foreach ($trainings as $training) {
+            $load = $training->getTrainingLoad();
+            if (null === $load) {
+                continue;
+            }
+
+            $chronicLoads[] = $load;
+            if ($training->getTrainedAt() >= $acuteFrom) {
+                $acuteLoads[] = $load;
+            }
+        }
+
+        // A window without any session is a real zero; one trained but never rated is unknown.
+        $acute = [] !== $acuteLoads ? array_sum($acuteLoads) : ([] === $acuteTrainings ? 0 : null);
+        $chronic = [] !== $chronicLoads ? array_sum($chronicLoads) / 4.0 : null;
+        $ratio = null !== $acute && null !== $chronic && $chronic > 0 ? $acute / $chronic : null;
+
+        // Coupled acute:chronic workload ratio (Gabbett): 0.8–1.3 is the usual training zone.
+        $zone = null === $ratio ? null : match (true) {
+            $ratio < 0.8 => 'Charge allégée',
+            $ratio <= 1.3 => 'Zone habituelle',
+            default => 'Charge élevée',
+        };
+
+        return [
+            'hasRecentTrainings' => [] !== $trainings,
+            'volumes' => $volumes,
+            'load' => ['acute' => $acute, 'chronic' => $chronic, 'ratio' => $ratio, 'zone' => $zone],
+        ];
+    }
 }

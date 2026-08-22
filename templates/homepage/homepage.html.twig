@@ -10,12 +10,94 @@
 {% block page_title %}Tableau de bord{% endblock %}
 
 {% block body %}
-    {% set has_anything = logbookChart is not null
+    {% set has_anything = kpis.hasRecentTrainings
+        or trainingLoadChart is not null
+        or logbookChart is not null
         or trainingsSportsChart is not null
         or app.user.physiology is not null
     %}
 
     <div class="row g-3">
+        {% if kpis.hasRecentTrainings %}
+            <div class="col-12">
+                <twig:Card elevated>
+                    <twig:Card:Body>
+                        <h2 class="fs-5">7 derniers jours</h2>
+
+                        <twig:Stats>
+                            <twig:Stats:Item label="Séances">{{ kpis.volumes.sessions }}</twig:Stats:Item>
+
+                            <twig:Stats:Item label="Durée">
+                                {{- kpis.volumes.duration|format_seconds_as_hours_minutes -}}
+                            </twig:Stats:Item>
+
+                            {% if kpis.volumes.distance > 0 %}
+                                <twig:Stats:Item label="Distance" unit="km">
+                                    {{- (kpis.volumes.distance / 1000)|format_number({fraction_digit: 1}) -}}
+                                </twig:Stats:Item>
+                            {% endif %}
+                        </twig:Stats>
+                    </twig:Card:Body>
+                </twig:Card>
+            </div>
+        {% endif %}
+
+        {% if trainingLoadChart is not null or kpis.hasRecentTrainings %}
+            <div class="col-12 col-xl-6">
+                <twig:Card elevated class="h-100">
+                    <twig:Card:Body>
+                        <h2 class="fs-5">Charge d'entraînement</h2>
+
+                        {% if trainingLoadChart is not null %}
+                            <twig:Stats class="mb-3">
+                                <twig:Stats:Item label="7 derniers jours">
+                                    {%- if kpis.load.acute is not null -%}
+                                        {{ kpis.load.acute }}
+                                    {%- else -%}
+                                        <twig:NoValue label="aucune séance notée" />
+                                    {%- endif -%}
+                                </twig:Stats:Item>
+
+                                <twig:Stats:Item label="Moyenne 4 semaines">
+                                    {%- if kpis.load.chronic is not null -%}
+                                        {{ kpis.load.chronic|round }}
+                                    {%- else -%}
+                                        <twig:NoValue label="aucune séance notée" />
+                                    {%- endif -%}
+                                </twig:Stats:Item>
+
+                                <twig:Stats:Item label="Ratio" :secondary="kpis.load.zone">
+                                    {%- if kpis.load.ratio is not null -%}
+                                        {{ kpis.load.ratio|format_number({fraction_digit: 2}) -}}
+                                    {%- else -%}
+                                        <twig:NoValue label="non calculé" />
+                                    {%- endif -%}
+                                </twig:Stats:Item>
+                            </twig:Stats>
+
+                            {% if kpis.load.ratio is null %}
+                                <p class="small text-body-secondary">
+                                    Notez l'effort de vos séances pour calculer les valeurs manquantes.
+                                </p>
+                            {% endif %}
+
+                            <div class="app-chart">
+                                {{ render_chart(trainingLoadChart, { 'role': 'img', 'aria-label': "Charge hebdomadaire d'entraînement" }) }}
+                            </div>
+                        {% else %}
+                            <twig:EmptyState text="Notez l'effort de vos séances pour suivre votre charge d'entraînement." />
+
+                            <div class="text-center mt-2">
+                                <twig:Button variant="primary" outline size="sm" href="{{ path('training_index') }}">
+                                    Noter mes séances
+                                </twig:Button>
+                            </div>
+                        {% endif %}
+                    </twig:Card:Body>
+                </twig:Card>
+            </div>
+        {% endif %}
+
         {% if logbookChart is not null %}
             <div class="col-12 col-xl-6">
                 <twig:Card elevated class="h-100">
