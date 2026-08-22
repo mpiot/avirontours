@@ -22,6 +22,8 @@ namespace App\Controller;
 
 use App\Chart\LogbookChart;
 use App\Chart\TrainingChart;
+use App\Chart\TrainingLoadChart;
+use App\Service\TrainingHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -33,8 +35,12 @@ class HomepageController extends AbstractController
     public function homepage(
         LogbookChart $logbookChart,
         TrainingChart $trainingsChart,
+        TrainingLoadChart $trainingLoadChart,
+        TrainingHelper $trainingHelper,
     ): Response {
         return $this->render('homepage/homepage.html.twig', [
+            'kpis' => $trainingHelper->getDashboardKpis($this->getUser()),
+            'trainingLoadChart' => $trainingLoadChart->weekly($this->getUser()),
             'logbookChart' => $logbookChart->chart($this->getUser()),
             'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);

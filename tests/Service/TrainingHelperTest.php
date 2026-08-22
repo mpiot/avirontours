@@ -107,12 +107,110 @@ class TrainingHelperTest extends KernelTestCase
         self::assertSame(1, $summary['sessions']);
     }
 
+    public function testDashboardVolumesOnlyCountTheLastSevenDays(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'distance' => 10000]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-3 days'), 'duration' => 54000, 'distance' => null]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'distance' => 10000]);
+
+        $kpis = $this->dashboardKpis($user);
+
+        self::assertTrue($kpis['hasRecentTrainings']);
+        self::assertSame(2, $kpis['volumes']['sessions']);
+        self::assertSame(9000, $kpis['volumes']['duration']);
+        self::assertSame(10000, $kpis['volumes']['distance']);
+    }
+
+    public function testDashboardHasNoRecentTrainingsBeyondFourWeeks(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-40 days')]);
+
+        $kpis = $this->dashboardKpis($user);
+
+        self::assertFalse($kpis['hasRecentTrainings']);
+        self::assertSame(0, $kpis['volumes']['sessions']);
+    }
+
+    public function testDashboardLoadRatioComparesAcuteAndChronicWindows(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::Easy]);
+
+        $load = $this->dashboardKpis($user)['load'];
+
+        self::assertSame(240, $load['acute']);
+        self::assertSame(90.0, $load['chronic']);
+        self::assertEqualsWithDelta(2.67, $load['ratio'], 0.01);
+        self::assertSame('Charge élevée', $load['zone']);
+    }
+
+    public function testDashboardLoadZoneIsUsualWhenAcuteMatchesChronic(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-8 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-15 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-22 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+
+        $load = $this->dashboardKpis($user)['load'];
+
+        self::assertSame(240, $load['acute']);
+        self::assertSame(1.0, $load['ratio']);
+        self::assertSame('Zone habituelle', $load['zone']);
+    }
+
+    public function testDashboardLoadRestWeekIsARealZeroNotAnUnknown(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+
+        $load = $this->dashboardKpis($user)['load'];
+
+        self::assertSame(0, $load['acute']);
+        self::assertSame(0.0, $load['ratio']);
+        self::assertSame('Charge allégée', $load['zone']);
+    }
+
+    public function testDashboardLoadIsUnknownWhenTheWeekWasTrainedButNeverRated(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'ratedPerceivedExertion' => null]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+
+        $load = $this->dashboardKpis($user)['load'];
+
+        self::assertNull($load['acute']);
+        self::assertNull($load['ratio']);
+        self::assertNull($load['zone']);
+    }
+
+    public function testDashboardLoadIsNullWhenNoSessionWasRated(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'ratedPerceivedExertion' => null]);
+
+        $load = $this->dashboardKpis($user)['load'];
+
+        self::assertNull($load['acute']);
+        self::assertNull($load['chronic']);
+        self::assertNull($load['ratio']);
+        self::assertNull($load['zone']);
+    }
+
     /**
      * @return list<array{sport: SportType, sessions: int, duration: int, distance: int, share: int}>
      */
     private function currentWeekSports(User $user): array
     {
         return $this->currentWeekSummary($user)['sports'];
+    }
+
+    private function dashboardKpis(User $user): array
+    {
+        return self::getContainer()->get(TrainingHelper::class)->getDashboardKpis($user);
     }
 
     private function currentWeekSummary(User $user): array

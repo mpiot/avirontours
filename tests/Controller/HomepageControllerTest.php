@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Enum\RatedPerceivedExertion;
 use App\Factory\PhysiologyFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -65,6 +66,132 @@ class HomepageControllerTest extends AppWebTestCase
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testDashboardKpis(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-1 day'),
+            'duration' => 36000,
+            'distance' => 10000,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard,
+        ]);
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-3 days'),
+            'duration' => 54000,
+            'distance' => 8000,
+            'ratedPerceivedExertion' => null,
+        ]);
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-20 days'),
+            'duration' => 36000,
+            'distance' => null,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::Easy,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', '7 derniers jours');
+        // Rolling 7 days: 1 h + 1 h 30 and 10 km + 8 km; the -20 days session only feeds the chronic load
+        $this->assertAnySelectorTextContains('dd', '02:30');
+        $this->assertAnySelectorTextContains('dd', '18,0');
+        $this->assertSelectorTextContains('body', "Charge d'entraînement");
+        // Acute 240 (4 × 60 min), chronic (240 + 120) / 4 = 90, ratio 2,67
+        $this->assertAnySelectorTextContains('dd', '240');
+        $this->assertAnySelectorTextContains('dd', '90');
+        $this->assertAnySelectorTextContains('dd', '2,67');
+        $this->assertSelectorTextContains('body', 'Charge élevée');
+    }
+
+    public function testDashboardLoadCardInvitesRatingWhenNothingIsRated(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-1 day'),
+            'ratedPerceivedExertion' => null,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', "Charge d'entraînement");
+        $this->assertSelectorTextContains('body', "Notez l'effort de vos séances");
+        $this->assertSelectorTextNotContains('body', 'Ratio');
+    }
+
+    public function testDashboardLoadExplainsAnUnratedWeekInsteadOfHidingIt(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-1 day'),
+            'ratedPerceivedExertion' => null,
+        ]);
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-10 days'),
+            'duration' => 36000,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', "Charge d'entraînement");
+        // Trained this week but nothing rated: the figures say why they are missing
+        $this->assertAnySelectorTextContains('dd', 'aucune séance notée');
+        $this->assertAnySelectorTextContains('dd', 'non calculé');
+        $this->assertAnySelectorTextContains('dd', '60');
+        $this->assertSelectorTextContains('body', "Notez l'effort de vos séances pour calculer les valeurs manquantes.");
+    }
+
+    public function testDashboardKpisStayVisibleDuringARestWeek(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne([
+            'user' => $user,
+            'trainedAt' => new \DateTime('-10 days'),
+            'duration' => 36000,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        // A week off is a real zero, not a missing feature
+        $this->assertSelectorTextContains('body', '7 derniers jours');
+        $this->assertAnySelectorTextContains('dd', '0');
+        $this->assertSelectorTextContains('body', 'Charge allégée');
+    }
+
+    public function testDashboardKpisHiddenForNewMember(): void
+    {
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $this->createAndLogin($client, 'ROLE_USER');
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextNotContains('body', '7 derniers jours');
+        $this->assertSelectorTextNotContains('body', "Charge d'entraînement");
     }
 
     public function testMySpace(): void
