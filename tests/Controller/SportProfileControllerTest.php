@@ -67,34 +67,6 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertSame(215, $user->getPhysiology()->getMaximumHeartRate());
     }
 
-    public function testNewAnatomy(): void
-    {
-        $user = UserFactory::createOne();
-
-        self::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->loginUser($user);
-        $client->request('GET', '/sport-profile/anatomy');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Enregistrer', [
-            'anatomy[height]' => 175,
-            'anatomy[weight]' => 69.1,
-            'anatomy[armSpan]' => 160,
-            'anatomy[bustLength]' => 75,
-            'anatomy[legLength]' => 100,
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertNotNull($user->getAnatomy());
-        $this->assertSame(175, $user->getAnatomy()->getHeight());
-        $this->assertSame(69.1, $user->getAnatomy()->getWeight());
-        $this->assertSame(160, $user->getAnatomy()->getArmSpan());
-        $this->assertSame(75, $user->getAnatomy()->getBustLength());
-        $this->assertSame(100, $user->getAnatomy()->getLegLength());
-    }
-
     public function testNewPhysicalQualities(): void
     {
         $user = UserFactory::createOne();
@@ -181,7 +153,6 @@ class SportProfileControllerTest extends AppWebTestCase
     public static function urlProvider(): \Generator
     {
         yield ['GET', '/sport-profile/physiology'];
-        yield ['GET', '/sport-profile/anatomy'];
         yield ['GET', '/sport-profile/physical-qualities'];
         yield ['GET', '/sport-profile/workout-maximum-load'];
         yield ['GET', '/sport-profile/configuration'];

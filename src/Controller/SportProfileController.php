@@ -20,11 +20,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Anatomy;
 use App\Entity\PhysicalQualities;
 use App\Entity\Physiology;
 use App\Entity\WorkoutMaximumLoad;
-use App\Form\AnatomyType;
 use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
 use App\Form\SportProfileConfirurationType;
@@ -55,26 +53,6 @@ class SportProfileController extends AbstractController
         }
 
         return $this->render('sport_profile/physiology.html.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    #[Route(path: '/anatomy', name: 'sport_profile_anatomy', methods: ['GET', 'POST'])]
-    public function anatomy(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $anatomy = $this->getUser()->getAnatomy() ?? new Anatomy($this->getUser());
-        $form = $this->createForm(AnatomyType::class, $anatomy);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Mon anatomie a été modifiée avec succès.');
-
-            return $this->redirectToRoute('sport_profile_anatomy', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('sport_profile/anatomy.html.twig', [
             'form' => $form,
         ]);
     }
