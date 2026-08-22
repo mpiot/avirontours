@@ -20,10 +20,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\PhysicalQualities;
 use App\Entity\Physiology;
 use App\Entity\WorkoutMaximumLoad;
-use App\Form\PhysicalQualitiesType;
 use App\Form\PhysiologyType;
 use App\Form\SportProfileConfirurationType;
 use App\Form\WorkoutMaximumLoadType;
@@ -53,26 +51,6 @@ class SportProfileController extends AbstractController
         }
 
         return $this->render('sport_profile/physiology.html.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    #[Route(path: '/physical-qualities', name: 'sport_profile_physical_qualities', methods: ['GET', 'POST'])]
-    public function physicalQualities(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $physicalQualities = $this->getUser()->getPhysicalQualities() ?? new PhysicalQualities($this->getUser());
-        $form = $this->createForm(PhysicalQualitiesType::class, $physicalQualities);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Mes qualités physiques ont été modifiées avec succès.');
-
-            return $this->redirectToRoute('sport_profile_physical_qualities', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('sport_profile/physical_qualities.html.twig', [
             'form' => $form,
         ]);
     }

@@ -12,7 +12,6 @@
 {% block body %}
     {% set has_anything = logbookChart is not null
         or trainingsSportsChart is not null
-        or physicalQualitiesChart is not null
         or app.user.physiology is not null
     %}
 
@@ -37,19 +36,6 @@
                         <h2 class="fs-5">Répartition des sports</h2>
                         <div class="app-chart">
                             {{ render_chart(trainingsSportsChart, { 'role': 'img', 'aria-label': 'Répartition des sports' }) }}
-                        </div>
-                    </twig:Card:Body>
-                </twig:Card>
-            </div>
-        {% endif %}
-
-        {% if physicalQualitiesChart is not null %}
-            <div class="col-12 col-xl-6">
-                <twig:Card elevated class="h-100">
-                    <twig:Card:Body>
-                        <h2 class="fs-5">Mes qualités physiques</h2>
-                        <div class="app-chart">
-                            {{ render_chart(physicalQualitiesChart, { 'role': 'img', 'aria-label': 'Mes qualités physiques' }) }}
                         </div>
                     </twig:Card:Body>
                 </twig:Card>

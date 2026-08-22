@@ -67,42 +67,6 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertSame(215, $user->getPhysiology()->getMaximumHeartRate());
     }
 
-    public function testNewPhysicalQualities(): void
-    {
-        $user = UserFactory::createOne();
-
-        self::ensureKernelShutdown();
-        $client = static::createClient();
-        $client->loginUser($user);
-        $client->request('GET', '/sport-profile/physical-qualities');
-
-        $this->assertResponseIsSuccessful();
-
-        $client->submitForm('Enregistrer', [
-            'physical_qualities[proprioception]' => 1,
-            'physical_qualities[weightPowerRatio]' => 2,
-            'physical_qualities[explosiveStrength]' => 3,
-            'physical_qualities[enduranceStrength]' => 4,
-            'physical_qualities[maximumStrength]' => 5,
-            'physical_qualities[stressResistance]' => 6,
-            'physical_qualities[coreStrength]' => 7,
-            'physical_qualities[flexibility]' => 8,
-            'physical_qualities[recovery]' => 9,
-        ]);
-
-        $this->assertResponseRedirects();
-        $this->assertNotNull($user->getPhysicalQualities());
-        $this->assertSame(1, $user->getPhysicalQualities()->getProprioception());
-        $this->assertSame(2, $user->getPhysicalQualities()->getWeightPowerRatio());
-        $this->assertSame(3, $user->getPhysicalQualities()->getExplosiveStrength());
-        $this->assertSame(4, $user->getPhysicalQualities()->getEnduranceStrength());
-        $this->assertSame(5, $user->getPhysicalQualities()->getMaximumStrength());
-        $this->assertSame(6, $user->getPhysicalQualities()->getStressResistance());
-        $this->assertSame(7, $user->getPhysicalQualities()->getCoreStrength());
-        $this->assertSame(8, $user->getPhysicalQualities()->getFlexibility());
-        $this->assertSame(9, $user->getPhysicalQualities()->getRecovery());
-    }
-
     public function testNewWorkoutMaximumLoad(): void
     {
         $user = UserFactory::createOne();
@@ -153,7 +117,6 @@ class SportProfileControllerTest extends AppWebTestCase
     public static function urlProvider(): \Generator
     {
         yield ['GET', '/sport-profile/physiology'];
-        yield ['GET', '/sport-profile/physical-qualities'];
         yield ['GET', '/sport-profile/workout-maximum-load'];
         yield ['GET', '/sport-profile/configuration'];
     }

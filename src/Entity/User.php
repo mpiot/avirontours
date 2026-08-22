@@ -145,9 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\OneToOne(targetEntity: Physiology::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Physiology $physiology = null;
 
-    #[ORM\OneToOne(targetEntity: PhysicalQualities::class, cascade: ['persist', 'remove'])]
-    private ?PhysicalQualities $physicalQualities = null;
-
     #[ORM\OneToOne(targetEntity: WorkoutMaximumLoad::class, cascade: ['persist', 'remove'])]
     private ?WorkoutMaximumLoad $workoutMaximumLoad = null;
 
@@ -610,18 +607,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setPhysiology(?Physiology $physiology): self
     {
         $this->physiology = $physiology;
-
-        return $this;
-    }
-
-    public function getPhysicalQualities(): ?PhysicalQualities
-    {
-        return $this->physicalQualities;
-    }
-
-    public function setPhysicalQualities(?PhysicalQualities $physicalQualities): self
-    {
-        $this->physicalQualities = $physicalQualities;
 
         return $this;
     }
