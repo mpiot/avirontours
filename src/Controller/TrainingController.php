@@ -23,9 +23,11 @@ namespace App\Controller;
 use App\Chart\TrainingPhaseCharts;
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
+use App\Enum\SportType;
 use App\Form\TrainingEditRatingType;
 use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
+use App\Repository\TrainingRepository;
 use App\Service\TrainingHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -44,9 +46,36 @@ class TrainingController extends AbstractController
     #[Route(path: '', name: 'training_index', methods: ['GET'])]
     public function index(
         #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^\d{4}-\d{2}-\d{2}$#'])] ?string $endAt,
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^(\d{4}-\d{2}-\d{2})?$#'])] ?string $from,
+        #[MapQueryParameter(filter: \FILTER_VALIDATE_REGEXP, options: ['regexp' => '#^(\d{4}-\d{2}-\d{2})?$#'])] ?string $to,
+        #[MapQueryParameter] ?string $sport,
+        #[MapQueryParameter] ?string $q,
+        #[MapQueryParameter] ?int $page,
         TrainingHelper $trainingHelper,
+        TrainingRepository $trainingRepository,
     ): Response {
-        // The regex validates the shape but not the calendar (e.g. 2020-13-45)
+        // The regexes accept the empty submit and validate the shape but not the calendar
+        // (e.g. 2020-13-45); invalid values are ignored
+        $fromDate = $toDate = null;
+        try {
+            $fromDate = null !== $from && '' !== $from ? new \DateTimeImmutable($from) : null;
+        } catch (\DateMalformedStringException) {
+        }
+        try {
+            $toDate = null !== $to && '' !== $to ? (new \DateTimeImmutable($to))->setTime(23, 59, 59) : null;
+        } catch (\DateMalformedStringException) {
+        }
+        $sportType = null !== $sport ? SportType::tryFrom($sport) : null;
+        $q = null !== $q && '' !== mb_trim($q) ? $q : null;
+
+        if (null !== $fromDate || null !== $toDate || null !== $sportType || null !== $q) {
+            return $this->render('training/index.html.twig', [
+                'filtered' => true,
+                'sports' => SportType::cases(),
+                'trainings' => $trainingRepository->findUserPaginated($this->getUser(), $page ?? 1, $fromDate, $toDate, $sportType, $q),
+            ]);
+        }
+
         try {
             $endAt = new \DateTimeImmutable($endAt ?? 'now');
         } catch (\DateMalformedStringException) {
@@ -57,6 +86,8 @@ class TrainingController extends AbstractController
         $startAt = $endAt->modify('-1 month')->modify('monday this week');
 
         return $this->render('training/index.html.twig', [
+            'filtered' => false,
+            'sports' => SportType::cases(),
             'startAt' => $startAt,
             'endAt' => $endAt,
             'data' => $trainingHelper->getTrainingsSummary($this->getUser(), $startAt, $endAt),

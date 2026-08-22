@@ -1,5 +1,6 @@
-// ↔ templates/training/index.html.twig — the log, its weeks and its session rows — and the reading
-// column of templates/training/_show.html.twig. Shapes of the training pages, with no second caller.
+// ↔ templates/training/index.html.twig — the log and its weeks — the session rows extracted to
+// templates/training/_session.html.twig, and the reading column of templates/training/_show.html.twig.
+// Shapes of the training pages, with no second caller.
 //
 // Both blocks are measured for reading rather than left to the full content width: a log row says
 // little — a sport, a day, three figures — and a rowing outing is four figures, so across 1100 px the

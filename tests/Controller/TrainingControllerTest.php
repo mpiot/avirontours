@@ -152,6 +152,135 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testIndexFiltersBySport(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $monday = new \DateTime('monday this week');
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'trainedAt' => $monday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Yoga, 'trainedAt' => $monday]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training?sport=rowing');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', '1 séance trouvée');
+        $this->assertCount(1, $crawler->filter('.app-training-session'));
+        $this->assertStringContainsString('Aviron', $this->sessionText($crawler, 'Aviron'));
+    }
+
+    public function testIndexFiltersByCommentTextCaseInsensitively(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $monday = new \DateTime('monday this week');
+        TrainingFactory::createOne(['user' => $user, 'comment' => 'Sortie longue en HUIT', 'trainedAt' => $monday]);
+        TrainingFactory::createOne(['user' => $user, 'comment' => 'Séance technique', 'trainedAt' => $monday]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training?q=huit');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', '1 séance trouvée');
+        $this->assertCount(1, $crawler->filter('.app-training-session'));
+        $this->assertStringContainsString('Sortie longue en HUIT', $crawler->filter('.app-training-session')->text());
+    }
+
+    public function testIndexFiltersByDateRange(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        TrainingFactory::createOne(['user' => $user, 'comment' => 'Stage de mars', 'trainedAt' => new \DateTime('2024-03-10')]);
+        TrainingFactory::createOne(['user' => $user, 'comment' => 'Stage de mai', 'trainedAt' => new \DateTime('2024-05-10')]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training?from=2024-03-01&to=2024-03-31');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', '1 séance trouvée');
+        $this->assertCount(1, $crawler->filter('.app-training-session'));
+
+        $session = $crawler->filter('.app-training-session')->text();
+
+        $this->assertStringContainsString('Stage de mars', $session);
+        // The flat list spans years, so the row carries the year the week headings used to provide
+        $this->assertStringContainsString('2024', $session);
+    }
+
+    public function testIndexShowsEmptyStateWhenNoTrainingMatchesTheFilters(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        TrainingFactory::createOne(['user' => $user, 'comment' => 'Sortie du dimanche', 'trainedAt' => new \DateTime('monday this week')]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training?q=introuvable');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Aucun entraînement ne correspond à ces filtres');
+    }
+
+    public function testIndexKeepsTheWeekViewWhenFiltersAreSubmittedEmpty(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('monday this week')]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training?from=&to=&sport=&q=');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Semaine');
+        $this->assertSelectorTextNotContains('body', 'trouvée');
+    }
+
+    #[DataProvider('filterProvider')]
+    public function testIndexIgnoresInvalidFilterValues(string $queryString): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', "/training?{$queryString}");
+
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testIndexFilteredResultsArePaginated(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        TrainingFactory::createMany(26, static fn (int $daysAgo): array => [
+            'user' => $user,
+            'sport' => SportType::Rowing,
+            'comment' => 26 === $daysAgo ? 'La toute première' : null,
+            'trainedAt' => new \DateTime("-{$daysAgo} days"),
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $client->request('GET', '/training?sport=rowing');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', '26 séances trouvées');
+        $this->assertSelectorTextNotContains('body', 'La toute première');
+
+        $client->request('GET', '/training?sport=rowing&page=2');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'La toute première');
+    }
+
     public function testShowTrainingDisplaysEverythingRecorded(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
@@ -766,7 +895,7 @@ class TrainingControllerTest extends AppWebTestCase
 
     private function sessionText(Crawler $crawler, string $sportLabel): string
     {
-        $sessions = $crawler->filter('#training-list .app-training-session')->each(static fn (Crawler $session): string => $session->text());
+        $sessions = $crawler->filter('.app-training-session')->each(static fn (Crawler $session): string => $session->text());
         $session = current(array_filter($sessions, static fn (string $text): bool => str_contains($text, $sportLabel)));
 
         if (false === $session) {
@@ -792,5 +921,13 @@ class TrainingControllerTest extends AppWebTestCase
         yield 'valid date' => ['2020-01-15'];
         yield 'out-of-range month and day' => ['9999-99-99'];
         yield 'impossible day' => ['2020-02-30'];
+    }
+
+    public static function filterProvider(): \Generator
+    {
+        yield 'out-of-range from' => ['from=9999-99-99'];
+        yield 'out-of-range to' => ['to=2020-99-99'];
+        yield 'unknown sport' => ['sport=quidditch'];
+        yield 'blank comment query' => ['q=%20%20'];
     }
 }
