@@ -60,8 +60,8 @@
         label: 'Mon profil sportif',
         url: path('sport_profile_physiology'),
         icon: 'sport-profile',
-        description: 'Physiologie, anatomie et qualités physiques.',
-        match: ['sport_profile_physiology', 'sport_profile_anatomy', 'sport_profile_physical_qualities', 'sport_profile_workout_maximum_load', 'sport_profile_configuration'],
+        description: 'Physiologie et qualités physiques.',
+        match: ['sport_profile_physiology', 'sport_profile_physical_qualities', 'sport_profile_workout_maximum_load', 'sport_profile_configuration'],
     },
     shells: {
         granted: isMaterialAdmin,
@@ -92,8 +92,8 @@
         label: 'Profils sportifs',
         url: path('sports_profile_index'),
         icon: 'sports-profiles',
-        description: 'Physiologie, anatomie et qualités physiques des membres.',
-        match: ['sports_profile_index', 'sports_profile_physiology', 'sports_profile_anatomy', 'sports_profile_physical_qualities', 'sports_profile_workout_maximum_load'],
+        description: 'Physiologie et qualités physiques des membres.',
+        match: ['sports_profile_index', 'sports_profile_physiology', 'sports_profile_physical_qualities', 'sports_profile_workout_maximum_load'],
     },
     admin_trainings: {
         granted: isSportAdmin,
