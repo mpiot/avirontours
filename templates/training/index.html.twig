@@ -36,154 +36,196 @@
 
 {% block body %}
     <twig:Card elevated class="app-measure app-training-log">
-        {# Nothing is recorded ahead of the running week, so that is where the log stops. #}
-        {% set isCurrent = endAt|date('o-W') == 'now'|date('o-W') %}
+        <twig:Card:Header>
+            {% if not filtered %}
+                {# Nothing is recorded ahead of the running week, so that is where the log stops. #}
+                {% set isCurrent = endAt|date('o-W') == 'now'|date('o-W') %}
 
-        <twig:Card:Header class="d-flex align-items-center justify-content-between gap-2">
-            <twig:Button variant="secondary" outline size="sm" href="{{ path('training_index', { 'endAt': endAt.modify('-1 week')|date('Y-m-d') }) }}" aria-label="Reculer d'une semaine">
-                <twig:ux:icon name="mdi:chevron-left" />
-            </twig:Button>
-
-            {% set isSameYear = startAt|date('o') == endAt|date('o') %}
-
-            <span class="text-center">
-                Semaines {{ startAt|date('W') }}{% if not isSameYear %} ({{ startAt|date('o') }}){% endif %}
-                à {{ endAt|date('W') }}{% if not isSameYear %} ({{ endAt|date('o') }}){% endif %}
-            </span>
-
-            <div class="d-flex gap-2">
-                {% if not isCurrent %}
-                    <twig:Button variant="secondary" outline size="sm" href="{{ path('training_index') }}">
-                        Aujourd'hui
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                    <twig:Button variant="secondary" outline size="sm" href="{{ path('training_index', { 'endAt': endAt.modify('-1 week')|date('Y-m-d') }) }}" aria-label="Reculer d'une semaine">
+                        <twig:ux:icon name="mdi:chevron-left" />
                     </twig:Button>
-                {% endif %}
 
-                <twig:Button
-                    variant="secondary"
-                    outline
-                    size="sm"
-                    href="{{ path('training_index', { 'endAt': endAt.modify('+1 week')|date('Y-m-d') }) }}"
-                    aria-label="Avancer d'une semaine"
-                    :disabled="isCurrent"
-                >
-                    <twig:ux:icon name="mdi:chevron-right" />
-                </twig:Button>
+                    {% set isSameYear = startAt|date('o') == endAt|date('o') %}
+
+                    <span class="text-center">
+                        Semaines {{ startAt|date('W') }}{% if not isSameYear %} ({{ startAt|date('o') }}){% endif %}
+                        à {{ endAt|date('W') }}{% if not isSameYear %} ({{ endAt|date('o') }}){% endif %}
+                    </span>
+
+                    <div class="d-flex gap-2">
+                        {% if not isCurrent %}
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('training_index') }}">
+                                Aujourd'hui
+                            </twig:Button>
+                        {% endif %}
+
+                        <twig:Button
+                            variant="secondary"
+                            outline
+                            size="sm"
+                            href="{{ path('training_index', { 'endAt': endAt.modify('+1 week')|date('Y-m-d') }) }}"
+                            aria-label="Avancer d'une semaine"
+                            :disabled="isCurrent"
+                        >
+                            <twig:ux:icon name="mdi:chevron-right" />
+                        </twig:Button>
+                    </div>
+                </div>
+            {% endif %}
+
+            <twig:CollapseToggle target="training-filters" :expanded="filtered" class="{{ html_classes({ 'mt-3': not filtered }) }}">
+                <twig:ux:icon name="mdi:filter-variant" /> Filtrer
+            </twig:CollapseToggle>
+
+            <div class="{{ html_classes('collapse', { show: filtered }) }}" id="training-filters">
+                {% set today = date('now')|date('Y-m-d') %}
+
+                <form class="row gx-3 gy-2 align-items-end pt-3" method="get">
+                    <div class="col-6 col-md-3">
+                        <twig:Label for="from">Du</twig:Label>
+                        <twig:Input type="date" id="from" name="from" :value="app.request.query.get('from') ?? ''" :max="today" />
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <twig:Label for="to">Au</twig:Label>
+                        <twig:Input type="date" id="to" name="to" :value="app.request.query.get('to') ?? ''" :max="today" />
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <twig:Label for="sport">Sport</twig:Label>
+                        <twig:Select id="sport" name="sport">
+                            <option value="">Tous les sports</option>
+                            {% for sportChoice in sports %}
+                                <option value="{{ sportChoice.value }}" {{ app.request.query.get('sport') == sportChoice.value ? 'selected' }}>{{ sportChoice.label }}</option>
+                            {% endfor %}
+                        </twig:Select>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <twig:Label for="q">Commentaire</twig:Label>
+                        <twig:Input
+                            type="search"
+                            id="q"
+                            name="q"
+                            placeholder="Rechercher dans les commentaires…"
+                            :value="app.request.query.get('q') ?? ''"
+                        />
+                    </div>
+
+                    <div class="col-12 d-flex flex-wrap gap-2">
+                        <twig:Button variant="primary" size="sm">
+                            <twig:ux:icon name="mdi:magnify" /> Filtrer
+                        </twig:Button>
+
+                        {% if filtered %}
+                            <twig:Button variant="secondary" outline size="sm" href="{{ path('training_index') }}">
+                                <twig:ux:icon name="mdi:eraser" /> Réinitialiser les filtres
+                            </twig:Button>
+                        {% endif %}
+                    </div>
+                </form>
             </div>
         </twig:Card:Header>
 
         <twig:Card:Body>
-            <div id="training-list">
-                {% for weekData in data|reverse %}
-                    {% set isCurrentWeek = weekData.week|date('o-W') == 'now'|date('o-W') %}
+            {% if filtered %}
+                {% if trainings.totalItemCount > 0 %}
+                    <p class="text-body-secondary small">
+                        {{ trainings.totalItemCount }} {{ 'séance trouvée|séances trouvées'|trans({'%count%': trainings.totalItemCount}) }}
+                    </p>
 
-                    <section class="{{ html_classes('app-training-week', { 'app-training-week-current': isCurrentWeek }) }}">
-                        {% set weekEnd = weekData.week|date_modify('+6 days') %}
-                        {% set startPattern = weekData.week|date('Y') != weekEnd|date('Y')
-                            ? 'd MMM y'
-                            : (weekData.week|date('n') != weekEnd|date('n') ? 'd MMM' : 'd')
-                        %}
+                    {% for training in trainings %}
+                        {{ include('training/_session.html.twig', { training: training, detailed: true }) }}
+                    {% endfor %}
+                {% else %}
+                    <twig:EmptyState text="Aucun entraînement ne correspond à ces filtres" />
+                {% endif %}
+            {% else %}
+                <div id="training-list">
+                    {% for weekData in data|reverse %}
+                        {% set isCurrentWeek = weekData.week|date('o-W') == 'now'|date('o-W') %}
 
-                        <h2 class="app-training-week-title">
-                            Semaine {{ weekData.week|date('W') }}
-                            <span class="app-training-week-span text-body-secondary fw-normal">
-                                &middot; {{ weekData.week|format_datetime(pattern: startPattern) }}
-                                &ndash; {{ weekEnd|format_datetime(pattern: 'd MMM y') }}
-                            </span>
+                        <section class="{{ html_classes('app-training-week', { 'app-training-week-current': isCurrentWeek }) }}">
+                            {% set weekEnd = weekData.week|date_modify('+6 days') %}
+                            {% set startPattern = weekData.week|date('Y') != weekEnd|date('Y')
+                                ? 'd MMM y'
+                                : (weekData.week|date('n') != weekEnd|date('n') ? 'd MMM' : 'd')
+                            %}
 
-                            {% if isCurrentWeek %}
-                                <span class="visually-hidden">(semaine en cours)</span>
-                            {% endif %}
-                        </h2>
+                            <h2 class="app-training-week-title">
+                                Semaine {{ weekData.week|date('W') }}
+                                <span class="app-training-week-span text-body-secondary fw-normal">
+                                    &middot; {{ weekData.week|format_datetime(pattern: startPattern) }}
+                                    &ndash; {{ weekEnd|format_datetime(pattern: 'd MMM y') }}
+                                </span>
 
-                        {% if weekData.summary.sessions == 0 %}
-                            <p class="app-training-week-empty">Aucune séance</p>
-                        {% else %}
-                            <div class="app-training-summary">
-                                <p class="app-training-summary-total">
-                                    <span>
-                                        {{ weekData.summary.sessions }} {{ 'séance|séances'|trans({'%count%': weekData.summary.sessions}) }}
-                                        <span class="text-body-secondary">&middot; {{ weekData.summary.duration|format_seconds_as_hours_minutes }}</span>
-                                    </span>
+                                {% if isCurrentWeek %}
+                                    <span class="visually-hidden">(semaine en cours)</span>
+                                {% endif %}
+                            </h2>
 
-                                    <span class="text-body-secondary small">
-                                        Charge
-                                        {% if weekData.summary.load is not null %}
-                                            <span class="fw-semibold text-body">{{ weekData.summary.load }}</span>
-                                        {% else %}
-                                            <twig:NoValue label="non calculée, aucune séance notée" />
-                                        {% endif %}
-                                    </span>
-                                </p>
+                            {% if weekData.summary.sessions == 0 %}
+                                <p class="app-training-week-empty">Aucune séance</p>
+                            {% else %}
+                                <div class="app-training-summary">
+                                    <p class="app-training-summary-total">
+                                        <span>
+                                            {{ weekData.summary.sessions }} {{ 'séance|séances'|trans({'%count%': weekData.summary.sessions}) }}
+                                            <span class="text-body-secondary">&middot; {{ weekData.summary.duration|format_seconds_as_hours_minutes }}</span>
+                                        </span>
 
-                                <twig:Progress:Stacked>
-                                    {% for sportSummary in weekData.summary.sports %}
-                                        <twig:Progress:Segment
-                                            :label="sportSummary.sport.label"
-                                            :value="sportSummary.share"
-                                            :color="sportSummary.sport.color"
-                                        />
-                                    {% endfor %}
-                                </twig:Progress:Stacked>
-
-                                <ul class="app-training-legend">
-                                    {% for sportSummary in weekData.summary.sports %}
-                                        <li style="--sport-color: {{ sportSummary.sport.color }}">
-                                            <span class="app-training-legend-sport">{{ sportSummary.sport.label }}</span>
-
-                                            <span class="text-body-secondary">
-                                                {{- sportSummary.sessions }} {{ 'séance|séances'|trans({'%count%': sportSummary.sessions}) }}
-                                                &middot;&nbsp;{{ sportSummary.duration|format_seconds_as_hours_minutes }}
-                                                {%- if sportSummary.distance is not same as(0) %}
-                                                    &middot;&nbsp;{{ (sportSummary.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km
-                                                {%- endif -%}
-                                            </span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-
-                            {% for training in weekData.trainings %}
-                                <article id="training-{{ training.id }}" class="app-training-session">
-                                    <twig:SportChip :sport="training.sport" :labelled="false" />
-
-                                    <div class="app-training-session-body">
-                                        <p class="app-training-session-head">
-                                            <a href="{{ path('training_show', { id: training.id }) }}" class="stretched-link">
-                                                {{- training.sport.label -}}
-                                            </a>
-
-                                            <span class="small text-body-secondary">
-                                                {{- training.trainedAt|format_datetime(pattern: 'cccc dd MMM')|capitalize -}}
-                                            </span>
-                                        </p>
-
-                                        <p class="app-training-metrics">
-                                            <span>
-                                                {{- training.formattedDuration -}}
-                                                {%- if training.distance is not null %} &middot;&nbsp;{{ (training.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km{% endif -%}
-                                                {%- if training.formattedSpeed is not null %} &middot;&nbsp;{{ training.formattedSpeed }}&nbsp;{{ training.sport.speedUnit }}{% endif -%}
-                                            </span>
-
-                                            {% if training.ratedPerceivedExertion is not null %}
-                                                <span class="app-exertion-chip" data-level="{{ training.ratedPerceivedExertion.value }}">
-                                                    <span class="visually-hidden">Effort perçu&nbsp;:</span>
-                                                    {{- training.ratedPerceivedExertion.value -}}
-                                                    <span class="visually-hidden">/10 &mdash; {{ training.ratedPerceivedExertion.label }}</span>
-                                                </span>
+                                        <span class="text-body-secondary small">
+                                            Charge
+                                            {% if weekData.summary.load is not null %}
+                                                <span class="fw-semibold text-body">{{ weekData.summary.load }}</span>
                                             {% else %}
-                                                <span class="app-exertion-chip app-exertion-chip-empty">
-                                                    <span aria-hidden="true">&mdash;</span>
-                                                    <span class="visually-hidden">Effort perçu non renseigné</span>
-                                                </span>
+                                                <twig:NoValue label="non calculée, aucune séance notée" />
                                             {% endif %}
-                                        </p>
-                                    </div>
-                                </article>
-                            {% endfor %}
-                        {% endif %}
-                    </section>
-                {% endfor %}
-            </div>
+                                        </span>
+                                    </p>
+
+                                    <twig:Progress:Stacked>
+                                        {% for sportSummary in weekData.summary.sports %}
+                                            <twig:Progress:Segment
+                                                :label="sportSummary.sport.label"
+                                                :value="sportSummary.share"
+                                                :color="sportSummary.sport.color"
+                                            />
+                                        {% endfor %}
+                                    </twig:Progress:Stacked>
+
+                                    <ul class="app-training-legend">
+                                        {% for sportSummary in weekData.summary.sports %}
+                                            <li style="--sport-color: {{ sportSummary.sport.color }}">
+                                                <span class="app-training-legend-sport">{{ sportSummary.sport.label }}</span>
+
+                                                <span class="text-body-secondary">
+                                                    {{- sportSummary.sessions }} {{ 'séance|séances'|trans({'%count%': sportSummary.sessions}) }}
+                                                    &middot;&nbsp;{{ sportSummary.duration|format_seconds_as_hours_minutes }}
+                                                    {%- if sportSummary.distance is not same as(0) %}
+                                                        &middot;&nbsp;{{ (sportSummary.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km
+                                                    {%- endif -%}
+                                                </span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                {% for training in weekData.trainings %}
+                                    {{ include('training/_session.html.twig', { training: training }) }}
+                                {% endfor %}
+                            {% endif %}
+                        </section>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </twig:Card:Body>
+
+        {% if filtered and trainings|length < trainings.totalItemCount %}
+            <twig:Card:Footer>
+                <twig:Pagination :pagination="trainings" />
+            </twig:Card:Footer>
+        {% endif %}
     </twig:Card>
 {% endblock %}

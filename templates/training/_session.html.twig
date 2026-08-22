@@ -1,0 +1,44 @@
+{# One row of the training log. `detailed` (search results) adds the year to the date and a comment
+ # excerpt, both of which the week headings provide implicitly in the calendar view. #}
+{% set detailed = detailed|default(false) %}
+
+<article id="training-{{ training.id }}" class="app-training-session">
+    <twig:SportChip :sport="training.sport" :labelled="false" />
+
+    <div class="app-training-session-body">
+        <p class="app-training-session-head">
+            <a href="{{ path('training_show', { id: training.id }) }}" class="stretched-link">
+                {{- training.sport.label -}}
+            </a>
+
+            <span class="small text-body-secondary">
+                {{- training.trainedAt|format_datetime(pattern: detailed ? 'cccc dd MMM y' : 'cccc dd MMM')|capitalize -}}
+            </span>
+        </p>
+
+        <p class="app-training-metrics">
+            <span>
+                {{- training.formattedDuration -}}
+                {%- if training.distance is not null %} &middot;&nbsp;{{ (training.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km{% endif -%}
+                {%- if training.formattedSpeed is not null %} &middot;&nbsp;{{ training.formattedSpeed }}&nbsp;{{ training.sport.speedUnit }}{% endif -%}
+            </span>
+
+            {% if training.ratedPerceivedExertion is not null %}
+                <span class="app-exertion-chip" data-level="{{ training.ratedPerceivedExertion.value }}">
+                    <span class="visually-hidden">Effort perçu&nbsp;:</span>
+                    {{- training.ratedPerceivedExertion.value -}}
+                    <span class="visually-hidden">/10 &mdash; {{ training.ratedPerceivedExertion.label }}</span>
+                </span>
+            {% else %}
+                <span class="app-exertion-chip app-exertion-chip-empty">
+                    <span aria-hidden="true">&mdash;</span>
+                    <span class="visually-hidden">Effort perçu non renseigné</span>
+                </span>
+            {% endif %}
+        </p>
+
+        {% if detailed and training.comment is not null %}
+            <p class="small text-body-secondary text-truncate mb-0">{{ training.comment }}</p>
+        {% endif %}
+    </div>
+</article>
