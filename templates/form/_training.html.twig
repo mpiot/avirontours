@@ -56,7 +56,10 @@
 {% endblock %}
 
 {% block feeling_choice_widget %}
-    {% set feelings = form|filter(child => child.vars.value is not empty) %}
+    <p class="form-text app-scale-hint">
+        Comment tu allais &mdash; pas ce que la séance a coûté.
+        <a href="{{ path('training_feeling_help') }}" data-turbo-frame="modal">Comment noter&nbsp;?</a>
+    </p>
 
     <div class="app-scale app-feeling-scale" {{ block('widget_container_attributes') }}>
         {% for child in form %}
@@ -78,12 +81,14 @@
 
         <p class="app-scale-legend" aria-hidden="true">
             <span class="app-scale-anchors">
-                <span>{{ (feelings|first).vars.label }}</span>
-                <span>{{ (feelings|last).vars.label }}</span>
+                <span>{{ (form.vars.choices|first).data.label }}</span>
+                <span>{{ (form.vars.choices|last).data.label }}</span>
             </span>
 
-            {% for child in feelings %}
-                <span class="app-scale-word" data-value="{{ child.vars.value }}">{{ child.vars.label }}</span>
+            {% for choice in form.vars.choices %}
+                <span class="app-scale-word" data-value="{{ choice.value }}">
+                    {{- choice.data.label }} &mdash; {{ choice.data.description -}}
+                </span>
             {% endfor %}
         </p>
     </div>
@@ -91,6 +96,11 @@
 
 {% block exertion_choice_widget %}
     {% set levels = form|filter(child => child.vars.value is not empty) %}
+
+    <p class="form-text app-scale-hint">
+        Ce que la séance t'a coûté, pauses comprises &mdash; note-la une trentaine de minutes après la fin.
+        <a href="{{ path('training_exertion_help') }}" data-turbo-frame="modal">Comment noter&nbsp;?</a>
+    </p>
 
     <div class="app-scale app-exertion-scale" {{ block('widget_container_attributes') }}>
         {% for child in form %}

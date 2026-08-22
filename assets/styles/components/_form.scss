@@ -389,3 +389,10 @@ input:checked[value=""] + .app-feeling-option .app-feeling-option-icon {
     border-color: tint-color($input-border-color, 20%);
     color: $gray-600;
 }
+
+// `.form-text` gives its gap above, being written for a note under a field; these hints sit above
+// their scale, so the margins flip.
+.app-scale-hint {
+    margin-top: 0;
+    margin-bottom: $spacer * .5;
+}

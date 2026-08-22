@@ -1,0 +1,11 @@
+<ol class="app-rating-guide">
+    {% for level in levels %}
+        <li>
+            <span class="app-exertion-chip" data-level="{{ level.value }}">{{ level.value }}</span>
+
+            <p>
+                <strong>{{ level.label }}</strong> &mdash; {{ level.descriptions[key] }}
+            </p>
+        </li>
+    {% endfor %}
+</ol>

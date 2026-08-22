@@ -128,7 +128,7 @@ class TrainingController extends AbstractController
         return $this->redirectToRoute('training_index');
     }
 
-    #[Route(path: '/{id}', name: 'training_show', methods: ['GET'])]
+    #[Route(path: '/{id<\d+>}', name: 'training_show', methods: ['GET'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function show(Training $training): Response
     {
@@ -137,7 +137,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{training_id}/phase/{id}', name: 'training_show_phase', methods: ['GET'])]
+    #[Route(path: '/{training_id<\d+>}/phase/{id<\d+>}', name: 'training_show_phase', methods: ['GET'])]
     #[IsGranted(new Expression('object.getUser() === user or is_granted("ROLE_SPORT_ADMIN")'), 'training')]
     public function showPhase(
         #[MapEntity(mapping: ['training_id' => 'id'])] Training $training,
@@ -155,7 +155,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit', name: 'training_edit', methods: ['GET', 'POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function edit(Request $request, EntityManagerInterface $entityManager, Training $training): Response
     {
@@ -178,7 +178,7 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}/edit/rating', name: 'training_edit_rating', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id<\d+>}/edit/rating', name: 'training_edit_rating', methods: ['GET', 'POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function editRating(
         Request $request,
@@ -210,7 +210,19 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/{id}', name: 'training_delete', methods: ['POST'])]
+    #[Route(path: '/feeling-help', name: 'training_feeling_help', methods: ['GET'])]
+    public function feelingHelp(): Response
+    {
+        return $this->render('training/feeling_help.html.twig');
+    }
+
+    #[Route(path: '/exertion-help', name: 'training_exertion_help', methods: ['GET'])]
+    public function exertionHelp(): Response
+    {
+        return $this->render('training/exertion_help.html.twig');
+    }
+
+    #[Route(path: '/{id<\d+>}', name: 'training_delete', methods: ['POST'])]
     #[IsGranted(new Expression('object.getUser() === user'), 'training')]
     public function delete(Request $request, EntityManagerInterface $entityManager, Training $training): Response
     {

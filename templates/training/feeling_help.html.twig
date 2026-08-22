@@ -1,0 +1,12 @@
+<turbo-frame id="modal">
+    <twig:Modal:Content>
+        <twig:block name="title">Noter ta sensation</twig:block>
+
+        <p>
+            La sensation dit comment tu allais &mdash; pas ce que la séance t'a coûté. On peut aller
+            très bien et finir une séance maximale, ou se traîner sur une séance facile.
+        </p>
+
+        {{ include('training/_feeling_help_scale.html.twig', { feelings: enum_cases('App\\Enum\\Feeling') }, with_context = false) }}
+    </twig:Modal:Content>
+</turbo-frame>

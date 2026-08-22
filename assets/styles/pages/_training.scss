@@ -1,6 +1,8 @@
 // ↔ templates/training/index.html.twig — the log and its weeks — the session rows extracted to
-// templates/training/_session.html.twig, and the reading column of templates/training/_show.html.twig.
-// Shapes of the training pages, with no second caller.
+// templates/training/_session.html.twig, the reading column of templates/training/_show.html.twig, and
+// the help modals of templates/training/feeling_help.html.twig and exertion_help.html.twig — their
+// lists extracted to _feeling_help_scale.html.twig and _exertion_help_scale.html.twig. Shapes of the
+// training pages, with no second caller.
 //
 // Both blocks are measured for reading rather than left to the full content width: a log row says
 // little — a sport, a day, three figures — and a rowing outing is four figures, so across 1100 px the
@@ -200,4 +202,39 @@
     border-color: $gray-500;
     border-style: dashed;
     color: $gray-600;
+}
+
+// The help modals' lists — the sensation's five smileys and the effort's two keys. The effort rows
+// wear `.app-exertion-chip` above, so a level is the same colour where it is explained and where it
+// is picked — that pairing is the whole point of showing a ramp here rather than a paragraph.
+//
+// A grid rather than a list marker: the chip or smiley is the marker, and the two columns keep the
+// sentences aligned under each other however long the level's word is.
+.app-rating-guide {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: ($spacer * .375) ($spacer * .625);
+    margin: 0 0 $spacer;
+    padding: 0;
+    list-style: none;
+
+    > li {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+        align-items: baseline;
+    }
+
+    p {
+        margin: 0;
+    }
+}
+
+// The sensation's marker, sized to sit in the chip column and centred on its row: an icon has no
+// text baseline for the grid to align.
+.app-feeling-guide-icon {
+    place-self: center;
+    color: $gray-600;
+    font-size: 1.25rem;
+    line-height: 1;
 }

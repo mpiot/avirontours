@@ -299,7 +299,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $crawler = $client->request('GET', '/training/'.$training->getId());
+        $crawler = $client->request('GET', "/training/{$training->getId()}");
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString('03:00.0 /500m', $crawler->filter('.app-stat-list')->eq(0)->text());
@@ -328,17 +328,55 @@ class TrainingControllerTest extends AppWebTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $crawler = $client->request('GET', '/training/'.$noEffort->getId());
+        $crawler = $client->request('GET', "/training/{$noEffort->getId()}");
 
         $this->assertCount(1, $crawler->filter('#rating turbo-frame[src$="/edit/rating"]'));
 
-        $crawler = $client->request('GET', '/training/'.$noFeeling->getId());
+        $crawler = $client->request('GET', "/training/{$noFeeling->getId()}");
 
         $this->assertCount(1, $crawler->filter('#rating turbo-frame[src$="/edit/rating"]'));
 
-        $crawler = $client->request('GET', '/training/'.$complete->getId());
+        $crawler = $client->request('GET', "/training/{$complete->getId()}");
 
         $this->assertCount(0, $crawler->filter('#rating turbo-frame'));
+    }
+
+    public function testFeelingHelpAnchorsTheSmileys(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training/feeling-help');
+
+        $this->assertResponseIsSuccessful();
+
+        $text = $crawler->filter('.app-modal-body')->text();
+
+        $this->assertStringContainsString('pas ce que la séance t\'a coûté', $text);
+        $this->assertStringContainsString('je me suis traîné toute la journée', $text);
+        $this->assertStringContainsString('une journée ordinaire, ni élan ni frein', $text);
+    }
+
+    public function testExertionHelpExplainsBothReadingKeys(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training/exertion-help');
+
+        $this->assertResponseIsSuccessful();
+
+        $text = $crawler->filter('.app-modal-body')->text();
+
+        $this->assertStringContainsString('phrases courtes, je tiendrais environ une heure', $text);
+        $this->assertStringContainsString('3 reps en réserve, technique nette du début à la fin', $text);
+        $this->assertStringContainsString("Ce n'est pas le RPE de série", $text);
     }
 
     public function testShowTrainingGivesWattsToTheErgometerOnly(): void
@@ -351,12 +389,12 @@ class TrainingControllerTest extends AppWebTestCase
         $client = static::createClient();
         $client->loginUser($user);
 
-        $crawler = $client->request('GET', '/training/'.$ergometer->getId());
+        $crawler = $client->request('GET', "/training/{$ergometer->getId()}");
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertStringContainsString('Puissance', $crawler->filter('.app-training-detail')->text());
 
-        $crawler = $client->request('GET', '/training/'.$rowing->getId());
+        $crawler = $client->request('GET', "/training/{$rowing->getId()}");
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertStringNotContainsString('Puissance', $crawler->filter('.app-training-detail')->text());
@@ -370,7 +408,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/'.$training->getId());
+        $client->request('GET', "/training/{$training->getId()}");
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -388,7 +426,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit/rating');
+        $crawler = $client->request('GET', "/training/{$training->getId()}/edit/rating");
         $client->submit($crawler->selectButton('Enregistrer')->form([
             'training_edit_rating[feeling]' => Feeling::Good->value,
             'training_edit_rating[ratedPerceivedExertion]' => RatedPerceivedExertion::ExtremelyHard->value,
@@ -423,7 +461,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit/rating');
+        $crawler = $client->request('GET', "/training/{$training->getId()}/edit/rating");
         $client->submit($crawler->selectButton('Enregistrer')->form([
             'training_edit_rating[feeling]' => Feeling::Good->value,
         ]));
@@ -451,7 +489,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('POST', '/training/'.$training->getId().'/edit/rating');
+        $client->request('POST', "/training/{$training->getId()}/edit/rating");
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -788,7 +826,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/'.$training->getId().'/edit');
+        $client->request('GET', "/training/{$training->getId()}/edit");
 
         $this->assertResponseIsSuccessful();
 
@@ -822,7 +860,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $crawler = $client->request('GET', '/training/'.$training->getId().'/edit');
+        $crawler = $client->request('GET', "/training/{$training->getId()}/edit");
 
         $this->assertResponseIsSuccessful();
         $this->assertStringContainsString("viennent de l'ergomètre et ne sont pas modifiables", $crawler->filter('.alert')->text());
@@ -838,7 +876,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/'.$training->getId().'/edit');
+        $client->request('GET', "/training/{$training->getId()}/edit");
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -852,7 +890,7 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/'.$training->getId());
+        $client->request('GET', "/training/{$training->getId()}");
 
         $this->assertResponseIsSuccessful();
 
@@ -910,6 +948,8 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['GET', '/training'];
         yield ['GET', '/training/{id}'];
         yield ['GET', '/training/new'];
+        yield ['GET', '/training/feeling-help'];
+        yield ['GET', '/training/exertion-help'];
         yield ['POST', '/training/new'];
         yield ['GET', '/training/{id}/edit'];
         yield ['POST', '/training/{id}/edit'];

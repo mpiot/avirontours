@@ -1,0 +1,13 @@
+<ol class="app-rating-guide">
+    {% for feeling in feelings %}
+        <li>
+            <span class="app-feeling-guide-icon" aria-hidden="true">
+                {{- include('_feeling_icon.html.twig', { feeling: feeling.value }, with_context = false) -}}
+            </span>
+
+            <p>
+                <strong>{{ feeling.label }}</strong> &mdash; {{ feeling.description }}
+            </p>
+        </li>
+    {% endfor %}
+</ol>

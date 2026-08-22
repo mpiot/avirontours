@@ -48,4 +48,47 @@ enum RatedPerceivedExertion: int
             self::Maximal => 'Maximal',
         };
     }
+
+    /**
+     * @return array{breath: string, muscular: string}
+     */
+    public function descriptions(): array
+    {
+        return [
+            'breath' => $this->breathDescription(),
+            'muscular' => $this->muscularDescription(),
+        ];
+    }
+
+    private function breathDescription(): string
+    {
+        return match ($this) {
+            self::VeryVeryEasy => 'conversation sans effort, comme au repos',
+            self::Easy => 'échauffement : la conversation reste normale',
+            self::Moderate => 'je parle par phrases entières, des heures à cette allure',
+            self::SomewhatHard => 'phrases entières, mais je place ma respiration entre',
+            self::Hard => 'phrases courtes, je tiendrais environ une heure',
+            self::ReallyHard => 'quelques mots à la fois, 40 à 50 minutes',
+            self::VeryHard => 'oui ou non, et je compte les minutes : 20 à 30 minutes',
+            self::ExtremelyHard => 'je ne parle plus, je tiens : 10 à 15 minutes',
+            self::AlmostMaximal => 'quelques minutes de plus, pas davantage',
+            self::Maximal => 'je n\'avais plus rien à donner',
+        };
+    }
+
+    private function muscularDescription(): string
+    {
+        return match ($this) {
+            self::VeryVeryEasy => 'barre à vide, mobilité : aucune fatigue',
+            self::Easy => 'charges très légères, je ressors comme je suis entré',
+            self::Moderate => '5 reps en réserve partout, aucune série difficile',
+            self::SomewhatHard => '4 reps en réserve, la dernière série se sent un peu',
+            self::Hard => '3 reps en réserve, technique nette du début à la fin',
+            self::ReallyHard => '2 à 3 reps en réserve, les dernières demandent de l\'attention',
+            self::VeryHard => '2 reps en réserve, j\'ai pris toute ma récupération',
+            self::ExtremelyHard => '1 rep en réserve, la technique se dégrade en fin de série',
+            self::AlmostMaximal => 'une ou deux séries à l\'échec, pas une de plus dans le réservoir',
+            self::Maximal => 'test de force, ou l\'échec sur presque toutes les séries',
+        };
+    }
 }

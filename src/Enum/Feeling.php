@@ -38,4 +38,15 @@ enum Feeling: int
             self::VeryGood => 'Très bien',
         };
     }
+
+    public function description(): string
+    {
+        return match ($this) {
+            self::Horrible => 'malade, blessé ou vidé : la séance n\'aurait peut-être pas dû avoir lieu',
+            self::Bad => 'nuit courte, jambes lourdes : je me suis traîné toute la journée',
+            self::Average => 'une journée ordinaire, ni élan ni frein',
+            self::Good => 'en forme, le corps répond, l\'envie aussi',
+            self::VeryGood => 'léger, de l\'énergie à revendre',
+        };
+    }
 }

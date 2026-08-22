@@ -1,0 +1,66 @@
+{% set levels = enum_cases('App\\Enum\\RatedPerceivedExertion') %}
+
+<turbo-frame id="modal">
+    <twig:Modal:Content>
+        <twig:block name="title">Noter l'effort perçu</twig:block>
+
+        <p>
+            Note ta séance une trentaine de minutes après la fin : à chaud, c'est la dernière ligne
+            droite qui parle.
+        </p>
+
+        <twig:Accordion id="exertion-keys">
+            <twig:Accordion:Item
+                id="exertion-breath"
+                title="Aviron, ergomètre, vélo, course, natation"
+                parent="exertion-keys"
+            >
+                <p class="text-body-secondary">Le repère, c'est la respiration et la parole.</p>
+
+                {{ include('training/_exertion_help_scale.html.twig', { levels: levels, key: 'breath' }, with_context = false) }}
+
+                <p>
+                    <strong>Séance en fractionné :</strong> note l'ensemble, récupérations comprises —
+                    en général un cran en dessous du plus dur des intervalles.
+                </p>
+
+                <p class="mb-0">
+                    <strong>En zones :</strong> UT2 → 3-4, UT1 → 5-6, AT → 7, TR → 8, AN → 9-10. Tes
+                    fréquences sont sur ta <a href="{{ path('sport_profile_physiology') }}">page
+                    Physiologie</a>.
+                </p>
+            </twig:Accordion:Item>
+
+            <twig:Accordion:Item
+                id="exertion-muscular"
+                title="Musculation, renfo, PPG"
+                parent="exertion-keys"
+            >
+                <p class="text-body-secondary">
+                    Le repère, c'est ce qu'il te restait dans les muscles — pas le souffle. On peut
+                    finir une série de squat au bord de l'échec sans être essoufflé.
+                </p>
+
+                {{ include('training/_exertion_help_scale.html.twig', { levels: levels, key: 'muscular' }, with_context = false) }}
+
+                <p>
+                    <strong>Gainage, renfo, PPG :</strong> lis « reps en réserve » comme « secondes de
+                    tenue en réserve ».
+                </p>
+
+                <twig:Alert tone="warning" icon :live="false">
+                    <strong>Ce n'est pas le RPE de série.</strong> En musculation, « RPE 9 » désigne
+                    souvent une série menée à une répétition de l'échec. Ici on note la séance entière :
+                    une séance dont la dernière série de squat était à « RPE 9 de série » est en général
+                    une séance à 7 ou 8.
+                </twig:Alert>
+
+                <p class="mb-0">
+                    <strong>La durée à saisir :</strong> de l'échauffement à la dernière série, pauses
+                    comprises.
+                </p>
+            </twig:Accordion:Item>
+        </twig:Accordion>
+
+    </twig:Modal:Content>
+</turbo-frame>
