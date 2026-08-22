@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\Factory\PhysicalQualitiesFactory;
 use App\Factory\PhysiologyFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -53,7 +52,6 @@ class HomepageControllerTest extends AppWebTestCase
     public function testIndexWithStats(): void
     {
         $user = UserFactory::createOne();
-        PhysicalQualitiesFactory::createOne(['user' => $user]);
         PhysiologyFactory::createOne(['user' => $user]);
         WorkoutMaximumLoadFactory::createOne(['user' => $user]);
         TrainingFactory::createMany(20, [

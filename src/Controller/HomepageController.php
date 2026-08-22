@@ -21,7 +21,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Chart\LogbookChart;
-use App\Chart\PhysicalQualitiesChart;
 use App\Chart\TrainingChart;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,12 +32,10 @@ class HomepageController extends AbstractController
     #[Route(path: '', name: 'homepage')]
     public function homepage(
         LogbookChart $logbookChart,
-        PhysicalQualitiesChart $physicalQualitiesChart,
         TrainingChart $trainingsChart,
     ): Response {
         return $this->render('homepage/homepage.html.twig', [
             'logbookChart' => $logbookChart->chart($this->getUser()),
-            'physicalQualitiesChart' => $physicalQualitiesChart->chart($this->getUser()),
             'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
         ]);
     }
