@@ -83,6 +83,28 @@ class AutomaticTrainingCreatorTest extends AppWebTestCase
         TrainingFactory::assert()->count(0);
     }
 
+    public function testNoTrainingIsCreatedForACoveredDistanceEqualToZero(): void
+    {
+        self::ensureKernelShutdown();
+        static::createClient();
+        $entityManager = self::getEntityManager();
+
+        $user = UserFactory::new(['automaticTraining' => true])->major()->create();
+
+        $logbookEntry = new LogbookEntry();
+        $logbookEntry
+            ->setShell(ShellFactory::createOne())
+            ->setEndAt(new \DateTime('+1 hour'))
+            ->setCoveredDistance(0)
+            ->addCrewMember($user)
+        ;
+
+        $entityManager->persist($logbookEntry);
+        $entityManager->flush();
+
+        TrainingFactory::assert()->count(0);
+    }
+
     public function testFinishingAnEntryCreatesTheTrainingExactlyOnce(): void
     {
         self::ensureKernelShutdown();
