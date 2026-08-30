@@ -89,6 +89,23 @@ class TrainingRepository extends ServiceEntityRepository
     /**
      * @return Training[]
      */
+    /**
+     * @return list<Training> oldest first
+     */
+    public function findRatedForUser(User $user, \DateTimeInterface $to): array
+    {
+        return $this->createQueryBuilder('training')
+            ->where('training.user = :user')
+            ->andWhere('training.ratedPerceivedExertion IS NOT NULL')
+            ->andWhere('training.trainedAt <= :to')
+            ->orderBy('training.trainedAt', 'ASC')
+            ->setParameter('user', $user)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findForUser(?User $user = null, ?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): array
     {
         $query = $this->createQueryBuilder('training')

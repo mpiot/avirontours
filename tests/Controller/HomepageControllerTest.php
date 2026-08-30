@@ -71,7 +71,7 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertStringNotContainsString('Répartition des sports', $crawler->text());
     }
 
-    public function testDashboardKpis(): void
+    public function testDashboardShowsAcuteLoadConditionFatigueAndFreshness(): void
     {
         $user = UserFactory::createOne();
         TrainingFactory::createOne([
@@ -107,11 +107,12 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertAnySelectorTextContains('dd', '02:30');
         $this->assertAnySelectorTextContains('dd', '18,0');
         $this->assertSelectorTextContains('body', "Charge d'entraînement");
-        // Acute 240 (4 × 60 min), chronic (240 + 120) / 4 = 90, ratio 2,67
+        // Acute 240 (4 × 60 min); condition 51 and fatigue 211 from 120 twenty days ago and 240 yesterday
         $this->assertAnySelectorTextContains('dd', '240');
-        $this->assertAnySelectorTextContains('dd', '90');
-        $this->assertAnySelectorTextContains('dd', '2,67');
-        $this->assertSelectorTextContains('body', 'Charge élevée');
+        $this->assertAnySelectorTextContains('dd', '51');
+        $this->assertAnySelectorTextContains('dd', '211');
+        $this->assertAnySelectorTextContains('dd', '-160');
+        $this->assertSelectorTextContains('body', '1 séance notée sur 2');
     }
 
     public function testDashboardLoadCardInvitesRatingWhenNothingIsRated(): void
@@ -131,7 +132,7 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('body', "Charge d'entraînement");
         $this->assertSelectorTextContains('body', "Notez l'effort de vos séances");
-        $this->assertSelectorTextNotContains('body', 'Ratio');
+        $this->assertSelectorTextNotContains('body', 'Condition');
     }
 
     public function testDashboardLoadExplainsAnUnratedWeekInsteadOfHidingIt(): void
@@ -158,8 +159,8 @@ class HomepageControllerTest extends AppWebTestCase
         $this->assertSelectorTextContains('body', "Charge d'entraînement");
         // Trained this week but nothing rated: the figures say why they are missing
         $this->assertAnySelectorTextContains('dd', 'aucune séance notée');
-        $this->assertAnySelectorTextContains('dd', 'non calculé');
-        $this->assertAnySelectorTextContains('dd', '60');
+        $this->assertAnySelectorTextContains('dd', '31');
+        $this->assertAnySelectorTextContains('dd', '51');
         $this->assertSelectorTextContains('body', "Notez l'effort de vos séances pour calculer les valeurs manquantes.");
     }
 
@@ -182,7 +183,7 @@ class HomepageControllerTest extends AppWebTestCase
         // A week off is a real zero, not a missing feature
         $this->assertSelectorTextContains('body', '7 derniers jours');
         $this->assertAnySelectorTextContains('dd', '0');
-        $this->assertSelectorTextContains('body', 'Charge allégée');
+        $this->assertSelectorTextContains('body', 'Fraîcheur');
     }
 
     public function testDashboardKpisHiddenForNewMember(): void

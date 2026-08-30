@@ -51,4 +51,23 @@ class MathHelper
 
         return $shares;
     }
+
+    /**
+     * Exponentially weighted moving average, one value out per value in, seeded at zero.
+     *
+     * @param list<int|float> $values oldest first
+     *
+     * @return list<float>
+     */
+    public static function ewma(array $values, int $timeConstant): array
+    {
+        $average = 0.0;
+        $averages = [];
+        foreach ($values as $value) {
+            $average += ($value - $average) / $timeConstant;
+            $averages[] = $average;
+        }
+
+        return $averages;
+    }
 }

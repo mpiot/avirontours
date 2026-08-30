@@ -28,8 +28,10 @@ use App\Util\MathHelper;
 
 readonly class TrainingHelper
 {
-    public function __construct(private TrainingRepository $trainingRepository)
-    {
+    public function __construct(
+        private TrainingRepository $trainingRepository,
+        private TrainingLoadModel $trainingLoadModel,
+    ) {
     }
 
     public function getTrainingsSummary(User $user, \DateTimeInterface $startAt, \DateTimeInterface $endAt): array
@@ -133,35 +135,28 @@ readonly class TrainingHelper
         }
 
         $acuteLoads = [];
-        $chronicLoads = [];
-        foreach ($trainings as $training) {
+        foreach ($acuteTrainings as $training) {
             $load = $training->getTrainingLoad();
-            if (null === $load) {
-                continue;
-            }
-
-            $chronicLoads[] = $load;
-            if ($training->getTrainedAt() >= $acuteFrom) {
+            if (null !== $load) {
                 $acuteLoads[] = $load;
             }
         }
 
         // A window without any session is a real zero; one trained but never rated is unknown.
         $acute = [] !== $acuteLoads ? array_sum($acuteLoads) : ([] === $acuteTrainings ? 0 : null);
-        $chronic = [] !== $chronicLoads ? array_sum($chronicLoads) / 4.0 : null;
-        $ratio = null !== $acute && null !== $chronic && $chronic > 0 ? $acute / $chronic : null;
 
-        // Coupled acute:chronic workload ratio (Gabbett): 0.8–1.3 is the usual training zone.
-        $zone = null === $ratio ? null : match (true) {
-            $ratio < 0.8 => 'Charge allégée',
-            $ratio <= 1.3 => 'Zone habituelle',
-            default => 'Charge élevée',
-        };
+        $state = $this->trainingLoadModel->daily($user, $today)[$today->format('Y-m-d')] ?? null;
 
         return [
             'hasRecentTrainings' => [] !== $trainings,
             'volumes' => $volumes,
-            'load' => ['acute' => $acute, 'chronic' => $chronic, 'ratio' => $ratio, 'zone' => $zone],
+            'load' => [
+                'acute' => $acute,
+                'rated' => \count($acuteLoads),
+                'fitness' => $state['fitness'] ?? null,
+                'fatigue' => $state['fatigue'] ?? null,
+                'form' => null !== $state ? $state['fitness'] - $state['fatigue'] : null,
+            ],
         ];
     }
 }
