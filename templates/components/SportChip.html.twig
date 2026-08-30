@@ -1,7 +1,7 @@
 {#
- # A sport said in one breath: its colour, its icon, its name.
+ # A sport said in one breath: the colour of its specificity, its icon, its name.
  #
- # The colour reaches the stylesheet as `--sport-color` rather than as a `background:` written
+ # The colour reaches the stylesheet as `--specificity-color` rather than as a `background:` written
  # inline, so `components/_sport-chip.scss` keeps every declaration and the template carries only
  # the value — the one thing SCSS cannot know.
  #
@@ -13,7 +13,7 @@
  #}
 {% props sport, labelled = true %}
 
-<span {{ attributes.defaults({ class: 'app-sport-chip', style: "--sport-color: #{sport.color}" }) }}>
+<span {{ attributes.defaults({ class: 'app-sport-chip', style: "--specificity-color: #{sport.specificity.color}" }) }}>
     <span class="app-sport-chip-icon" aria-hidden="true">
         {{- include('_sport_icon.html.twig', { sport: sport.value }, with_context = false) -}}
     </span>

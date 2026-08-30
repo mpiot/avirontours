@@ -1,8 +1,9 @@
 // ↔ templates/components/SportChip.html.twig, and `.app-sport-chip-icon` alone in
 // templates/form/_training.html.twig, where a sport is picked before it is shown.
 //
-// The colour arrives on the element as `--sport-color`, the one name it goes by — the week legend
-// of pages/_training.scss and the sport picker of components/_form.scss set it too.
+// The colour — the sport's specificity, not the sport — arrives on the element as
+// `--specificity-color`, the one name it goes by: the week legend of pages/_training.scss and the
+// sport picker of components/_form.scss set it too.
 .app-sport-chip {
     display: inline-flex;
     align-items: center;
@@ -18,7 +19,7 @@
     width: 2rem;
     height: 2rem;
     border-radius: $border-radius;
-    background-color: var(--sport-color);
+    background-color: var(--specificity-color);
     color: $white;
     font-size: 1.125rem;
 }

@@ -20,9 +20,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Chart\LogbookChart;
-use App\Chart\TrainingChart;
 use App\Chart\TrainingLoadChart;
+use App\Chart\TrainingVolumeChart;
 use App\Service\TrainingHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -33,16 +32,14 @@ class HomepageController extends AbstractController
 {
     #[Route(path: '', name: 'homepage')]
     public function homepage(
-        LogbookChart $logbookChart,
-        TrainingChart $trainingsChart,
         TrainingLoadChart $trainingLoadChart,
+        TrainingVolumeChart $trainingVolumeChart,
         TrainingHelper $trainingHelper,
     ): Response {
         return $this->render('homepage/homepage.html.twig', [
             'kpis' => $trainingHelper->getDashboardKpis($this->getUser()),
             'trainingLoadChart' => $trainingLoadChart->weekly($this->getUser()),
-            'logbookChart' => $logbookChart->chart($this->getUser()),
-            'trainingsSportsChart' => $trainingsChart->sports($this->getUser()),
+            'trainingVolumeChart' => $trainingVolumeChart->monthly($this->getUser()),
         ]);
     }
 

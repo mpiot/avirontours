@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Enum;
 
+use App\Enum\SportSpecificity;
 use App\Enum\SportType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,17 @@ class SportTypeTest extends TestCase
     public function testFormatSpeedNeedADurationAndADistance(SportType $sport, ?int $duration, ?int $distance): void
     {
         self::assertNull($sport->formatSpeed($duration, $distance));
+    }
+
+    #[DataProvider('provideSpecificities')]
+    public function testSportsSpecificities(SportType $sport, SportSpecificity $specificity): void
+    {
+        self::assertSame($specificity, $sport->specificity());
+    }
+
+    public function testEverySportHasItsSpecificityTested(): void
+    {
+        self::assertCount(\count(SportType::cases()), iterator_to_array(self::provideSpecificities()));
     }
 
     public static function provideSpeeds(): iterable
@@ -71,6 +83,20 @@ class SportTypeTest extends TestCase
         yield 'swimming' => [SportType::Swimming, false];
         yield 'weight training' => [SportType::WeightTraining, false];
         yield 'yoga' => [SportType::Yoga, false];
+    }
+
+    public static function provideSpecificities(): iterable
+    {
+        yield 'cycling' => [SportType::Cycling, SportSpecificity::NonSpecific];
+        yield 'ergometer' => [SportType::Ergometer, SportSpecificity::SemiSpecific];
+        yield 'general physical preparation' => [SportType::GeneralPhysicalPreparation, SportSpecificity::NonSpecific];
+        yield 'other' => [SportType::Other, SportSpecificity::NonSpecific];
+        yield 'rowing' => [SportType::Rowing, SportSpecificity::Specific];
+        yield 'running' => [SportType::Running, SportSpecificity::NonSpecific];
+        yield 'strengthening' => [SportType::Strengthening, SportSpecificity::NonSpecific];
+        yield 'swimming' => [SportType::Swimming, SportSpecificity::NonSpecific];
+        yield 'weight training' => [SportType::WeightTraining, SportSpecificity::NonSpecific];
+        yield 'yoga' => [SportType::Yoga, SportSpecificity::NonSpecific];
     }
 
     public static function provideIncompleteSpeedData(): iterable

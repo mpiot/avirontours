@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Chart\TrainingChart;
+use App\Chart\TrainingVolumeChart;
 use App\Controller\AbstractController;
 use App\Entity\Training;
 use App\Entity\User;
@@ -64,12 +64,12 @@ class TrainingController extends AbstractController
         Request $request,
         #[MapEntity(mapping: ['user_id' => 'id'])] User $user,
         TrainingRepository $trainingRepository,
-        TrainingChart $trainingsChart,
+        TrainingVolumeChart $trainingVolumeChart,
     ): Response {
         return $this->render('admin/training/list.html.twig', [
             'user' => $user,
             'trainings' => $trainingRepository->findUserPaginated($user, $request->query->getInt('page', 1)),
-            'trainingsSportsChart' => $trainingsChart->sports($user),
+            'trainingVolumeChart' => $trainingVolumeChart->monthly($user),
         ]);
     }
 

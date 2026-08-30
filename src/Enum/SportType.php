@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-use App\Chart\ChartPalette;
 use App\Util\DurationManipulator;
 
 enum SportType: string
@@ -53,19 +52,12 @@ enum SportType: string
         };
     }
 
-    public function color(): string
+    public function specificity(): SportSpecificity
     {
         return match ($this) {
-            self::Rowing => ChartPalette::INDIGO,
-            self::Running => ChartPalette::ORANGE,
-            self::Ergometer => ChartPalette::TEAL,
-            self::Strengthening => ChartPalette::AMBER,
-            self::WeightTraining => ChartPalette::ROSE,
-            self::Swimming => ChartPalette::SKY,
-            self::GeneralPhysicalPreparation => ChartPalette::FUCHSIA,
-            self::Cycling => ChartPalette::LIME,
-            self::Yoga => ChartPalette::GREEN,
-            self::Other => ChartPalette::SLATE,
+            self::Rowing => SportSpecificity::Specific,
+            self::Ergometer => SportSpecificity::SemiSpecific,
+            self::Cycling, self::WeightTraining, self::Strengthening, self::GeneralPhysicalPreparation, self::Running, self::Swimming, self::Yoga, self::Other => SportSpecificity::NonSpecific,
         };
     }
 

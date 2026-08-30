@@ -162,8 +162,8 @@ legend.required ~ div .form-check-label.required::after {
     }
 
     input:checked + & {
-        border-color: var(--sport-color);
-        box-shadow: inset 0 0 0 1px var(--sport-color);
+        border-color: var(--specificity-color);
+        box-shadow: inset 0 0 0 1px var(--specificity-color);
     }
 }
 

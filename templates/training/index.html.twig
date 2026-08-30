@@ -186,25 +186,25 @@
                                     </p>
 
                                     <twig:Progress:Stacked>
-                                        {% for sportSummary in weekData.summary.sports %}
+                                        {% for specificitySummary in weekData.summary.specificities %}
                                             <twig:Progress:Segment
-                                                :label="sportSummary.sport.label"
-                                                :value="sportSummary.share"
-                                                :color="sportSummary.sport.color"
+                                                :label="specificitySummary.specificity.label"
+                                                :value="specificitySummary.share"
+                                                :color="specificitySummary.specificity.color"
                                             />
                                         {% endfor %}
                                     </twig:Progress:Stacked>
 
                                     <ul class="app-training-legend">
-                                        {% for sportSummary in weekData.summary.sports %}
-                                            <li style="--sport-color: {{ sportSummary.sport.color }}">
-                                                <span class="app-training-legend-sport">{{ sportSummary.sport.label }}</span>
+                                        {% for specificitySummary in weekData.summary.specificities %}
+                                            <li style="--specificity-color: {{ specificitySummary.specificity.color }}">
+                                                <span class="app-training-legend-category">{{ specificitySummary.specificity.label }}</span>
 
                                                 <span class="text-body-secondary">
-                                                    {{- sportSummary.sessions }} {{ 'séance|séances'|trans({'%count%': sportSummary.sessions}) }}
-                                                    &middot;&nbsp;{{ sportSummary.duration|format_seconds_as_hours_minutes }}
-                                                    {%- if sportSummary.distance is not same as(0) %}
-                                                        &middot;&nbsp;{{ (sportSummary.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km
+                                                    {{- specificitySummary.sessions }} {{ 'séance|séances'|trans({'%count%': specificitySummary.sessions}) }}
+                                                    &middot;&nbsp;{{ specificitySummary.duration|format_seconds_as_hours_minutes }}
+                                                    {%- if specificitySummary.distance is not same as(0) %}
+                                                        &middot;&nbsp;{{ (specificitySummary.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km
                                                     {%- endif -%}
                                                 </span>
                                             </li>

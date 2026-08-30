@@ -25,7 +25,7 @@ use App\Util\DurationManipulator;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-final class TrainingPhaseCharts
+final readonly class TrainingPhaseCharts
 {
     public function __construct(private ChartBuilderInterface $chartBuilder)
     {
@@ -57,7 +57,7 @@ final class TrainingPhaseCharts
                     static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10),
                     $trainingPhase->getPaces()
                 ),
-                'color' => ChartPalette::INDIGO,
+                'color' => '#4f46e5',
                 'average' => null === $trainingPhase->getPace() ? null : $trainingPhase->getPace() / 10,
                 'yScale' => ['min' => 60, 'reverse' => true, 'ticks' => ['precision' => 0]],
             ],
@@ -65,7 +65,7 @@ final class TrainingPhaseCharts
                 'title' => 'Cadence',
                 'unit' => 'spm',
                 'data' => $trainingPhase->getStrokeRates(),
-                'color' => ChartPalette::SLATE,
+                'color' => '#475569',
                 'average' => $trainingPhase->getStrokeRate(),
                 'yScale' => ['ticks' => ['precision' => 0, 'stepSize' => 10]],
             ],
@@ -76,7 +76,7 @@ final class TrainingPhaseCharts
                 'title' => 'Fréquence cardiaque',
                 'unit' => 'bpm',
                 'data' => $trainingPhase->getHeartRates(),
-                'color' => ChartPalette::ROSE,
+                'color' => '#be123c',
                 'average' => $trainingPhase->getAverageHeartRate(),
                 'yScale' => ['min' => 40, 'ticks' => ['precision' => 0, 'stepSize' => 25]],
             ];

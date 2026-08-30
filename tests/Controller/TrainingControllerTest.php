@@ -139,6 +139,29 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Effort perçu non renseigné', $this->sessionText($crawler, 'Yoga'));
     }
 
+    public function testIndexSplitsTheWeekBySpecificity(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $monday = new \DateTime('monday this week');
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 36000, 'trainedAt' => $monday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Cycling, 'duration' => 18000, 'trainedAt' => $monday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Yoga, 'duration' => 18000, 'trainedAt' => $monday]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training');
+
+        $this->assertResponseIsSuccessful();
+
+        $legend = $crawler->filter('.app-training-legend')->first()->filter('li')->each(static fn (Crawler $item): string => $item->text());
+
+        $this->assertCount(2, $legend);
+        $this->assertStringContainsString('Spécifique 1 séance', $legend[0]);
+        $this->assertStringContainsString('Non-spécifique 2 séances', $legend[1]);
+    }
+
     #[DataProvider('endAtProvider')]
     public function testIndexTrainingsAcceptsEndAtQuery(string $endAt): void
     {
