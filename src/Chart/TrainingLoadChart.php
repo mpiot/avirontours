@@ -60,8 +60,8 @@ final readonly class TrainingLoadChart
             return null;
         }
 
-        $colors = array_fill(0, 7, ChartPalette::translucent(ChartPalette::INDIGO));
-        $colors[] = ChartPalette::INDIGO;
+        $colors = array_fill(0, 7, 'rgba(22, 25, 131, 0.6)');
+        $colors[] = '#161983';
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
         $chart->setData([

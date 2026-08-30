@@ -11,14 +11,14 @@
 {% block page_title %}Mes entraînements de {{ user.fullname }}{% endblock %}
 
 {% block body %}
-    {% if trainingsSportsChart is not null %}
+    {% if trainingVolumeChart is not null %}
         <twig:Card elevated class="mb-3">
             <twig:Card:Body>
                 <div class="row">
                     <div class="col-12 col-xl-6">
-                        <h2 class="fs-5">Répartition des sports</h2>
+                        <h2 class="fs-5">Volume d'entraînement</h2>
                         <div class="app-chart">
-                            {{ render_chart(trainingsSportsChart, { 'role': 'img', 'aria-label': 'Répartition des sports' }) }}
+                            {{ render_chart(trainingVolumeChart, { 'role': 'img', 'aria-label': "Volume mensuel d'entraînement par spécificité" }) }}
                         </div>
                     </div>
                 </div>

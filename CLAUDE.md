@@ -99,7 +99,9 @@ Trainings can be imported from Concept2 (`log.concept2.com`): OAuth via `src/OAu
 The history was not rewritten: 1 112 rows still carry that automatic middle and are indistinguishable from a deliberate "Moyen", so `templates/admin/training/index.html.twig` averages **only the sessions that were answered** — filter on `feeling is not null` before reducing, and a member who answered none has no gauge rather than a zero.
 
 ### Other services worth knowing
-`src/Service/`: `FileUploader` (uploads via oneup/flysystem-bundle), `PdfGenerator` (uses Puppeteer via `bin/html-print.mjs`), `SeasonCsvGenerator`, `TrainingCalculator`/`TrainingHelper`, `ShellAbbreviationGenerator`. Charts in `src/Chart/` (symfony/ux-chartjs). Twig extension in `src/Twig/Extension/`.
+`src/Service/`: `FileUploader` (uploads via oneup/flysystem-bundle), `PdfGenerator` (uses Puppeteer via `bin/html-print.mjs`), `SeasonCsvGenerator`, `TrainingHelper`, `ShellAbbreviationGenerator`. Charts in `src/Chart/` (symfony/ux-chartjs). Twig extension in `src/Twig/Extension/`.
+
+Sports carry no colour of their own: `SportType::specificity()` maps each case to `App\Enum\SportSpecificity` (Spécifique = Aviron, Semi-spécifique = Ergomètre, Non-spécifique = everything else), and that enum holds the label and the colour the chips, the sport picker, the weekly bar and `TrainingVolumeChart` use. A new sport (FIT import, Polar, Garmin…) needs a `match` arm there and nothing else — the palette is three fixed, validated colours.
 
 ### Frontend: layouts, Twig components, SCSS
 The UI is Bootstrap 5 under a small design system with three layers:

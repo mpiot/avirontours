@@ -22,6 +22,7 @@ namespace App\Tests\Service;
 
 use App\Entity\User;
 use App\Enum\RatedPerceivedExertion;
+use App\Enum\SportSpecificity;
 use App\Enum\SportType;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -45,9 +46,9 @@ class TrainingHelperTest extends KernelTestCase
             'trainedAt' => new \DateTime('wednesday this week'),
         ]);
 
-        $sports = $this->currentWeekSports($user);
+        $specificities = $this->currentWeekSpecificities($user);
 
-        self::assertSame(0, $sports[0]['share']);
+        self::assertSame(0, $specificities[0]['share']);
     }
 
     public function testSummarySharesSumToOneHundred(): void
@@ -57,10 +58,26 @@ class TrainingHelperTest extends KernelTestCase
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 15, 'trainedAt' => $wednesday]);
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Running, 'duration' => 25, 'trainedAt' => $wednesday]);
 
-        $shares = array_column($this->currentWeekSports($user), 'share');
+        $shares = array_column($this->currentWeekSpecificities($user), 'share');
 
         self::assertSame(100, array_sum($shares));
         self::assertSame([40, 60], $shares);
+    }
+
+    public function testSummaryMergesTheSportsOfOneSpecificityInEnumOrder(): void
+    {
+        $user = UserFactory::createOne();
+        $wednesday = new \DateTime('wednesday this week');
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Cycling, 'duration' => 18000, 'distance' => 20000, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Running, 'duration' => 9000, 'distance' => 5000, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 9000, 'distance' => 10000, 'trainedAt' => $wednesday]);
+
+        $specificities = $this->currentWeekSpecificities($user);
+
+        self::assertSame([SportSpecificity::Specific, SportSpecificity::NonSpecific], array_column($specificities, 'specificity'));
+        self::assertSame(2, $specificities[1]['sessions']);
+        self::assertSame(2700, $specificities[1]['duration']);
+        self::assertSame(25000, $specificities[1]['distance']);
     }
 
     public function testSummarySharesSumToOneHundredForThreeThirds(): void
@@ -68,10 +85,10 @@ class TrainingHelperTest extends KernelTestCase
         $user = UserFactory::createOne();
         $wednesday = new \DateTime('wednesday this week');
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'duration' => 100, 'trainedAt' => $wednesday]);
-        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Running, 'duration' => 100, 'trainedAt' => $wednesday]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Ergometer, 'duration' => 100, 'trainedAt' => $wednesday]);
         TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Cycling, 'duration' => 100, 'trainedAt' => $wednesday]);
 
-        $shares = array_column($this->currentWeekSports($user), 'share');
+        $shares = array_column($this->currentWeekSpecificities($user), 'share');
 
         self::assertSame(100, array_sum($shares));
         self::assertSame([34, 33, 33], $shares);
@@ -201,11 +218,11 @@ class TrainingHelperTest extends KernelTestCase
     }
 
     /**
-     * @return list<array{sport: SportType, sessions: int, duration: int, distance: int, share: int}>
+     * @return list<array{specificity: SportSpecificity, sessions: int, duration: int, distance: int, share: int}>
      */
-    private function currentWeekSports(User $user): array
+    private function currentWeekSpecificities(User $user): array
     {
-        return $this->currentWeekSummary($user)['sports'];
+        return $this->currentWeekSummary($user)['specificities'];
     }
 
     private function dashboardKpis(User $user): array
@@ -222,7 +239,7 @@ class TrainingHelperTest extends KernelTestCase
         );
 
         foreach ($summary as $week) {
-            if ([] !== $week['summary']['sports']) {
+            if ([] !== $week['summary']['specificities']) {
                 return $week['summary'];
             }
         }

@@ -22,16 +22,14 @@ namespace App\Service;
 
 use App\Entity\Training;
 use App\Entity\User;
+use App\Enum\SportSpecificity;
 use App\Repository\TrainingRepository;
 use App\Util\MathHelper;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class TrainingHelper
 {
-    public function __construct(
-        private TrainingRepository $trainingRepository,
-        private TranslatorInterface $translator,
-    ) {
+    public function __construct(private TrainingRepository $trainingRepository)
+    {
     }
 
     public function getTrainingsSummary(User $user, \DateTimeInterface $startAt, \DateTimeInterface $endAt): array
@@ -52,28 +50,30 @@ readonly class TrainingHelper
                 static fn (Training $training): bool => $week->format('W') === $training->getTrainedAt()->format('W'),
             );
 
-            // Group trainings per category of sport
+            // Group trainings per specificity, seeded in enum order: that order is the colour scale.
             $categorizedTrainings = [];
-            foreach ($weekTrainings as $training) {
-                if (false === \array_key_exists($training->getSport()->value, $categorizedTrainings)) {
-                    $categorizedTrainings[$training->getSport()->value] = [
-                        'sport' => $training->getSport(),
-                        'sessions' => 0,
-                        'duration' => 0,
-                        'distance' => 0,
-                        'share' => 0,
-                    ];
-                }
-
-                ++$categorizedTrainings[$training->getSport()->value]['sessions'];
-                $categorizedTrainings[$training->getSport()->value]['duration'] += (int) round($training->getDuration() / 10);
-                $categorizedTrainings[$training->getSport()->value]['distance'] += $training->getDistance();
+            foreach (SportSpecificity::cases() as $specificity) {
+                $categorizedTrainings[$specificity->value] = [
+                    'specificity' => $specificity,
+                    'sessions' => 0,
+                    'duration' => 0,
+                    'distance' => 0,
+                    'share' => 0,
+                ];
             }
 
-            usort(
+            foreach ($weekTrainings as $training) {
+                $specificity = $training->getSport()->specificity()->value;
+                ++$categorizedTrainings[$specificity]['sessions'];
+                $categorizedTrainings[$specificity]['duration'] += (int) round($training->getDuration() / 10);
+                $categorizedTrainings[$specificity]['distance'] += $training->getDistance() ?? 0;
+            }
+
+            // Only the specificities practised: a segment at zero has no width to show.
+            $categorizedTrainings = array_values(array_filter(
                 $categorizedTrainings,
-                fn (array $a, array $b): int => $this->translator->trans($a['sport']->label()) <=> $this->translator->trans($b['sport']->label())
-            );
+                static fn (array $categorizedTraining): bool => $categorizedTraining['sessions'] > 0,
+            ));
 
             // Calculate total duration
             $duration = array_sum(array_column($categorizedTrainings, 'duration'));
@@ -105,7 +105,7 @@ readonly class TrainingHelper
                 'summary' => [
                     'sessions' => \count($weekTrainings),
                     'duration' => $duration,
-                    'sports' => $categorizedTrainings,
+                    'specificities' => $categorizedTrainings,
                     'load' => $load,
                 ],
             ];

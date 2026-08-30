@@ -63,9 +63,12 @@ class HomepageControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString("Volume d'entraînement", $crawler->text());
+        $this->assertStringNotContainsString('Mes sorties', $crawler->text());
+        $this->assertStringNotContainsString('Répartition des sports', $crawler->text());
     }
 
     public function testDashboardKpis(): void

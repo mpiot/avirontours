@@ -12,8 +12,7 @@
 {% block body %}
     {% set has_anything = kpis.hasRecentTrainings
         or trainingLoadChart is not null
-        or logbookChart is not null
-        or trainingsSportsChart is not null
+        or trainingVolumeChart is not null
         or app.user.physiology is not null
     %}
 
@@ -98,26 +97,13 @@
             </div>
         {% endif %}
 
-        {% if logbookChart is not null %}
+        {% if trainingVolumeChart is not null %}
             <div class="col-12 col-xl-6">
                 <twig:Card elevated class="h-100">
                     <twig:Card:Body>
-                        <h2 class="fs-5">Mes sorties</h2>
+                        <h2 class="fs-5">Volume d'entraînement</h2>
                         <div class="app-chart">
-                            {{ render_chart(logbookChart, { 'role': 'img', 'aria-label': 'Mes sorties' }) }}
-                        </div>
-                    </twig:Card:Body>
-                </twig:Card>
-            </div>
-        {% endif %}
-
-        {% if trainingsSportsChart is not null %}
-            <div class="col-12 col-xl-6">
-                <twig:Card elevated class="h-100">
-                    <twig:Card:Body>
-                        <h2 class="fs-5">Répartition des sports</h2>
-                        <div class="app-chart">
-                            {{ render_chart(trainingsSportsChart, { 'role': 'img', 'aria-label': 'Répartition des sports' }) }}
+                            {{ render_chart(trainingVolumeChart, { 'role': 'img', 'aria-label': "Volume mensuel d'entraînement par spécificité" }) }}
                         </div>
                     </twig:Card:Body>
                 </twig:Card>
@@ -157,6 +143,6 @@
     </div>
 
     {% if not has_anything %}
-        <twig:EmptyState text="Rien à afficher pour l'instant&nbsp;: vos sorties, vos entraînements et votre profil sportif apparaîtront ici." />
+        <twig:EmptyState text="Rien à afficher pour l'instant&nbsp;: vos entraînements, votre charge et votre profil sportif apparaîtront ici." />
     {% endif %}
 {% endblock %}

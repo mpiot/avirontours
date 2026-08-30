@@ -45,7 +45,7 @@
                 <input type="radio" {{ block('widget_attributes') }} value="{{ value }}"{% if checked %} checked="checked"{% endif %}>
             {% endwith %}
 
-            <label class="app-sport-option" for="{{ child.vars.id }}" style="--sport-color: {{ sport.color }}">
+            <label class="app-sport-option" for="{{ child.vars.id }}" style="--specificity-color: {{ sport.specificity.color }}">
                 <span class="app-sport-chip-icon" aria-hidden="true">
                     {{- include('_sport_icon.html.twig', { sport: sport.value }, with_context = false) -}}
                 </span>

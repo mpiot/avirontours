@@ -5,20 +5,24 @@
         <h3 class="app-chart-phase-title">Phase {{ activePhaseNumber }}</h3>
     {% endif %}
 
-    {% for panel in charts %}
-        <div class="app-chart-panel">
-            <p class="app-chart-panel-title">{{ panel.title }}</p>
-
-            {{ render_chart(panel.chart, {
-                'data-controller': 'ergometer-chart',
-                'data-ergometer-chart-unit-value': panel.unit,
-                'role': 'img',
-                'aria-label': "#{panel.title} au fil de la phase #{activePhaseNumber}",
-            }) }}
-        </div>
-    {% else %}
+    {% if charts is empty %}
         <twig:EmptyState text="Pas de données" />
-    {% endfor %}
+    {% else %}
+        <div class="app-charts">
+            {% for chart in charts %}
+                <div class="app-chart">
+                    <p class="app-chart-title">{{ chart.title }}</p>
+
+                    {{ render_chart(chart.chart, {
+                        'data-controller': 'ergometer-chart',
+                        'data-ergometer-chart-unit-value': chart.unit,
+                        'role': 'img',
+                        'aria-label': "#{chart.title} au fil de la phase #{activePhaseNumber}",
+                    }) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     {% if training.trainingPhases|length > 1 %}
         <twig:Table class="mt-3">

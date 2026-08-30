@@ -18,17 +18,29 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Service;
+namespace App\Enum;
 
-class TrainingCalculator
+enum SportSpecificity: string
 {
-    public static function getDuration(iterable $trainings): int
-    {
-        $totalDuration = 0;
-        foreach ($trainings as $training) {
-            $totalDuration += $training->getDuration();
-        }
+    case Specific = 'specific';
+    case SemiSpecific = 'semi_specific';
+    case NonSpecific = 'non_specific';
 
-        return $totalDuration;
+    public function label(): string
+    {
+        return match ($this) {
+            self::Specific => 'Spécifique',
+            self::SemiSpecific => 'Semi-spécifique',
+            self::NonSpecific => 'Non-spécifique',
+        };
+    }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Specific => '#2a78d6',
+            self::SemiSpecific => '#4a3aa7',
+            self::NonSpecific => '#eb6834',
+        };
     }
 }

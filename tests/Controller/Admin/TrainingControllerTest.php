@@ -124,6 +124,7 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', '/admin/training/'.$user->getId());
 
         $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h2', "Volume d'entraînement");
         $this->assertCount(6, $crawler->filter('.app-table > tbody > tr'));
     }
 
