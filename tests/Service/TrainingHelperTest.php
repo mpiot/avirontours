@@ -150,36 +150,48 @@ class TrainingHelperTest extends KernelTestCase
         self::assertSame(0, $kpis['volumes']['sessions']);
     }
 
-    public function testDashboardLoadRatioComparesAcuteAndChronicWindows(): void
+    public function testDashboardASingleSessionTodayIsAllFatigueAndOneFortySecondOfCondition(): void
     {
         $user = UserFactory::createOne();
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::Easy]);
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('today'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
 
         $load = $this->dashboardKpis($user)['load'];
 
+        // 240 of load: all of it is fatigue (7-day constant, ×7), 240/42 × 7 of it condition.
         self::assertSame(240, $load['acute']);
-        self::assertSame(90.0, $load['chronic']);
-        self::assertEqualsWithDelta(2.67, $load['ratio'], 0.01);
-        self::assertSame('Charge élevée', $load['zone']);
+        self::assertSame(1, $load['rated']);
+        self::assertEqualsWithDelta(40.0, $load['fitness'], 0.01);
+        self::assertEqualsWithDelta(240.0, $load['fatigue'], 0.01);
+        self::assertEqualsWithDelta(-200.0, $load['form'], 0.01);
     }
 
-    public function testDashboardLoadZoneIsUsualWhenAcuteMatchesChronic(): void
+    public function testDashboardConditionSurvivesTwoWeeksOffWhileFatigueFades(): void
     {
         $user = UserFactory::createOne();
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-8 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-15 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-22 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+        TrainingFactory::createMany(42, static fn (int $i): array => ['user' => $user, 'trainedAt' => new \DateTime(\sprintf('-%d days', 13 + $i)), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
 
         $load = $this->dashboardKpis($user)['load'];
 
-        self::assertSame(240, $load['acute']);
-        self::assertSame(1.0, $load['ratio']);
-        self::assertSame('Zone habituelle', $load['zone']);
+        // Six weeks of daily 240 then fourteen days off: condition keeps (41/42)^14 ≈ 71 % of what it
+        // had built, fatigue (6/7)^14 ≈ 12 %, so the member reads as rested rather than untrained.
+        self::assertSame(0, $load['acute']);
+        self::assertEqualsWithDelta(763.17, $load['fitness'], 0.01);
+        self::assertEqualsWithDelta(193.81, $load['fatigue'], 0.01);
+        self::assertEqualsWithDelta(569.36, $load['form'], 0.01);
     }
 
-    public function testDashboardLoadRestWeekIsARealZeroNotAnUnknown(): void
+    public function testDashboardConditionCountsSessionsOlderThanFourWeeks(): void
+    {
+        $user = UserFactory::createOne();
+        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-60 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
+
+        $kpis = $this->dashboardKpis($user);
+
+        self::assertFalse($kpis['hasRecentTrainings']);
+        self::assertGreaterThan(0, $kpis['load']['fitness']);
+    }
+
+    public function testDashboardAcuteLoadIsZeroAfterAWeekWithoutAnySession(): void
     {
         $user = UserFactory::createOne();
         TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard]);
@@ -187,11 +199,10 @@ class TrainingHelperTest extends KernelTestCase
         $load = $this->dashboardKpis($user)['load'];
 
         self::assertSame(0, $load['acute']);
-        self::assertSame(0.0, $load['ratio']);
-        self::assertSame('Charge allégée', $load['zone']);
+        self::assertGreaterThan(0, $load['fitness']);
     }
 
-    public function testDashboardLoadIsUnknownWhenTheWeekWasTrainedButNeverRated(): void
+    public function testDashboardAcuteLoadIsUnknownWhenTheWeekSessionsWereNotRated(): void
     {
         $user = UserFactory::createOne();
         TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'ratedPerceivedExertion' => null]);
@@ -200,11 +211,11 @@ class TrainingHelperTest extends KernelTestCase
         $load = $this->dashboardKpis($user)['load'];
 
         self::assertNull($load['acute']);
-        self::assertNull($load['ratio']);
-        self::assertNull($load['zone']);
+        self::assertSame(0, $load['rated']);
+        self::assertGreaterThan(0, $load['fitness']);
     }
 
-    public function testDashboardLoadIsNullWhenNoSessionWasRated(): void
+    public function testDashboardLoadIsUnknownWhenNoSessionWasEverRated(): void
     {
         $user = UserFactory::createOne();
         TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'ratedPerceivedExertion' => null]);
@@ -212,9 +223,9 @@ class TrainingHelperTest extends KernelTestCase
         $load = $this->dashboardKpis($user)['load'];
 
         self::assertNull($load['acute']);
-        self::assertNull($load['chronic']);
-        self::assertNull($load['ratio']);
-        self::assertNull($load['zone']);
+        self::assertNull($load['fitness']);
+        self::assertNull($load['fatigue']);
+        self::assertNull($load['form']);
     }
 
     /**

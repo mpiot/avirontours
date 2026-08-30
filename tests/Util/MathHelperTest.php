@@ -44,6 +44,29 @@ class MathHelperTest extends TestCase
         );
     }
 
+    public function testEwmaFirstValueIsWeightedByOneOverTheTimeConstant(): void
+    {
+        self::assertEqualsWithDelta(100 / 42, MathHelper::ewma([100], 42)[0], 0.0001);
+    }
+
+    public function testEwmaConvergesToAConstantSeries(): void
+    {
+        self::assertEqualsWithDelta(50.0, array_last(MathHelper::ewma(array_fill(0, 400, 50), 42)), 0.01);
+    }
+
+    public function testEwmaDecaysByOneOverTheTimeConstantOnEachZero(): void
+    {
+        $averages = MathHelper::ewma([100, 0, 0], 7);
+
+        self::assertEqualsWithDelta($averages[0] * 6 / 7, $averages[1], 0.0001);
+        self::assertEqualsWithDelta($averages[1] * 6 / 7, $averages[2], 0.0001);
+    }
+
+    public function testEwmaOfAnEmptySeriesIsEmpty(): void
+    {
+        self::assertSame([], MathHelper::ewma([], 42));
+    }
+
     public static function provideShares(): \Generator
     {
         yield 'thirds do not divide' => [[10, 10, 10], [34, 33, 33]];

@@ -21,42 +21,49 @@ declare(strict_types=1);
 namespace App\Chart;
 
 use App\Entity\User;
-use App\Repository\TrainingRepository;
+use App\Service\TrainingLoadModel;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
+/**
+ * Eight weeks of Foster load, under the fitness and fatigue the member carries into each of them.
+ */
 final readonly class TrainingLoadChart
 {
     public function __construct(
-        private TrainingRepository $trainingRepository,
+        private TrainingLoadModel $trainingLoadModel,
         private ChartBuilderInterface $chartBuilder,
     ) {
     }
 
     public function weekly(User $user): ?Chart
     {
+        $today = new \DateTimeImmutable('today');
         $monday = new \DateTimeImmutable('monday this week');
-        $from = $monday->modify('-7 weeks');
-        $to = $monday->modify('+6 days')->setTime(23, 59);
+        $states = $this->trainingLoadModel->daily($user, $today);
 
-        $weeks = [];
+        $labels = [];
+        $loads = [];
+        $fitness = [];
+        $fatigue = [];
         for ($i = 7; $i >= 0; --$i) {
             $weekStart = $monday->modify("-{$i} weeks");
-            $weeks[$weekStart->format('o-W')] = ['label' => "S{$weekStart->format('W')}", 'load' => 0];
-        }
 
-        $rated = false;
-        foreach ($this->trainingRepository->findForUser($user, $from, $to) as $training) {
-            $load = $training->getTrainingLoad();
-            if (null === $load) {
-                continue;
+            $load = 0;
+            for ($day = 0; $day < 7; ++$day) {
+                $load += $states[$weekStart->modify("+{$day} days")->format('Y-m-d')]['load'] ?? 0;
             }
 
-            $rated = true;
-            $weeks[$training->getTrainedAt()->format('o-W')]['load'] += $load;
+            // The running week has no Sunday yet, so its state is read at today.
+            $state = $states[min($weekStart->modify('+6 days'), $today)->format('Y-m-d')] ?? ['fitness' => 0.0, 'fatigue' => 0.0];
+
+            $labels[] = "S{$weekStart->format('W')}";
+            $loads[] = $load;
+            $fitness[] = (int) round($state['fitness']);
+            $fatigue[] = (int) round($state['fatigue']);
         }
 
-        if (false === $rated) {
+        if (array_all($loads, static fn (int $load): bool => 0 === $load)) {
             return null;
         }
 
@@ -65,12 +72,32 @@ final readonly class TrainingLoadChart
 
         $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
         $chart->setData([
-            'labels' => array_column($weeks, 'label'),
+            'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Charge',
-                    'data' => array_column($weeks, 'load'),
+                    'data' => $loads,
                     'backgroundColor' => $colors,
+                    'order' => 1,
+                ],
+                [
+                    'type' => 'line',
+                    'label' => 'Condition',
+                    'data' => $fitness,
+                    'borderColor' => '#475569',
+                    'borderWidth' => 2,
+                    'pointRadius' => 0,
+                    'tension' => 0.3,
+                ],
+                [
+                    'type' => 'line',
+                    'label' => 'Fatigue',
+                    'data' => $fatigue,
+                    'borderColor' => '#be123c',
+                    'borderDash' => [4, 4],
+                    'borderWidth' => 1.5,
+                    'pointRadius' => 0,
+                    'tension' => 0.3,
                 ],
             ],
         ]);
@@ -78,7 +105,7 @@ final readonly class TrainingLoadChart
             'maintainAspectRatio' => false,
             'plugins' => [
                 'legend' => [
-                    'display' => false,
+                    'position' => 'bottom',
                 ],
             ],
             'scales' => [

@@ -57,26 +57,39 @@
                                     {%- endif -%}
                                 </twig:Stats:Item>
 
-                                <twig:Stats:Item label="Moyenne 4 semaines">
-                                    {%- if kpis.load.chronic is not null -%}
-                                        {{ kpis.load.chronic|round }}
+                                <twig:Stats:Item label="Condition">
+                                    {%- if kpis.load.fitness is not null -%}
+                                        {{ kpis.load.fitness|round }}
                                     {%- else -%}
-                                        <twig:NoValue label="aucune séance notée" />
+                                        <twig:NoValue label="non calculée" />
                                     {%- endif -%}
                                 </twig:Stats:Item>
 
-                                <twig:Stats:Item label="Ratio" :secondary="kpis.load.zone">
-                                    {%- if kpis.load.ratio is not null -%}
-                                        {{ kpis.load.ratio|format_number({fraction_digit: 2}) -}}
+                                <twig:Stats:Item label="Fatigue">
+                                    {%- if kpis.load.fatigue is not null -%}
+                                        {{ kpis.load.fatigue|round }}
                                     {%- else -%}
-                                        <twig:NoValue label="non calculé" />
+                                        <twig:NoValue label="non calculée" />
+                                    {%- endif -%}
+                                </twig:Stats:Item>
+
+                                <twig:Stats:Item label="Fraîcheur">
+                                    {%- if kpis.load.form is not null -%}
+                                        {{ kpis.load.form > 0 ? '+' }}{{ kpis.load.form|round }}
+                                    {%- else -%}
+                                        <twig:NoValue label="non calculée" />
                                     {%- endif -%}
                                 </twig:Stats:Item>
                             </twig:Stats>
 
-                            {% if kpis.load.ratio is null %}
+                            {% if kpis.load.acute is null %}
                                 <p class="small text-body-secondary">
                                     Notez l'effort de vos séances pour calculer les valeurs manquantes.
+                                </p>
+                            {% elseif kpis.load.rated < kpis.volumes.sessions %}
+                                <p class="small text-body-secondary">
+                                    {{ kpis.load.rated }} {{ 'séance notée|séances notées'|trans({'%count%': kpis.load.rated}) }}
+                                    sur {{ kpis.volumes.sessions }}&nbsp;: la charge ne compte que celles-là.
                                 </p>
                             {% endif %}
 
