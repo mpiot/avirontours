@@ -43,4 +43,13 @@ enum MeasureType: string
             self::Weight => 'kg',
         };
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::HeartRateVariability => '#2a78d6',
+            self::RestingHeartRate => '#dc2626',
+            self::Weight => '#15803d',
+        };
+    }
 }

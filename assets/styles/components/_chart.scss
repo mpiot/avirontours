@@ -1,6 +1,6 @@
 /**
- * ↔ templates/homepage/homepage.html.twig, admin/training/list.html.twig and training/phase.html.twig
- * — one chart: the wrapper a Chart.js canvas is dropped into.
+ * ↔ templates/homepage/homepage.html.twig, admin/training/list.html.twig, measure/index.html.twig and
+ * training/phase.html.twig — one chart: the wrapper a Chart.js canvas is dropped into.
  *
  * Not decoration, and not optional: every chart in `src/Chart/` sets `maintainAspectRatio: false`,
  * so Chart.js takes its height from the parent and a canvas whose parent has none collapses. This is

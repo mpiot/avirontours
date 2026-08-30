@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Chart\MeasureCharts;
 use App\Entity\Measure;
 use App\Form\MeasureType;
 use App\Repository\MeasureRepository;
@@ -38,10 +39,12 @@ class MeasureController extends AbstractController
     #[Route(path: '', name: 'measure_index', methods: ['GET'])]
     public function index(
         MeasureRepository $measureRepository,
+        MeasureCharts $measureCharts,
         #[MapQueryParameter] int $page = 1,
     ): Response {
         return $this->render('measure/index.html.twig', [
             'measures' => $measureRepository->findPaginated($this->getUser(), $page),
+            'measureCharts' => $measureCharts->charts($this->getUser()),
         ]);
     }
 
