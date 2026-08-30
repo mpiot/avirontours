@@ -94,6 +94,41 @@ class MeasureControllerTest extends AppWebTestCase
         $this->assertCount(6, $crawler->filterXPath('//table/tbody/tr'));
     }
 
+    public function testIndexChartsTheMeasuredTypes(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        MeasureFactory::createMany(4, static fn (int $i): array => [
+            'user' => $user,
+            'type' => MeasureType::Weight,
+            'measuredAt' => new \DateTimeImmutable("today -{$i} days"),
+            'value' => 74.0,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/measure');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(1, $crawler->filter('canvas'));
+    }
+
+    public function testIndexHasNoChartWithoutMeasure(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/measure');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('body', 'Pas de mesure');
+        $this->assertCount(0, $crawler->filter('canvas'));
+    }
+
     public function testNewMeasure(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();

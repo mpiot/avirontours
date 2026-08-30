@@ -17,6 +17,23 @@
 {% endblock %}
 
 {% block body %}
+    {% if measureCharts is not empty %}
+        <div class="row g-3 mb-3">
+            {% for measureChart in measureCharts %}
+                <div class="col-12 col-xl-4">
+                    <twig:Card elevated class="h-100">
+                        <twig:Card:Body>
+                            <h2 class="fs-5">{{ measureChart.title }}</h2>
+                            <div class="app-chart">
+                                {{ render_chart(measureChart.chart, { 'role': 'img', 'aria-label': "Évolution sur un an : #{measureChart.title}" }) }}
+                            </div>
+                        </twig:Card:Body>
+                    </twig:Card>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <twig:Card elevated>
         <twig:Card:Body padding="none">
             <twig:Table>

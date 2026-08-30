@@ -53,4 +53,21 @@ class MeasureRepository extends ServiceEntityRepository
             Measure::NUM_ITEMS
         );
     }
+
+    /**
+     * @return Measure[]
+     */
+    public function findForUser(User $user, \DateTimeInterface $from, \DateTimeInterface $to): array
+    {
+        return $this->createQueryBuilder('measure')
+            ->where('measure.user = :user')
+            ->andWhere('measure.measuredAt BETWEEN :from AND :to')
+            ->orderBy('measure.measuredAt', 'ASC')
+            ->setParameter('user', $user)
+            ->setParameter('from', $from)
+            ->setParameter('to', $to)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
