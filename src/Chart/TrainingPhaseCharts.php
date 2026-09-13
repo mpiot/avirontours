@@ -27,58 +27,69 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 final readonly class TrainingPhaseCharts
 {
+    // Series recorded at 1 Hz are averaged down to this many points; per-stroke series mostly fit already.
+    private const int MAX_POINTS = 600;
+
     public function __construct(private ChartBuilderInterface $chartBuilder)
     {
     }
 
     /**
+     * One chart per series the phase carries: pace (in the unit of the sport), cadence, heart rate, power.
+     *
      * @return list<array{title: string, unit: string, chart: Chart}>
      */
     public function charts(TrainingPhase $trainingPhase): array
     {
-        if (
-            null === $trainingPhase->getTimes()
-            || null === $trainingPhase->getPaces()
-            || null === $trainingPhase->getStrokeRates()
-        ) {
+        $times = $trainingPhase->getTimes();
+        if (null === $times || [] === $times) {
             return [];
         }
 
+        $bucket = max(1, (int) ceil(\count($times) / self::MAX_POINTS));
         $labels = array_map(
-            static fn (int $tenthSeconds): string => DurationManipulator::formatSecondsAsMinutesSeconds((int) round($tenthSeconds / 10)),
-            $trainingPhase->getTimes()
+            static fn (array $chunk): string => DurationManipulator::formatSecondsAsMinutesSeconds((int) round($chunk[0] / 10)),
+            array_chunk($times, $bucket),
         );
 
-        $series = [
-            [
-                'title' => 'Allure',
-                'unit' => 'pace',
-                'data' => array_map(
-                    static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10),
-                    $trainingPhase->getPaces()
-                ),
-                'color' => '#4f46e5',
-                'average' => null === $trainingPhase->getPace() ? null : $trainingPhase->getPace() / 10,
-                'yScale' => ['min' => 60, 'reverse' => true, 'ticks' => ['precision' => 0]],
-            ],
-            [
+        $series = [];
+
+        $paces = $trainingPhase->getPaces();
+        $speedUnit = $trainingPhase->getTraining()?->getSport()?->speedUnit();
+        if (null !== $paces && null !== $speedUnit) {
+            $series[] = self::paceSeries($speedUnit, self::decimate($paces, $bucket), $trainingPhase->getPace());
+        }
+
+        if (null !== $trainingPhase->getStrokeRates()) {
+            $series[] = [
                 'title' => 'Cadence',
                 'unit' => 'spm',
-                'data' => $trainingPhase->getStrokeRates(),
+                'data' => self::decimate($trainingPhase->getStrokeRates(), $bucket),
                 'color' => '#475569',
                 'average' => $trainingPhase->getStrokeRate(),
                 'yScale' => ['ticks' => ['precision' => 0, 'stepSize' => 10]],
-            ],
-        ];
+            ];
+        }
 
         if (null !== $trainingPhase->getHeartRates()) {
             $series[] = [
                 'title' => 'Fréquence cardiaque',
                 'unit' => 'bpm',
-                'data' => $trainingPhase->getHeartRates(),
+                'data' => self::decimate($trainingPhase->getHeartRates(), $bucket),
                 'color' => '#be123c',
                 'average' => $trainingPhase->getAverageHeartRate(),
                 'yScale' => ['min' => 40, 'ticks' => ['precision' => 0, 'stepSize' => 25]],
+            ];
+        }
+
+        if (null !== $trainingPhase->getPowers()) {
+            $series[] = [
+                'title' => 'Puissance',
+                'unit' => 'W',
+                'data' => self::decimate($trainingPhase->getPowers(), $bucket),
+                'color' => '#b45309',
+                'average' => $trainingPhase->getAveragePower(),
+                'yScale' => ['min' => 0, 'ticks' => ['precision' => 0]],
             ];
         }
 
@@ -103,7 +114,7 @@ final readonly class TrainingPhaseCharts
     }
 
     /**
-     * @param list<int|null>       $data
+     * @param list<int|float>      $data
      * @param array<string, mixed> $yScale
      */
     private function createChart(
@@ -152,5 +163,62 @@ final readonly class TrainingPhaseCharts
         $chart->setOptions($options);
 
         return $chart;
+    }
+
+    /**
+     * Paces are stored in tenths of a second per 500 m whatever the sport; the chart speaks the sport's unit.
+     *
+     * @param list<int> $paces
+     *
+     * @return array{title: string, unit: string, data: list<int|float>, color: string, average: int|float|null, yScale: array<string, mixed>}
+     */
+    private static function paceSeries(string $speedUnit, array $paces, ?int $averagePace): array
+    {
+        if ('km/h' === $speedUnit) {
+            $toSpeed = static fn (int $pace): float => 0 === $pace ? 0.0 : round(18000 / $pace, 1);
+
+            return [
+                'title' => 'Vitesse',
+                'unit' => 'speed',
+                'data' => array_map($toSpeed, $paces),
+                'color' => '#4f46e5',
+                'average' => null === $averagePace ? null : $toSpeed($averagePace),
+                'yScale' => ['min' => 0, 'ticks' => ['precision' => 1]],
+            ];
+        }
+
+        // Tenths per 500 m to seconds per 500 m, per km or per 100 m.
+        $divisor = match ($speedUnit) {
+            '/km' => 5,
+            '/100m' => 50,
+            default => 10,
+        };
+        $toSeconds = static fn (int $pace): int => (int) round($pace / $divisor);
+
+        return [
+            'title' => 'Allure',
+            'unit' => 'pace',
+            'data' => array_map($toSeconds, $paces),
+            'color' => '#4f46e5',
+            'average' => null === $averagePace ? null : $toSeconds($averagePace),
+            'yScale' => ('/500m' === $speedUnit ? ['min' => 60] : []) + ['reverse' => true, 'ticks' => ['precision' => 0]],
+        ];
+    }
+
+    /**
+     * @param list<int> $values
+     *
+     * @return list<int>
+     */
+    private static function decimate(array $values, int $bucket): array
+    {
+        if (1 === $bucket) {
+            return $values;
+        }
+
+        return array_map(
+            static fn (array $chunk): int => (int) round(array_sum($chunk) / \count($chunk)),
+            array_chunk($values, $bucket),
+        );
     }
 }

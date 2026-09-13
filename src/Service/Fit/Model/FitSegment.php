@@ -23,13 +23,19 @@ namespace App\Service\Fit\Model;
 use App\Enum\TrainingPhaseIntensity;
 
 /**
- * Times in seconds, distance in metres.
+ * A stretch of the recording with its summary figures and the samples inside it: the session as a
+ * whole, or one of its laps. Times in seconds, distance in metres.
  */
-final readonly class FitLap
+final readonly class FitSegment
 {
+    /**
+     * @param int             $timerAt seconds of running timer between the session start and this stretch
+     * @param list<FitRecord> $records the samples it holds, sorted by instant
+     */
     public function __construct(
         public \DateTimeImmutable $startedAt,
         public \DateTimeImmutable $endedAt,
+        public int $timerAt,
         public ?float $totalTimerTime,
         public ?float $totalElapsedTime,
         public ?float $totalDistance,
@@ -38,6 +44,15 @@ final readonly class FitLap
         public ?int $maxHeartRate = null,
         public ?int $avgCadence = null,
         public ?int $avgPower = null,
+        public array $records = [],
     ) {
+    }
+
+    /**
+     * @param list<FitRecord> $records
+     */
+    public function withRecords(array $records): self
+    {
+        return clone ($this, ['records' => $records]);
     }
 }

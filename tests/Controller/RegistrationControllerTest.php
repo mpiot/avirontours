@@ -878,8 +878,10 @@ class RegistrationControllerTest extends AppWebTestCase
             '-40 years', 2, CertificateType::Certificate, CertificateLevel::Practice,
             'disabled', 'Votre inscription au club a été interrompue',
         ];
+        // Five seasons back, the +3 years expiry sits in the past whatever today's month; four seasons
+        // back it only does from November on, and the gap refusal answered instead until then.
         yield 'majeur, certificat Compétition périmé' => [
-            '-40 years', 4, CertificateType::Certificate, CertificateLevel::Competition,
+            '-40 years', 5, CertificateType::Certificate, CertificateLevel::Competition,
             'disabled', 'expire le',
         ];
     }

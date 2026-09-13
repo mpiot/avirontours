@@ -21,15 +21,21 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Training;
-use App\Entity\TrainingPhase;
 use App\Entity\User;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Repository\TrainingRepository;
+use App\Service\Fit\Exception\DuplicateFitFileException;
+use App\Service\Fit\Exception\FitImportException;
+use App\Service\Fit\FitTrainingImporter;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
@@ -49,6 +55,10 @@ class Concept2ApiConsumer
         private readonly ManagerRegistry $managerRegistry,
         private readonly HttpClientInterface $httpClient,
         private readonly TrainingRepository $trainingRepository,
+        private readonly FitTrainingImporter $fitTrainingImporter,
+        private readonly TrimpCalculator $trimpCalculator,
+        private readonly LoggerInterface $logger,
+        private readonly Filesystem $filesystem,
     ) {
     }
 
@@ -63,52 +73,58 @@ class Concept2ApiConsumer
                 continue;
             }
 
-            $trainings[] = $this->createTraining($accessToken, $user, $result);
+            $training = $this->createTraining($accessToken, $user, $result);
+            if (null !== $training) {
+                $trainings[] = $training;
+            }
         }
 
         return $trainings;
     }
 
     /**
-     * @return array<array{
-     *     t: int[],
-     *     d: int[],
-     *     p: int[],
-     *     spm: int[],
-     *     hr: int[],
-     * }>
+     * Null when the member already had this session (uploaded as a FIT file before the sync ran).
      */
-    public function getFormattedStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
+    private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): ?Training
     {
-        $strokes = $this->getStrokeData($accessToken, $resultIdentifier);
+        // The FIT export only exists for results recorded stroke by stroke; a manual logbook entry
+        // keeps the summary mapping below.
+        $export = true === $result['stroke_data'] ? $this->downloadFitExport($accessToken, $result['id']) : null;
 
-        $phaseKey = 0;
-        $maxTime = 0;
-        $formattedStrokes = [];
-        foreach ($strokes as $stroke) {
-            if ($maxTime > $stroke['t']) {
-                ++$phaseKey;
+        if (null !== $export) {
+            try {
+                $training = $this->fitTrainingImporter->import($user, $export, $result['id']);
+                // The listing is filtered on type=rower: whatever sport the export claims, this is an erg.
+                $training->setSport(SportType::Ergometer);
+
+                return $training;
+            } catch (DuplicateFitFileException $e) {
+                // Uploaded by hand earlier: stamp the id so the result is never fetched again.
+                $e->getExisting()->setConcept2Id($result['id']);
+
+                return null;
+            } catch (FitImportException $e) {
+                $this->logger->warning('The Concept2 FIT export is not usable, falling back to the summary.', [
+                    'result' => $result['id'],
+                    'exception' => $e,
+                ]);
+            } finally {
+                // The import copied it into the private storage, the download itself is over.
+                $this->filesystem->remove($export->getPathname());
             }
-
-            $formattedStrokes[$phaseKey]['t'][] = $stroke['t'];
-            $formattedStrokes[$phaseKey]['d'][] = $stroke['d'];
-            $formattedStrokes[$phaseKey]['p'][] = min($stroke['p'], 2400);
-            $formattedStrokes[$phaseKey]['spm'][] = min($stroke['spm'], 70);
-            $formattedStrokes[$phaseKey]['hr'][] = min($stroke['hr'], 300);
-
-            $maxTime = $stroke['t'];
         }
 
-        return $formattedStrokes;
+        return $this->createTrainingFromSummary($user, $result);
     }
 
-    private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
+    private function createTrainingFromSummary(User $user, array $result): Training
     {
         $averageHeartRate = $result['heart_rate']['average'] ?? null;
         $maxHeartRate = $result['heart_rate']['max'] ?? null;
 
         $training = new Training($user);
         $training
+            ->setSource(TrainingSource::Concept2)
             ->setConcept2Id($result['id'])
             ->setSport(SportType::Ergometer)
             ->setTrainedAt(new \DateTime($result['date']))
@@ -118,77 +134,35 @@ class Concept2ApiConsumer
             ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
             ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
         ;
-
-        if (false === $result['stroke_data']) {
-            return $training;
-        }
-
-        // Retrieve the stroke data to create phases
-        $strokeData = $this->getFormattedStrokeData($accessToken, $result['id']);
-
-        // If there is no interval, or only one, create it
-        // Validate stroke data count
-        if (
-            false === \array_key_exists('intervals', $result['workout'])
-            || 1 === \count($result['workout']['intervals'])
-        ) {
-            $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
-                $result,
-                $strokeData[0] ?? null
-            );
-
-            $training->addTrainingPhase($trainingPhase);
-
-            return $training;
-        }
-
-        // Else, create many phases, and split the strokeData in the number of phases
-        // Check the number of intervals match the number of stroke data
-        foreach ($result['workout']['intervals'] as $key => $intervalData) {
-            $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
-                $intervalData,
-                $strokeData[$key] ?? null
-            );
-
-            $training->addTrainingPhase($trainingPhase);
-        }
+        $training->setTrimp($this->trimpCalculator->compute($training));
 
         return $training;
     }
 
-    private function createTrainingPhaseFromFormattedStrokes(
-        array $intervalData,
-        ?array $strokeData,
-    ): TrainingPhase {
-        $trainingPhase = new TrainingPhase();
-        $trainingPhase
-            ->setDuration($intervalData['time'])
-            ->setDistance($intervalData['distance'])
-            ->setStrokeRate($intervalData['stroke_rate'])
-            ->setAverageHeartRate($intervalData['heart_rate']['average'] ?? null)
-            ->setMaxHeartRate($intervalData['heart_rate']['max'] ?? null)
-            ->setEndingHeartRate($intervalData['heart_rate']['ending'] ?? null)
-        ;
+    /**
+     * The exported file, on a temporary path the caller has to remove; null when the logbook has no
+     * FIT export for this result.
+     */
+    private function downloadFitExport(AccessTokenInterface $accessToken, int $resultIdentifier): ?File
+    {
+        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results/%s/export/fit', self::API_URL, $resultIdentifier), [
+            'headers' => [
+                'Accept' => 'application/octet-stream',
+            ],
+            'auth_bearer' => $accessToken->getToken(),
+            'timeout' => self::HTTP_TIMEOUT,
+        ]);
 
-        if (null === $strokeData) {
-            return $trainingPhase;
+        if (Response::HTTP_NOT_FOUND === $response->getStatusCode()) {
+            return null;
         }
 
-        $trainingPhase
-            ->setTimes($strokeData['t'] ?? null)
-            ->setDistances($strokeData['d'] ?? null)
-            ->setPaces($strokeData['p'] ?? null)
-            ->setStrokeRates($strokeData['spm'] ?? null)
-        ;
+        $this->guardResponse($response);
 
-        if (
-            1 !== \count(array_unique($strokeData['hr']))
-            || 0 !== array_unique($strokeData['hr'])[0]
-        ) {
-            $trainingPhase->setHeartRates($strokeData['hr']);
-        }
+        $path = $this->filesystem->tempnam(sys_get_temp_dir(), "concept2_{$resultIdentifier}_", '.fit');
+        $this->filesystem->dumpFile($path, $response->getContent());
 
-        return $trainingPhase;
+        return new File($path);
     }
 
     /**
@@ -249,30 +223,6 @@ class Concept2ApiConsumer
         // Sync only the first page, all page are too many results to sync
         $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results', self::API_URL), [
             'query' => $query,
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'auth_bearer' => $accessToken->getToken(),
-            'timeout' => self::HTTP_TIMEOUT,
-        ]);
-
-        $this->guardResponse($response);
-
-        return $response->toArray()['data'];
-    }
-
-    /**
-     * @return array<array{
-     *     d: int,
-     *     p: int,
-     *     hr: int,
-     *     spm: int,
-     *     t: int,
-     * }>
-     */
-    private function getStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
-    {
-        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
             'headers' => [
                 'Accept' => 'application/json',
             ],

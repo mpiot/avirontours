@@ -30,6 +30,9 @@ use App\Service\Fit\Exception\UnsupportedFitFileException;
 use App\Service\TrimpCalculator;
 use Symfony\Component\HttpFoundation\File\File;
 
+/**
+ * A FIT file into an unpersisted Training: read, map, refuse a duplicate, store the file, score the TRIMP.
+ */
 final readonly class FitTrainingImporter
 {
     public function __construct(

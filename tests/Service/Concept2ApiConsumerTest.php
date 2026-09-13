@@ -22,18 +22,24 @@ namespace App\Tests\Service;
 
 use App\Entity\Training;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Repository\TrainingRepository;
 use App\Service\Concept2ApiConsumer;
+use App\Service\Fit\FitTrainingImporter;
+use App\Service\TrimpCalculator;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
 use Zenstruck\Foundry\Test\Factories;
@@ -43,6 +49,8 @@ class Concept2ApiConsumerTest extends KernelTestCase
 {
     use Factories;
     use ResetDatabase;
+
+    private const string FIT_FIXTURE = __DIR__.'/../../src/DataFixtures/Files/fit/concept2-logbook-steady.fit';
 
     public function testGetTrainingsImportsOnlyTheFirstPage(): void
     {
@@ -157,6 +165,79 @@ class Concept2ApiConsumerTest extends KernelTestCase
         self::assertNull($user->getConcept2RefreshToken());
     }
 
+    public function testGetTrainingsImportsTheFitExportWhenStrokeDataIsAvailable(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'old-refresh']);
+        $httpClient = new MockHttpClient([
+            $this->resultsMockResponse([array_merge($this->resultFixture(42), ['stroke_data' => true])], totalPages: 1),
+            $this->fitExportMockResponse(),
+        ]);
+
+        $trainings = $this->createConsumer($httpClient)->getTrainings($user, null);
+
+        self::assertCount(1, $trainings);
+        $training = $trainings[0];
+        self::assertSame(42, $training->getConcept2Id());
+        self::assertSame(TrainingSource::Fit, $training->getSource());
+        // The listing is filtered on type=rower: the sport is an erg whatever the export claims.
+        self::assertSame(SportType::Ergometer, $training->getSport());
+        self::assertSame('Concept2', $training->getDevice());
+        self::assertSame(8205, $training->getDistance());
+        self::assertSame(112, $training->getAveragePower());
+        self::assertCount(1, $training->getTrainingPhases());
+        self::assertNotNull($training->getFitFile());
+    }
+
+    public function testGetTrainingsFallsBackToTheSummaryWhenTheFitExportIsMissing(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'old-refresh']);
+        $httpClient = new MockHttpClient([
+            $this->resultsMockResponse([array_merge($this->resultFixture(42), ['stroke_data' => true])], totalPages: 1),
+            new MockResponse('', ['http_code' => 404]),
+        ]);
+
+        $trainings = $this->createConsumer($httpClient)->getTrainings($user, null);
+
+        self::assertCount(1, $trainings);
+        self::assertSame(TrainingSource::Concept2, $trainings[0]->getSource());
+        self::assertSame(2000, $trainings[0]->getDistance());
+        self::assertCount(0, $trainings[0]->getTrainingPhases());
+    }
+
+    public function testGetTrainingsFallsBackToTheSummaryWhenTheFitExportIsUnreadable(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'old-refresh']);
+        $httpClient = new MockHttpClient([
+            $this->resultsMockResponse([array_merge($this->resultFixture(42), ['stroke_data' => true])], totalPages: 1),
+            new MockResponse('not a fit payload', ['response_headers' => ['content-type' => 'application/octet-stream']]),
+        ]);
+
+        $trainings = $this->createConsumer($httpClient)->getTrainings($user, null);
+
+        self::assertCount(1, $trainings);
+        self::assertSame(TrainingSource::Concept2, $trainings[0]->getSource());
+    }
+
+    public function testGetTrainingsStampsTheIdOnASessionAlreadyUploadedByHand(): void
+    {
+        $user = UserFactory::createOne(['concept2RefreshToken' => 'old-refresh']);
+
+        $importer = self::getContainer()->get(FitTrainingImporter::class);
+        $existing = $importer->import($user, new File(self::FIT_FIXTURE));
+        self::getContainer()->get('doctrine')->getManager()->persist($existing);
+        self::getContainer()->get('doctrine')->getManager()->flush();
+
+        $httpClient = new MockHttpClient([
+            $this->resultsMockResponse([array_merge($this->resultFixture(42), ['stroke_data' => true])], totalPages: 1),
+            $this->fitExportMockResponse(),
+        ]);
+
+        $trainings = $this->createConsumer($httpClient)->getTrainings($user, null);
+
+        self::assertCount(0, $trainings);
+        self::assertSame(42, $existing->getConcept2Id());
+    }
+
     private function createConsumer(MockHttpClient $httpClient, ?string $newRefreshToken = 'rotated-refresh'): Concept2ApiConsumer
     {
         $options = ['access_token' => 'access-token'];
@@ -180,6 +261,10 @@ class Concept2ApiConsumerTest extends KernelTestCase
             self::getContainer()->get('doctrine'),
             $httpClient,
             self::getContainer()->get(TrainingRepository::class),
+            self::getContainer()->get(FitTrainingImporter::class),
+            self::getContainer()->get(TrimpCalculator::class),
+            new NullLogger(),
+            new Filesystem(),
         );
     }
 
@@ -197,6 +282,13 @@ class Concept2ApiConsumerTest extends KernelTestCase
             'heart_rate' => ['average' => 150, 'max' => 175],
             'stroke_data' => false,
         ];
+    }
+
+    private function fitExportMockResponse(): MockResponse
+    {
+        return new MockResponse(file_get_contents(self::FIT_FIXTURE), [
+            'response_headers' => ['content-type' => 'application/octet-stream'],
+        ]);
     }
 
     /**

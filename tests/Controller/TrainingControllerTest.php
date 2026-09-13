@@ -23,7 +23,9 @@ namespace App\Tests\Controller;
 use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Factory\LicenseFactory;
+use App\Factory\PhysiologyFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\TrainingPhaseFactory;
 use App\Factory\UserFactory;
@@ -472,6 +474,34 @@ class TrainingControllerTest extends AppWebTestCase
         ]);
     }
 
+    public function testRateAShortImportedTraining(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'source' => TrainingSource::Fit,
+            'duration' => 1050,
+            'feeling' => null,
+            'ratedPerceivedExertion' => null,
+        ]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}/edit/rating");
+        $client->submit($crawler->selectButton('Enregistrer')->form([
+            'training_edit_rating[feeling]' => Feeling::Good->value,
+            'training_edit_rating[ratedPerceivedExertion]' => RatedPerceivedExertion::ExtremelyHard->value,
+        ]));
+
+        $this->assertResponseIsSuccessful();
+        TrainingFactory::repository()->assert()->exists([
+            'id' => $training->getId(),
+            'feeling' => Feeling::Good,
+            'ratedPerceivedExertion' => RatedPerceivedExertion::ExtremelyHard,
+        ]);
+    }
+
     public function testRateTrainingWithHalfAnAnswer(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
@@ -520,7 +550,7 @@ class TrainingControllerTest extends AppWebTestCase
     public function testShowTrainingPhase(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
+        $training = TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Ergometer]);
         $phases = TrainingPhaseFactory::createSequence([
             ['training' => $training],
             ['training' => $training],
@@ -540,7 +570,7 @@ class TrainingControllerTest extends AppWebTestCase
     public function testShowTrainingPhaseOfASinglePhaseTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
+        $training = TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Ergometer]);
         $phase = TrainingPhaseFactory::createOne([
             'training' => $training,
             'heartRates' => array_fill(0, 12, 140),
@@ -763,13 +793,13 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_sport')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_trainedAt')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
+        $this->assertStringContainsString('Cette valeur ne doit pas être nulle.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
         $this->assertCount(0, $crawler->filter('.alert.alert-danger'));
         $this->assertCount(3, $crawler->filter('.invalid-feedback'));
         TrainingFactory::repository()->assert()->count(0);
     }
 
-    public function testNewTrainingWithTooShortDuration(): void
+    public function testNewTrainingWithAShortDuration(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
 
@@ -779,20 +809,22 @@ class TrainingControllerTest extends AppWebTestCase
         $client->request('GET', '/training/new');
         $this->assertResponseIsSuccessful();
 
-        $crawler = $client->submitForm('Enregistrer', [
+        $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
             'training[sport]' => SportType::Rowing->value,
             'training[duration]' => '2',
-            'training[distance]' => 16.3,
+            'training[distance]' => 0.5,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
         ]);
 
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $this->assertStringContainsString('Un entraînement doit durer au moins 5 minutes.', $crawler->filter('#training_duration')->closest('.mb-3')->filter('.invalid-feedback')->text());
-        $this->assertCount(1, $crawler->filter('.invalid-feedback'));
-        TrainingFactory::repository()->assert()->count(0);
+        $this->assertResponseRedirects();
+        TrainingFactory::repository()->assert()->exists([
+            'user' => $user,
+            'duration' => 1200,
+            'distance' => 500,
+        ]);
     }
 
     public function testNewTrainingWithAnUnreadableDuration(): void
@@ -874,11 +906,10 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame('My little comment...', $training->getComment());
     }
 
-    public function testEditImportedTrainingLocksWhatTheErgometerMeasured(): void
+    public function testEditImportedTrainingLocksWhatTheDeviceMeasured(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user, 'duration' => 54000]);
-        TrainingPhaseFactory::createOne(['training' => $training]);
+        $training = TrainingFactory::createOne(['user' => $user, 'duration' => 54000, 'source' => TrainingSource::Fit, 'device' => 'Polar Vantage V']);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -886,9 +917,25 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', "/training/{$training->getId()}/edit");
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString("viennent de l'ergomètre et ne sont pas modifiables", $crawler->filter('.alert')->text());
+        $this->assertStringContainsString('Séance importée depuis Polar Vantage V', $crawler->filter('.alert')->text());
+        $this->assertStringContainsString("viennent de l'appareil et ne sont pas modifiables", $crawler->filter('.alert')->text());
         $this->assertSame('90', $crawler->filter('#training_duration')->attr('value'));
         $this->assertNotNull($crawler->filter('#training_duration')->attr('disabled'));
+    }
+
+    public function testEditLogbookTrainingStaysEditable(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne(['user' => $user, 'source' => TrainingSource::Logbook]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}/edit");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(0, $crawler->filter('.alert'));
+        $this->assertNull($crawler->filter('#training_duration')->attr('disabled'));
     }
 
     public function testEditOtherUserTraining(): void
@@ -922,6 +969,149 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertResponseRedirects('/training');
 
         TrainingFactory::repository()->assert()->notExists($training);
+    }
+
+    public function testImportingAFitFileCreatesTheTrainingAndShowsIt(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/import/fit');
+
+        $this->assertResponseIsSuccessful();
+
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/polar-rowing.fit');
+        $client->submit($form);
+
+        $training = TrainingFactory::repository()->last();
+        $this->assertResponseRedirects("/training/{$training->getId()}", Response::HTTP_SEE_OTHER);
+
+        $crawler = $client->followRedirect();
+        $this->assertSelectorTextContains('.toast-body', 'importé avec succès');
+        $page = $crawler->filter('.app-training-detail')->text();
+        $this->assertStringContainsString('Aviron', $crawler->filter('h1')->text());
+        $this->assertStringContainsString('Polar Vantage V', $page);
+        $this->assertStringContainsString('10,0 km', $page);
+        $this->assertStringContainsString('148 bpm max 186', $page);
+        $this->assertStringContainsString('Renseignez vos FC max et de repos', $page);
+
+        $this->assertSame(SportType::Rowing, $training->getSport());
+        $this->assertSame('2026-08-29', $training->getTrainedAt()->format('Y-m-d'));
+        $this->assertNull($training->getFeeling());
+        $this->assertNull($training->getRatedPerceivedExertion());
+        $this->assertCount(1, $training->getTrainingPhases());
+    }
+
+    public function testImportingAFitFileComputesTheHeartRateLoadWhenTheMaximumHeartRateIsKnown(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        PhysiologyFactory::createOne(['user' => $user, 'maximumHeartRate' => 190]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/concept2-splits.fit');
+        $client->submit($form);
+
+        $crawler = $client->followRedirect();
+        $page = $crawler->filter('.app-training-detail')->text();
+        $this->assertStringContainsString('Ergomètre', $crawler->filter('h1')->text());
+        $this->assertStringContainsString('TRIMP', $page);
+        $this->assertStringNotContainsString('Renseignez vos FC max et de repos', $page);
+
+        $training = TrainingFactory::repository()->last();
+        $this->assertNotNull($training->getTrimp());
+        $this->assertSame(168, $training->getAveragePower());
+    }
+
+    public function testImportingAFileThatIsNotFitIsRejected(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/not-a-fit.fit');
+        $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertSelectorTextContains('.invalid-feedback', "n'est pas un fichier FIT valide");
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testImportingAFileWithoutTheFitExtensionIsRejected(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/document.pdf');
+        $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
+    public function testImportingTheSameFitFileTwiceIsRefused(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/nk-speedcoach-rowing.fit');
+        $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_SEE_OTHER);
+
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/nk-speedcoach-rowing.fit');
+        $client->submit($form);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertSelectorTextContains('.invalid-feedback', 'déjà été importé');
+        TrainingFactory::repository()->assert()->count(1);
+    }
+
+    public function testThePhaseTableOfAnImportedIntervalWorkoutShowsTheRest(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', '/training/import/fit');
+        $form = $crawler->selectButton('Importer')->form();
+        $form['fit_import[file]']->upload(__DIR__.'/../../src/DataFixtures/Files/fit/concept2-intervals.fit');
+        $client->submit($form);
+
+        $training = TrainingFactory::repository()->last();
+        $crawler = $client->request('GET', "/training/{$training->getId()}/phase/{$training->getTrainingPhases()->first()->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $rows = $crawler->filter('turbo-frame#training-phases tbody tr');
+        $this->assertCount(3, $rows);
+        $this->assertStringContainsString('Travail', $rows->eq(0)->text());
+        $restRow = $rows->eq(1)->text();
+        $this->assertStringContainsString('Repos', $restRow);
+        $this->assertStringContainsString('02:49.0', $restRow);
+        $this->assertStringNotContainsString('/500m', $restRow);
+        $this->assertStringContainsString('/500m', $rows->eq(0)->text());
+        $this->assertStringContainsString('93 W', $rows->eq(0)->text());
     }
 
     public function testImportConceptLogbookRequiresConnectedAccount(): void
@@ -971,6 +1161,8 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['GET', '/training'];
         yield ['GET', '/training/{id}'];
         yield ['GET', '/training/new'];
+        yield ['GET', '/training/import/fit'];
+        yield ['POST', '/training/import/fit'];
         yield ['GET', '/training/feeling-help'];
         yield ['GET', '/training/exertion-help'];
         yield ['POST', '/training/new'];

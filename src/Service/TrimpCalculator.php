@@ -35,65 +35,66 @@ final readonly class TrimpCalculator
     public function compute(Training $training): ?int
     {
         $user = $training->getUser();
-        if (null === $user) {
+        if (null === $user || null === $user->getGender() || null === $user->getPhysiology()) {
             return null;
         }
 
-        $maximumHeartRate = $user->getPhysiology()?->getMaximumHeartRate();
-        $restingHeartRate = $user->getPhysiology()?->getRestingHeartRate();
-        if (null === $maximumHeartRate || null === $restingHeartRate || $restingHeartRate >= $maximumHeartRate) {
+        $isMale = User::GENDER_MALE === $user->getGender();
+        $restingHeartRate = $user->getPhysiology()->getRestingHeartRate();
+        $maximumHeartRate = $user->getPhysiology()->getMaximumHeartRate();
+        if (null === $restingHeartRate || null === $maximumHeartRate || $restingHeartRate >= $maximumHeartRate) {
             return null;
         }
 
-        $k = User::GENDER_FEMALE === $user->getGender()
-            ? static fn (float $deltaHeartRate): float => 0.86 * exp(1.67 * $deltaHeartRate)
-            : static fn (float $deltaHeartRate): float => 0.64 * exp(1.92 * $deltaHeartRate)
-        ;
-
-        // Integrate over the records whenever they exist: k is exponential, so a hard half and an
-        // easy half cost more than their average pretends — the mean form below, kept for sessions
-        // that only carry an average (Concept2 summaries, manual entries), underestimates intervals.
-        $trimp = 0.0;
-        $hasSeries = false;
+        // One load per phase: integrated over its samples when it kept them — k is exponential, a hard
+        // half and an easy half cost more than their average pretends.
+        $loads = [];
         foreach ($training->getTrainingPhases() as $phase) {
             $times = $phase->getTimes();
             $heartRates = $phase->getHeartRates();
             if (null === $times || null === $heartRates) {
+                if (null !== $phase->getDuration() && null !== $phase->getAverageHeartRate()) {
+                    $loads[] = $this->trimp($isMale, $restingHeartRate, $maximumHeartRate, $phase->getDuration() / 600, $phase->getAverageHeartRate());
+                }
+
                 continue;
             }
 
-            $hasSeries = true;
+            // Each sample weighs the time since the previous one; times are tenths of a second, 600 to the minute.
+            $phaseLoad = 0.0;
             $previous = 0;
             foreach ($heartRates as $index => $heartRate) {
                 $time = $times[$index] ?? $previous;
-                // Times are tenths of a second and T is in minutes: 600 tenths to the minute.
-                $t = max(0, $time - $previous) / 600;
+                $phaseLoad += $this->trimp($isMale, $restingHeartRate, $maximumHeartRate, max(0, $time - $previous) / 600, $heartRate);
                 $previous = $time;
-
-                $deltaHeartRate = $this->deltaHeartRate($heartRate, $restingHeartRate, $maximumHeartRate);
-                $trimp += $t * $deltaHeartRate * $k($deltaHeartRate);
             }
+            $loads[] = $phaseLoad;
         }
 
-        if (false === $hasSeries) {
-            $averageHeartRate = $training->getAverageHeartRate();
-            $duration = $training->getDuration();
-            if (null === $averageHeartRate || null === $duration) {
+        // No phase measured anything: the session average is all that is left to count.
+        if ([] === $loads) {
+            if (null === $training->getDuration() || null === $training->getAverageHeartRate()) {
                 return null;
             }
 
-            $t = $duration / 600;
-            $deltaHeartRate = $this->deltaHeartRate($averageHeartRate, $restingHeartRate, $maximumHeartRate);
-            $trimp = $t * $deltaHeartRate * $k($deltaHeartRate);
+            $loads[] = $this->trimp($isMale, $restingHeartRate, $maximumHeartRate, $training->getDuration() / 600, $training->getAverageHeartRate());
         }
 
-        return (int) round($trimp);
+        return (int) round(array_sum($loads));
     }
 
-    private function deltaHeartRate(int $heartRate, int $restingHeartRate, int $maximumHeartRate): float
+    /**
+     * T × ΔHR × k(ΔHR) for $minutes spent at $heartRate.
+     */
+    private function trimp(bool $isMale, int $restingHeartRate, int $maximumHeartRate, float $minutes, int $heartRate): float
     {
-        // Clamped to [0, 1]: below the declared resting rate costs nothing, above the declared
+        // k = a·e^(b·ΔHR)
+        [$a, $b] = $isMale ? [0.64, 1.92] : [0.86, 1.67];
+
+        // ΔHR clamped to [0, 1]: below the declared resting rate costs nothing, above the declared
         // maximum is a full reserve — k is only calibrated on that interval.
-        return min(1.0, max(0.0, ($heartRate - $restingHeartRate) / ($maximumHeartRate - $restingHeartRate)));
+        $deltaHeartRate = min(1.0, max(0.0, ($heartRate - $restingHeartRate) / ($maximumHeartRate - $restingHeartRate)));
+
+        return $minutes * $deltaHeartRate * $a * exp($b * $deltaHeartRate);
     }
 }

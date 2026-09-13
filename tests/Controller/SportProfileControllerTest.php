@@ -54,6 +54,7 @@ class SportProfileControllerTest extends AppWebTestCase
             'physiology[oxygenTransportationHeartRateMin]' => 185,
             'physiology[anaerobicHeartRateMin]' => 200,
             'physiology[maximumHeartRate]' => 215,
+            'physiology[restingHeartRate]' => 52,
         ]);
 
         $this->assertResponseRedirects();
@@ -65,6 +66,7 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertSame(185, $user->getPhysiology()->getOxygenTransportationHeartRateMin());
         $this->assertSame(200, $user->getPhysiology()->getAnaerobicHeartRateMin());
         $this->assertSame(215, $user->getPhysiology()->getMaximumHeartRate());
+        $this->assertSame(52, $user->getPhysiology()->getRestingHeartRate());
     }
 
     public function testNewWorkoutMaximumLoad(): void

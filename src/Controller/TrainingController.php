@@ -24,14 +24,21 @@ use App\Chart\TrainingPhaseCharts;
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Enum\SportType;
+use App\Form\FitImportType;
 use App\Form\TrainingEditRatingType;
 use App\Form\TrainingType;
 use App\Message\Concept2ImportMessage;
 use App\Repository\TrainingRepository;
+use App\Service\Fit\Exception\DuplicateFitFileException;
+use App\Service\Fit\Exception\InvalidFitFileException;
+use App\Service\Fit\Exception\UnsupportedFitFileException;
+use App\Service\Fit\FitTrainingImporter;
 use App\Service\TrainingHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -115,6 +122,42 @@ class TrainingController extends AbstractController
         return $this->render('training/new.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route(path: '/import/fit', name: 'training_import_fit', methods: ['GET', 'POST'])]
+    public function importFit(Request $request, EntityManagerInterface $entityManager, FitTrainingImporter $importer): Response
+    {
+        $form = $this->createForm(FitImportType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $file */
+            $file = $form->get('file')->getData();
+
+            try {
+                $training = $importer->import($this->getUser(), $file);
+                $entityManager->persist($training);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Votre entraînement a été importé avec succès.');
+
+                return $this->redirectToRoute('training_show', [
+                    'id' => $training->getId(),
+                ], Response::HTTP_SEE_OTHER);
+            } catch (DuplicateFitFileException) {
+                $form->get('file')->addError(new FormError('Ce fichier a déjà été importé.'));
+            } catch (InvalidFitFileException) {
+                $form->get('file')->addError(new FormError('Ce fichier n\'est pas un fichier FIT valide.'));
+            } catch (UnsupportedFitFileException) {
+                $form->get('file')->addError(new FormError('Ce fichier FIT ne contient pas de séance exploitable.'));
+            }
+        }
+
+        $status = $form->isSubmitted() && false === $form->isValid() ? Response::HTTP_UNPROCESSABLE_ENTITY : Response::HTTP_OK;
+
+        return $this->render('training/import_fit.html.twig', [
+            'form' => $form,
+        ], new Response(status: $status));
     }
 
     #[Route(path: '/import/concept-logbook', name: 'training_import_concept_logbook')]

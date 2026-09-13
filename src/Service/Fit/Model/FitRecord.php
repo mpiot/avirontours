@@ -25,8 +25,12 @@ namespace App\Service\Fit\Model;
  */
 final readonly class FitRecord
 {
+    /**
+     * @param int $timerAt seconds of running timer between the session start and this sample
+     */
     public function __construct(
         public \DateTimeImmutable $recordedAt,
+        public int $timerAt,
         public ?int $latitude = null,
         public ?int $longitude = null,
         public ?float $altitude = null,

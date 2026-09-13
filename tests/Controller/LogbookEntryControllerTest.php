@@ -618,6 +618,43 @@ class LogbookEntryControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assert()->count(0);
     }
 
+    public function testFinishLogbookEntryWithAZeroCoveredDistance(): void
+    {
+        $entry = LogbookEntryFactory::new()->notFinished()->withActiveCrew(1)->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($entry->getCrewMembers()->get(0));
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+
+        $client->submitForm('Terminer la sortie', [
+            'logbook_entry_finish[endAt]' => '16:00',
+            'logbook_entry_finish[coveredDistance]' => 0,
+        ]);
+
+        $this->assertResponseRedirects();
+        $this->assertSame(0.0, $entry->getCoveredDistance());
+        $this->assertSame(0.0, $entry->getShell()->getMileage());
+    }
+
+    public function testFinishLogbookEntryWithANegativeCoveredDistance(): void
+    {
+        $entry = LogbookEntryFactory::new()->notFinished()->withActiveCrew(1)->create();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($entry->getCrewMembers()->get(0));
+        $client->request('GET', '/logbook-entry/'.$entry->getId().'/finish');
+
+        $crawler = $client->submitForm('Terminer la sortie', [
+            'logbook_entry_finish[endAt]' => '16:00',
+            'logbook_entry_finish[coveredDistance]' => -5,
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('Cette valeur doit être supérieure ou égale à 0.', $this->filterFormErrors($crawler, 'logbook_entry_finish_coveredDistance')->text());
+    }
+
     public function testFinishLogbookEntryWithAutomaticTraining(): void
     {
         $entry = LogbookEntryFactory::new([

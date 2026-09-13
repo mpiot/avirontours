@@ -21,14 +21,13 @@ declare(strict_types=1);
 namespace App\Service\Fit\Model;
 
 /**
- * The single session of an activity file. Times in seconds, distance in metres, sport codes raw FIT.
+ * The single session of an activity file: the session as a whole, and the laps it is cut into, each
+ * carrying the samples that fall inside its window. Sport codes raw FIT.
  */
 final readonly class FitActivity
 {
     /**
-     * @param list<FitLap>        $laps        sorted by start
-     * @param list<FitRecord>     $records     sorted by timestamp
-     * @param list<FitTimerEvent> $timerEvents sorted by timestamp
+     * @param list<FitSegment> $laps sorted by start; the session itself when the file has none
      */
     public function __construct(
         public ?string $device,
@@ -36,16 +35,8 @@ final readonly class FitActivity
         public ?int $subSport,
         public \DateTimeImmutable $startedAt,
         public ?\DateTimeImmutable $localStartedAt,
-        public ?float $totalTimerTime,
-        public ?float $totalElapsedTime,
-        public ?float $totalDistance,
-        public ?int $avgHeartRate,
-        public ?int $maxHeartRate,
-        public ?int $avgCadence,
-        public ?int $avgPower,
+        public FitSegment $session,
         public array $laps,
-        public array $records,
-        public array $timerEvents,
     ) {
     }
 }

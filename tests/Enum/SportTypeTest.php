@@ -24,6 +24,8 @@ use App\Enum\SportSpecificity;
 use App\Enum\SportType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Sportlog\FIT\Profile\Types\Sport;
+use Sportlog\FIT\Profile\Types\SubSport;
 
 class SportTypeTest extends TestCase
 {
@@ -32,6 +34,17 @@ class SportTypeTest extends TestCase
     {
         self::assertSame($unit, $sport->speedUnit());
         self::assertSame($speed, $sport->formatSpeed(36000, 10000));
+    }
+
+    #[DataProvider('provideSpeedLabels')]
+    public function testASportNamesItsSpeedAfterTheUnitItUses(SportType $sport, string $label): void
+    {
+        self::assertSame($label, $sport->speedLabel());
+    }
+
+    public function testEverySportHasItsSpeedLabelTested(): void
+    {
+        self::assertCount(\count(SportType::cases()), iterator_to_array(self::provideSpeedLabels()));
     }
 
     #[DataProvider('provideTrackWatts')]
@@ -57,6 +70,12 @@ class SportTypeTest extends TestCase
         self::assertCount(\count(SportType::cases()), iterator_to_array(self::provideSpecificities()));
     }
 
+    #[DataProvider('provideFitSports')]
+    public function testEachFitSportAndSubSportLandsOnAClubSport(?int $sport, ?int $subSport, SportType $expected): void
+    {
+        self::assertSame($expected, SportType::fromFit($sport, $subSport));
+    }
+
     public static function provideSpeeds(): iterable
     {
         yield 'cycling' => [SportType::Cycling, 'km/h', '10,0'];
@@ -71,6 +90,20 @@ class SportTypeTest extends TestCase
         yield 'yoga' => [SportType::Yoga, null, null];
     }
 
+    public static function provideSpeedLabels(): iterable
+    {
+        yield 'cycling' => [SportType::Cycling, 'Vitesse'];
+        yield 'ergometer' => [SportType::Ergometer, 'Allure'];
+        yield 'general physical preparation' => [SportType::GeneralPhysicalPreparation, 'Allure'];
+        yield 'other' => [SportType::Other, 'Allure'];
+        yield 'rowing' => [SportType::Rowing, 'Allure'];
+        yield 'running' => [SportType::Running, 'Allure'];
+        yield 'strengthening' => [SportType::Strengthening, 'Allure'];
+        yield 'swimming' => [SportType::Swimming, 'Allure'];
+        yield 'weight training' => [SportType::WeightTraining, 'Allure'];
+        yield 'yoga' => [SportType::Yoga, 'Allure'];
+    }
+
     public static function provideTrackWatts(): iterable
     {
         yield 'cycling' => [SportType::Cycling, false];
@@ -83,6 +116,32 @@ class SportTypeTest extends TestCase
         yield 'swimming' => [SportType::Swimming, false];
         yield 'weight training' => [SportType::WeightTraining, false];
         yield 'yoga' => [SportType::Yoga, false];
+    }
+
+    public static function provideFitSports(): iterable
+    {
+        yield 'garmin erg piece' => [Sport::ROWING, SubSport::INDOOR_ROWING, SportType::Ergometer];
+        yield 'concept2 erg piece' => [Sport::FITNESS_EQUIPMENT, SubSport::INDOOR_ROWING, SportType::Ergometer];
+        yield 'polar on-water rowing' => [Sport::ROWING, SubSport::GENERIC, SportType::Rowing];
+        yield 'nk rowing without sub sport' => [Sport::ROWING, null, SportType::Rowing];
+        yield 'running' => [Sport::RUNNING, SubSport::GENERIC, SportType::Running];
+        yield 'treadmill' => [Sport::RUNNING, SubSport::TREADMILL, SportType::Running];
+        yield 'trail' => [Sport::RUNNING, SubSport::TRAIL, SportType::Running];
+        yield 'cycling' => [Sport::CYCLING, SubSport::GENERIC, SportType::Cycling];
+        yield 'e-biking' => [Sport::E_BIKING, SubSport::GENERIC, SportType::Cycling];
+        yield 'polar indoor cycling' => [Sport::CYCLING, SubSport::INDOOR_CYCLING, SportType::Cycling];
+        yield 'spinning' => [Sport::FITNESS_EQUIPMENT, SubSport::SPIN, SportType::Cycling];
+        yield 'pool swimming' => [Sport::SWIMMING, SubSport::LAP_SWIMMING, SportType::Swimming];
+        yield 'open water' => [Sport::SWIMMING, SubSport::OPEN_WATER, SportType::Swimming];
+        yield 'yoga' => [Sport::TRAINING, SubSport::YOGA, SportType::Yoga];
+        yield 'pilates' => [Sport::TRAINING, SubSport::PILATES, SportType::Yoga];
+        yield 'strength training' => [Sport::TRAINING, SubSport::STRENGTH_TRAINING, SportType::WeightTraining];
+        yield 'cardio training' => [Sport::TRAINING, SubSport::CARDIO_TRAINING, SportType::GeneralPhysicalPreparation];
+        yield 'flexibility' => [Sport::TRAINING, SubSport::FLEXIBILITY_TRAINING, SportType::GeneralPhysicalPreparation];
+        yield 'hiit' => [Sport::HIIT, SubSport::GENERIC, SportType::GeneralPhysicalPreparation];
+        yield 'walking' => [Sport::WALKING, SubSport::GENERIC, SportType::Other];
+        yield 'multisport' => [Sport::MULTISPORT, SubSport::GENERIC, SportType::Other];
+        yield 'unknown sport' => [null, null, SportType::Other];
     }
 
     public static function provideSpecificities(): iterable

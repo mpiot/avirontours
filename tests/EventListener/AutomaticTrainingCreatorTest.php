@@ -22,6 +22,7 @@ namespace App\Tests\EventListener;
 
 use App\Entity\LogbookEntry;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Factory\LogbookEntryFactory;
 use App\Factory\ShellFactory;
 use App\Factory\TrainingFactory;
@@ -55,6 +56,7 @@ class AutomaticTrainingCreatorTest extends AppWebTestCase
         $this->assertSame($logbookEntry->getDate()->format('Y-m-d'), $training->getTrainedAt()->format('Y-m-d'));
         $this->assertSame($logbookEntry->getStartAt()->format('H:i:s'), $training->getTrainedAt()->format('H:i:s'));
         $this->assertSame(SportType::Rowing, $training->getSport());
+        $this->assertSame(TrainingSource::Logbook, $training->getSource());
         $this->assertSame(36000, $training->getDuration());
         $this->assertSame(10000, $training->getDistance());
         $this->assertNull($training->getFeeling());
