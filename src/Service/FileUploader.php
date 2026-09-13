@@ -43,9 +43,13 @@ class FileUploader
     ) {
     }
 
-    public function upload(File $file, string $visibility = self::PUBLIC): UploadedFile
+    /**
+     * $extension overrides the MIME guess for formats libmagic does not know: a FIT file is
+     * application/octet-stream, which guesses to "bin".
+     */
+    public function upload(File $file, string $visibility = self::PUBLIC, ?string $extension = null): UploadedFile
     {
-        $extension = $file->guessExtension() ?? $file->getExtension();
+        $extension ??= $file->guessExtension() ?? $file->getExtension();
         $newFilename = $this->buildDirectoryHierarchy(Uuid::v4()->toRfc4122()).'.'.$extension;
 
         $originalFilename = $file->getFilename();

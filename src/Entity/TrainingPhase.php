@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\TrainingPhaseIntensity;
 use App\Repository\TrainingPhaseRepository;
 use App\Util\DurationManipulator;
 use Doctrine\DBAL\Types\Types;
@@ -67,6 +68,29 @@ class TrainingPhase
 
     #[ORM\Column(nullable: true)]
     private ?int $endingHeartRate = null;
+
+    #[ORM\Column(nullable: true, enumType: TrainingPhaseIntensity::class)]
+    private ?TrainingPhaseIntensity $intensity = null;
+
+    #[ORM\Column(type: 'integer[]', nullable: true)]
+    private ?array $powers = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $averagePower = null;
+
+    // GPS track: $positionTimes holds their $times value, so a signal loss is a gap between two consecutive entries.
+    // Positions are raw FIT semicircles, altitudes metres.
+    #[ORM\Column(type: 'integer[]', nullable: true)]
+    private ?array $positionTimes = null;
+
+    #[ORM\Column(type: 'integer[]', nullable: true)]
+    private ?array $latitudes = null;
+
+    #[ORM\Column(type: 'integer[]', nullable: true)]
+    private ?array $longitudes = null;
+
+    #[ORM\Column(type: 'integer[]', nullable: true)]
+    private ?array $altitudes = null;
 
     public function getId(): ?int
     {
@@ -145,17 +169,35 @@ class TrainingPhase
 
     public function getPace(): ?int
     {
+        if (0 === $this->distance) {
+            return null;
+        }
+
         return (int) round(500 * ($this->duration / $this->distance));
     }
 
-    public function getFormattedPace(): string
+    public function getFormattedPace(): ?string
     {
-        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->getPace());
+        $pace = $this->getPace();
+        if (null === $pace) {
+            return null;
+        }
+
+        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($pace);
     }
 
     public function getAverageWatt(): ?int
     {
-        $paceInSeconds = $this->getPace() / 10;
+        if (null !== $this->averagePower) {
+            return $this->averagePower;
+        }
+
+        $pace = $this->getPace();
+        if (null === $pace || true !== $this->training->getSport()?->tracksWatts()) {
+            return null;
+        }
+
+        $paceInSeconds = $pace / 10;
 
         // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
         return (int) round(2.8 / ($paceInSeconds / 500) ** 3);
@@ -236,6 +278,95 @@ class TrainingPhase
     public function setEndingHeartRate(?int $endingHeartRate): static
     {
         $this->endingHeartRate = $endingHeartRate;
+
+        return $this;
+    }
+
+    public function getIntensity(): ?TrainingPhaseIntensity
+    {
+        return $this->intensity;
+    }
+
+    public function setIntensity(?TrainingPhaseIntensity $intensity): static
+    {
+        $this->intensity = $intensity;
+
+        return $this;
+    }
+
+    public function isRest(): bool
+    {
+        return TrainingPhaseIntensity::Rest === $this->intensity;
+    }
+
+    public function getPowers(): ?array
+    {
+        return $this->powers;
+    }
+
+    public function setPowers(?array $powers): static
+    {
+        $this->powers = $powers;
+
+        return $this;
+    }
+
+    public function getAveragePower(): ?int
+    {
+        return $this->averagePower;
+    }
+
+    public function setAveragePower(?int $averagePower): static
+    {
+        $this->averagePower = $averagePower;
+
+        return $this;
+    }
+
+    public function getPositionTimes(): ?array
+    {
+        return $this->positionTimes;
+    }
+
+    public function setPositionTimes(?array $positionTimes): static
+    {
+        $this->positionTimes = $positionTimes;
+
+        return $this;
+    }
+
+    public function getLatitudes(): ?array
+    {
+        return $this->latitudes;
+    }
+
+    public function setLatitudes(?array $latitudes): static
+    {
+        $this->latitudes = $latitudes;
+
+        return $this;
+    }
+
+    public function getLongitudes(): ?array
+    {
+        return $this->longitudes;
+    }
+
+    public function setLongitudes(?array $longitudes): static
+    {
+        $this->longitudes = $longitudes;
+
+        return $this;
+    }
+
+    public function getAltitudes(): ?array
+    {
+        return $this->altitudes;
+    }
+
+    public function setAltitudes(?array $altitudes): static
+    {
+        $this->altitudes = $altitudes;
 
         return $this;
     }

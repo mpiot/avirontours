@@ -1,0 +1,23 @@
+{% extends 'layouts/app.html.twig' %}
+
+{% block title %}Importer un fichier FIT{% endblock %}
+
+{% block breadcrumb_items %}
+    <twig:Breadcrumb:Item href="{{ path('my_space') }}">Mon espace</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item href="{{ path('training_index') }}">Mes entraînements</twig:Breadcrumb:Item>
+    <twig:Breadcrumb:Item>Importer un fichier FIT</twig:Breadcrumb:Item>
+{% endblock %}
+
+{% block page_title %}Importer un fichier FIT{% endblock %}
+
+{% block body %}
+    <twig:FormCard>
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {{ form_row(form.file) }}
+
+            <twig:Button variant="primary">Importer</twig:Button>
+        {{ form_end(form) }}
+    </twig:FormCard>
+{% endblock %}

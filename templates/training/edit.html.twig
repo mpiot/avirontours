@@ -17,10 +17,10 @@
 
 {% block body %}
     <twig:FormCard>
-        {% if not training.trainingPhases.empty %}
+        {% if training.source.locksMeasures %}
             <twig:Alert tone="info" icon :live="false" class="mb-3">
-                Séance importée&nbsp;: le sport, la date, la durée et la distance viennent de
-                l'ergomètre et ne sont pas modifiables.
+                Séance importée depuis {{ training.device ?? 'votre appareil' }}&nbsp;: le sport, la date,
+                la durée et la distance viennent de l'appareil et ne sont pas modifiables.
             </twig:Alert>
         {% endif %}
 

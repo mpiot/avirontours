@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace App\Enum;
 
 use App\Util\DurationManipulator;
+use Sportlog\FIT\Profile\Types\Sport;
+use Sportlog\FIT\Profile\Types\SubSport;
 
 enum SportType: string
 {
@@ -72,6 +74,14 @@ enum SportType: string
         };
     }
 
+    public function speedLabel(): string
+    {
+        return match ($this) {
+            self::Cycling => 'Vitesse',
+            self::Rowing, self::Ergometer, self::Swimming, self::Running, self::Strengthening, self::WeightTraining, self::GeneralPhysicalPreparation, self::Yoga, self::Other => 'Allure',
+        };
+    }
+
     public function formatSpeed(?int $duration, ?int $distance): ?string
     {
         if (null === $duration || null === $distance || 0 === $distance) {
@@ -90,5 +100,20 @@ enum SportType: string
     public function tracksWatts(): bool
     {
         return self::Ergometer === $this;
+    }
+
+    public static function fromFit(?int $sport, ?int $subSport): self
+    {
+        return match (true) {
+            SubSport::INDOOR_ROWING === $subSport => self::Ergometer,
+            Sport::ROWING === $sport => self::Rowing,
+            Sport::RUNNING === $sport => self::Running,
+            Sport::CYCLING === $sport, Sport::E_BIKING === $sport, SubSport::INDOOR_CYCLING === $subSport, SubSport::SPIN === $subSport => self::Cycling,
+            Sport::SWIMMING === $sport => self::Swimming,
+            SubSport::YOGA === $subSport, SubSport::PILATES === $subSport => self::Yoga,
+            SubSport::STRENGTH_TRAINING === $subSport => self::WeightTraining,
+            Sport::TRAINING === $sport, Sport::HIIT === $sport => self::GeneralPhysicalPreparation,
+            default => self::Other,
+        };
     }
 }

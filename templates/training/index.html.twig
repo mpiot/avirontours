@@ -20,6 +20,9 @@
             <twig:Dropdown:Toggle variant="primary" outline size="sm" aria-label="Plus d'actions" split />
 
             <twig:Dropdown:Menu>
+                <twig:Dropdown:Item :href="path('training_import_fit')">
+                    <twig:ux:icon name="mdi:file-upload" /> Importer un fichier FIT
+                </twig:Dropdown:Item>
                 {% if app.user.concept2RefreshToken is not null %}
                     <twig:Dropdown:Item :href="path('training_import_concept_logbook')">
                         <twig:ux:icon name="mdi:sync" /> Sync ErgData

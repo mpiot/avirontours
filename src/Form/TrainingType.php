@@ -96,8 +96,7 @@ class TrainingType extends AbstractType
         $data = $builder->getData();
         \assert($data instanceof Training);
 
-        // If there is TrainingPhases, then, the Training is sync
-        if (false === $data->getTrainingPhases()->isEmpty()) {
+        if ($data->getSource()->locksMeasures()) {
             $builder->get('trainedAt')->setDisabled(true);
             $builder->get('sport')->setDisabled(true);
             $builder->get('distance')->setDisabled(true);

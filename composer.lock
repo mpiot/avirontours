@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0baa0beb58a7ef18761ecebe7d0b6f5",
+    "content-hash": "5f09a9f7e3d3b8ba234787aaf65cecfb",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -3499,6 +3499,55 @@
                 "source": "https://github.com/scheb/2fa-email/tree/v8.6.1"
             },
             "time": "2026-06-02T20:21:59+00:00"
+        },
+        {
+            "name": "sportlog/fit",
+            "version": "v0.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sportlog/fit.git",
+                "reference": "7cea28d880b19ae20e521c5c8843487d17add53f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sportlog/fit/zipball/7cea28d880b19ae20e521c5c8843487d17add53f",
+                "reference": "7cea28d880b19ae20e521c5c8843487d17add53f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0",
+                "psr/log": "^3.0"
+            },
+            "require-dev": {
+                "nette/php-generator": "^4.2",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sportlog\\FIT\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes Aberidis"
+                }
+            ],
+            "description": "A decoder for FIT files",
+            "keywords": [
+                "Fit",
+                "garmin"
+            ],
+            "support": {
+                "issues": "https://github.com/sportlog/fit/issues",
+                "source": "https://github.com/sportlog/fit/tree/v0.6.1"
+            },
+            "time": "2026-08-11T17:21:49+00:00"
         },
         {
             "name": "stof/doctrine-extensions-bundle",

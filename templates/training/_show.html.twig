@@ -15,9 +15,13 @@
                 {% endif %}
 
                 {% if training.formattedSpeed is not null %}
-                    <twig:Stats:Item label="Allure" :unit="training.sport.speedUnit">
+                    <twig:Stats:Item :label="training.sport.speedLabel" :unit="training.sport.speedUnit">
                         {{- training.formattedSpeed -}}
                     </twig:Stats:Item>
+                {% endif %}
+
+                {% if training.device is not null %}
+                    <twig:Stats:Item label="Appareil">{{ training.device }}</twig:Stats:Item>
                 {% endif %}
 
             </twig:Stats>
@@ -49,7 +53,17 @@
                             {{- training.averageHeartRate -}}
                         </twig:Stats:Item>
                     {% endif %}
+
+                    {% if training.trimp is not null %}
+                        <twig:Stats:Item label="Charge cardiaque" unit="TRIMP">{{ training.trimp }}</twig:Stats:Item>
+                    {% endif %}
                 </twig:Stats>
+
+                {% if training.trimp is null and training.averageHeartRate is not null and app.user == training.user %}
+                    <p class="text-body-secondary small mt-2 mb-0">
+                        <a href="{{ path('sport_profile_physiology') }}">Renseignez vos FC max et de repos</a> pour obtenir la charge cardiaque de vos séances.
+                    </p>
+                {% endif %}
             </twig:Card:Body>
         </twig:Card>
     {% endif %}

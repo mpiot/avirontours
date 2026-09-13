@@ -23,6 +23,7 @@ namespace App\Entity;
 use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,7 +31,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\UniqueConstraint(fields: ['user', 'concept2Id'])]
@@ -51,6 +51,8 @@ class Training
     private ?\DateTime $trainedAt;
 
     #[Assert\DisableAutoMapping]
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(0)]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $duration = null;
 
@@ -89,6 +91,21 @@ class Training
 
     #[ORM\Column(nullable: true)]
     private ?int $concept2Id = null;
+
+    #[ORM\Column(enumType: TrainingSource::class)]
+    private TrainingSource $source = TrainingSource::Manual;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $device = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $averagePower = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $trimp = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private ?UploadedFile $fitFile = null;
 
     public function __construct(User $user)
     {
@@ -167,7 +184,7 @@ class Training
 
     public function getPace(): ?int
     {
-        if (null === $this->distance || null === $this->duration) {
+        if (null === $this->distance || 0 === $this->distance || null === $this->duration) {
             return null;
         }
 
@@ -190,6 +207,10 @@ class Training
 
     public function getAverageWatt(): ?int
     {
+        if (null !== $this->averagePower) {
+            return $this->averagePower;
+        }
+
         if (null === $this->sport || false === $this->sport->tracksWatts() || null === $this->getPace()) {
             return null;
         }
@@ -323,15 +344,63 @@ class Training
         return $this;
     }
 
-    #[Assert\Callback]
-    public function validateDuration(ExecutionContextInterface $context): void
+    public function getSource(): TrainingSource
     {
-        // Duration is stored in tenths of a second, so 5 minutes is 5 * 60 * 10 tenths.
-        if (null === $this->getDuration() || $this->getDuration() < 5 * 60 * 10) {
-            $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
-                ->atPath('duration')
-                ->addViolation()
-            ;
-        }
+        return $this->source;
+    }
+
+    public function setSource(TrainingSource $source): static
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    public function getDevice(): ?string
+    {
+        return $this->device;
+    }
+
+    public function setDevice(?string $device): static
+    {
+        $this->device = $device;
+
+        return $this;
+    }
+
+    public function getAveragePower(): ?int
+    {
+        return $this->averagePower;
+    }
+
+    public function setAveragePower(?int $averagePower): static
+    {
+        $this->averagePower = $averagePower;
+
+        return $this;
+    }
+
+    public function getTrimp(): ?int
+    {
+        return $this->trimp;
+    }
+
+    public function setTrimp(?int $trimp): static
+    {
+        $this->trimp = $trimp;
+
+        return $this;
+    }
+
+    public function getFitFile(): ?UploadedFile
+    {
+        return $this->fitFile;
+    }
+
+    public function setFitFile(?UploadedFile $fitFile): static
+    {
+        $this->fitFile = $fitFile;
+
+        return $this;
     }
 }

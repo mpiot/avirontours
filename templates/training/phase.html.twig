@@ -25,13 +25,18 @@
     {% endif %}
 
     {% if training.trainingPhases|length > 1 %}
+        {% set withIntensities = training.trainingPhases|filter(phase => phase.intensity is not null)|length > 0 %}
+
         <twig:Table class="mt-3">
             <twig:Table:Head>
                 <twig:Table:Row>
                     <twig:Table:HeadCell>Phase</twig:Table:HeadCell>
+                    {% if withIntensities %}
+                        <twig:Table:HeadCell>Type</twig:Table:HeadCell>
+                    {% endif %}
                     <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
                     <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Allure</twig:Table:HeadCell>
+                    <twig:Table:HeadCell>{{ training.sport.speedLabel }}</twig:Table:HeadCell>
                     <twig:Table:HeadCell>Puissance</twig:Table:HeadCell>
                     <twig:Table:HeadCell>
                         <twig:ux:icon name="mdi:heart" />
@@ -48,10 +53,32 @@
 
                     <twig:Table:Row :active="active_phase == trainingPhase">
                         <twig:Table:Cell label="Phase">{{ phaseNumber }}</twig:Table:Cell>
+                        {% if withIntensities %}
+                            <twig:Table:Cell label="Type">
+                                {% if trainingPhase.intensity is not null %}
+                                    {{ trainingPhase.intensity.label }}
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
+                        {% endif %}
                         <twig:Table:Cell label="Durée">{{ trainingPhase.formattedDuration }}</twig:Table:Cell>
                         <twig:Table:Cell label="Distance">{{ trainingPhase.distance }} m</twig:Table:Cell>
-                        <twig:Table:Cell label="Allure">{{ trainingPhase.formattedPace }} /500m</twig:Table:Cell>
-                        <twig:Table:Cell label="Puissance">{{ trainingPhase.averageWatt }} W</twig:Table:Cell>
+                        <twig:Table:Cell :label="training.sport.speedLabel">
+                            {% set speed = trainingPhase.isRest ? null : training.sport.formatSpeed(trainingPhase.duration, trainingPhase.distance) %}
+                            {% if speed is not null %}
+                                {{ speed }} {{ training.sport.speedUnit }}
+                            {% else %}
+                                <twig:NoValue />
+                            {% endif %}
+                        </twig:Table:Cell>
+                        <twig:Table:Cell label="Puissance">
+                            {% if not trainingPhase.isRest and trainingPhase.averageWatt is not null %}
+                                {{ trainingPhase.averageWatt }} W
+                            {% else %}
+                                <twig:NoValue />
+                            {% endif %}
+                        </twig:Table:Cell>
                         <twig:Table:Cell label="Fréquence cardiaque">
                             {% if trainingPhase.endingHeartRate is not null %}
                                 {{ trainingPhase.endingHeartRate }}
@@ -59,7 +86,13 @@
                                 <twig:NoValue />
                             {% endif %}
                         </twig:Table:Cell>
-                        <twig:Table:Cell label="Cadence">{{ trainingPhase.strokeRate }}</twig:Table:Cell>
+                        <twig:Table:Cell label="Cadence">
+                            {% if trainingPhase.strokeRate is not null %}
+                                {{ trainingPhase.strokeRate }}
+                            {% else %}
+                                <twig:NoValue />
+                            {% endif %}
+                        </twig:Table:Cell>
                         <twig:Table:Cell actions>
                             <a
                                 href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}"

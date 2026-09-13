@@ -32,31 +32,38 @@ class Physiology
     private ?int $id = null;
 
     #[Assert\NotNull]
+    #[Assert\GreaterThanOrEqual(value: 20)]
+    #[Assert\LessThan(propertyPath: 'lightAerobicHeartRateMin')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $restingHeartRate = null;
+
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(propertyPath: 'restingHeartRate')]
     #[Assert\LessThan(propertyPath: 'heavyAerobicHeartRateMin')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $lightAerobicHeartRateMin = null;
 
     #[Assert\NotNull]
-    #[Assert\LessThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'lightAerobicHeartRateMin')]
+    #[Assert\LessThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $heavyAerobicHeartRateMin = null;
 
     #[Assert\NotNull]
-    #[Assert\LessThan(propertyPath: 'oxygenTransportationHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'heavyAerobicHeartRateMin')]
+    #[Assert\LessThan(propertyPath: 'oxygenTransportationHeartRateMin')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $anaerobicThresholdHeartRateMin = null;
 
     #[Assert\NotNull]
-    #[Assert\LessThan(propertyPath: 'anaerobicHeartRateMin')]
     #[Assert\GreaterThan(propertyPath: 'anaerobicThresholdHeartRateMin')]
+    #[Assert\LessThan(propertyPath: 'anaerobicHeartRateMin')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $oxygenTransportationHeartRateMin = null;
 
     #[Assert\NotNull]
-    #[Assert\LessThanOrEqual(propertyPath: 'maximumHeartRate')]
     #[Assert\GreaterThan(propertyPath: 'oxygenTransportationHeartRateMin')]
+    #[Assert\LessThanOrEqual(propertyPath: 'maximumHeartRate')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $anaerobicHeartRateMin = null;
 
@@ -76,6 +83,18 @@ class Physiology
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRestingHeartRate(): ?int
+    {
+        return $this->restingHeartRate;
+    }
+
+    public function setRestingHeartRate(?int $restingHeartRate): self
+    {
+        $this->restingHeartRate = $restingHeartRate;
+
+        return $this;
     }
 
     public function getLightAerobicHeartRateMin(): ?int

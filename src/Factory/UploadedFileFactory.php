@@ -43,6 +43,13 @@ final class UploadedFileFactory extends PersistentObjectFactory
         ]);
     }
 
+    public function fit(): static
+    {
+        return $this->with([
+            'file' => new File(__DIR__.'/../DataFixtures/Files/fit/concept2-splits.fit'),
+        ]);
+    }
+
     public function png(): static
     {
         return $this->with([

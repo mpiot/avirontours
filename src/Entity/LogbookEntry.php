@@ -71,7 +71,7 @@ class LogbookEntry
     private ?\DateTime $endAt = null;
 
     #[Assert\NotBlank(groups: ['finish'])]
-    #[Assert\Positive(groups: ['finish'])]
+    #[Assert\GreaterThanOrEqual(value: 0, groups: ['finish'])]
     #[Assert\LessThanOrEqual(value: 50, groups: ['finish'])]
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $coveredDistance = null;

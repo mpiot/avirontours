@@ -30,10 +30,11 @@ final class PhysiologyFactory extends PersistentObjectFactory
 {
     protected function defaults(): array|callable
     {
-        $max = self::faker()->numberBetween(180, 2150);
+        $max = self::faker()->numberBetween(180, 220);
 
         return [
             'user' => UserFactory::new(),
+            'restingHeartRate' => self::faker()->numberBetween(40, (int) round($max * 0.30)),
             'lightAerobicHeartRateMin' => round($max * 0.65),
             'heavyAerobicHeartRateMin' => round($max * 0.70),
             'anaerobicThresholdHeartRateMin' => round($max * 0.80),

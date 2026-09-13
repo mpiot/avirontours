@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\TrainingPhase;
+use App\Enum\TrainingPhaseIntensity;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
@@ -28,6 +29,15 @@ use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
  */
 final class TrainingPhaseFactory extends PersistentObjectFactory
 {
+    public function rest(): static
+    {
+        return $this->with([
+            'intensity' => TrainingPhaseIntensity::Rest,
+            'distance' => self::faker()->numberBetween(0, 50),
+            'strokeRate' => null,
+        ]);
+    }
+
     public function withoutSeries(): static
     {
         return $this->with([

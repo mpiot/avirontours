@@ -23,6 +23,7 @@ namespace App\EventListener;
 use App\Entity\LogbookEntry;
 use App\Entity\Training;
 use App\Enum\SportType;
+use App\Enum\TrainingSource;
 use App\Util\DurationManipulator;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\EntityManagerInterface;
@@ -97,6 +98,7 @@ readonly class AutomaticTrainingCreator
 
             $training = new Training($user);
             $training
+                ->setSource(TrainingSource::Logbook)
                 ->setTrainedAt($trainedAt)
                 ->setSport(SportType::Rowing)
                 ->setDuration($duration)

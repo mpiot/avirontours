@@ -1,15 +1,44 @@
+{# The five zones climb from B0 to B5, then come the markers that bound them — keep that order. #}
+{% macro bounded_field(field, unit, inputmode = 'numeric') %}
+    <div class="mb-3">
+        {{ form_label(field) }}
+
+        <twig:InputGroup :invalid="field.vars.errors|length > 0">
+            {{ form_widget(field, { attr: { inputmode: inputmode } }) }}
+            <twig:InputGroup:Text>{{ unit }}</twig:InputGroup:Text>
+            {{ form_errors(field) }}
+        </twig:InputGroup>
+
+        {{ form_help(field) }}
+    </div>
+{% endmacro %}
+
 {{ form_start(form) }}
     {{ form_errors(form) }}
 
-    <div class="row">
-        <div class="col-sm-6">{{ form_row(form.lightAerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.heavyAerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.anaerobicThresholdHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.oxygenTransportationHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.anaerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.maximumHeartRate) }}</div>
-        <div class="col-sm-6">{{ form_row(form.maximumOxygenConsumption) }}</div>
-    </div>
+    <fieldset class="mb-4">
+        <legend class="fs-5"><twig:ux:icon name="mdi:heart" class="me-2" />Zones d'entraînement</legend>
 
-    <twig:Button variant="primary" class="mt-3">Enregistrer</twig:Button>
+        <div class="row">
+            <div class="col-sm-6">{{ _self.bounded_field(form.lightAerobicHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.heavyAerobicHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.anaerobicThresholdHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.oxygenTransportationHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.anaerobicHeartRateMin, 'bpm') }}</div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+        <legend class="fs-5"><twig:ux:icon name="mdi:heart-pulse" class="me-2" />Repères</legend>
+
+        <div class="row">
+            <div class="col-sm-6">{{ _self.bounded_field(form.restingHeartRate, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.maximumHeartRate, 'bpm') }}</div>
+            <div class="col-sm-6">{{ _self.bounded_field(form.maximumOxygenConsumption, 'ml/kg/min', 'decimal') }}</div>
+        </div>
+    </fieldset>
+
+    {{ form_rest(form) }}
+
+    <twig:Button variant="primary">Enregistrer</twig:Button>
 {{ form_end(form) }}
