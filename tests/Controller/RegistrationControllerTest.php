@@ -879,7 +879,7 @@ class RegistrationControllerTest extends AppWebTestCase
             'disabled', 'Votre inscription au club a été interrompue',
         ];
         yield 'majeur, certificat Compétition périmé' => [
-            '-40 years', 4, CertificateType::Certificate, CertificateLevel::Competition,
+            '-40 years', 5, CertificateType::Certificate, CertificateLevel::Competition,
             'disabled', 'expire le',
         ];
     }

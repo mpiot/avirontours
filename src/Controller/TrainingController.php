@@ -26,8 +26,11 @@ use App\Entity\TrainingPhase;
 use App\Enum\SportType;
 use App\Form\TrainingEditRatingType;
 use App\Form\TrainingType;
-use App\Message\Concept2ImportMessage;
+use App\Message\Concept2ResultImportMessage;
 use App\Repository\TrainingRepository;
+use App\Service\Concept2\Concept2ApiConsumer;
+use App\Service\Concept2\Exception\Concept2AccountRevokedException;
+use App\Service\Concept2\Exception\Concept2Exception;
 use App\Service\TrainingHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -38,6 +41,7 @@ use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/training')]
 #[IsGranted(new Expression('is_granted("VALID_LICENSE") or is_granted("ROLE_ADMIN") or is_granted("ROLE_SPORT_ADMIN")'))]
@@ -117,13 +121,49 @@ class TrainingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/import/concept-logbook', name: 'training_import_concept_logbook')]
+    #[Route(path: '/import/concept-logbook', name: 'training_import_concept_logbook', methods: ['POST'])]
     #[IsGranted(new Expression('null !== user.getConcept2RefreshToken()'))]
-    public function importConceptLogbook(MessageBusInterface $bus): Response
-    {
-        $bus->dispatch(new Concept2ImportMessage($this->getUser()->getId()));
+    public function importConceptLogbook(
+        Concept2ApiConsumer $apiConsumer,
+        EntityManagerInterface $entityManager,
+        MessageBusInterface $bus,
+        Request $request,
+        TranslatorInterface $translator,
+    ): Response {
+        if (false === $this->isCsrfTokenValid('submit', (string) $request->request->get('_token'))) {
+            return $this->redirectToRoute('training_index');
+        }
 
-        $this->addFlash('success', 'Vos entraînements sont en cours de synchronisation.');
+        $user = $this->getUser();
+
+        // Capture the time before fetching (the API will fetch all before this time)
+        $importStartedAt = new \DateTimeImmutable();
+
+        try {
+            // Refreshes the stored token if needed, the workers only read it
+            $apiConsumer->getAccessToken($user);
+            $resultIds = $apiConsumer->getNewResultIds($user, $user->getConcept2LastImportAt());
+        } catch (Concept2AccountRevokedException) {
+            $this->addFlash('error', 'Votre compte Concept2 doit être reconnecté.');
+
+            return $this->redirectToRoute('training_index');
+        } catch (Concept2Exception) {
+            $this->addFlash('error', 'Le Logbook Concept2 est indisponible, réessayez plus tard.');
+
+            return $this->redirectToRoute('training_index');
+        }
+
+        foreach ($resultIds as $resultId) {
+            $bus->dispatch(new Concept2ResultImportMessage($user->getId(), $resultId));
+        }
+
+        $user->setConcept2LastImportAt($importStartedAt);
+        $entityManager->flush();
+
+        $this->addFlash('success', $translator->trans(
+            "{0} Aucune nouvelle séance à importer.|{1} 1 séance en cours d'importation.|]1,Inf[ %count% séances en cours d'importation.",
+            ['%count%' => \count($resultIds)],
+        ));
 
         return $this->redirectToRoute('training_index');
     }

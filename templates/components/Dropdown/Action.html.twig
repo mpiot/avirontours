@@ -1,0 +1,12 @@
+{#
+ # One entry that runs something: a POST to `action`, never a link, so Turbo's hover prefetch
+ # cannot trigger it. Turbo disables the button while the form is submitting.
+ #}
+{% props action %}
+
+<li>
+    <form method="post" action="{{ action }}">
+        <input type="hidden" name="_token" data-controller="csrf-protection" value="{{ csrf_token('submit') }}">
+        <button type="submit"{{ attributes.defaults({ class: 'dropdown-item' }) }}>{% block content %}{% endblock %}</button>
+    </form>
+</li>

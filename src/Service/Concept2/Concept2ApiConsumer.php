@@ -18,31 +18,28 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Service;
+namespace App\Service\Concept2;
 
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
 use App\Entity\User;
 use App\Enum\SportType;
 use App\Repository\TrainingRepository;
+use App\Service\Concept2\Exception\Concept2AccountRevokedException;
+use App\Service\Concept2\Exception\Concept2Exception;
+use App\Service\Concept2\Exception\Concept2RateLimitedException;
 use Doctrine\Persistence\ManagerRegistry;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
-use Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface as HttpClientExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class Concept2ApiConsumer
 {
     public const string API_URL = 'https://log.concept2.com/api';
-
     private const int HTTP_TIMEOUT = 15;
-
-    private const int DEFAULT_RETRY_AFTER = 60;
 
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
@@ -52,21 +49,76 @@ class Concept2ApiConsumer
     ) {
     }
 
-    public function getTrainings(User $user, ?\DateTimeInterface $startAt): array
+    public function getAccessToken(User $user): string
     {
-        $accessToken = $this->getAccessToken($user);
-        $results = $this->getResults($accessToken, $startAt);
+        $storedToken = $user->getConcept2AccessToken();
+        $expiresAt = $user->getConcept2AccessTokenExpiresAt();
+        // One hour of margin: the workers never refresh, the queued imports must fit in it
+        if (null !== $storedToken && null !== $expiresAt && $expiresAt > new \DateTimeImmutable('+1 hour')) {
+            return $storedToken;
+        }
 
-        $trainings = [];
-        foreach ($results as $result) {
+        /** @var OAuth2Client $client */
+        $client = $this->clientRegistry->getClient('concept2');
+
+        try {
+            $accessToken = $client->refreshAccessToken($user->getConcept2RefreshToken());
+        } catch (IdentityProviderException $e) {
+            $user
+                ->setConcept2RefreshToken(null)
+                ->setConcept2AccessToken(null)
+                ->setConcept2AccessTokenExpiresAt(null)
+            ;
+            $this->managerRegistry->getManager()->flush();
+
+            throw new Concept2AccountRevokedException('The Concept2 account must be reconnected.', previous: $e);
+        }
+
+        if (null === $accessToken->getExpires()) {
+            throw new Concept2Exception('The Concept2 token response carries no expiry.');
+        }
+
+        $user
+            // Keep the current refresh token when the provider does not rotate it
+            ->setConcept2RefreshToken($accessToken->getRefreshToken() ?? $user->getConcept2RefreshToken())
+            ->setConcept2AccessToken($accessToken->getToken())
+            ->setConcept2AccessTokenExpiresAt((new \DateTimeImmutable())->setTimestamp($accessToken->getExpires()))
+        ;
+        $this->managerRegistry->getManager()->flush();
+
+        return $accessToken->getToken();
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getNewResultIds(User $user, ?\DateTimeImmutable $updatedAfter): array
+    {
+        $query = ['type' => 'rower', 'number' => 250];
+        if (null !== $updatedAfter) {
+            $query['updated_after'] = $updatedAfter->setTimezone(new \DateTimeZone('UTC'))->format('Y-m-d H:i:s');
+        }
+
+        // Sync only the first page, all pages are too many results to sync
+        $url = \sprintf('%s/users/me/results', self::API_URL);
+
+        $resultIds = [];
+        foreach ($this->requestData($user, $url, $query) as $result) {
             if ($this->trainingRepository->isConcept2ResultImported($user, $result['id'])) {
                 continue;
             }
 
-            $trainings[] = $this->createTraining($accessToken, $user, $result);
+            $resultIds[] = $result['id'];
         }
 
-        return $trainings;
+        return $resultIds;
+    }
+
+    public function getTraining(User $user, int $resultId): Training
+    {
+        $url = \sprintf('%s/users/me/results/%s', self::API_URL, $resultId);
+
+        return $this->createTraining($user, $this->requestData($user, $url));
     }
 
     /**
@@ -78,9 +130,9 @@ class Concept2ApiConsumer
      *     hr: int[],
      * }>
      */
-    public function getFormattedStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
+    public function getFormattedStrokeData(User $user, int $resultIdentifier): array
     {
-        $strokes = $this->getStrokeData($accessToken, $resultIdentifier);
+        $strokes = $this->getStrokeData($user, $resultIdentifier);
 
         $phaseKey = 0;
         $maxTime = 0;
@@ -102,7 +154,7 @@ class Concept2ApiConsumer
         return $formattedStrokes;
     }
 
-    private function createTraining(AccessTokenInterface $accessToken, User $user, array $result): Training
+    private function createTraining(User $user, array $result): Training
     {
         $averageHeartRate = $result['heart_rate']['average'] ?? null;
         $maxHeartRate = $result['heart_rate']['max'] ?? null;
@@ -124,7 +176,7 @@ class Concept2ApiConsumer
         }
 
         // Retrieve the stroke data to create phases
-        $strokeData = $this->getFormattedStrokeData($accessToken, $result['id']);
+        $strokeData = $this->getFormattedStrokeData($user, $result['id']);
 
         // If there is no interval, or only one, create it
         // Validate stroke data count
@@ -193,76 +245,6 @@ class Concept2ApiConsumer
 
     /**
      * @return array<array{
-     *     id: int,
-     *     user_id: int,
-     *     date: string,
-     *     timezone: ?string,
-     *     date_utc: ?string,
-     *     distance: int,
-     *     type: string,
-     *     time: int,
-     *     time_formatted: string,
-     *     workout_type: string,
-     *     source: string,
-     *     weight_class: string,
-     *     verified: bool,
-     *     ranked: bool,
-     *     comments: ?string,
-     *     privacy: string,
-     *     stroke_data: bool,
-     *     calories_total: int,
-     *     drag_factor: int,
-     *     stroke_count: int,
-     *     stroke_rate: int,
-     *     heart_rate: array{
-     *         min: int,
-     *         average: int,
-     *         max: int,
-     *         ending: int,
-     *     },
-     *     workout: array{
-     *         targets: array,
-     *         splits: array{
-     *             time: int,
-     *             distance: int,
-     *             calories_total: int,
-     *             wattminutes_total: int,
-     *             stroke_rate: int,
-     *             heart_rate: array{
-     *                 min: int,
-     *                 average: int,
-     *                 max: int,
-     *                 ending: int,
-     *              },
-     *         },
-     *     },
-     *     real_time: null
-     * }>
-     */
-    private function getResults(AccessTokenInterface $accessToken, ?\DateTimeInterface $startAt): array
-    {
-        $query = ['type' => 'rower'];
-        if (null !== $startAt) {
-            $query['from'] = $startAt->format('Y-m-d H:i:s');
-        }
-
-        // Sync only the first page, all page are too many results to sync
-        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results', self::API_URL), [
-            'query' => $query,
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'auth_bearer' => $accessToken->getToken(),
-            'timeout' => self::HTTP_TIMEOUT,
-        ]);
-
-        $this->guardResponse($response);
-
-        return $response->toArray()['data'];
-    }
-
-    /**
-     * @return array<array{
      *     d: int,
      *     p: int,
      *     hr: int,
@@ -270,60 +252,34 @@ class Concept2ApiConsumer
      *     t: int,
      * }>
      */
-    private function getStrokeData(AccessTokenInterface $accessToken, int $resultIdentifier): array
+    private function getStrokeData(User $user, int $resultIdentifier): array
     {
-        $response = $this->httpClient->request('GET', \sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier), [
+        $url = \sprintf('%s/users/me/results/%s/strokes', self::API_URL, $resultIdentifier);
+
+        return $this->requestData($user, $url);
+    }
+
+    private function requestData(User $user, string $url, array $query = []): array
+    {
+        $response = $this->httpClient->request('GET', $url, [
+            'query' => $query,
             'headers' => [
                 'Accept' => 'application/json',
             ],
-            'auth_bearer' => $accessToken->getToken(),
+            'auth_bearer' => (string) $user->getConcept2AccessToken(),
             'timeout' => self::HTTP_TIMEOUT,
         ]);
 
-        $this->guardResponse($response);
-
-        return $response->toArray()['data'];
-    }
-
-    private function getAccessToken(User $user): AccessTokenInterface
-    {
-        /** @var OAuth2Client $client */
-        $client = $this->clientRegistry->getClient('concept2');
-
-        // Get an access token from the refreshToken
         try {
-            $accessToken = $client->refreshAccessToken($user->getConcept2RefreshToken());
-        } catch (IdentityProviderException $e) {
-            $user->setConcept2RefreshToken(null);
-            $this->managerRegistry->getManager()->flush();
+            if (Response::HTTP_TOO_MANY_REQUESTS === $response->getStatusCode()) {
+                $retryAfter = $response->getHeaders(false)['retry-after'][0] ?? null;
 
-            throw new UnrecoverableMessageHandlingException('The Concept2 account must be reconnected.', previous: $e);
+                throw new Concept2RateLimitedException(is_numeric($retryAfter) ? (int) $retryAfter : null);
+            }
+
+            return $response->toArray()['data'];
+        } catch (HttpClientExceptionInterface $e) {
+            throw new Concept2Exception('The Concept2 Logbook did not answer successfully.', previous: $e);
         }
-
-        // Update the refresh token
-        $refreshToken = $accessToken->getRefreshToken();
-        if (null !== $refreshToken) {
-            $user->setConcept2RefreshToken($refreshToken);
-            $this->managerRegistry->getManager()->flush();
-        }
-
-        return $accessToken;
-    }
-
-    private function guardResponse(ResponseInterface $response): void
-    {
-        $statusCode = $response->getStatusCode();
-        if (200 === $statusCode) {
-            return;
-        }
-
-        if (Response::HTTP_TOO_MANY_REQUESTS === $statusCode) {
-            $retryAfter = $response->getHeaders(false)['retry-after'][0] ?? null;
-            $delay = is_numeric($retryAfter) ? (int) $retryAfter : self::DEFAULT_RETRY_AFTER;
-
-            throw new RecoverableMessageHandlingException('The Concept2 Logbook rate limit was reached.', retryDelay: $delay * 1000);
-        }
-
-        throw new \Exception('The Logbook Api do not return successfully response.');
     }
 }

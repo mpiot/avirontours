@@ -20,14 +20,21 @@ declare(strict_types=1);
 
 namespace App\Message;
 
-readonly class Concept2ImportMessage
+readonly class Concept2ResultImportMessage
 {
-    public function __construct(private int $userId)
-    {
+    public function __construct(
+        private int $userId,
+        private int $concept2ResultId,
+    ) {
     }
 
     public function getUserId(): int
     {
         return $this->userId;
+    }
+
+    public function getConcept2ResultId(): int
+    {
+        return $this->concept2ResultId;
     }
 }

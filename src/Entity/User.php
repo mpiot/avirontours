@@ -172,6 +172,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $concept2RefreshToken = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $concept2AccessToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $concept2AccessTokenExpiresAt = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $concept2LastImportAt = null;
 
@@ -686,6 +692,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function setConcept2RefreshToken(?string $concept2RefreshToken): self
     {
         $this->concept2RefreshToken = $concept2RefreshToken;
+
+        return $this;
+    }
+
+    public function getConcept2AccessToken(): ?string
+    {
+        return $this->concept2AccessToken;
+    }
+
+    public function setConcept2AccessToken(?string $concept2AccessToken): self
+    {
+        $this->concept2AccessToken = $concept2AccessToken;
+
+        return $this;
+    }
+
+    public function getConcept2AccessTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->concept2AccessTokenExpiresAt;
+    }
+
+    public function setConcept2AccessTokenExpiresAt(?\DateTimeImmutable $concept2AccessTokenExpiresAt): self
+    {
+        $this->concept2AccessTokenExpiresAt = $concept2AccessTokenExpiresAt;
 
         return $this;
     }
