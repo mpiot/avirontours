@@ -90,6 +90,12 @@ class Training
     #[ORM\Column(nullable: true)]
     private ?int $concept2Id = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $dragFactor = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $strokeCount = null;
+
     public function __construct(User $user)
     {
         $this->user = $user;
@@ -319,6 +325,30 @@ class Training
     public function setConcept2Id(?int $concept2Id): static
     {
         $this->concept2Id = $concept2Id;
+
+        return $this;
+    }
+
+    public function getDragFactor(): ?int
+    {
+        return $this->dragFactor;
+    }
+
+    public function setDragFactor(?int $dragFactor): static
+    {
+        $this->dragFactor = $dragFactor;
+
+        return $this;
+    }
+
+    public function getStrokeCount(): ?int
+    {
+        return $this->strokeCount;
+    }
+
+    public function setStrokeCount(?int $strokeCount): static
+    {
+        $this->strokeCount = $strokeCount;
 
         return $this;
     }

@@ -158,6 +158,8 @@ class Concept2ApiConsumer
     {
         $averageHeartRate = $result['heart_rate']['average'] ?? null;
         $maxHeartRate = $result['heart_rate']['max'] ?? null;
+        $dragFactor = $result['drag_factor'] ?? null;
+        $strokeCount = $result['stroke_count'] ?? null;
 
         $training = new Training($user);
         $training
@@ -169,6 +171,8 @@ class Concept2ApiConsumer
             ->setStrokeRate($result['stroke_rate'])
             ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
             ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
+            ->setDragFactor(0 !== $dragFactor ? $dragFactor : null)
+            ->setStrokeCount(0 !== $strokeCount ? $strokeCount : null)
         ;
 
         if (false === $result['stroke_data']) {

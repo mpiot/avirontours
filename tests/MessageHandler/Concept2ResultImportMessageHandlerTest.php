@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\MessageHandler;
 
 use App\Entity\User;
+use App\Enum\SportType;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Message\Concept2ResultImportMessage;
@@ -98,12 +99,49 @@ class Concept2ResultImportMessageHandlerTest extends KernelTestCase
             'distance' => 2000,
             'stroke_rate' => 24,
             'heart_rate' => ['average' => 150, 'max' => 175],
+            'drag_factor' => 88,
+            'stroke_count' => 324,
             'stroke_data' => false,
         ]])]);
 
         $handler(new Concept2ResultImportMessage($user->getId(), 42));
 
-        TrainingFactory::assert()->exists(['concept2Id' => 42, 'user' => $user]);
+        TrainingFactory::assert()->exists([
+            'concept2Id' => 42,
+            'user' => $user,
+            'sport' => SportType::Ergometer,
+            'trainedAt' => new \DateTime('2020-01-01 10:00:00'),
+            'duration' => 6000,
+            'distance' => 2000,
+            'strokeRate' => 24,
+            'averageHeartRate' => 150,
+            'maxHeartRate' => 175,
+            'dragFactor' => 88,
+            'strokeCount' => 324,
+        ]);
+    }
+
+    #[DataProvider('provideMissingMeasures')]
+    public function testMissingMeasuresAreImportedAsNull(array $fields): void
+    {
+        $user = $this->createConnectedUser();
+        $handler = $this->createHandler([new JsonMockResponse(['data' => [
+            'id' => 42,
+            'date' => '2020-01-01 10:00:00',
+            'time' => 6000,
+            'distance' => 2000,
+            'stroke_rate' => 24,
+            'stroke_data' => false,
+            ...$fields,
+        ]])]);
+
+        $handler(new Concept2ResultImportMessage($user->getId(), 42));
+
+        $training = TrainingFactory::find(['concept2Id' => 42]);
+        self::assertNull($training->getAverageHeartRate());
+        self::assertNull($training->getMaxHeartRate());
+        self::assertNull($training->getDragFactor());
+        self::assertNull($training->getStrokeCount());
     }
 
     private function createConnectedUser(?string $accessToken = 'stored-jwt', ?\DateTimeImmutable $expiresAt = new \DateTimeImmutable('+2 hours')): User
@@ -139,5 +177,14 @@ class Concept2ResultImportMessageHandlerTest extends KernelTestCase
     {
         yield 'expired' => ['stored-jwt', new \DateTimeImmutable('-1 hour')];
         yield 'never stored' => [null, null];
+    }
+
+    public static function provideMissingMeasures(): \Generator
+    {
+        yield 'absent' => [[]];
+        yield 'null' => [['heart_rate' => null, 'drag_factor' => null, 'stroke_count' => null]];
+        yield 'null heart rate values' => [['heart_rate' => ['average' => null, 'max' => null]]];
+        yield 'zero' => [['heart_rate' => ['average' => 0, 'min' => 0, 'max' => 0], 'drag_factor' => 0, 'stroke_count' => 0]];
+        yield 'zero heart rate without max' => [['heart_rate' => ['average' => 0, 'min' => 0]]];
     }
 }
