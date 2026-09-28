@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\User;
 use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
@@ -27,13 +28,20 @@ use App\Factory\LicenseFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\TrainingPhaseFactory;
 use App\Factory\UserFactory;
+use App\Message\Concept2ResultImportMessage;
 use App\Tests\AppWebTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\MockHttpClient;
+use Symfony\Component\HttpClient\Response\JsonMockResponse;
+use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Zenstruck\Messenger\Test\InteractsWithMessenger;
 
 class TrainingControllerTest extends AppWebTestCase
 {
+    use InteractsWithMessenger;
+
     #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
@@ -931,27 +939,111 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/import/concept-logbook');
+        $client->request('POST', '/training/import/concept-logbook');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-        $this->assertCount(0, self::getContainer()->get('messenger.transport.async')->getSent());
+        $this->transport('async')->queue()->assertEmpty();
     }
 
-    public function testImportConceptLogbookDispatchesForConnectedAccount(): void
+    public function testImportConceptLogbookSyncsNothingWithoutACsrfToken(): void
     {
-        $user = UserFactory::createOne(['concept2RefreshToken' => 'a-refresh-token']);
-        LicenseFactory::new()->annualActive()->withValidLicense()->create(['user' => $user]);
+        $user = $this->createConnectedConcept2User();
 
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/import/concept-logbook');
+        self::getContainer()->set('http_client', new MockHttpClient($this->concept2ResultsResponse([['id' => 101]])));
+
+        $client->request('POST', '/training/import/concept-logbook');
 
         $this->assertResponseRedirects('/training');
-        $this->assertCount(1, self::getContainer()->get('messenger.transport.async')->getSent());
+        $this->transport('async')->queue()->assertEmpty();
+        $this->assertNull($user->getConcept2LastImportAt());
+    }
 
-        $client->followRedirect();
-        $this->assertSelectorTextContains('.toast-body', 'en cours de synchronisation');
+    public function testImportConceptLogbookDispatchesOneMessagePerNewSession(): void
+    {
+        $user = $this->createConnectedConcept2User();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->disableReboot();
+        $client->loginUser($user);
+        self::getContainer()->set('http_client', new MockHttpClient($this->concept2ResultsResponse([['id' => 101], ['id' => 102]])));
+        $client->request('GET', '/training');
+
+        $client->submitForm('Sync ErgData');
+
+        $this->assertResponseRedirects('/training');
+        $crawler = $client->followRedirect();
+        $this->assertStringContainsString("2 séances en cours d'importation.", $crawler->filterXPath('//*[@id="flashes"]')->text());
+        $this->transport('async')->queue()->assertCount(2);
+        $this->transport('async')->queue()->assertContains(Concept2ResultImportMessage::class, 2);
+        $this->assertSame(101, $this->transport('async')->queue()->messages()[0]->getConcept2ResultId());
+        $this->assertSame(102, $this->transport('async')->queue()->messages()[1]->getConcept2ResultId());
+        $this->assertNotNull($user->getConcept2LastImportAt());
+    }
+
+    public function testImportConceptLogbookAnnouncesWhenNothingIsNew(): void
+    {
+        $user = $this->createConnectedConcept2User();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->disableReboot();
+        $client->loginUser($user);
+        self::getContainer()->set('http_client', new MockHttpClient($this->concept2ResultsResponse([])));
+        $client->request('GET', '/training');
+
+        $client->submitForm('Sync ErgData');
+
+        $this->assertResponseRedirects('/training');
+        $crawler = $client->followRedirect();
+        $this->assertStringContainsString('Aucune nouvelle séance à importer.', $crawler->filterXPath('//*[@id="flashes"]')->text());
+        $this->transport('async')->queue()->assertEmpty();
+    }
+
+    public function testImportConceptLogbookShowsAnErrorWhenTheLogbookIsUnavailable(): void
+    {
+        $user = $this->createConnectedConcept2User();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->disableReboot();
+        $client->loginUser($user);
+        self::getContainer()->set('http_client', new MockHttpClient(new MockResponse('', ['http_code' => 500])));
+        $client->request('GET', '/training');
+
+        $client->submitForm('Sync ErgData');
+
+        $this->assertResponseRedirects('/training');
+        $crawler = $client->followRedirect();
+        $this->assertStringContainsString('Le Logbook Concept2 est indisponible', $crawler->filterXPath('//*[@id="flashes"]')->text());
+        $this->transport('async')->queue()->assertEmpty();
+        $this->assertNull($user->getConcept2LastImportAt());
+    }
+
+    private function createConnectedConcept2User(): User
+    {
+        $user = UserFactory::createOne([
+            'concept2RefreshToken' => 'a-refresh-token',
+            'concept2AccessToken' => 'stored-jwt',
+            'concept2AccessTokenExpiresAt' => new \DateTimeImmutable('+2 hours'),
+        ]);
+        LicenseFactory::new()->annualActive()->withValidLicense()->create(['user' => $user]);
+
+        return $user;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $results
+     */
+    private function concept2ResultsResponse(array $results): JsonMockResponse
+    {
+        return new JsonMockResponse([
+            'data' => $results,
+            'meta' => ['pagination' => ['total_pages' => 1]],
+        ]);
     }
 
     private function sessionText(Crawler $crawler, string $sportLabel): string
@@ -977,6 +1069,7 @@ class TrainingControllerTest extends AppWebTestCase
         yield ['GET', '/training/{id}/edit'];
         yield ['POST', '/training/{id}/edit'];
         yield ['POST', '/training/{id}'];
+        yield ['POST', '/training/import/concept-logbook'];
     }
 
     public static function endAtProvider(): \Generator

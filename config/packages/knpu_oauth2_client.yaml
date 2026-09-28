@@ -1,4 +1,6 @@
 knpu_oauth2_client:
+    http_client_options:
+        timeout: 15
     clients:
         # configure your clients as described here: https://github.com/knpuniversity/oauth2-client-bundle#configuration
         concept2:

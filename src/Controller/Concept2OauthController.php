@@ -41,8 +41,7 @@ class Concept2OauthController extends AbstractController
         ;
     }
 
-    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check', host: 'my.avirontours.fr')]
-    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check_default')]
+    #[Route('/oauth/concept-logbook', name: 'oauth_concept2_check')]
     public function connectCheck(ClientRegistry $clientRegistry, EntityManagerInterface $entityManager): RedirectResponse
     {
         /** @var OAuth2Client $client */
@@ -50,13 +49,24 @@ class Concept2OauthController extends AbstractController
 
         try {
             $accessToken = $client->getAccessToken();
-            $this->getUser()->setConcept2RefreshToken($accessToken->getRefreshToken());
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Votre compte Concept2 a bien été connecté.');
         } catch (IdentityProviderException) {
-            $this->addFlash('error', 'Une erreur est survenue lors de la connexion de votre compte Concept2.');
+            $accessToken = null;
         }
+
+        if (null === $accessToken?->getExpires()) {
+            $this->addFlash('error', 'Une erreur est survenue lors de la connexion de votre compte Concept2.');
+
+            return $this->redirectToRoute('sport_profile_configuration');
+        }
+
+        $this->getUser()
+            ->setConcept2RefreshToken($accessToken->getRefreshToken())
+            ->setConcept2AccessToken($accessToken->getToken())
+            ->setConcept2AccessTokenExpiresAt((new \DateTimeImmutable())->setTimestamp($accessToken->getExpires()))
+        ;
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre compte Concept2 a bien été connecté.');
 
         return $this->redirectToRoute('sport_profile_configuration');
     }
@@ -64,7 +74,11 @@ class Concept2OauthController extends AbstractController
     #[Route('/oauth/concept-logbook/unconnect', name: 'oauth_concept2_unconnect')]
     public function unconnect(EntityManagerInterface $entityManager): RedirectResponse
     {
-        $this->getUser()->setConcept2RefreshToken(null);
+        $this->getUser()
+            ->setConcept2RefreshToken(null)
+            ->setConcept2AccessToken(null)
+            ->setConcept2AccessTokenExpiresAt(null)
+        ;
         $entityManager->flush();
 
         $this->addFlash('success', 'Votre compte Concept2 a bien été déconnecté.');

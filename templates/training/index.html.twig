@@ -21,9 +21,9 @@
 
             <twig:Dropdown:Menu>
                 {% if app.user.concept2RefreshToken is not null %}
-                    <twig:Dropdown:Item :href="path('training_import_concept_logbook')">
+                    <twig:Dropdown:Action :action="path('training_import_concept_logbook')">
                         <twig:ux:icon name="mdi:sync" /> Sync ErgData
-                    </twig:Dropdown:Item>
+                    </twig:Dropdown:Action>
                 {% else %}
                     <twig:Dropdown:Item :href="path('sport_profile_configuration')">
                         <twig:ux:icon name="mdi:sync" /> Connecter ErgData
