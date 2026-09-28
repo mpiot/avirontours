@@ -325,6 +325,8 @@ class TrainingControllerTest extends AppWebTestCase
             'strokeRate' => 22,
             'averageHeartRate' => 148,
             'maxHeartRate' => 176,
+            'strokeCount' => 324,
+            'dragFactor' => 88,
         ]);
 
         static::ensureKernelShutdown();
@@ -333,7 +335,10 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', "/training/{$training->getId()}");
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('03:00.0 /500m', $crawler->filter('.app-stat-list')->eq(0)->text());
+        $session = $crawler->filter('.app-stat-list')->eq(0)->text();
+        $this->assertStringContainsString('03:00.0 /500m', $session);
+        $this->assertStringContainsString('Coups 324', $session);
+        $this->assertStringContainsString('Drag factor 88', $session);
 
         $intensity = $crawler->filter('.app-stat-list')->eq(1)->text();
         $this->assertStringContainsString('22 c/min', $intensity);

@@ -20,6 +20,13 @@
                     </twig:Stats:Item>
                 {% endif %}
 
+                {% if training.strokeCount is not null %}
+                    <twig:Stats:Item label="Coups">{{ training.strokeCount }}</twig:Stats:Item>
+                {% endif %}
+
+                {% if training.dragFactor is not null %}
+                    <twig:Stats:Item label="Drag factor">{{ training.dragFactor }}</twig:Stats:Item>
+                {% endif %}
             </twig:Stats>
         </twig:Card:Body>
     </twig:Card>
