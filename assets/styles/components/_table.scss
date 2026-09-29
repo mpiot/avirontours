@@ -4,7 +4,8 @@
 
     margin-bottom: 0;
 
-    > :not(caption) > * > * {
+    // Not on `.table-sm`, or this would override Bootstrap's own compact padding.
+    &:not(.table-sm) > :not(caption) > * > * {
         padding: ($spacer * .75) $spacer;
     }
 
@@ -17,7 +18,7 @@
         white-space: nowrap;
     }
 
-    > tbody > tr:last-child > * {
+    > :last-child > tr:last-child > * {
         border-bottom-width: 0; // the card edge closes the table
     }
 
@@ -186,9 +187,9 @@
         }
 
         > thead > tr > th:first-child,
-        > tbody > tr > th {
+        > :is(tbody, tfoot) > tr > th {
             position: sticky;
-            left: 0;
+            left: -1px; // tucked under the edge: at a fractional pixel ratio `0` left a sliver the text showed through
             z-index: 1;
             background-color: $white;
         }
@@ -215,13 +216,16 @@
  * with no script and nothing to measure.
  */
 .app-table-scroller {
+    position: relative; // or a visually-hidden label escapes the scroll box and widens the page
+
+    // The patches first: the first layer is painted on top, and they have to cover the shadows.
     background-image:
+        linear-gradient(to right, $white 60%, rgba($white, 0)), // solid over the .75rem of shadow
+        linear-gradient(to left, $white 60%, rgba($white, 0)),
         linear-gradient(to right, rgba($black, .1), rgba($black, 0)),
-        linear-gradient(to left, rgba($black, .1), rgba($black, 0)),
-        linear-gradient(to right, $white, rgba($white, 0)),
-        linear-gradient(to left, $white, rgba($white, 0));
+        linear-gradient(to left, rgba($black, .1), rgba($black, 0));
     background-position: 0 0, 100% 0, 0 0, 100% 0;
-    background-attachment: scroll, scroll, local, local;
+    background-attachment: local, local, scroll, scroll;
     background-repeat: no-repeat;
-    background-size: .75rem 100%, .75rem 100%, 1.25rem 100%, 1.25rem 100%;
+    background-size: 1.25rem 100%, 1.25rem 100%, .75rem 100%, .75rem 100%;
 }

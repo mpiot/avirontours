@@ -25,6 +25,7 @@ use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use App\Repository\TrainingRepository;
 use App\Util\DurationManipulator;
+use App\Util\WattCalculator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -75,8 +76,14 @@ class Training
     /**
      * @var Collection<int, TrainingPhase>
      */
-    #[ORM\OneToMany(mappedBy: 'training', targetEntity: TrainingPhase::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: TrainingPhase::class, mappedBy: 'training', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $trainingPhases;
+
+    /**
+     * @var Collection<int, TrainingSplit>
+     */
+    #[ORM\OneToMany(targetEntity: TrainingSplit::class, mappedBy: 'training', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $trainingSplits;
 
     #[ORM\Column(nullable: true)]
     private ?int $strokeRate = null;
@@ -101,6 +108,7 @@ class Training
         $this->user = $user;
         $this->trainedAt = new \DateTime((new \DateTime())->format('Y-m-d'));
         $this->trainingPhases = new ArrayCollection();
+        $this->trainingSplits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -200,10 +208,7 @@ class Training
             return null;
         }
 
-        $paceInSeconds = $this->getPace() / 10;
-
-        // See https://www.concept2.com/indoor-rowers/training/calculators/watts-calculator
-        return (int) round(2.8 / ($paceInSeconds / 500) ** 3);
+        return WattCalculator::calculateFromPace($this->getPace());
     }
 
     public function getSport(): ?SportType
@@ -279,6 +284,81 @@ class Training
         }
 
         return $this;
+    }
+
+    public function getBestTrainingPhase(): ?TrainingPhase
+    {
+        $best = null;
+        foreach ($this->trainingPhases as $trainingPhase) {
+            if (null === $best || $trainingPhase->getPace() < $best->getPace()) {
+                $best = $trainingPhase;
+            }
+        }
+
+        return $best;
+    }
+
+    public function getTotalRestDuration(): ?int
+    {
+        $total = null;
+        foreach ($this->trainingPhases as $trainingPhase) {
+            if (null !== $trainingPhase->getRestDuration()) {
+                $total = ($total ?? 0) + $trainingPhase->getRestDuration();
+            }
+        }
+
+        return $total;
+    }
+
+    public function getFormattedTotalRestDuration(): ?string
+    {
+        if (null === $this->getTotalRestDuration()) {
+            return null;
+        }
+
+        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->getTotalRestDuration());
+    }
+
+    public function getTotalRestDistance(): ?int
+    {
+        $total = null;
+        foreach ($this->trainingPhases as $trainingPhase) {
+            if (null !== $trainingPhase->getRestDistance()) {
+                $total = ($total ?? 0) + $trainingPhase->getRestDistance();
+            }
+        }
+
+        return $total;
+    }
+
+    /**
+     * @return Collection<int, TrainingSplit>
+     */
+    public function getTrainingSplits(): Collection
+    {
+        return $this->trainingSplits;
+    }
+
+    public function addTrainingSplit(TrainingSplit $trainingSplit): self
+    {
+        if (!$this->trainingSplits->contains($trainingSplit)) {
+            $this->trainingSplits[] = $trainingSplit;
+            $trainingSplit->setTraining($this);
+        }
+
+        return $this;
+    }
+
+    public function getBestTrainingSplit(): ?TrainingSplit
+    {
+        $best = null;
+        foreach ($this->trainingSplits as $trainingSplit) {
+            if (null === $best || $trainingSplit->getPace() < $best->getPace()) {
+                $best = $trainingSplit;
+            }
+        }
+
+        return $best;
     }
 
     public function getStrokeRate(): ?int

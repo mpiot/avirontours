@@ -232,8 +232,8 @@ class Concept2ApiConsumerTest extends KernelTestCase
         $result = $this->resultFixture(42);
         $result['stroke_data'] = true;
         $result['workout'] = ['intervals' => [
-            ['time' => 3000, 'distance' => 1000, 'stroke_rate' => 26, 'heart_rate' => ['average' => 150, 'max' => 160, 'ending' => 158]],
-            ['time' => 2900, 'distance' => 1000, 'stroke_rate' => 28, 'heart_rate' => ['average' => 162, 'max' => 171, 'ending' => 170]],
+            ['time' => 3000, 'distance' => 1000, 'stroke_rate' => 26, 'heart_rate' => ['average' => 150, 'max' => 160, 'ending' => 158], 'rest_time' => 5300, 'rest_distance' => 23],
+            ['time' => 2900, 'distance' => 1000, 'stroke_rate' => 28, 'heart_rate' => ['average' => 0, 'max' => 171, 'ending' => 170], 'rest_time' => 0],
         ]];
         $consumer = $this->createConsumer([
             $this->resultMockResponse($result),
@@ -250,13 +250,92 @@ class Concept2ApiConsumerTest extends KernelTestCase
         $phases = $training->getTrainingPhases();
         self::assertCount(2, $phases);
         self::assertSame(3000, $phases->first()->getDuration());
+        self::assertSame(150, $phases->first()->getAverageHeartRate());
         self::assertSame(158, $phases->first()->getEndingHeartRate());
         self::assertSame([0, 100], $phases->first()->getTimes());
         self::assertSame([140, 155], $phases->first()->getHeartRates());
+        self::assertSame(5300, $phases->first()->getRestDuration());
+        self::assertSame(23, $phases->first()->getRestDistance());
         self::assertSame(2900, $phases->last()->getDuration());
+        self::assertNull($phases->last()->getAverageHeartRate());
         self::assertSame(170, $phases->last()->getEndingHeartRate());
         self::assertSame([0, 90], $phases->last()->getTimes());
         self::assertSame([160, 170], $phases->last()->getHeartRates());
+        self::assertNull($phases->last()->getRestDuration());
+        self::assertNull($phases->last()->getRestDistance());
+    }
+
+    public function testGetTrainingCreatesOneSplitPerWorkoutSplit(): void
+    {
+        $user = $this->createConnectedUser();
+        $result = $this->resultFixture(42);
+        $result['workout'] = ['splits' => [
+            ['time' => 1156, 'distance' => 500, 'stroke_rate' => 24, 'heart_rate' => ['average' => 182, 'ending' => 178]],
+            ['time' => 1156, 'distance' => 500, 'stroke_rate' => 24, 'heart_rate' => ['average' => 0, 'ending' => 0]],
+            ['time' => 1142, 'distance' => 500, 'stroke_rate' => 25],
+        ]];
+        $consumer = $this->createConsumer($this->resultMockResponse($result));
+
+        $training = $consumer->getTraining($user, 42);
+
+        $splits = $training->getTrainingSplits();
+        self::assertCount(3, $splits);
+        self::assertSame(1156, $splits->first()->getDuration());
+        self::assertSame(500, $splits->first()->getDistance());
+        self::assertSame(24, $splits->first()->getStrokeRate());
+        self::assertSame(182, $splits->first()->getAverageHeartRate());
+        self::assertSame(178, $splits->first()->getEndingHeartRate());
+        self::assertNull($splits->get(1)->getAverageHeartRate());
+        self::assertNull($splits->get(1)->getEndingHeartRate());
+        self::assertSame(1142, $splits->last()->getDuration());
+        self::assertNull($splits->last()->getAverageHeartRate());
+        self::assertNull($splits->last()->getEndingHeartRate());
+        self::assertCount(0, $training->getTrainingPhases());
+    }
+
+    public function testGetTrainingSkipsASingleSplit(): void
+    {
+        $user = $this->createConnectedUser();
+        $result = $this->resultFixture(42);
+        $result['workout'] = ['splits' => [
+            ['time' => 6000, 'distance' => 2000, 'stroke_rate' => 24, 'heart_rate' => ['average' => 150, 'ending' => 148]],
+        ]];
+        $consumer = $this->createConsumer($this->resultMockResponse($result));
+
+        $training = $consumer->getTraining($user, 42);
+
+        self::assertCount(0, $training->getTrainingSplits());
+    }
+
+    public function testGetTrainingIgnoresSplitsOnIntervalWorkouts(): void
+    {
+        $user = $this->createConnectedUser();
+        $result = $this->resultFixture(42);
+        $result['stroke_data'] = true;
+        $result['workout'] = [
+            'intervals' => [
+                ['time' => 3000, 'distance' => 1000, 'stroke_rate' => 26, 'heart_rate' => ['average' => 150, 'max' => 160, 'ending' => 158]],
+                ['time' => 2900, 'distance' => 1000, 'stroke_rate' => 28, 'heart_rate' => ['average' => 162, 'max' => 171, 'ending' => 170]],
+            ],
+            'splits' => [
+                ['time' => 1500, 'distance' => 500, 'stroke_rate' => 26, 'heart_rate' => ['average' => 150, 'ending' => 155]],
+                ['time' => 1450, 'distance' => 500, 'stroke_rate' => 28, 'heart_rate' => ['average' => 162, 'ending' => 165]],
+            ],
+        ];
+        $consumer = $this->createConsumer([
+            $this->resultMockResponse($result),
+            new JsonMockResponse(['data' => [
+                ['t' => 0, 'd' => 0, 'p' => 120, 'spm' => 26, 'hr' => 140],
+                ['t' => 100, 'd' => 250, 'p' => 118, 'spm' => 26, 'hr' => 155],
+                ['t' => 0, 'd' => 0, 'p' => 115, 'spm' => 28, 'hr' => 160],
+                ['t' => 90, 'd' => 260, 'p' => 112, 'spm' => 29, 'hr' => 170],
+            ]]),
+        ]);
+
+        $training = $consumer->getTraining($user, 42);
+
+        self::assertCount(2, $training->getTrainingPhases());
+        self::assertCount(0, $training->getTrainingSplits());
     }
 
     public function testGetTrainingUsesTheStoredTokenWithoutRefreshing(): void

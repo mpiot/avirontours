@@ -55,6 +55,8 @@ final class TrainingPhaseFactory extends PersistentObjectFactory
             'averageHeartRate' => self::faker()->numberBetween(120, 160),
             'maxHeartRate' => self::faker()->numberBetween(160, 200),
             'endingHeartRate' => self::faker()->numberBetween(120, 180),
+            'restDuration' => null,
+            'restDistance' => null,
         ];
     }
 

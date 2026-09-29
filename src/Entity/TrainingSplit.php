@@ -20,19 +20,22 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\TrainingPhaseRepository;
+use App\Repository\TrainingSplitRepository;
 use App\Util\DurationManipulator;
 use App\Util\WattCalculator;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TrainingPhaseRepository::class)]
-class TrainingPhase
+/**
+ * A per-segment summary of a continuous workout, mirroring a Concept2 `workout.splits` entry.
+ */
+#[ORM\Entity(repositoryClass: TrainingSplitRepository::class)]
+class TrainingSplit
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Training::class, inversedBy: 'trainingPhases')]
+    #[ORM\ManyToOne(targetEntity: Training::class, inversedBy: 'trainingSplits')]
     #[ORM\JoinColumn(nullable: false)]
     private Training $training;
 
@@ -42,38 +45,14 @@ class TrainingPhase
     #[ORM\Column(type: Types::INTEGER)]
     private int $distance;
 
-    #[ORM\Column(type: 'integer[]', nullable: true)]
-    private ?array $times = null;
-
-    #[ORM\Column(type: 'integer[]', nullable: true)]
-    private ?array $distances = null;
-
-    #[ORM\Column(type: 'integer[]', nullable: true)]
-    private ?array $paces = null;
-
-    #[ORM\Column(type: 'integer[]', nullable: true)]
-    private ?array $strokeRates = null;
-
     #[ORM\Column(nullable: true)]
     private ?int $strokeRate = null;
-
-    #[ORM\Column(type: 'integer[]', nullable: true)]
-    private ?array $heartRates = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $averageHeartRate = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $maxHeartRate = null;
-
-    #[ORM\Column(nullable: true)]
     private ?int $endingHeartRate = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $restDuration = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $restDistance = null;
 
     public function getId(): ?int
     {
@@ -121,35 +100,6 @@ class TrainingPhase
         return $this;
     }
 
-    public function getTimes(): ?array
-    {
-        return $this->times;
-    }
-
-    public function setTimes(?array $times): self
-    {
-        $this->times = $times;
-
-        return $this;
-    }
-
-    public function getDistances(): ?array
-    {
-        return $this->distances;
-    }
-
-    public function setDistances(?array $distances): self
-    {
-        $this->distances = $distances;
-
-        return $this;
-    }
-
-    public function getPaces(): ?array
-    {
-        return $this->paces;
-    }
-
     public function getPace(): ?int
     {
         return (int) round(500 * ($this->duration / $this->distance));
@@ -165,18 +115,6 @@ class TrainingPhase
         return WattCalculator::calculateFromPace($this->getPace());
     }
 
-    public function setPaces(?array $paces): self
-    {
-        $this->paces = $paces;
-
-        return $this;
-    }
-
-    public function getStrokeRates(): ?array
-    {
-        return $this->strokeRates;
-    }
-
     public function getStrokeRate(): ?int
     {
         return $this->strokeRate;
@@ -185,25 +123,6 @@ class TrainingPhase
     public function setStrokeRate(?int $strokeRate): static
     {
         $this->strokeRate = $strokeRate;
-
-        return $this;
-    }
-
-    public function setStrokeRates(?array $strokeRates): self
-    {
-        $this->strokeRates = $strokeRates;
-
-        return $this;
-    }
-
-    public function getHeartRates(): ?array
-    {
-        return $this->heartRates;
-    }
-
-    public function setHeartRates(?array $heartRates): self
-    {
-        $this->heartRates = $heartRates;
 
         return $this;
     }
@@ -220,18 +139,6 @@ class TrainingPhase
         return $this;
     }
 
-    public function getMaxHeartRate(): ?int
-    {
-        return $this->maxHeartRate;
-    }
-
-    public function setMaxHeartRate(?int $maxHeartRate): static
-    {
-        $this->maxHeartRate = $maxHeartRate;
-
-        return $this;
-    }
-
     public function getEndingHeartRate(): ?int
     {
         return $this->endingHeartRate;
@@ -240,39 +147,6 @@ class TrainingPhase
     public function setEndingHeartRate(?int $endingHeartRate): static
     {
         $this->endingHeartRate = $endingHeartRate;
-
-        return $this;
-    }
-
-    public function getRestDuration(): ?int
-    {
-        return $this->restDuration;
-    }
-
-    public function getFormattedRestDuration(): ?string
-    {
-        if (null === $this->restDuration) {
-            return null;
-        }
-
-        return DurationManipulator::formatTenthSecondsAsHoursMinutesSecondsAndTenthSeconds($this->restDuration);
-    }
-
-    public function setRestDuration(?int $restDuration): static
-    {
-        $this->restDuration = $restDuration;
-
-        return $this;
-    }
-
-    public function getRestDistance(): ?int
-    {
-        return $this->restDistance;
-    }
-
-    public function setRestDistance(?int $restDistance): static
-    {
-        $this->restDistance = $restDistance;
 
         return $this;
     }
