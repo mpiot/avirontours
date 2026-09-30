@@ -20,25 +20,18 @@ declare(strict_types=1);
 
 namespace App\Form\DataTransformer;
 
+use App\Util\DurationManipulator;
 use Symfony\Component\Form\DataTransformerInterface;
 
-class DurationToTenthSecondsTransformer implements DataTransformerInterface
+class DateIntervalToTenthSecondsTransformer implements DataTransformerInterface
 {
-    public function transform($value): ?int
+    public function transform($value): ?\DateInterval
     {
-        if (null === $value) {
-            return null;
-        }
-
-        return intdiv($value, 600);
+        return DurationManipulator::tenthSecondsToDateInterval($value);
     }
 
     public function reverseTransform($value): ?int
     {
-        if (null === $value) {
-            return null;
-        }
-
-        return $value * 600;
+        return DurationManipulator::dateIntervalToTenthSeconds($value);
     }
 }
