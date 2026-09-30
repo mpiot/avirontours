@@ -28,14 +28,9 @@ use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use App\Service\TrainingHelper;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class TrainingHelperTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testSummaryShareIsZeroForNegligibleDuration(): void
     {
         $user = UserFactory::createOne();

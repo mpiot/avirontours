@@ -27,14 +27,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\DomCrawler\Crawler;
 use Zenstruck\Foundry\Persistence\Proxy;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 abstract class AppWebTestCase extends WebTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();

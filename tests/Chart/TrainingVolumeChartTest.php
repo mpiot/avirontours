@@ -26,14 +26,9 @@ use App\Enum\SportType;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class TrainingVolumeChartTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testEverySpecificityIsABandEvenWhenNothingWasPractised(): void
     {
         $user = UserFactory::createOne();

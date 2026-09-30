@@ -23,14 +23,9 @@ namespace App\Tests\Repository;
 use App\Factory\LicenseFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class LicenseRepositoryTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testHasValidLicenseForActiveSeasonWithValidatedMarking(): void
     {
         $user = UserFactory::createOne();

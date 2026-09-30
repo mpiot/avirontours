@@ -32,12 +32,12 @@ Encore
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
+    // enables the Symfony UX Stimulus bridge (used in assets/stimulus_bootstrap.js)
+    .enableStimulusBridge('./assets/controllers.json')
+
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
-
-    // enables the Symfony UX Stimulus bridge (used in assets/stimulus_bootstrap.js)
-    .enableStimulusBridge('./assets/controllers.json')
 
     /*
      * FEATURE CONFIG
@@ -86,19 +86,12 @@ Encore
     })
 
     // enables Sass/SCSS support
-    // `charset: false` stops Dart Sass emitting a BOM at the head of its output. On its own that is
-    // harmless, but the extracted stylesheet concatenates several CSS modules, so the BOM lands
-    // mid-file — and a BOM in front of a selector invalidates the rule that follows it. The rule
-    // that follows here is Bootstrap's `:root, [data-bs-theme=light]`, i.e. every theme variable:
-    // dropping it leaves the whole app on the browser's default serif with transparent cards.
     .enableSassLoader((options) => {
         options.sassOptions = { charset: false };
     })
 
     // uncomment if you use TypeScript
     .enableTypeScriptLoader(function (tsConfig) {
-        // https://github.com/TypeStrong/ts-loader/blob/master/README.md#loader-options
-        // tsConfig.projectReferences = true;
         tsConfig.transpileOnly = true;
     })
 
