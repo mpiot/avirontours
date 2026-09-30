@@ -88,7 +88,7 @@ class License
     #[Assert\Count(min: 1, groups: ['validate_payment'])]
     #[Assert\Valid]
     #[ORM\OneToMany(mappedBy: 'license', targetEntity: LicensePayment::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['id' => 'asc'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     private Collection $payments;
 
     #[ORM\Column(nullable: true)]

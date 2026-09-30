@@ -43,7 +43,7 @@ class Group
      */
     #[Assert\Count(min: 1)]
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups')]
-    #[ORM\OrderBy(value: ['firstName' => 'asc', 'lastName' => 'asc'])]
+    #[ORM\OrderBy(value: ['firstName' => 'ASC', 'lastName' => 'ASC'])]
     private Collection $members;
 
     public function __construct()
