@@ -204,6 +204,14 @@
     color: $gray-600;
 }
 
+// A rest row of the phase table, on the cells because Bootstrap sets each one's colour.
+tr.app-training-rest > * {
+    color: $gray-600;
+    font-weight: $font-weight-normal; // its label is a row header, which the browser sets bold
+    font-size: $font-size-sm;
+    white-space: nowrap;
+}
+
 // The help modals' lists — the sensation's five smileys and the effort's two keys. The effort rows
 // wear `.app-exertion-chip` above, so a level is the same colour where it is explained and where it
 // is picked — that pairing is the whole point of showing a ramp here rather than a paragraph.

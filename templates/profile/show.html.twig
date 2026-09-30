@@ -79,7 +79,7 @@
                     Option I.A. Sport&nbsp;: {{ license.optionalInsurance ? 'Oui' : 'Non' }}
                 </div>
 
-                {% if not license.payments.empty %}
+                {% if license.payments is not empty %}
                     <div>
                         <a href="{{ path('payment_attestation_download', { id: license.id }) }}" download>Attestation de paiement</a>
                     </div>

@@ -1,8 +1,37 @@
-{% set activePhaseNumber = training.trainingPhases.indexOf(active_phase) + 1 %}
+{% set phases = training.trainingPhases %}
+{% set activePhaseIndex = phases.indexOf(active_phase) %}
+{% set activePhaseNumber = activePhaseIndex + 1 %}
 
 <turbo-frame id="training-phases">
-    {% if training.trainingPhases|length > 1 %}
-        <h3 class="app-chart-phase-title">Phase {{ activePhaseNumber }}</h3>
+    {% if phases|length > 1 %}
+        {% set previousPhase = activePhaseIndex > 0 ? phases.get(activePhaseIndex - 1) : null %}
+        {% set nextPhase = phases.get(activePhaseIndex + 1) %}
+
+        <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+            <twig:Button
+                variant="secondary"
+                outline
+                size="sm"
+                :href="previousPhase ? path('training_show_phase', { training_id: training.id, id: previousPhase.id }) : null"
+                aria-label="Phase précédente"
+                :disabled="previousPhase is null"
+            >
+                <twig:ux:icon name="mdi:chevron-left" />
+            </twig:Button>
+
+            <h3 class="app-chart-phase-title mb-0">Phase {{ activePhaseNumber }}</h3>
+
+            <twig:Button
+                variant="secondary"
+                outline
+                size="sm"
+                :href="nextPhase ? path('training_show_phase', { training_id: training.id, id: nextPhase.id }) : null"
+                aria-label="Phase suivante"
+                :disabled="nextPhase is null"
+            >
+                <twig:ux:icon name="mdi:chevron-right" />
+            </twig:Button>
+        </div>
     {% endif %}
 
     {% if charts is empty %}
@@ -22,57 +51,5 @@
                 </div>
             {% endfor %}
         </div>
-    {% endif %}
-
-    {% if training.trainingPhases|length > 1 %}
-        <twig:Table class="mt-3">
-            <twig:Table:Head>
-                <twig:Table:Row>
-                    <twig:Table:HeadCell>Phase</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Allure</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Puissance</twig:Table:HeadCell>
-                    <twig:Table:HeadCell>
-                        <twig:ux:icon name="mdi:heart" />
-                        <span class="visually-hidden">Fréquence cardiaque</span>
-                    </twig:Table:HeadCell>
-                    <twig:Table:HeadCell>Cadence</twig:Table:HeadCell>
-                    <twig:Table:HeadCell><span class="visually-hidden">Actions</span></twig:Table:HeadCell>
-                </twig:Table:Row>
-            </twig:Table:Head>
-
-            <twig:Table:Body>
-                {% for trainingPhase in training.trainingPhases %}
-                    {% set phaseNumber = loop.index %}
-
-                    <twig:Table:Row :active="active_phase == trainingPhase">
-                        <twig:Table:Cell label="Phase">{{ phaseNumber }}</twig:Table:Cell>
-                        <twig:Table:Cell label="Durée">{{ trainingPhase.formattedDuration }}</twig:Table:Cell>
-                        <twig:Table:Cell label="Distance">{{ trainingPhase.distance }} m</twig:Table:Cell>
-                        <twig:Table:Cell label="Allure">{{ trainingPhase.formattedPace }} /500m</twig:Table:Cell>
-                        <twig:Table:Cell label="Puissance">{{ trainingPhase.averageWatt }} W</twig:Table:Cell>
-                        <twig:Table:Cell label="Fréquence cardiaque">
-                            {% if trainingPhase.endingHeartRate is not null %}
-                                {{ trainingPhase.endingHeartRate }}
-                            {% else %}
-                                <twig:NoValue />
-                            {% endif %}
-                        </twig:Table:Cell>
-                        <twig:Table:Cell label="Cadence">{{ trainingPhase.strokeRate }}</twig:Table:Cell>
-                        <twig:Table:Cell actions>
-                            <a
-                                href="{{ path('training_show_phase', { training_id: training.id, id: trainingPhase.id }) }}"
-                                class="link-body-emphasis"
-                                aria-label="Voir la phase {{ phaseNumber }}"
-                                {%- if active_phase == trainingPhase %} aria-current="true"{% endif %}
-                            >
-                                <twig:ux:icon name="mdi:chart-line" />
-                            </a>
-                        </twig:Table:Cell>
-                    </twig:Table:Row>
-                {% endfor %}
-            </twig:Table:Body>
-        </twig:Table>
     {% endif %}
 </turbo-frame>

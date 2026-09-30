@@ -22,6 +22,7 @@ namespace App\Service\Concept2;
 
 use App\Entity\Training;
 use App\Entity\TrainingPhase;
+use App\Entity\TrainingSplit;
 use App\Entity\User;
 use App\Enum\SportType;
 use App\Repository\TrainingRepository;
@@ -156,11 +157,6 @@ class Concept2ApiConsumer
 
     private function createTraining(User $user, array $result): Training
     {
-        $averageHeartRate = $result['heart_rate']['average'] ?? null;
-        $maxHeartRate = $result['heart_rate']['max'] ?? null;
-        $dragFactor = $result['drag_factor'] ?? null;
-        $strokeCount = $result['stroke_count'] ?? null;
-
         $training = new Training($user);
         $training
             ->setConcept2Id($result['id'])
@@ -169,11 +165,20 @@ class Concept2ApiConsumer
             ->setDuration($result['time'])
             ->setDistance($result['distance'])
             ->setStrokeRate($result['stroke_rate'])
-            ->setAverageHeartRate(0 !== $averageHeartRate ? $averageHeartRate : null)
-            ->setMaxHeartRate(0 !== $maxHeartRate ? $maxHeartRate : null)
-            ->setDragFactor(0 !== $dragFactor ? $dragFactor : null)
-            ->setStrokeCount(0 !== $strokeCount ? $strokeCount : null)
+            ->setAverageHeartRate(self::nullIfZero($result['heart_rate']['average'] ?? null))
+            ->setMaxHeartRate(self::nullIfZero($result['heart_rate']['max'] ?? null))
+            ->setDragFactor(self::nullIfZero($result['drag_factor'] ?? null))
+            ->setStrokeCount(self::nullIfZero($result['stroke_count'] ?? null))
         ;
+
+        // Splits belong to the no-interval path only; a single split is the total line, not a segment
+        $intervals = $result['workout']['intervals'] ?? [];
+        $splits = $result['workout']['splits'] ?? [];
+        if (\count($intervals) <= 1 && \count($splits) > 1) {
+            foreach ($splits as $splitData) {
+                $training->addTrainingSplit($this->createTrainingSplit($splitData));
+            }
+        }
 
         if (false === $result['stroke_data']) {
             return $training;
@@ -184,10 +189,7 @@ class Concept2ApiConsumer
 
         // If there is no interval, or only one, create it
         // Validate stroke data count
-        if (
-            false === \array_key_exists('intervals', $result['workout'])
-            || 1 === \count($result['workout']['intervals'])
-        ) {
+        if (\count($intervals) <= 1) {
             $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
                 $result,
                 $strokeData[0] ?? null
@@ -200,7 +202,7 @@ class Concept2ApiConsumer
 
         // Else, create many phases, and split the strokeData in the number of phases
         // Check the number of intervals match the number of stroke data
-        foreach ($result['workout']['intervals'] as $key => $intervalData) {
+        foreach ($intervals as $key => $intervalData) {
             $trainingPhase = $this->createTrainingPhaseFromFormattedStrokes(
                 $intervalData,
                 $strokeData[$key] ?? null
@@ -212,6 +214,20 @@ class Concept2ApiConsumer
         return $training;
     }
 
+    private function createTrainingSplit(array $splitData): TrainingSplit
+    {
+        $trainingSplit = new TrainingSplit();
+        $trainingSplit
+            ->setDuration($splitData['time'])
+            ->setDistance($splitData['distance'])
+            ->setStrokeRate($splitData['stroke_rate'] ?? null)
+            ->setAverageHeartRate(self::nullIfZero($splitData['heart_rate']['average'] ?? null))
+            ->setEndingHeartRate(self::nullIfZero($splitData['heart_rate']['ending'] ?? null))
+        ;
+
+        return $trainingSplit;
+    }
+
     private function createTrainingPhaseFromFormattedStrokes(
         array $intervalData,
         ?array $strokeData,
@@ -221,9 +237,11 @@ class Concept2ApiConsumer
             ->setDuration($intervalData['time'])
             ->setDistance($intervalData['distance'])
             ->setStrokeRate($intervalData['stroke_rate'])
-            ->setAverageHeartRate($intervalData['heart_rate']['average'] ?? null)
-            ->setMaxHeartRate($intervalData['heart_rate']['max'] ?? null)
-            ->setEndingHeartRate($intervalData['heart_rate']['ending'] ?? null)
+            ->setAverageHeartRate(self::nullIfZero($intervalData['heart_rate']['average'] ?? null))
+            ->setMaxHeartRate(self::nullIfZero($intervalData['heart_rate']['max'] ?? null))
+            ->setEndingHeartRate(self::nullIfZero($intervalData['heart_rate']['ending'] ?? null))
+            ->setRestDuration(self::nullIfZero($intervalData['rest_time'] ?? null))
+            ->setRestDistance(self::nullIfZero($intervalData['rest_distance'] ?? null))
         ;
 
         if (null === $strokeData) {
@@ -285,5 +303,11 @@ class Concept2ApiConsumer
         } catch (HttpClientExceptionInterface $e) {
             throw new Concept2Exception('The Concept2 Logbook did not answer successfully.', previous: $e);
         }
+    }
+
+    // Concept2 sends 0 for what the ergometer did not measure
+    private static function nullIfZero(?int $value): ?int
+    {
+        return 0 !== $value ? $value : null;
     }
 }

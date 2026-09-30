@@ -27,6 +27,7 @@ use App\Enum\SportType;
 use App\Factory\LicenseFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\TrainingPhaseFactory;
+use App\Factory\TrainingSplitFactory;
 use App\Factory\UserFactory;
 use App\Message\Concept2ResultImportMessage;
 use App\Tests\AppWebTestCase;
@@ -338,12 +339,12 @@ class TrainingControllerTest extends AppWebTestCase
         $session = $crawler->filter('.app-stat-list')->eq(0)->text();
         $this->assertStringContainsString('03:00.0 /500m', $session);
         $this->assertStringContainsString('Coups 324', $session);
-        $this->assertStringContainsString('Drag factor 88', $session);
 
         $intensity = $crawler->filter('.app-stat-list')->eq(1)->text();
         $this->assertStringContainsString('22 c/min', $intensity);
         $this->assertStringContainsString('148 bpm', $intensity);
         $this->assertStringContainsString('max 176', $intensity);
+        $this->assertStringContainsString('Drag factor 88', $intensity);
 
         $rating = $crawler->filter('#rating')->text();
         $this->assertStringContainsString('Bien', $rating);
@@ -434,6 +435,45 @@ class TrainingControllerTest extends AppWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertStringNotContainsString('Puissance', $crawler->filter('.app-training-detail')->text());
+    }
+
+    public function testShowTrainingDisplaysTheSplits(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'sport' => SportType::Ergometer,
+            'duration' => 4572,
+            'distance' => 2000,
+            'strokeRate' => 24,
+            'averageHeartRate' => 185,
+        ]);
+        TrainingSplitFactory::createOne(['training' => $training, 'duration' => 1156, 'distance' => 500, 'strokeRate' => 24, 'averageHeartRate' => 182, 'endingHeartRate' => 183]);
+        TrainingSplitFactory::createOne(['training' => $training, 'duration' => 1156, 'distance' => 500, 'strokeRate' => 24, 'averageHeartRate' => 184, 'endingHeartRate' => 185]);
+        TrainingSplitFactory::createOne(['training' => $training, 'duration' => 1142, 'distance' => 500, 'strokeRate' => 25, 'averageHeartRate' => 186, 'endingHeartRate' => 187]);
+        TrainingSplitFactory::createOne(['training' => $training, 'duration' => 1118, 'distance' => 500, 'strokeRate' => 25, 'averageHeartRate' => 190, 'endingHeartRate' => 191]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('Splits', $crawler->filterXPath('//div[contains(@class, "app-training-detail")]')->text());
+        $rows = $crawler->filterXPath('//tbody/tr');
+        $this->assertCount(5, $rows);
+        $this->assertStringContainsString('Total', $rows->eq(0)->text());
+        $this->assertStringContainsString('07:37.2', $rows->eq(0)->text());
+        $this->assertStringContainsString('2000 m', $rows->eq(0)->text());
+        $this->assertStringContainsString('01:54.3 /500m', $rows->eq(0)->text());
+        $this->assertStringContainsString('01:55.6', $rows->eq(1)->text());
+        $this->assertStringContainsString('500 m', $rows->eq(1)->text());
+        $this->assertStringContainsString('1000 m', $rows->eq(2)->text());
+        $this->assertStringContainsString('1500 m', $rows->eq(3)->text());
+        $this->assertStringContainsString('01:51.8 /500m', $rows->eq(4)->text());
+        $this->assertStringContainsString('2000 m', $rows->eq(4)->text());
+        $this->assertCount(1, $crawler->filterXPath('//tbody/tr[contains(., "Meilleur split")]'));
+        $this->assertStringContainsString('Meilleur split', $rows->eq(4)->text());
     }
 
     public function testShowOtherUserTraining(): void
@@ -533,11 +573,16 @@ class TrainingControllerTest extends AppWebTestCase
     public function testShowTrainingPhase(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
-        $phases = TrainingPhaseFactory::createSequence([
-            ['training' => $training],
-            ['training' => $training],
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'sport' => SportType::Ergometer,
+            'duration' => 24000,
+            'distance' => 8351,
         ]);
+        $phases = [
+            TrainingPhaseFactory::createOne(['training' => $training, 'duration' => 12000, 'distance' => 4087, 'restDuration' => 5300, 'restDistance' => 23]),
+            TrainingPhaseFactory::createOne(['training' => $training, 'duration' => 12000, 'distance' => 4260, 'restDuration' => 80, 'restDistance' => 18]),
+        ];
 
         static::ensureKernelShutdown();
         $client = static::createClient();
@@ -545,9 +590,43 @@ class TrainingControllerTest extends AppWebTestCase
         $crawler = $client->request('GET', "/training/{$training->getId()}/phase/{$phases[1]->getId()}");
 
         $this->assertResponseIsSuccessful();
-        $this->assertCount(2, $crawler->filter('turbo-frame#training-phases tbody tr'));
-        $this->assertCount(1, $crawler->filter('tbody tr.table-active'));
+        $this->assertStringContainsString('Phase 2', $crawler->filterXPath('//turbo-frame[@id="training-phases"]')->text());
         $this->assertCount(2, $crawler->filter('canvas[data-controller~="ergometer-chart"]'));
+        $this->assertCount(0, $crawler->filterXPath('//turbo-frame[@id="training-phases"]//table'));
+    }
+
+    public function testShowTrainingDisplaysTheIntervals(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+        $training = TrainingFactory::createOne([
+            'user' => $user,
+            'sport' => SportType::Ergometer,
+            'duration' => 24000,
+            'distance' => 8351,
+        ]);
+        TrainingPhaseFactory::createOne(['training' => $training, 'duration' => 12000, 'distance' => 4087, 'restDuration' => 5300, 'restDistance' => 23]);
+        TrainingPhaseFactory::createOne(['training' => $training, 'duration' => 12000, 'distance' => 4260, 'restDuration' => 80, 'restDistance' => 18]);
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $crawler = $client->request('GET', "/training/{$training->getId()}");
+
+        $this->assertResponseIsSuccessful();
+        $table = $crawler->filterXPath('//table')->text();
+        $this->assertStringContainsString('Total', $table);
+        $this->assertStringContainsString('40:00.0', $table);
+        $this->assertStringContainsString('8351 m', $table);
+        $this->assertStringContainsString('02:23.7 /500m', $table);
+        $this->assertStringContainsString('08:50.0', $table);
+        $this->assertStringContainsString('23 m', $table);
+        $this->assertStringContainsString('00:08.0', $table);
+        $this->assertStringContainsString('18 m', $table);
+        $this->assertStringContainsString('Récup. tot.', $table);
+        $this->assertStringContainsString('08:58.0', $table);
+        $this->assertStringContainsString('41 m', $table);
+        $this->assertCount(1, $crawler->filterXPath('//tr[contains(., "Meilleure phase")]'));
+        $this->assertStringContainsString('02:20.8 /500m', $crawler->filterXPath('//tr[contains(., "Meilleure phase")]')->text());
     }
 
     public function testShowTrainingPhaseOfASinglePhaseTraining(): void

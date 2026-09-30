@@ -53,21 +53,23 @@ final readonly class TrainingPhaseCharts
             [
                 'title' => 'Allure',
                 'unit' => 'pace',
+                // Do not display 0
                 'data' => array_map(
-                    static fn (int $tenthSecondsPer500): int => (int) round($tenthSecondsPer500 / 10),
+                    static fn (int $tenthSecondsPer500): ?int => 0 !== $tenthSecondsPer500 ? (int) round($tenthSecondsPer500 / 10) : null,
                     $trainingPhase->getPaces()
                 ),
                 'color' => '#4f46e5',
                 'average' => null === $trainingPhase->getPace() ? null : $trainingPhase->getPace() / 10,
-                'yScale' => ['min' => 60, 'reverse' => true, 'ticks' => ['precision' => 0]],
+                'yScale' => ['reverse' => true],
             ],
             [
                 'title' => 'Cadence',
                 'unit' => 'spm',
-                'data' => $trainingPhase->getStrokeRates(),
+                // Do not display 0
+                'data' => array_map(static fn (int $strokeRate): ?int => 0 !== $strokeRate ? $strokeRate : null, $trainingPhase->getStrokeRates()),
                 'color' => '#475569',
                 'average' => $trainingPhase->getStrokeRate(),
-                'yScale' => ['ticks' => ['precision' => 0, 'stepSize' => 10]],
+                'yScale' => [],
             ],
         ];
 
@@ -78,7 +80,7 @@ final readonly class TrainingPhaseCharts
                 'data' => $trainingPhase->getHeartRates(),
                 'color' => '#be123c',
                 'average' => $trainingPhase->getAverageHeartRate(),
-                'yScale' => ['min' => 40, 'ticks' => ['precision' => 0, 'stepSize' => 25]],
+                'yScale' => [],
             ];
         }
 
@@ -145,7 +147,7 @@ final readonly class TrainingPhaseCharts
                     'grid' => ['display' => false],
                     'ticks' => ['display' => $withTimeTicks, 'maxTicksLimit' => 12],
                 ],
-                'y' => array_merge(['type' => 'linear', 'position' => 'left'], $yScale),
+                'y' => array_merge(['type' => 'linear', 'position' => 'left', 'grace' => '20%', 'ticks' => ['precision' => 0]], $yScale),
             ],
         ];
 

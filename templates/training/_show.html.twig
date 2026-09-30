@@ -23,15 +23,11 @@
                 {% if training.strokeCount is not null %}
                     <twig:Stats:Item label="Coups">{{ training.strokeCount }}</twig:Stats:Item>
                 {% endif %}
-
-                {% if training.dragFactor is not null %}
-                    <twig:Stats:Item label="Drag factor">{{ training.dragFactor }}</twig:Stats:Item>
-                {% endif %}
             </twig:Stats>
         </twig:Card:Body>
     </twig:Card>
 
-    {% if training.averageWatt is not null or training.strokeRate is not null or training.averageHeartRate is not null %}
+    {% if training.averageWatt is not null or training.strokeRate is not null or training.averageHeartRate is not null or training.dragFactor is not null %}
         <twig:Card elevated class="mt-3">
             <twig:Card:Header>
                 <h2 class="fs-5 mb-0">Intensité</h2>
@@ -55,6 +51,10 @@
                         >
                             {{- training.averageHeartRate -}}
                         </twig:Stats:Item>
+                    {% endif %}
+
+                    {% if training.dragFactor is not null %}
+                        <twig:Stats:Item label="Drag factor">{{ training.dragFactor }}</twig:Stats:Item>
                     {% endif %}
                 </twig:Stats>
             </twig:Card:Body>
@@ -98,7 +98,189 @@
         </twig:Card>
     {% endif %}
 
-    {% if not training.trainingPhases.empty %}
+    {% if training.trainingPhases|length > 1 %}
+        <twig:Card elevated class="mt-3">
+            <twig:Card:Header>
+                <h2 class="fs-5 mb-0">Intervalles</h2>
+            </twig:Card:Header>
+
+            <twig:Card:Body>
+                <twig:Table :stack="false" :hover="false" class="table-sm text-nowrap">
+                    <twig:Table:Head>
+                        <twig:Table:Row>
+                            <twig:Table:HeadCell>Phase</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Durée</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Allure</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Puissance</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>
+                                <twig:ux:icon name="mdi:heart" />
+                                <span class="visually-hidden">Fréquence cardiaque</span>
+                            </twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Cadence</twig:Table:HeadCell>
+                        </twig:Table:Row>
+                    </twig:Table:Head>
+
+                    <twig:Table:Body>
+                        <twig:Table:Row class="fw-semibold">
+                            <twig:Table:RowHeader>Total</twig:Table:RowHeader>
+                            <twig:Table:Cell>{{ training.formattedDuration(true) }}</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.distance }} m</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.formattedPace }} /500m</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.averageWatt }} W</twig:Table:Cell>
+                            <twig:Table:Cell>
+                                {% if training.averageHeartRate is not null %}
+                                    {{ training.averageHeartRate }}
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.strokeRate }}</twig:Table:Cell>
+                        </twig:Table:Row>
+
+                        {% for trainingPhase in training.trainingPhases %}
+                            {% set phaseNumber = loop.index %}
+
+                            <twig:Table:Row>
+                                <twig:Table:RowHeader>
+                                    {{ phaseNumber }}
+                                    {% if trainingPhase is same as(training.bestTrainingPhase) %}
+                                        <twig:ux:icon name="mdi:star" />
+                                        <span class="visually-hidden">Meilleure phase</span>
+                                    {% endif %}
+                                </twig:Table:RowHeader>
+                                <twig:Table:Cell class="fw-semibold">{{ trainingPhase.formattedDuration }}</twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingPhase.distance }} m</twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingPhase.formattedPace }} /500m</twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingPhase.averageWatt }} W</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if trainingPhase.endingHeartRate is not null %}
+                                        {{ trainingPhase.endingHeartRate }}
+                                    {% else %}
+                                        <twig:NoValue />
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingPhase.strokeRate }}</twig:Table:Cell>
+                            </twig:Table:Row>
+
+                            {% if trainingPhase.restDuration is not null %}
+                                <twig:Table:Row class="app-training-rest">
+                                    <twig:Table:RowHeader>Récup.</twig:Table:RowHeader>
+                                    <twig:Table:Cell>{{ trainingPhase.formattedRestDuration }}</twig:Table:Cell>
+                                    <twig:Table:Cell>
+                                        {% if trainingPhase.restDistance is not null %}
+                                            {{ trainingPhase.restDistance }} m
+                                        {% else %}
+                                            <twig:NoValue />
+                                        {% endif %}
+                                    </twig:Table:Cell>
+                                    <twig:Table:Cell span></twig:Table:Cell>
+                                </twig:Table:Row>
+                            {% endif %}
+                        {% endfor %}
+                    </twig:Table:Body>
+
+                    {% if training.totalRestDuration is not null %}
+                        <twig:Table:Foot>
+                            <twig:Table:Row class="app-training-rest">
+                                <twig:Table:RowHeader>Récup. tot.</twig:Table:RowHeader>
+                                <twig:Table:Cell>{{ training.formattedTotalRestDuration }}</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if training.totalRestDistance is not null %}
+                                        {{ training.totalRestDistance }} m
+                                    {% else %}
+                                        <twig:NoValue />
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell span></twig:Table:Cell>
+                            </twig:Table:Row>
+                        </twig:Table:Foot>
+                    {% endif %}
+                </twig:Table>
+            </twig:Card:Body>
+        </twig:Card>
+    {% endif %}
+
+    {% if training.trainingSplits is not empty %}
+        <twig:Card elevated class="mt-3">
+            <twig:Card:Header>
+                <h2 class="fs-5 mb-0">Splits</h2>
+            </twig:Card:Header>
+
+            <twig:Card:Body>
+                <twig:Table :stack="false" :hover="false" class="table-sm text-nowrap">
+                    <twig:Table:Head>
+                        <twig:Table:Row>
+                            <twig:Table:HeadCell>Split</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Temps</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Distance</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Allure</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Puissance</twig:Table:HeadCell>
+                            <twig:Table:HeadCell>
+                                <twig:ux:icon name="mdi:heart" />
+                                <span class="visually-hidden">Fréquence cardiaque</span>
+                            </twig:Table:HeadCell>
+                            <twig:Table:HeadCell>Cadence</twig:Table:HeadCell>
+                        </twig:Table:Row>
+                    </twig:Table:Head>
+
+                    <twig:Table:Body>
+                        <twig:Table:Row class="fw-semibold">
+                            <twig:Table:RowHeader>Total</twig:Table:RowHeader>
+                            <twig:Table:Cell>{{ training.formattedDuration(true) }}</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.distance }} m</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.formattedPace }} /500m</twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.averageWatt }} W</twig:Table:Cell>
+                            <twig:Table:Cell>
+                                {% if training.averageHeartRate is not null %}
+                                    {{ training.averageHeartRate }}
+                                {% else %}
+                                    <twig:NoValue />
+                                {% endif %}
+                            </twig:Table:Cell>
+                            <twig:Table:Cell>{{ training.strokeRate }}</twig:Table:Cell>
+                        </twig:Table:Row>
+
+                        {% set cumulativeDistance = 0 %}
+                        {% for trainingSplit in training.trainingSplits %}
+                            {% set cumulativeDistance = cumulativeDistance + trainingSplit.distance %}
+                            {% set splitNumber = loop.index %}
+
+                            <twig:Table:Row>
+                                <twig:Table:RowHeader>
+                                    {{ splitNumber }}
+                                    {% if trainingSplit is same as(training.bestTrainingSplit) %}
+                                        <twig:ux:icon name="mdi:star" />
+                                        <span class="visually-hidden">Meilleur split</span>
+                                    {% endif %}
+                                </twig:Table:RowHeader>
+                                <twig:Table:Cell class="fw-semibold">{{ trainingSplit.formattedDuration }}</twig:Table:Cell>
+                                <twig:Table:Cell>{{ cumulativeDistance }} m</twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingSplit.formattedPace }} /500m</twig:Table:Cell>
+                                <twig:Table:Cell>{{ trainingSplit.averageWatt }} W</twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if trainingSplit.endingHeartRate is not null %}
+                                        {{ trainingSplit.endingHeartRate }}
+                                    {% else %}
+                                        <twig:NoValue />
+                                    {% endif %}
+                                </twig:Table:Cell>
+                                <twig:Table:Cell>
+                                    {% if trainingSplit.strokeRate is not null %}
+                                        {{ trainingSplit.strokeRate }}
+                                    {% else %}
+                                        <twig:NoValue />
+                                    {% endif %}
+                                </twig:Table:Cell>
+                            </twig:Table:Row>
+                        {% endfor %}
+                    </twig:Table:Body>
+                </twig:Table>
+            </twig:Card:Body>
+        </twig:Card>
+    {% endif %}
+
+    {% if training.trainingPhases is not empty %}
         <twig:Card elevated class="mt-3">
             <twig:Card:Header>
                 <h2 class="fs-5 mb-0">Analyse</h2>

@@ -17,7 +17,7 @@
 
 {% block body %}
     <twig:FormCard>
-        {% if not training.trainingPhases.empty %}
+        {% if training.trainingPhases is not empty %}
             <twig:Alert tone="info" icon :live="false" class="mb-3">
                 Séance importée&nbsp;: le sport, la date, la durée et la distance viennent de
                 l'ergomètre et ne sont pas modifiables.
