@@ -1,34 +1,22 @@
 {% block duration_widget %}
-    {%- set attr = attr|merge({
-        placeholder: '90',
-        autocomplete: 'off',
-        inputmode: 'numeric',
-    }) -%}
+    {%- set attr = attr|merge({ class: (attr.class|default('') ~ ' d-flex gap-3')|trim }) -%}
 
-    {%- if disabled -%}
-        {%- set widget %}{{ block('integer_widget') }}{% endset -%}
-
-        <twig:InputGroup>
-            {{- widget -}}
-            <twig:InputGroup:Text>min</twig:InputGroup:Text>
-        </twig:InputGroup>
-    {%- else -%}
-        {%- set attr = attr|merge({
-            'aria-describedby': "#{id}_reading",
-            'data-duration-target': 'input',
-            'data-action': 'duration#render',
-        }) -%}
-        {%- set widget %}{{ block('integer_widget') }}{% endset -%}
-
-        <div {{ stimulus_controller('duration') }}>
-            <twig:InputGroup>
-                {{- widget -}}
-                <twig:InputGroup:Text>min</twig:InputGroup:Text>
-            </twig:InputGroup>
-
-            <p class="form-text app-duration-reading" id="{{ id }}_reading" data-duration-target="reading" aria-live="polite"></p>
+    <div {{ block('widget_container_attributes') }}>
+        <div class="d-flex flex-fill align-items-center gap-1">
+            {{- form_widget(form.hours, { attr: { 'aria-label': 'Heures' } }) -}}
+            <span aria-hidden="true">h</span>
         </div>
-    {%- endif -%}
+
+        <div class="d-flex flex-fill align-items-center gap-1">
+            {{- form_widget(form.minutes, { attr: { 'aria-label': 'Minutes' } }) -}}
+            <span aria-hidden="true">min</span>
+        </div>
+
+        <div class="d-flex flex-fill align-items-center gap-1">
+            {{- form_widget(form.seconds, { attr: { 'aria-label': 'Secondes' } }) -}}
+            <span aria-hidden="true">s</span>
+        </div>
+    </div>
 {% endblock %}
 
 {% block sport_choice_widget %}

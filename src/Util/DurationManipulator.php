@@ -33,9 +33,23 @@ class DurationManipulator
         return (int) round(
             $dateInterval->h * 36000
             + $dateInterval->i * 600
-            + $dateInterval->s
-            + $dateInterval->f / 10000
+            + ($dateInterval->s + $dateInterval->f) * 10
         );
+    }
+
+    public static function tenthSecondsToDateInterval(?int $tenthSeconds): ?\DateInterval
+    {
+        if (null === $tenthSeconds) {
+            return null;
+        }
+
+        ['hours' => $hours, 'minutes' => $minutes, 'seconds' => $seconds, 'tenthSeconds' => $tenths] = self::splitDuration($tenthSeconds);
+
+        // ISO 8601 durations take no fraction of a second: the tenths go straight into f.
+        $dateInterval = new \DateInterval("PT{$hours}H{$minutes}M{$seconds}S");
+        $dateInterval->f = $tenths / 10;
+
+        return $dateInterval;
     }
 
     public static function formatSecondsAsHoursMinutes(int $seconds): string

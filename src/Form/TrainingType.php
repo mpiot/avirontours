@@ -24,12 +24,12 @@ use App\Entity\Training;
 use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
-use App\Form\DataTransformer\DurationToTenthSecondsTransformer;
+use App\Form\DataTransformer\DateIntervalToTenthSecondsTransformer;
 use App\Form\DataTransformer\KilometersToMetersTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,10 +52,18 @@ class TrainingType extends AbstractType
                 'label' => 'Date de la séance',
                 'widget' => 'single_text',
             ])
-            ->add('duration', IntegerType::class, [
+            ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée',
                 'block_prefix' => 'duration',
-                'invalid_message' => 'Indiquez une durée en minutes, par exemple 90.',
+                'with_years' => false,
+                'with_months' => false,
+                'with_days' => false,
+                'with_hours' => true,
+                'with_minutes' => true,
+                'with_seconds' => true,
+                'hours' => range(0, 23),
+                'minutes' => range(0, 59),
+                'seconds' => range(0, 59),
             ])
             ->add('distance', NumberType::class, [
                 'label' => 'Distance',
@@ -90,7 +98,7 @@ class TrainingType extends AbstractType
             ])
         ;
 
-        $builder->get('duration')->addModelTransformer(new DurationToTenthSecondsTransformer());
+        $builder->get('duration')->addModelTransformer(new DateIntervalToTenthSecondsTransformer());
         $builder->get('distance')->addModelTransformer(new KilometersToMetersTransformer());
 
         $data = $builder->getData();

@@ -31,7 +31,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
 #[ORM\UniqueConstraint(fields: ['user', 'concept2Id'])]
@@ -51,7 +50,8 @@ class Training
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $trainedAt;
 
-    #[Assert\DisableAutoMapping]
+    #[Assert\NotNull]
+    #[Assert\Positive(message: 'La durée doit être supérieure à 0.')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $duration = null;
 
@@ -431,17 +431,5 @@ class Training
         $this->strokeCount = $strokeCount;
 
         return $this;
-    }
-
-    #[Assert\Callback]
-    public function validateDuration(ExecutionContextInterface $context): void
-    {
-        // Duration is stored in tenths of a second, so 5 minutes is 5 * 60 * 10 tenths.
-        if (null === $this->getDuration() || $this->getDuration() < 5 * 60 * 10) {
-            $context->buildViolation('Un entraînement doit durer au moins 5 minutes.')
-                ->atPath('duration')
-                ->addViolation()
-            ;
-        }
     }
 }
