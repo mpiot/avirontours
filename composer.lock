@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed0ce264d9b377e49e0140c3badb5034",
+    "content-hash": "bb97110f88b99f00dedd57cd07a35066",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -10104,6 +10104,60 @@
                 }
             ],
             "time": "2026-09-26T06:33:49+00:00"
+        },
+        {
+            "name": "symfonycasts/dynamic-forms",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SymfonyCasts/dynamic-forms.git",
+                "reference": "9e7ac5c4870aa38710528ab9d92d92e87e663412"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SymfonyCasts/dynamic-forms/zipball/9e7ac5c4870aa38710528ab9d92d92e87e663412",
+                "reference": "9e7ac5c4870aa38710528ab9d92d92e87e663412",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/form": "^5.4|^6.3|^7.0|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.6",
+                "symfony/framework-bundle": "^6.3|^7.0|^8.0",
+                "symfony/options-resolver": "^5.4|^6.3|^7.0|^8.0",
+                "symfony/phpunit-bridge": "^5.4.32|^6.3.9|^7.0|^8.0",
+                "symfony/twig-bundle": "^5.4|^6.3|^7.0|^8.0",
+                "twig/twig": "^2.15|^3.0",
+                "zenstruck/browser": "^1.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfonycasts\\DynamicForms\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ryan Weaver",
+                    "homepage": "https://symfonycasts.com"
+                }
+            ],
+            "description": "Add dynamic/dependent fields to Symfony forms",
+            "keywords": [
+                "Forms",
+                "symfony"
+            ],
+            "support": {
+                "issues": "https://github.com/SymfonyCasts/dynamic-forms/issues",
+                "source": "https://github.com/SymfonyCasts/dynamic-forms/tree/v0.2.0"
+            },
+            "time": "2025-11-11T15:35:10+00:00"
         },
         {
             "name": "symfonycasts/reset-password-bundle",

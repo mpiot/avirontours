@@ -18,25 +18,21 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace App\Form;
+namespace App\Enum;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class TrainingEditRatingType extends AbstractType
+/**
+ * Unit a sport measures its distances in; distances are always stored in meters.
+ */
+enum DistanceUnit: string
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->remove('sport')
-            ->remove('trainedAt')
-            ->remove('duration')
-            ->remove('comment')
-        ;
-    }
+    case Meters = 'm';
+    case Kilometers = 'km';
 
-    public function getParent(): string
+    public function format(int $meters): string
     {
-        return TrainingType::class;
+        return match ($this) {
+            self::Meters => number_format($meters, 0, ',', ' '),
+            self::Kilometers => number_format($meters / 1000, 1, ',', ' '),
+        };
     }
 }

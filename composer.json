@@ -73,6 +73,7 @@
         "symfony/webpack-encore-bundle": "^2.4.2",
         "symfony/workflow": "8.1.*",
         "symfony/yaml": "8.1.*",
+        "symfonycasts/dynamic-forms": "^0.2.0",
         "symfonycasts/reset-password-bundle": "^1.25",
         "tecnickcom/tc-lib-barcode": "^2.16.4",
         "twig/cssinliner-extra": "^3.26",

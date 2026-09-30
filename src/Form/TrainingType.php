@@ -25,20 +25,29 @@ use App\Enum\Feeling;
 use App\Enum\RatedPerceivedExertion;
 use App\Enum\SportType;
 use App\Form\DataTransformer\DateIntervalToTenthSecondsTransformer;
-use App\Form\DataTransformer\KilometersToMetersTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\SubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfonycasts\DynamicForms\DependentField;
+use Symfonycasts\DynamicForms\DynamicFormBuilder;
 
 class TrainingType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $training = $options['data'];
+        \assert($training instanceof Training);
+
+        // A synced training keeps what the ergometer measured.
+        $locked = false === $training->getTrainingPhases()->isEmpty();
+
+        $builder = new DynamicFormBuilder($builder);
         $builder
             ->add('sport', EnumType::class, [
                 'label' => 'Sport',
@@ -47,10 +56,12 @@ class TrainingType extends AbstractType
                 'expanded' => true,
                 'placeholder' => false,
                 'block_prefix' => 'sport_choice',
+                'disabled' => $locked,
             ])
             ->add('trainedAt', DateType::class, [
                 'label' => 'Date de la séance',
                 'widget' => 'single_text',
+                'disabled' => $locked,
             ])
             ->add('duration', DateIntervalType::class, [
                 'label' => 'Durée',
@@ -64,15 +75,7 @@ class TrainingType extends AbstractType
                 'hours' => range(0, 23),
                 'minutes' => range(0, 59),
                 'seconds' => range(0, 59),
-            ])
-            ->add('distance', NumberType::class, [
-                'label' => 'Distance',
-                'scale' => 1,
-                'attr' => [
-                    'step' => 0.1,
-                ],
-                'html5' => true,
-                'required' => false,
+                'disabled' => $locked,
             ])
             ->add('feeling', EnumType::class, [
                 'label' => 'Sensation',
@@ -98,18 +101,31 @@ class TrainingType extends AbstractType
             ])
         ;
 
+        $builder->addDependent('distance', 'sport', static function (DependentField $field, ?SportType $sport) use ($locked): void {
+            $unit = $sport?->distanceUnit();
+            if (null === $unit) {
+                return;
+            }
+
+            $field->add(DistanceType::class, [
+                'label' => 'Distance',
+                'required' => false,
+                'disabled' => $locked,
+                'unit' => $unit,
+            ]);
+        });
+
         $builder->get('duration')->addModelTransformer(new DateIntervalToTenthSecondsTransformer());
-        $builder->get('distance')->addModelTransformer(new KilometersToMetersTransformer());
 
-        $data = $builder->getData();
-        \assert($data instanceof Training);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+    }
 
-        // If there is TrainingPhases, then, the Training is sync
-        if (false === $data->getTrainingPhases()->isEmpty()) {
-            $builder->get('trainedAt')->setDisabled(true);
-            $builder->get('sport')->setDisabled(true);
-            $builder->get('distance')->setDisabled(true);
-            $builder->get('duration')->setDisabled(true);
+    // A sport without distance clears the stale value: the removed field no longer maps it.
+    public function onSubmit(SubmitEvent $event): void
+    {
+        $training = $event->getData();
+        if (null === $training->getSport()?->distanceUnit()) {
+            $training->setDistance(null);
         }
     }
 

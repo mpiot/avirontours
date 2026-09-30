@@ -9,8 +9,8 @@
                 <twig:Stats:Item label="Durée">{{ training.formattedDuration }}</twig:Stats:Item>
 
                 {% if training.distance is not null %}
-                    <twig:Stats:Item label="Distance" unit="km">
-                        {{- (training.distance / 1000)|format_number({fraction_digit: 1}) -}}
+                    <twig:Stats:Item label="Distance" :unit="training.sport.distanceUnit.value">
+                        {{- training.sport.distanceUnit.format(training.distance) -}}
                     </twig:Stats:Item>
                 {% endif %}
 
