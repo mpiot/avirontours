@@ -35,6 +35,7 @@ use App\Service\TrainingHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\ExpressionLanguage\Expression;
+use Symfony\Component\Form\ClearableErrorsInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -114,6 +115,10 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('training_show', [
                 'id' => $training->getId(),
             ], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('training/new.html.twig', [
@@ -210,6 +215,10 @@ class TrainingController extends AbstractController
             return $this->redirectToRoute('training_show', [
                 'id' => $training->getId(),
             ], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($request->isXmlHttpRequest() && $form instanceof ClearableErrorsInterface) {
+            $form->clearErrors(true);
         }
 
         return $this->render('training/edit.html.twig', [

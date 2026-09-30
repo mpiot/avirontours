@@ -1,7 +1,7 @@
-{{ form_start(form) }}
+{{ form_start(form, { attr: { 'data-controller': 'dependent-field' } }) }}
     {{ form_errors(form) }}
 
-    {{ form_row(form.sport) }}
+    {{ form_row(form.sport, { attr: { 'data-action': 'change->dependent-field#change' } }) }}
     {{ form_row(form.trainedAt) }}
 
     <div class="row">
@@ -9,16 +9,18 @@
             {{ form_row(form.duration) }}
         </div>
 
-        <div class="col-sm">
-            <div class="mb-3">
-                {{ form_label(form.distance) }}
+        <div class="col-sm" id="training_distance_container" {{ stimulus_target('dependent-field', 'target') }}>
+            {% if form.distance is defined %}
+                <div class="mb-3">
+                    {{ form_label(form.distance) }}
 
-                <twig:InputGroup :invalid="form.distance.vars.errors|length > 0">
-                    {{ form_widget(form.distance, { attr: { inputmode: 'decimal' } }) }}
-                    <twig:InputGroup:Text>km</twig:InputGroup:Text>
-                    {{ form_errors(form.distance) }}
-                </twig:InputGroup>
-            </div>
+                    <twig:InputGroup :invalid="form.distance.vars.errors|length > 0">
+                        {{ form_widget(form.distance) }}
+                        <twig:InputGroup:Text>{{ form.distance.vars.unit.value }}</twig:InputGroup:Text>
+                        {{ form_errors(form.distance) }}
+                    </twig:InputGroup>
+                </div>
+            {% endif %}
         </div>
     </div>
 

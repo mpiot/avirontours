@@ -57,7 +57,7 @@ enum SportType: string
         return match ($this) {
             self::Rowing => SportSpecificity::Specific,
             self::Ergometer => SportSpecificity::SemiSpecific,
-            self::Cycling, self::WeightTraining, self::Strengthening, self::GeneralPhysicalPreparation, self::Running, self::Swimming, self::Yoga, self::Other => SportSpecificity::NonSpecific,
+            default => SportSpecificity::NonSpecific,
         };
     }
 
@@ -68,7 +68,16 @@ enum SportType: string
             self::Swimming => '/100m',
             self::Running => '/km',
             self::Cycling => 'km/h',
-            self::Strengthening, self::WeightTraining, self::GeneralPhysicalPreparation, self::Yoga, self::Other => null,
+            default => null,
+        };
+    }
+
+    public function distanceUnit(): ?DistanceUnit
+    {
+        return match ($this) {
+            self::Rowing, self::Running, self::Cycling, self::Other => DistanceUnit::Kilometers,
+            self::Ergometer, self::Swimming => DistanceUnit::Meters,
+            default => null,
         };
     }
 
@@ -83,7 +92,7 @@ enum SportType: string
             self::Swimming => DurationManipulator::formatSecondsAsMinutesSeconds((int) round(10 * $duration / $distance)),
             self::Running => DurationManipulator::formatSecondsAsMinutesSeconds((int) round(100 * $duration / $distance)),
             self::Cycling => number_format($distance * 36 / $duration, 1, ',', ' '),
-            self::Strengthening, self::WeightTraining, self::GeneralPhysicalPreparation, self::Yoga, self::Other => null,
+            default => null,
         };
     }
 

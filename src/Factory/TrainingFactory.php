@@ -49,8 +49,12 @@ final class TrainingFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         // see https://github.com/zenstruck/foundry#initialization
-        return $this;
-        // ->afterInstantiate(function(Training $training) {})
+        return $this->afterInstantiate(static function (Training $training): void {
+            // A sport without a distance unit stores no distance
+            if (null === $training->getSport()?->distanceUnit()) {
+                $training->setDistance(null);
+            }
+        });
     }
 
     public static function class(): string

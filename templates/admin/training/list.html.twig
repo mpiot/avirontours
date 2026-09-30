@@ -48,7 +48,7 @@
                             <twig:Table:Cell label="Durée">{{ training.formattedDuration }}</twig:Table:Cell>
                             <twig:Table:Cell label="Distance">
                                 {% if training.distance %}
-                                    {{ (training.distance / 1000)|format_number({fraction_digit: 0}) }} km
+                                    {{ training.sport.distanceUnit.format(training.distance) }} {{ training.sport.distanceUnit.value }}
                                 {% else %}
                                     <twig:NoValue />
                                 {% endif %}

@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Enum;
 
+use App\Enum\DistanceUnit;
 use App\Enum\SportSpecificity;
 use App\Enum\SportType;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -32,6 +33,17 @@ class SportTypeTest extends TestCase
     {
         self::assertSame($unit, $sport->speedUnit());
         self::assertSame($speed, $sport->formatSpeed(36000, 10000));
+    }
+
+    #[DataProvider('provideDistanceUnits')]
+    public function testDistanceIsEnteredInTheUnitOfTheDiscipline(SportType $sport, ?DistanceUnit $unit): void
+    {
+        self::assertSame($unit, $sport->distanceUnit());
+    }
+
+    public function testEverySportHasItsDistanceUnitTested(): void
+    {
+        self::assertCount(\count(SportType::cases()), iterator_to_array(self::provideDistanceUnits()));
     }
 
     #[DataProvider('provideTrackWatts')]
@@ -69,6 +81,20 @@ class SportTypeTest extends TestCase
         yield 'swimming' => [SportType::Swimming, '/100m', '00:36'];
         yield 'weight training' => [SportType::WeightTraining, null, null];
         yield 'yoga' => [SportType::Yoga, null, null];
+    }
+
+    public static function provideDistanceUnits(): iterable
+    {
+        yield 'cycling' => [SportType::Cycling, DistanceUnit::Kilometers];
+        yield 'ergometer' => [SportType::Ergometer, DistanceUnit::Meters];
+        yield 'general physical preparation' => [SportType::GeneralPhysicalPreparation, null];
+        yield 'other' => [SportType::Other, DistanceUnit::Kilometers];
+        yield 'rowing' => [SportType::Rowing, DistanceUnit::Kilometers];
+        yield 'running' => [SportType::Running, DistanceUnit::Kilometers];
+        yield 'strengthening' => [SportType::Strengthening, null];
+        yield 'swimming' => [SportType::Swimming, DistanceUnit::Meters];
+        yield 'weight training' => [SportType::WeightTraining, null];
+        yield 'yoga' => [SportType::Yoga, null];
     }
 
     public static function provideTrackWatts(): iterable

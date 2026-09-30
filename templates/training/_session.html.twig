@@ -19,7 +19,7 @@
         <p class="app-training-metrics">
             <span>
                 {{- training.formattedDuration -}}
-                {%- if training.distance is not null %} &middot;&nbsp;{{ (training.distance / 1000)|format_number({fraction_digit: 1}) }}&nbsp;km{% endif -%}
+                {%- if training.distance is not null %} &middot;&nbsp;{{ training.sport.distanceUnit.format(training.distance) }}&nbsp;{{ training.sport.distanceUnit.value }}{% endif -%}
                 {%- if training.formattedSpeed is not null %} &middot;&nbsp;{{ training.formattedSpeed }}&nbsp;{{ training.sport.speedUnit }}{% endif -%}
             </span>
 

@@ -703,8 +703,18 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/new');
+        $crawler = $client->request('GET', '/training/new');
+
         $this->assertResponseIsSuccessful();
+
+        // Simulate ajax call
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $values = $form->getPhpValues();
+        $values['training']['sport'] = SportType::Rowing->value;
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertCount(1, $crawler->filterXPath('//input[@id="training_distance"]'));
 
         $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
@@ -738,8 +748,17 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/new');
+        $crawler = $client->request('GET', '/training/new');
+
         $this->assertResponseIsSuccessful();
+
+        // Simulate ajax call
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $values = $form->getPhpValues();
+        $values['training']['sport'] = SportType::Rowing->value;
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15',
@@ -773,8 +792,17 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/new');
+        $crawler = $client->request('GET', '/training/new');
+
         $this->assertResponseIsSuccessful();
+
+        // Simulate ajax call
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $values = $form->getPhpValues();
+        $values['training']['sport'] = SportType::Rowing->value;
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
@@ -801,8 +829,17 @@ class TrainingControllerTest extends AppWebTestCase
         static::ensureKernelShutdown();
         $client = static::createClient();
         $client->loginUser($user);
-        $client->request('GET', '/training/new');
+        $crawler = $client->request('GET', '/training/new');
+
         $this->assertResponseIsSuccessful();
+
+        // Simulate ajax call
+        $form = $crawler->selectButton('Enregistrer')->form();
+        $values = $form->getPhpValues();
+        $values['training']['sport'] = SportType::Rowing->value;
+        $crawler = $client->request($form->getMethod(), $form->getUri(), $values, $form->getPhpFiles());
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '2020-01-15 14:02',
@@ -835,7 +872,6 @@ class TrainingControllerTest extends AppWebTestCase
         // Sport is a radio group: leaving it unanswered means not submitting it.
         $crawler = $client->submitForm('Enregistrer', [
             'training[trainedAt]' => '',
-            'training[distance]' => '',
             'training[comment]' => '',
         ]);
 
@@ -851,7 +887,7 @@ class TrainingControllerTest extends AppWebTestCase
     public function testEditTraining(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
-        $training = TrainingFactory::createOne(['user' => $user]);
+        $training = TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing]);
 
         static::ensureKernelShutdown();
         $client = static::createClient();
