@@ -259,8 +259,10 @@ A feature isn't done without a test that exercises it the way a caller would (an
 HTTP request for a controller, a service call for a service).
 
 - Single test: `symfony php vendor/bin/phpunit --filter testName` or by path.
-- Functional tests extend `App\Tests\AppWebTestCase` (Foundry `Factories` +
-  `ResetDatabase`); service tests extend `KernelTestCase`. Log in with
+- Functional tests extend `App\Tests\AppWebTestCase`; service tests extend
+  `KernelTestCase`. Foundry's PHPUnit extension (`phpunit.dist.xml`,
+  `enabled-auto-reset`) boots Foundry and resets the schema for every kernel test:
+  no `Factories` / `ResetDatabase` traits. Log in with
   `$this->createAndLogin($client, 'ROLE_...')`.
 - Build entities with Foundry factories (`src/Factory/`), shared with
   `src/DataFixtures/`.

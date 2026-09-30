@@ -36,14 +36,9 @@ use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class Concept2ResultImportMessageHandlerTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testAnUnknownUserIsIgnored(): void
     {
         $handler = $this->createHandler();

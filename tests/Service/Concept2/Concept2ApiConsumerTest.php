@@ -38,14 +38,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\JsonMockResponse;
 use Symfony\Component\HttpClient\Response\MockResponse;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class Concept2ApiConsumerTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testGetAccessTokenReusesAStoredTokenExpiringInMoreThanAnHour(): void
     {
         $user = $this->createConnectedUser();

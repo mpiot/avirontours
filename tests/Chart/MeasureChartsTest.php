@@ -26,17 +26,12 @@ use App\Enum\MeasureType;
 use App\Factory\MeasureFactory;
 use App\Factory\UserFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 /**
  * A chart's datasets are daily series ending today, so a slot is addressed as "N days ago" throughout.
  */
 class MeasureChartsTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testNoChartAtAllWithoutMeasure(): void
     {
         self::assertSame([], self::getContainer()->get(MeasureCharts::class)->charts(UserFactory::createOne()));

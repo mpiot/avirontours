@@ -27,14 +27,9 @@ use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
 use App\Service\SeasonCsvGenerator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class SeasonCsvGeneratorTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testExportPayments(): void
     {
         $season = SeasonFactory::createOne();
