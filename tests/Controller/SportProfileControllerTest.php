@@ -22,10 +22,11 @@ namespace App\Tests\Controller;
 
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class SportProfileControllerTest extends AppWebTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('urlProvider')]
+    #[DataProvider('urlProvider')]
     public function testAccessDeniedForAnonymousUser(string $method, string $url): void
     {
         static::ensureKernelShutdown();
@@ -47,6 +48,7 @@ class SportProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Enregistrer', [
+            'physiology[restingHeartRate]' => 52,
             'physiology[maximumOxygenConsumption]' => 75.3,
             'physiology[lightAerobicHeartRateMin]' => 120,
             'physiology[heavyAerobicHeartRateMin]' => 150,
@@ -58,6 +60,7 @@ class SportProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertNotNull($user->getPhysiology());
+        $this->assertSame(52, $user->getPhysiology()->getRestingHeartRate());
         $this->assertSame(75.3, $user->getPhysiology()->getMaximumOxygenConsumption());
         $this->assertSame(120, $user->getPhysiology()->getLightAerobicHeartRateMin());
         $this->assertSame(150, $user->getPhysiology()->getHeavyAerobicHeartRateMin());

@@ -74,6 +74,7 @@ class SportsProfileControllerTest extends AppWebTestCase
         $this->assertResponseIsSuccessful();
 
         $client->submitForm('Enregistrer', [
+            'physiology[restingHeartRate]' => 52,
             'physiology[maximumOxygenConsumption]' => 75.3,
             'physiology[lightAerobicHeartRateMin]' => 120,
             'physiology[heavyAerobicHeartRateMin]' => 150,
@@ -85,6 +86,7 @@ class SportsProfileControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects();
         $this->assertNotNull($user->getPhysiology());
+        $this->assertSame(52, $user->getPhysiology()->getRestingHeartRate());
         $this->assertSame(75.3, $user->getPhysiology()->getMaximumOxygenConsumption());
         $this->assertSame(120, $user->getPhysiology()->getLightAerobicHeartRateMin());
         $this->assertSame(150, $user->getPhysiology()->getHeavyAerobicHeartRateMin());

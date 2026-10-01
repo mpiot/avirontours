@@ -34,6 +34,7 @@ final class PhysiologyFactory extends PersistentObjectFactory
 
         return [
             'user' => UserFactory::new(),
+            'restingHeartRate' => self::faker()->numberBetween(50, 65),
             'lightAerobicHeartRateMin' => round($max * 0.65),
             'heavyAerobicHeartRateMin' => round($max * 0.70),
             'anaerobicThresholdHeartRateMin' => round($max * 0.80),

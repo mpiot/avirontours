@@ -32,6 +32,9 @@ class PhysiologyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('restingHeartRate', IntegerType::class, [
+                'label' => 'FC repos',
+            ])
             ->add('lightAerobicHeartRateMin', IntegerType::class, [
                 'label' => 'B0 - UT2',
                 'help' => '65-70% FCmax',
@@ -54,6 +57,7 @@ class PhysiologyType extends AbstractType
             ])
             ->add('maximumHeartRate', IntegerType::class, [
                 'label' => 'FCmax',
+                'help' => 'Borne haute de la zone B5 - AN',
             ])
             ->add('maximumOxygenConsumption', NumberType::class, [
                 'label' => 'VO2max',

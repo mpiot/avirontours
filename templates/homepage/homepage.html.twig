@@ -131,6 +131,7 @@
                     </twig:Card:Body>
 
                     {% set zones = [
+                        { label: 'FC repos', value: app.user.physiology.restingHeartRate, unit: 'bpm' },
                         { label: 'B0 - UT2', value: app.user.physiology.lightAerobicHeartRateRange, unit: 'bpm' },
                         { label: 'B1 - UT1', value: app.user.physiology.heavyAerobicHeartRateRange, unit: 'bpm' },
                         { label: 'B2 - AT', value: app.user.physiology.anaerobicThresholdHeartRateRange, unit: 'bpm' },

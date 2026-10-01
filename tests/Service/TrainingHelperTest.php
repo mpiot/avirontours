@@ -122,9 +122,9 @@ class TrainingHelperTest extends KernelTestCase
     public function testDashboardVolumesOnlyCountTheLastSevenDays(): void
     {
         $user = UserFactory::createOne();
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'distance' => 10000]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'trainedAt' => new \DateTime('-1 day'), 'duration' => 36000, 'distance' => 10000]);
         TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-3 days'), 'duration' => 54000, 'distance' => null]);
-        TrainingFactory::createOne(['user' => $user, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'distance' => 10000]);
+        TrainingFactory::createOne(['user' => $user, 'sport' => SportType::Rowing, 'trainedAt' => new \DateTime('-10 days'), 'duration' => 36000, 'distance' => 10000]);
 
         $kpis = $this->dashboardKpis($user);
 
