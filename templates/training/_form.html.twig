@@ -24,6 +24,32 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-sm">
+            <div class="mb-3">
+                {{ form_label(form.averageHeartRate) }}
+
+                <twig:InputGroup :invalid="form.averageHeartRate.vars.errors|length > 0">
+                    {{ form_widget(form.averageHeartRate) }}
+                    <twig:InputGroup:Text>bpm</twig:InputGroup:Text>
+                    {{ form_errors(form.averageHeartRate) }}
+                </twig:InputGroup>
+            </div>
+        </div>
+
+        <div class="col-sm">
+            <div class="mb-3">
+                {{ form_label(form.maxHeartRate) }}
+
+                <twig:InputGroup :invalid="form.maxHeartRate.vars.errors|length > 0">
+                    {{ form_widget(form.maxHeartRate) }}
+                    <twig:InputGroup:Text>bpm</twig:InputGroup:Text>
+                    {{ form_errors(form.maxHeartRate) }}
+                </twig:InputGroup>
+            </div>
+        </div>
+    </div>
+
     {{ form_row(form.feeling) }}
     {{ form_row(form.ratedPerceivedExertion) }}
 
