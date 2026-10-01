@@ -32,6 +32,12 @@ class Physiology
     private ?int $id = null;
 
     #[Assert\NotNull]
+    #[Assert\Positive]
+    #[Assert\LessThan(propertyPath: 'lightAerobicHeartRateMin', message: 'La FC repos doit être inférieure à la borne basse de la zone B0 - UT2.')]
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $restingHeartRate = null;
+
+    #[Assert\NotNull]
     #[Assert\LessThan(propertyPath: 'heavyAerobicHeartRateMin')]
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $lightAerobicHeartRateMin = null;
@@ -76,6 +82,18 @@ class Physiology
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRestingHeartRate(): ?int
+    {
+        return $this->restingHeartRate;
+    }
+
+    public function setRestingHeartRate(?int $restingHeartRate): self
+    {
+        $this->restingHeartRate = $restingHeartRate;
+
+        return $this;
     }
 
     public function getLightAerobicHeartRateMin(): ?int

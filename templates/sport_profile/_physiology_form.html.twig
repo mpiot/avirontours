@@ -1,15 +1,50 @@
+{% macro unit_field(field, unit) %}
+    <div class="mb-3">
+        {{ form_label(field) }}
+
+        <twig:InputGroup :invalid="field.vars.errors|length > 0">
+            {{ form_widget(field) }}
+            <twig:InputGroup:Text>{{ unit }}</twig:InputGroup:Text>
+            {{ form_errors(field) }}
+        </twig:InputGroup>
+
+        {{ form_help(field) }}
+    </div>
+{% endmacro %}
+
+{% import _self as physiology %}
+
 {{ form_start(form) }}
     {{ form_errors(form) }}
 
-    <div class="row">
-        <div class="col-sm-6">{{ form_row(form.lightAerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.heavyAerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.anaerobicThresholdHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.oxygenTransportationHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.anaerobicHeartRateMin) }}</div>
-        <div class="col-sm-6">{{ form_row(form.maximumHeartRate) }}</div>
-        <div class="col-sm-6">{{ form_row(form.maximumOxygenConsumption) }}</div>
-    </div>
+    <fieldset class="mb-4">
+        <legend class="fs-5">Fréquences de référence</legend>
+
+        <div class="row">
+            <div class="col-sm-6">{{ physiology.unit_field(form.restingHeartRate, 'bpm') }}</div>
+            <div class="col-sm-6">{{ physiology.unit_field(form.maximumHeartRate, 'bpm') }}</div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+        <legend class="fs-5">Zones (borne basse de chaque zone)</legend>
+
+        <div class="row">
+            <div class="col-sm-6">{{ physiology.unit_field(form.lightAerobicHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ physiology.unit_field(form.heavyAerobicHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ physiology.unit_field(form.anaerobicThresholdHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ physiology.unit_field(form.oxygenTransportationHeartRateMin, 'bpm') }}</div>
+            <div class="col-sm-6">{{ physiology.unit_field(form.anaerobicHeartRateMin, 'bpm') }}</div>
+        </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+        <legend class="fs-5">Capacité aérobie</legend>
+
+        <div class="row">
+            <div class="col-sm-6">{{ physiology.unit_field(form.maximumOxygenConsumption, 'ml/min/kg') }}</div>
+        </div>
+    </fieldset>
 
     <twig:Button variant="primary" class="mt-3">Enregistrer</twig:Button>
 {{ form_end(form) }}

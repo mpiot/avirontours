@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Enum\RatedPerceivedExertion;
+use App\Enum\SportType;
 use App\Factory\PhysiologyFactory;
 use App\Factory\TrainingFactory;
 use App\Factory\UserFactory;
@@ -77,6 +78,7 @@ class HomepageControllerTest extends AppWebTestCase
         TrainingFactory::createOne([
             'user' => $user,
             'trainedAt' => new \DateTime('-1 day'),
+            'sport' => SportType::Rowing,
             'duration' => 36000,
             'distance' => 10000,
             'ratedPerceivedExertion' => RatedPerceivedExertion::SomewhatHard,
@@ -84,6 +86,7 @@ class HomepageControllerTest extends AppWebTestCase
         TrainingFactory::createOne([
             'user' => $user,
             'trainedAt' => new \DateTime('-3 days'),
+            'sport' => SportType::Rowing,
             'duration' => 54000,
             'distance' => 8000,
             'ratedPerceivedExertion' => null,
