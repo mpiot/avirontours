@@ -88,9 +88,12 @@ class Training
     #[ORM\Column(nullable: true)]
     private ?int $strokeRate = null;
 
+    #[Assert\Positive]
     #[ORM\Column(nullable: true)]
     private ?int $averageHeartRate = null;
 
+    #[Assert\Positive]
+    #[Assert\GreaterThanOrEqual(propertyPath: 'averageHeartRate', message: 'La FC max doit être supérieure ou égale à la FC moyenne.')]
     #[ORM\Column(nullable: true)]
     private ?int $maxHeartRate = null;
 

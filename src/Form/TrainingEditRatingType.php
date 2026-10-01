@@ -31,6 +31,8 @@ class TrainingEditRatingType extends AbstractType
             ->remove('sport')
             ->remove('trainedAt')
             ->remove('duration')
+            ->remove('averageHeartRate')
+            ->remove('maxHeartRate')
             ->remove('comment')
         ;
     }

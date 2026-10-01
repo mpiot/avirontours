@@ -723,6 +723,8 @@ class TrainingControllerTest extends AppWebTestCase
             'training[duration][minutes]' => '2',
             'training[duration][seconds]' => '30',
             'training[distance]' => 16.3,
+            'training[averageHeartRate]' => 142,
+            'training[maxHeartRate]' => 176,
             'training[feeling]' => Feeling::Good->value,
             'training[ratedPerceivedExertion]' => RatedPerceivedExertion::SomewhatHard->value,
             'training[comment]' => 'My little comment...',
@@ -736,6 +738,8 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame(SportType::Rowing, $training->getSport());
         $this->assertSame(37500, $training->getDuration());
         $this->assertSame(16300, $training->getDistance());
+        $this->assertSame(142, $training->getAverageHeartRate());
+        $this->assertSame(176, $training->getMaxHeartRate());
         $this->assertSame(Feeling::Good, $training->getFeeling());
         $this->assertSame(RatedPerceivedExertion::SomewhatHard, $training->getRatedPerceivedExertion());
         $this->assertSame('My little comment...', $training->getComment());
@@ -859,6 +863,32 @@ class TrainingControllerTest extends AppWebTestCase
         TrainingFactory::repository()->assert()->count(0);
     }
 
+    public function testNewTrainingWithMaxHeartRateBelowAverage(): void
+    {
+        $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
+
+        static::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->loginUser($user);
+        $client->request('GET', '/training/new');
+
+        $this->assertResponseIsSuccessful();
+
+        $crawler = $client->submitForm('Enregistrer', [
+            'training[trainedAt]' => '2020-01-15',
+            'training[sport]' => SportType::WeightTraining->value,
+            'training[duration][hours]' => '1',
+            'training[duration][minutes]' => '30',
+            'training[averageHeartRate]' => 176,
+            'training[maxHeartRate]' => 142,
+        ]);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->assertStringContainsString('La FC max doit être supérieure ou égale à la FC moyenne.', $crawler->filterXPath('//input[@id="training_maxHeartRate"]/ancestor::div[contains(@class, "mb-3")][1]//*[contains(@class, "invalid-feedback")]')->text());
+        $this->assertCount(1, $crawler->filterXPath('//*[contains(@class, "invalid-feedback")]'));
+        TrainingFactory::repository()->assert()->count(0);
+    }
+
     public function testNewTrainingWithoutData(): void
     {
         $user = LicenseFactory::new()->annualActive()->withValidLicense()->create()->getUser();
@@ -935,6 +965,7 @@ class TrainingControllerTest extends AppWebTestCase
         $this->assertSame('1', $crawler->filterXPath('//select[@id="training_duration_hours"]/option[@selected]')->attr('value'));
         $this->assertSame('30', $crawler->filterXPath('//select[@id="training_duration_minutes"]/option[@selected]')->attr('value'));
         $this->assertNotNull($crawler->filterXPath('//select[@id="training_duration_hours"]')->attr('disabled'));
+        $this->assertNotNull($crawler->filterXPath('//input[@id="training_averageHeartRate"]')->attr('disabled'));
     }
 
     public function testEditOtherUserTraining(): void

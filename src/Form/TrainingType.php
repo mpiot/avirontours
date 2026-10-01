@@ -30,6 +30,7 @@ use Symfony\Component\Form\Event\SubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
@@ -75,6 +76,16 @@ class TrainingType extends AbstractType
                 'hours' => range(0, 23),
                 'minutes' => range(0, 59),
                 'seconds' => range(0, 59),
+                'disabled' => $locked,
+            ])
+            ->add('averageHeartRate', IntegerType::class, [
+                'label' => 'FC moyenne',
+                'required' => false,
+                'disabled' => $locked,
+            ])
+            ->add('maxHeartRate', IntegerType::class, [
+                'label' => 'FC max',
+                'required' => false,
                 'disabled' => $locked,
             ])
             ->add('feeling', EnumType::class, [
