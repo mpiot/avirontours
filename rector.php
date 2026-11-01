@@ -25,6 +25,9 @@ return RectorConfig::configure()
         __DIR__.'/src',
         __DIR__.'/tests',
     ])
+    ->withSkip([
+        __DIR__.'/src/Migrations',
+    ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
     ->withTypeCoverageLevel(0)
