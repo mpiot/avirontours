@@ -9,7 +9,3 @@ parameters:
         -
             identifier: ternary.shortNotAllowed
             path: config/preload.php
-
-        -
-            identifier: method.unused
-            path: src/Kernel.php
