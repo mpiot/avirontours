@@ -16,6 +16,7 @@ parameters:
         - src/
     excludePaths:
         - config/reference.php
+        - src/Migrations/*
         - tests/*
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml

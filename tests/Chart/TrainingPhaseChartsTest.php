@@ -23,14 +23,9 @@ namespace App\Tests\Chart;
 use App\Chart\TrainingPhaseCharts;
 use App\Factory\TrainingPhaseFactory;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Zenstruck\Foundry\Test\Factories;
-use Zenstruck\Foundry\Test\ResetDatabase;
 
 class TrainingPhaseChartsTest extends KernelTestCase
 {
-    use Factories;
-    use ResetDatabase;
-
     public function testUnmeasuredValuesAreLeftOutOfTheTraces(): void
     {
         $trainingPhase = TrainingPhaseFactory::createOne([
