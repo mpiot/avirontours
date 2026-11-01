@@ -22,6 +22,9 @@ namespace App\Tests\Controller;
 
 use App\Factory\UserFactory;
 use App\Tests\AppWebTestCase;
+use Symfony\Bridge\PhpUnit\Attribute\TimeSensitive;
+use Symfony\Component\RateLimiter\Policy\FixedWindowLimiter;
+use Symfony\Component\Security\Http\EventListener\LoginThrottlingListener;
 
 use function Zenstruck\Foundry\faker;
 
@@ -126,6 +129,8 @@ class SecurityControllerTest extends AppWebTestCase
         $this->assertStringContainsString('Identifiants invalides.', $crawler->filter('div.alert-danger')->text());
     }
 
+    #[TimeSensitive(FixedWindowLimiter::class)]
+    #[TimeSensitive(LoginThrottlingListener::class)]
     public function testLoginWithBadUsernameAndIPTooManyTimes(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
@@ -154,9 +159,11 @@ class SecurityControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/login');
         $crawler = $client->followRedirect();
-        $this->assertStringContainsString('Plusieurs tentatives de connexion ont échoué, veuillez réessayer dans 1 minute.', $crawler->filter('div.alert-danger')->text());
+        $this->assertStringContainsString('Trop de tentatives de connexion échouées, veuillez réessayer dans 2 minutes.', $crawler->filter('div.alert-danger')->text());
     }
 
+    #[TimeSensitive(FixedWindowLimiter::class)]
+    #[TimeSensitive(LoginThrottlingListener::class)]
     public function testLoginWithIPTooManyTimes(): void
     {
         UserFactory::createOne(['firstName' => 'firstname', 'lastName' => 'lastname']);
@@ -184,6 +191,6 @@ class SecurityControllerTest extends AppWebTestCase
 
         $this->assertResponseRedirects('/login');
         $crawler = $client->followRedirect();
-        $this->assertStringContainsString('Plusieurs tentatives de connexion ont échoué, veuillez réessayer dans 1 minute.', $crawler->filter('div.alert-danger')->text());
+        $this->assertStringContainsString('Trop de tentatives de connexion échouées, veuillez réessayer dans 2 minutes.', $crawler->filter('div.alert-danger')->text());
     }
 }
